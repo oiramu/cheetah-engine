@@ -1,0 +1,22 @@
+#Game ML Code
+Image background=res/textures/Menu/background.jpg 0 0 1920 1080
+Image imgLogo=res/textures/Menu/logo.png 50 300 400 96
+Image imgBackground=res/textures/Menu/shadow.png 0 0 500 1080
+
+Button episode1=Episode 1 Escape from auschwitz:20 420 460 37
+episode1>addAction:loadMenu:res/Menu/EP1.txt
+
+Button episode2=Episode 2 The poland run:20 470 460 37
+episode2>addAction:loadMenu:res/Menu/EP2.txt
+
+Button episode3=Episode 3 Der fuhrer's face:20 520 460 37
+episode3>addAction:loadMenu:res/Menu/EP3.txt
+
+Button backBtn=Back:20 570 460 37
+backBtn>addAction:loadMenu:res/Menu/menu.txt
+
+#Button list for keyboard/gamepad in order
+episode1>selectId
+episode2>selectId
+episode3>selectId
+backBtn>selectId

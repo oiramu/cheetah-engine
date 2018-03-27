@@ -1,0 +1,21 @@
+#MainMenu ML Code
+Image background=res/textures/Menu/background.jpg 0 0 1920 1080
+Image imgLogo=res/textures/Menu/logo.png 50 300 400 96
+Image imgBackground=res/textures/Menu/shadow.png 0 0 500 1080
+
+Button startBtn=Game:20 420 460 37
+startBtn>addAction:loadMenu:res/Menu/game.txt
+
+Button Options=Options:20 470 460 37
+Options>addAction:loadMenu:res/Menu/options.txt
+
+Button creditBtn=Credit:20 520 460 37
+creditBtn>addAction:loadMenu:res/Menu/credit.txt
+
+Button exitBtn=Quit:20 570 460 37
+exitBtn>addAction:exit
+
+#Button list for keyboard/gamepad in order
+startBtn>selectId
+creditBtn>selectId
+exitBtn>selectId

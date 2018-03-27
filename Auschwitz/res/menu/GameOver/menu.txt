@@ -1,0 +1,12 @@
+#GameOver ML Code
+Button restartBtn=Restart:420 240 360 37
+restartBtn>addAction:loadWorld:res/world1.txt
+
+Button BtnBack=Back to main menu:800 240 360 37
+BtnBack>addAction:loadMenu:res/Menu/MainMenu/menu.txt
+
+#Button list for keyboard/gamepad in order
+restartBtn>selectId
+BtnBack>selectId
+
+Image gameover=res/Menu/GameOver/Textures/gameOver.png 350 0 856 270

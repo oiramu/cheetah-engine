@@ -1,0 +1,33 @@
+#EP1 ML CODE
+Image background=res/textures/Menu/background.jpg 0 0 1920 1080
+Image imgLogo=res/textures/Menu/logo.png 50 300 400 96
+Image imgBackground=res/textures/Menu/shadow.png 0 0 500 1080
+
+Button runBtn=GO!:20 420 460 37
+runBtn>addAction:loadEpisode1
+
+Button episode2=Episode 2 The poland run:20 470 460 37
+episode2>addAction:loadMenu:res/Menu/EP2.txt
+
+Button episode3=Episode 3 Der fuhrer's face:20 520 460 37
+episode3>addAction:loadMenu:res/Menu/EP3.txt
+
+Button backBtn=Back:20 570 460 37
+backBtn>addAction:loadMenu:res/Menu/menu.txt
+
+#Button list for keyboard/gamepad in order
+runBtn>selectId
+episode2>selectId
+episode3>selectId
+backBtn>selectId
+
+#Context
+TextBold line1=Escape from auschwitz:550 250
+Text line2=War is coming to hes end, the soviets are pushing:550 300
+Text line3=the germans to their knees so hard, that the german:550 330
+Text line3=goverment are cutting the auschwitz's budget:550 360
+Text line4=so guards start a plan to clean all the jews:550 390
+Text line5=so now is up to you if you want to survive and try to:550 420
+Text line6=escape; after a guard execute your room partner, you:550 450
+Text line7=kill the guard with your own arms. Now you have a pistol:550 480
+Text line8=and now you have two options, run and escape or die.:550 510

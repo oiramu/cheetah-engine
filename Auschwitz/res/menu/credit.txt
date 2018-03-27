@@ -1,0 +1,35 @@
+#MainMenu ML Code
+Image background=res/textures/Menu/background.jpg 0 0 1920 1080
+Image imgLogo=res/textures/Menu/logo.png 50 300 400 96
+Image imgBackground=res/textures/Menu/shadow.png 0 0 500 1080
+
+#Credit
+Text credit=Copyright Cheetah Software 2018:50 470
+Button returnBtn=Back:20 420 460 37
+returnBtn>addAction:loadMenu:res/Menu/menu.txt
+
+#Button list for keyboard/gamepad in order
+returnBtn>selectId
+
+#Animation
+Animation anim=-1 y -1250 0.02
+
+#Team
+TextBold line1=CHEETAH SOFTWARE IS:660 70
+TextBold line1=Programmers:660 150
+Text line2=Carlos Rodriguez:700 190
+Text line4=Daniel Polo:700 230
+Text line8=Julio Vergara:700 270
+TextBold line9=Artist:660 350
+Text line10=Alfredo Polo:700 390
+TextBold line9=Design:660 470
+Text line4=Daniel Polo:700 510
+Text line8=Carlos Rodriguez:700 550
+TextBold line1=ADITIONAL SUPPORT:660 630
+TextBold line1=Sound Code:660 710
+Text line4=Julio Vergara:700 750
+TextBold line1=Music/FX:660 830
+Text line4=Rafael Conrado:700 870
+TextBold line13=Special thanks to:660 950
+Text line13=Mariana Mishell:700 990
+TextBold line13=And no, we do not are nazis.:660 1070

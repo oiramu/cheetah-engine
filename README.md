@@ -38,6 +38,8 @@ program, and also write us, we'll be glad to see your work ;).
 
 ---
 
-For more information check the in code documentation of the engine
+For more information check the in code documentation of the engine.
+
+If you have any problems with the engine code or documentation please don't forget to write the issue.
 
 **ATT: Carlos Rodriguez 2018.**

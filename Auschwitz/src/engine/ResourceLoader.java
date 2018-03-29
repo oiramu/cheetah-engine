@@ -52,7 +52,7 @@ import static org.lwjgl.opengl.GL30.*;
 */
 public class ResourceLoader {
 	
-	//private static final int MIPMAP_SAMPLES = 4; 
+	private static final int MIPMAP_SAMPLES = 4; 
 
 	/**
 	 * Loads a MIDI sequence file named like that.
@@ -95,12 +95,11 @@ public class ResourceLoader {
     }
 
     /**
-     * Carga la textura bitmap para ser usado como mapa de nivel (para mas informacion
-     * ir a Bitmap).
-     * @param fileName nombre del bitmap
-     * @return resultado
-     * @throws diagnostica el error
-     */
+     * Loads a PNG image file named like that an uses it as the level
+     * bitmap. * @param fileName Name of the bitmap file. 
+     * @return Bitmap. 
+     * @throws Exception if the bitmap can't load something. 
+     */ 
     public static Bitmap loadBitmap(String fileName) throws RuntimeException {
         try {
             //BufferedImage image = ImageIO.read(ResourceLoader.class.getResource("/res/bitmaps/" + fileName));
@@ -121,10 +120,10 @@ public class ResourceLoader {
     
     
     /**
-     * Carga la textura del icono de la ventana.
-     * @param filename nombre del icono
-     * @return icono en ventana
-     */
+	 * Loads a PNG image file named like that and uses it as the window's icon.
+	 * @param fileName Name of the icon file.
+	 * @return Icon.
+	 */
     public static ByteBuffer loadIcon(String fileName) {
         FileInputStream in;
         ByteBuffer buffer = null;
@@ -156,7 +155,7 @@ public class ResourceLoader {
             glGenerateMipmap(GL_TEXTURE_2D);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 					GL_LINEAR_MIPMAP_LINEAR);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -4);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -MIPMAP_SAMPLES);
 			
             return new Texture(id);
         } catch (Exception e) {

@@ -21,8 +21,7 @@ and rendering mechanics for a more expandable and friendly end.
 This engine as well as the game is currently in developement, so we will keep expanding it as the game need it, thats why we don't realease
 a blank version finished of the source code.
 
-The engine is free to use and upgrade and extend, so feel free to add, extend or upgrade code and all of your creation will be protected if
-you follow the code extension licence down below.
+The engine is free to use and upgrade, extend or modify so feel free to add, extend or upgrade code and all of your creation will be protected if you follow the code extension licence down below.
 
 ---
 
@@ -32,9 +31,7 @@ All of the current base code and resources belong to cheetah software, the defau
 your game to publish for example. The engine has been shared using the Apache licence 2.0 so check it out at 
 http://www.apache.org/licenses/LICENSE-2.0.
 
-If you get to extend the base engine, feel free to be the owner of such additions. If you want to publish a game with our engine please be 
-sure to add our name as yours as owners of the original code and any extension of this in the header of the classes and in the final 
-program, and also write us, we'll be glad to see your work ;).
+If you get to extend, upgrade or modify the base engine, feel free to be the owner of such additions. If you want to publish a game with our engine please be sure to add our name as yours as owners of the original code and any extension of this in the header of the classes and in the final program, and also write us, we'll be glad to see your work ;).
 
 ---
 

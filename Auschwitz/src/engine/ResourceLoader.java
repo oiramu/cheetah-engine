@@ -96,7 +96,8 @@ public class ResourceLoader {
 
     /**
      * Loads a PNG image file named like that an uses it as the level
-     * bitmap. * @param fileName Name of the bitmap file. 
+     * bitmap. 
+     * @param fileName Name of the bitmap file. 
      * @return Bitmap. 
      * @throws Exception if the bitmap can't load something. 
      */ 

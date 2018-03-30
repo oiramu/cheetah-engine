@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Julio Vergara.
+ * Copyright 2018 Carlos Rodriguez.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,64 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package game.objects;
+package game.powerUp;
 
-import java.util.ArrayList;
+import javax.sound.sampled.Clip;
 
 import engine.ResourceLoader;
+import engine.audio.AudioUtil;
 import engine.core.GameObject;
-import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.Texture;
 import engine.rendering.Vertex;
 import game.Auschwitz;
+import game.Level;
 
 /**
- *
- * @author Julio Vergara.
- * @version 1.1
- * @since 2018
- */
-public class LightBeam implements GameObject {
+*
+* @author Carlos Rodriguez
+* @version 1.0
+* @since 2018
+*/
+public class SuperShotgun implements GameObject {
+
+    private static final float PICKUP_THRESHHOLD = 0.75f;
+    private static final int AMOUNT = 6;
     
+    private static final String RES_LOC = "superShotgun/MEDIA";
+    private static final String WEAPONS_RES_LOC = "weapons/";
+    
+    private static final Clip pickupNoise = ResourceLoader.loadAudio(RES_LOC);
+
     private static Mesh mesh;
     private static Material material;
-    
-    private float sizeY;
-    private float sizeX;
-    
-    private static final String RES_LOC = "lightBeam/";
 
     private Transform transform;
-    
-    private static ArrayList<Texture> animation;
 
     /**
-     * Constructor of the actual object.
-     * @param transform the transform of the object in a 3D space.
+     * Constructor of the actual power-up.
+     * @param transform the transform of the data.
      */
-    public LightBeam(Transform transform) {
-    	
-    	if (animation == null) {
-            animation = new ArrayList<Texture>();
-
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "MEDIA0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "MEDIA1"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "MEDIA2"));
-        }
-    	
+    public SuperShotgun(Transform transform) {
         if (mesh == null) {
             mesh = new Mesh();
 
-            sizeY = 0.2f;
-            sizeX = (float) ((double) sizeY / (0.078125 * 12));
+            float sizeY = 0.3142857142857143f;
+            float sizeX = (float) ((double) sizeY / (0.2295081967213115 * 2.0));
 
-            float offsetX = 0.01f;
-            float offsetY = 0.00f;
+            float offsetX = 0.05f;
+            float offsetY = 0.01f;
 
             float texMinX = -offsetX;
             float texMaxX = -1 - offsetX;
@@ -83,76 +75,48 @@ public class LightBeam implements GameObject {
                 new Vertex(new Vector3f(sizeX, 0, 0), new Vector2f(texMinX, texMaxY))};
 
             int[] indices = new int[]{0, 1, 2,
-                                    0, 2, 3};
+            						0, 2, 3};
 
             mesh.addVertices(verts, indices);
         }
 
         if (material == null) {
-			material = new Material(animation.get(2));
+            material = new Material(ResourceLoader.loadTexture(WEAPONS_RES_LOC + RES_LOC));
         }
 
         this.transform = transform;
     }
 
     /**
-     * Method that updates the object's data.
+     * Updates the power-up every single frame.
      */
-    public void update() {
+	public void update() {
         Vector3f playerDistance = transform.getPosition().sub(Transform.getCamera().getPos());
 
         Vector3f orientation = playerDistance.normalized();
-        @SuppressWarnings("unused")
-		float distance = playerDistance.length();
+        float distance = playerDistance.length();
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
         if (orientation.getX() > 0) {
             angle = 180 + angle;
         }
-        
-        double time = (double) Time.getTime() / Time.SECOND;
-        double timeDecimals = (time - (double) ((int) time));
-
-        timeDecimals *= 1.25f;
-
-    	if (timeDecimals <= 1f) {
-            material.setTexture(animation.get(2));
-        } else if(timeDecimals <= 2) {
-        	material.setTexture(animation.get(1));
-        } else if(timeDecimals <= 3) {
-        	material.setTexture(animation.get(0));
-        } else if(timeDecimals <= 4) {
-        	material.setTexture(animation.get(1));
-        }
 
         transform.setRotation(0, angle + 90, 0);
-        transform.setScale(1.7f, 0.5f, 1);
 
+        if (distance < PICKUP_THRESHHOLD) {
+            Level.getPlayer().setSuperShotgun(true);
+            Level.getPlayer().setShells(AMOUNT);
+            Level.removeSuperShotgun(this);
+            AudioUtil.playAudio(pickupNoise, 0);
+        }
     }
-
-    /**
-     * Method that renders the object's mesh to screen.
+	
+	/**
+     * Method that renders the power-up's mesh.
      */
     public void render() {
         Auschwitz.updateShader(transform.getTransformation(), transform.getPerspectiveTransformation(), material);
         mesh.draw();
     }
-    
-    /**
-     * Gets the transform of the object in projection.
-     * @return transform.
-     */
-	public Transform getTransform() {
-		return transform;
-	}
-	
-	/**
-	 * Gets the size of the object in the 3D space and saves it on a vector.
-	 * @return the vector size.
-	 */
-    public Vector2f getSize() {
-        return new Vector2f(sizeX, sizeX);
-    }
-    
 }

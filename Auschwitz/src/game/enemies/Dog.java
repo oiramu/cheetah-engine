@@ -128,7 +128,7 @@ public class Dog implements GameObject {
             int[] indices = new int[]{0, 1, 2,
                                         0, 2, 3};
 
-            mesh.addVertices(verts, indices, true);
+            mesh.addVertices(verts, indices);
         }
 
         this.transform = transform;

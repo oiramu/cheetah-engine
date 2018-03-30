@@ -47,9 +47,6 @@ public class Player {
     private static final float GUN_OFFSET = -0.077f;
     private static final float GUN_OFFSET_X = 0f;
     private static final float GUN_TRANSFORM_MUL = 0.101f;
-    private static final float GUN_FIRE_OFFSET_X = 0f;
-    private static final float GUN_FIRE_SIZE = 0.1f;
-    private static final float GUN_FIRE_OFFSET = 0.0695f;
     
     private static final int MAX_LIFE = 100;
 
@@ -69,17 +66,26 @@ public class Player {
     private static final String PISTOL_RES_LOC = WEAPONS_RES_LOC + "pistol/";
     private static final String SHOTGUN_RES_LOC = WEAPONS_RES_LOC + "shotgun/";
     private static final String MACHINEGUN_RES_LOC = WEAPONS_RES_LOC + "machinegun/";
+    private static final String SUPER_SHOTGUN_RES_LOC = WEAPONS_RES_LOC + "superShotgun/";
     private static final String PISGB0 = "PISGB0";
     private static final String PISFA0 = "PISFA0";
     private static final String PISFC0 = "PISFC0";
+    private static final String PISFD0 = "PISFD0";
+    private static final String PISFE0 = "PISFE0";
     private static final String EMPTY = "EMPTY";
     private static final String GUNSOUND = "GUN";
+    private static final String CLIPSOUND = "CLIPIN";
+    private static final String RELOADSOUND = "RELOAD";
     
     private static ArrayList<Texture> gunsMaterial;
-    private static ArrayList<Texture> gunsFireMaterial;
-    private static ArrayList<Texture> gunsAnimationMaterial;
+    private static ArrayList<Texture> gunsAnimationMaterial1;
+    private static ArrayList<Texture> gunsAnimationMaterial2;
+    private static ArrayList<Texture> gunsAnimationMaterial3;
+    private static ArrayList<Texture> gunsAnimationMaterial4;
     
     private static ArrayList<Clip> gunsNoiseSounds;
+    private static ArrayList<Clip> gunsReloadSounds;
+    private static ArrayList<Clip> gunsClippingSounds;
     private static ArrayList<Clip> gunsEmptyNoiseSounds;
     
     private static Material guiMaterial;
@@ -87,19 +93,21 @@ public class Player {
     private static final Vector2f centerPosition = new Vector2f(Display.getWidth()/2, Display.getHeight()/2);
     private static final Vector3f zeroVector = new Vector3f(0, 0, 0);
     
-    public static Clip gunNoise;
-    public static Clip gunEmptyNoise;
+    private static Clip gunNoise;
+    private static Clip gunEmptyNoise;
+    private static Clip gunReload;
+    private static Clip gunClipp;
     private static final Clip moveNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "MOVE");
     private static final Clip missueNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "OOF");
     private static final Clip painNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "PLPAIN");
     private static final Clip deathNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "PLDETH");
-    
-    private static final Clip gunReload = ResourceLoader.loadAudio(SHOTGUN_RES_LOC + "RELOAD");
 
     private static Mesh gunMesh;
     private static Material gunMaterial;
-    private static Material gunFireMaterial;
-    private static Material gunAnimationMaterial;
+    private static Material gunAnimationMaterial1;
+    private static Material gunAnimationMaterial2;
+    private static Material gunAnimationMaterial3;
+    private static Material gunAnimationMaterial4;
     private static Transform gunTransform;
     
     private int maxBullets = 100;
@@ -128,6 +136,7 @@ public class Player {
     public boolean isHand;
     public boolean isBulletBased;
     public boolean isShellBased;
+    public boolean isDoubleShooter;
     
     /**
      * Constructor of the main player.
@@ -142,24 +151,47 @@ public class Player {
     		gunsMaterial.add(ResourceLoader.loadTexture(PISTOL_RES_LOC + PISGB0));
     		gunsMaterial.add(ResourceLoader.loadTexture(SHOTGUN_RES_LOC + PISGB0));
     		gunsMaterial.add(ResourceLoader.loadTexture(MACHINEGUN_RES_LOC + PISGB0));
+    		gunsMaterial.add(ResourceLoader.loadTexture(SUPER_SHOTGUN_RES_LOC + PISGB0));
     	}
     	
-    	if(gunsFireMaterial == null) {
-    		gunsFireMaterial = new ArrayList<Texture>();
+    	if(gunsAnimationMaterial1 == null) {
+    		gunsAnimationMaterial1 = new ArrayList<Texture>();
     		
-    		gunsFireMaterial.add(ResourceLoader.loadTexture(HAND_RES_LOC + PISFA0));
-    		gunsFireMaterial.add(ResourceLoader.loadTexture(PISTOL_RES_LOC + PISFA0));
-    		gunsFireMaterial.add(ResourceLoader.loadTexture(SHOTGUN_RES_LOC + PISFA0));
-    		gunsFireMaterial.add(ResourceLoader.loadTexture(MACHINEGUN_RES_LOC + PISFA0));
+    		gunsAnimationMaterial1.add(ResourceLoader.loadTexture(HAND_RES_LOC + PISFA0));
+    		gunsAnimationMaterial1.add(ResourceLoader.loadTexture(PISTOL_RES_LOC + PISFA0));
+    		gunsAnimationMaterial1.add(ResourceLoader.loadTexture(SHOTGUN_RES_LOC + PISFA0));
+    		gunsAnimationMaterial1.add(ResourceLoader.loadTexture(MACHINEGUN_RES_LOC + PISFA0));
+    		gunsAnimationMaterial1.add(ResourceLoader.loadTexture(SUPER_SHOTGUN_RES_LOC + PISFA0));
     	}
     	
-    	if(gunsAnimationMaterial == null) {
-    		gunsAnimationMaterial = new ArrayList<Texture>();
+    	if(gunsAnimationMaterial2 == null) {
+    		gunsAnimationMaterial2 = new ArrayList<Texture>();
     		
-    		gunsAnimationMaterial.add(null);
-    		gunsAnimationMaterial.add(null);
-    		gunsAnimationMaterial.add(ResourceLoader.loadTexture(SHOTGUN_RES_LOC + PISFC0));
-    		gunsAnimationMaterial.add(ResourceLoader.loadTexture(MACHINEGUN_RES_LOC + PISFC0));
+    		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(HAND_RES_LOC + PISFC0));
+    		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(PISTOL_RES_LOC + PISGB0));
+    		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(SHOTGUN_RES_LOC + PISFC0));
+    		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(MACHINEGUN_RES_LOC + PISFC0));
+    		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(SUPER_SHOTGUN_RES_LOC + PISFC0));
+    	}
+    	
+    	if(gunsAnimationMaterial3 == null) {
+    		gunsAnimationMaterial3 = new ArrayList<Texture>();
+    		
+    		gunsAnimationMaterial3.add(null);
+    		gunsAnimationMaterial3.add(null);
+    		gunsAnimationMaterial3.add(ResourceLoader.loadTexture(SHOTGUN_RES_LOC + PISFD0));
+    		gunsAnimationMaterial3.add(null);
+    		gunsAnimationMaterial3.add(ResourceLoader.loadTexture(SUPER_SHOTGUN_RES_LOC + PISFD0));
+    	}
+    	
+    	if(gunsAnimationMaterial4 == null) {
+    		gunsAnimationMaterial4 = new ArrayList<Texture>();
+    		
+    		gunsAnimationMaterial4.add(null);
+    		gunsAnimationMaterial4.add(null);
+    		gunsAnimationMaterial4.add(ResourceLoader.loadTexture(SHOTGUN_RES_LOC + PISFE0));
+    		gunsAnimationMaterial4.add(null);
+    		gunsAnimationMaterial4.add(ResourceLoader.loadTexture(SUPER_SHOTGUN_RES_LOC + PISFE0));
     	}
     	
     	if(gunsNoiseSounds == null) {
@@ -169,14 +201,37 @@ public class Player {
     		gunsNoiseSounds.add(ResourceLoader.loadAudio(PISTOL_RES_LOC + GUNSOUND));
     		gunsNoiseSounds.add(ResourceLoader.loadAudio(SHOTGUN_RES_LOC + GUNSOUND));
     		gunsNoiseSounds.add(ResourceLoader.loadAudio(MACHINEGUN_RES_LOC + GUNSOUND));
+    		gunsNoiseSounds.add(ResourceLoader.loadAudio(SUPER_SHOTGUN_RES_LOC + GUNSOUND));
+    	}
+    	
+    	if(gunsReloadSounds == null) {
+    		gunsReloadSounds = new ArrayList<Clip>();
+    		
+    		gunsReloadSounds.add(null);
+    		gunsReloadSounds.add(null);
+    		gunsReloadSounds.add(ResourceLoader.loadAudio(SHOTGUN_RES_LOC + RELOADSOUND));
+    		gunsReloadSounds.add(null);
+    		gunsReloadSounds.add(ResourceLoader.loadAudio(SUPER_SHOTGUN_RES_LOC + RELOADSOUND));
+    	}
+    	
+    	if(gunsClippingSounds == null) {
+    		gunsClippingSounds = new ArrayList<Clip>();
+    		
+    		gunsClippingSounds.add(null);
+    		gunsClippingSounds.add(null);
+    		gunsClippingSounds.add(ResourceLoader.loadAudio(SHOTGUN_RES_LOC + CLIPSOUND));
+    		gunsClippingSounds.add(null);
+    		gunsClippingSounds.add(ResourceLoader.loadAudio(SUPER_SHOTGUN_RES_LOC + CLIPSOUND));
     	}
     	
     	if(gunsEmptyNoiseSounds == null) {
     		gunsEmptyNoiseSounds = new ArrayList<Clip>();
     		
+    		gunsEmptyNoiseSounds.add(null);
     		gunsEmptyNoiseSounds.add(ResourceLoader.loadAudio(PISTOL_RES_LOC + EMPTY));
     		gunsEmptyNoiseSounds.add(ResourceLoader.loadAudio(SHOTGUN_RES_LOC + EMPTY));
     		gunsEmptyNoiseSounds.add(ResourceLoader.loadAudio(MACHINEGUN_RES_LOC + EMPTY));
+    		gunsEmptyNoiseSounds.add(ResourceLoader.loadAudio(SUPER_SHOTGUN_RES_LOC + EMPTY));
     	}
     	
     	gotPistol();
@@ -207,7 +262,7 @@ public class Player {
             int[] indices = new int[]{0, 1, 2,
             						  0, 2, 3};
 
-            gunMesh.addVertices(verts, indices, true);
+            gunMesh.addVertices(verts, indices);
         }
 
         playerCamera = new Camera(position);
@@ -239,18 +294,19 @@ public class Player {
      */
     public void gotHand() {
     	gunMaterial = new Material(gunsMaterial.get(0));
-    	gunFireMaterial = new Material(gunsFireMaterial.get(0));
-    	gunAnimationMaterial = new Material(ResourceLoader.loadTexture(EMPTY));
+    	gunAnimationMaterial1 = new Material(gunsAnimationMaterial1.get(0));
+    	gunAnimationMaterial2 = new Material(gunsAnimationMaterial2.get(0));
         gunNoise = gunsNoiseSounds.get(0);
         gunEmptyNoise = null;
         damageMin = 10f;
         damageRange = 0.1f;
-        gunFireAnimationTime = 0.15f;
+        gunFireAnimationTime = 0.1f;
         moveSpeed = 6f;
-        isHand = true;
-        
+        isHand = true;    
         isBulletBased = false;
         isShellBased = false;
+        
+        isDoubleShooter = false;
     }
     
     /**
@@ -259,18 +315,19 @@ public class Player {
      */
     public void gotPistol() {
     	gunMaterial = new Material(gunsMaterial.get(1));
-        gunFireMaterial = new Material(gunsFireMaterial.get(1));
-        gunAnimationMaterial = new Material(ResourceLoader.loadTexture(EMPTY));
+    	gunAnimationMaterial1 = new Material(gunsAnimationMaterial1.get(1));
+    	gunAnimationMaterial2 = new Material(gunsAnimationMaterial2.get(1));
         gunNoise = gunsNoiseSounds.get(1);
-        gunEmptyNoise = gunsEmptyNoiseSounds.get(0);
+        gunEmptyNoise = gunsEmptyNoiseSounds.get(1);
         gunFireAnimationTime = 0.1f;
         damageMin = 20f;
         damageRange = 30f;
         moveSpeed = 5f;
         isHand = false;
-        
         isBulletBased = true;
         isShellBased = false;
+        
+        isDoubleShooter = false;
     }
     
     /**
@@ -279,18 +336,23 @@ public class Player {
      */
     public void gotShotgun() {
     	gunMaterial = new Material(gunsMaterial.get(2));
-        gunFireMaterial = new Material(gunsFireMaterial.get(2));
-        gunAnimationMaterial = new Material(gunsAnimationMaterial.get(2));
+    	gunAnimationMaterial1 = new Material(gunsAnimationMaterial1.get(2));
+    	gunAnimationMaterial2 = new Material(gunsAnimationMaterial2.get(2));
+    	gunAnimationMaterial3 = new Material(gunsAnimationMaterial3.get(2));
+    	gunAnimationMaterial4 = new Material(gunsAnimationMaterial4.get(2));
         gunNoise = gunsNoiseSounds.get(2);
-        gunEmptyNoise = gunsEmptyNoiseSounds.get(1);
+        gunReload = gunsReloadSounds.get(2);
+        gunClipp = gunsClippingSounds.get(2);
+        gunEmptyNoise = gunsEmptyNoiseSounds.get(2);
         gunFireAnimationTime = 0.2f;   
         damageMin = 50f;
         damageRange = 60f;
         moveSpeed = 4f;
         isHand = false;
-        
         isBulletBased = false;
         isShellBased = true;
+        
+        isDoubleShooter = false;
     }
     
     /**
@@ -299,18 +361,44 @@ public class Player {
      */
     public void gotMachinegun() {
     	gunMaterial = new Material(gunsMaterial.get(3));
-        gunFireMaterial = new Material(gunsFireMaterial.get(3));
-        gunAnimationMaterial = new Material(gunsAnimationMaterial.get(3));
+    	gunAnimationMaterial1 = new Material(gunsAnimationMaterial1.get(3));
+    	gunAnimationMaterial2 = new Material(gunsAnimationMaterial2.get(3));
         gunNoise = gunsNoiseSounds.get(3);
-        gunEmptyNoise = gunsEmptyNoiseSounds.get(1);
+        gunEmptyNoise = gunsEmptyNoiseSounds.get(3);
         gunFireAnimationTime = 0.05f;   
         damageMin = 30f;
         damageRange = 50f;
         moveSpeed = 4.5f;
         isHand = false;
-        
         isBulletBased = true;
         isShellBased = false;
+        
+        isDoubleShooter = false;
+    }
+    
+    /**
+     * The settings that the player sets if he chooses the super
+     * shotgun of he's bag, only if he have it on it.
+     */
+    public void gotSShotgun() {
+    	gunMaterial = new Material(gunsMaterial.get(4));
+    	gunAnimationMaterial1 = new Material(gunsAnimationMaterial1.get(4));
+    	gunAnimationMaterial2 = new Material(gunsAnimationMaterial2.get(4));
+    	gunAnimationMaterial3 = new Material(gunsAnimationMaterial3.get(4));
+    	gunAnimationMaterial4 = new Material(gunsAnimationMaterial4.get(4));
+        gunNoise = gunsNoiseSounds.get(4);
+        gunReload = gunsReloadSounds.get(4);
+        gunClipp = gunsClippingSounds.get(4);
+        gunEmptyNoise = gunsEmptyNoiseSounds.get(4);
+        gunFireAnimationTime = 0.2f;   
+        damageMin = 75f;
+        damageRange = 50f;
+        moveSpeed = 4f;
+        isHand = false;
+        isBulletBased = false;
+        isShellBased = true;
+        
+        isDoubleShooter = true;
     }
 
     /**
@@ -346,9 +434,9 @@ public class Player {
 	        } else if (Input.getKeyDown(Input.KEY_5)) {
 	        	if(sShotgun == true) {
 	        		AudioUtil.playAudio(moveNoise, 0);
-	        		//gotSShotgun();
+	        		gotSShotgun();
 	        	}else {
-	        		AudioUtil.playAudio(missueNoise, 0);
+	        		//AudioUtil.playAudio(missueNoise, 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_6)) {
 	        	if(chaingun == true) {
@@ -381,12 +469,18 @@ public class Player {
 		            	AudioUtil.playAudio(gunNoise, 0);
 		            }
 		            if(bullets != 0 && isBulletBased == true) {
-		            	setBullets(-1);
+		            	if(isDoubleShooter == true)
+		            		setBullets(-2);
+		            	else
+		            		setBullets(-1);
 		            	gunFireTime = (double) Time.getTime() / Time.SECOND;
 		            	AudioUtil.playAudio(gunNoise, 0);
 		            }
 		            if(shells != 0 && isShellBased == true) {
-		            	setShells(-1);
+		            	if(isDoubleShooter == true)
+		            		setShells(-2);
+		            	else
+		            		setShells(-1);
 		            	gunFireTime = (double) Time.getTime() / Time.SECOND;
 		            	AudioUtil.playAudio(gunNoise, 0);
 		            }
@@ -471,17 +565,6 @@ public class Player {
 
         gunTransform.setRotation(0, angle + 90, 0);
     }
-    
-    /**
-     * Sets everything when the player's gun need an animation.
-     */
-    private void renderFireGun() {
-    	gunTransform.setPosition(playerCamera.getPos().add(playerCamera.getForward().normalized().mul(0.010f)));
-        gunTransform.setPosition(gunTransform.getPosition().add(playerCamera.getLeft().normalized().mul(GUN_FIRE_OFFSET_X)));
-        gunTransform.getPosition().setY(gunTransform.getPosition().getY() + GUN_OFFSET + GUN_FIRE_OFFSET);
-
-        gunTransform.setScale(GUN_FIRE_SIZE);
-    }
 
     /**
      * Method that renders the player's mesh.
@@ -491,48 +574,57 @@ public class Player {
     	double time = (double) Time.getTime() / Time.SECOND;
     	double gunTime = gunFireTime + gunFireAnimationTime;
     	double gunTime2 = gunTime + gunFireAnimationTime;
+    	double gunTime3 = gunTime2 + gunFireAnimationTime;
+    	double gunTime4 = gunTime3 + gunFireAnimationTime;
     	
     	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), guiMaterial);
         gunMesh.draw();
         
 		if(isHand == true) {
 	        if ((double) time < gunTime) {
-	        	renderFireGun();
-	        	
-	            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunFireMaterial);
+	            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial1);
 	            gunMesh.draw();
 	        }else if ((double) time < gunTime2) {
-	        	
-	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial);
+	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
+	            gunMesh.draw();
+	        }else {
+	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
 	            gunMesh.draw();
 	        }
         }
 		if(isBulletBased == true) {
 	        if ((double) time < gunTime && (!(bullets <= 0))) {
-	        	renderFireGun();
-	
-	            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunFireMaterial);
+	            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial1);
 	            gunMesh.draw();
 	        }else if ((double) time < gunTime2) {	
-	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial);
+	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
 	            gunMesh.draw();
+	        }else {
+	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
+            	gunMesh.draw();
 	        }
 		}
 		if(isShellBased == true) {    
 	        if ((double) time < gunTime && (!(shells <= 0))) {
-	        	renderFireGun();
-	
-	            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunFireMaterial);
+	            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial1);
 	            gunMesh.draw();
 	        }else if ((double) time < gunTime2) {
-	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial);
+	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
 	            gunMesh.draw();
 	            AudioUtil.playAudio(gunReload, 0);
+	        }else if ((double) time < gunTime3) {
+	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial3);
+	            gunMesh.draw();
+	            AudioUtil.playAudio(gunClipp, 0);
+	        }else if ((double) time < gunTime4) {
+	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial4);
+	            gunMesh.draw();
+	        }else {
+	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
+	            gunMesh.draw();
 	        }
 		}
         
-		Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
-        gunMesh.draw();
     }
 
     /**
@@ -627,6 +719,22 @@ public class Player {
      */
     public boolean getMachinegun() {
         return machinegun;
+    }
+    
+    /**
+     * Method that assigns the super shotgun to the player object.
+     * @param amt amount.
+     */
+    public void setSuperShotgun(boolean amt) {
+    	sShotgun = amt;
+    }
+    
+    /**
+     * Method that returns if the player have or not a super shotgun 
+     * on he's bag.
+     */
+    public boolean getSuperShotgun() {
+        return sShotgun;
     }
     
     /**

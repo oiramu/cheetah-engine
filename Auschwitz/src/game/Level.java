@@ -62,6 +62,7 @@ import game.powerUp.Food;
 import game.powerUp.Machinegun;
 import game.powerUp.Medkit;
 import game.powerUp.Shotgun;
+import game.powerUp.SuperShotgun;
 
 /**
  *
@@ -99,6 +100,7 @@ public class Level {
     private static ArrayList<Machinegun> removeMachineGunList;
     private static ArrayList<Ghost> removeGhostList;
     private static ArrayList<Armor> removeArmorList;
+    private static ArrayList<SuperShotgun> removeSuperShotgunList;
     
     //Player
     private static Player player;
@@ -119,6 +121,7 @@ public class Level {
     private ArrayList<Bag> bags;
     private ArrayList<Machinegun> machineguns;
     private ArrayList<Armor> armors;
+    private ArrayList<SuperShotgun> superShotguns;
     
     //Static objects
     private ArrayList<Tree> trees;
@@ -164,6 +167,7 @@ public class Level {
         Level.removeMachineGunList = new ArrayList<Machinegun>();
         Level.removeGhostList = new ArrayList<Ghost>();
         Level.removeArmorList = new ArrayList<Armor>();
+        Level.removeSuperShotgunList = new ArrayList<SuperShotgun>();
 
         this.level = bitmap;
         this.geometry = new Mesh();
@@ -197,6 +201,7 @@ public class Level {
         this.armors = new ArrayList<Armor>();
         this.furnaces = new ArrayList<Furnace>();
         this.kitchens = new ArrayList<Kitchen>();
+        this.superShotguns = new ArrayList<SuperShotgun>();
         this.material = material;
         this.transform = new Transform();
         this.collisionPosStart = new ArrayList<Vector2f>();
@@ -501,6 +506,10 @@ public class Level {
         for (Armor armor : armors) {
         	armor.update();
         }
+        
+        for (SuperShotgun superShotgun : superShotguns) {
+        	superShotgun.update();
+        }
 
         for (Medkit medkit : removeMedkitList) {
             medkits.remove(medkit);
@@ -534,6 +543,10 @@ public class Level {
         	armors.remove(armor);
         }
         
+        for (SuperShotgun superShotgun : removeSuperShotgunList) {
+        	superShotguns.remove(superShotgun);
+        }
+        
         removeMedkitList.clear();
         removeFoodList.clear();
         removeBulletList.clear();
@@ -542,6 +555,7 @@ public class Level {
         removeMachineGunList.clear();
         removeGhostList.clear();
         removeArmorList.clear();
+        removeSuperShotgunList.clear();
     }
 
     /**
@@ -677,6 +691,10 @@ public class Level {
         
         for (Kitchen kitchen : kitchens) {
             kitchen.render();
+        }
+        
+        for (SuperShotgun superShotgun : superShotguns) {
+        	superShotgun.render();
         }
 
         player.render();
@@ -1213,7 +1231,7 @@ public class Level {
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 123) {
                     	clocks.add(new Clock(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.25f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 130) {
-                    	//bags.add(new Bag(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                    	superShotguns.add(new SuperShotgun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.1f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 140) {
                     	naziSeargeants.add(new NaziSergeants(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         machineguns.add(new Machinegun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
@@ -1460,6 +1478,14 @@ public class Level {
      */
 	public static void removeArmor(Armor armor) {
 		removeArmorList.add(armor);
+	}
+	
+	/**
+     * Removes the super shotguns when the player grabs it.
+     * @param sShotgun Super shotgun.
+     */
+	public static void removeSuperShotgun(SuperShotgun sShotgun) {
+		removeSuperShotgunList.add(sShotgun);
 	}
 	
 }

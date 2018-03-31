@@ -247,7 +247,7 @@ public class Auschwitz implements Game {
             		level.getPlayer().gotMachinegun();
             	}else if(level.getPlayer().getWeaponState() == level.getPlayer().SUPER_SHOTGUN) {
             		level.getPlayer().gotSShotgun();
-            	}else {
+            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().HAND){
             		level.getPlayer().gotHand();
             	}
             }

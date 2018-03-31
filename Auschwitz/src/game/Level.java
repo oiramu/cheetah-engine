@@ -1231,7 +1231,7 @@ public class Level {
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 123) {
                     	clocks.add(new Clock(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.25f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 130) {
-                    	superShotguns.add(new SuperShotgun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.1f, (j + 0.5f) * SPOT_LENGTH))));
+                    	superShotguns.add(new SuperShotgun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 140) {
                     	naziSeargeants.add(new NaziSergeants(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         machineguns.add(new Machinegun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));

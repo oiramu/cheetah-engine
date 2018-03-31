@@ -621,17 +621,21 @@ public class Player {
 	            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial1);
 	            gunMesh.draw();
 	        }else if ((double) time < gunTime2) {
-	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
-	            gunMesh.draw();
-	            AudioUtil.playAudio(gunReload, 0);
+	            if(isDoubleShooter == false && getShells() > 0) {
+	            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
+		            gunMesh.draw();
+	            	AudioUtil.playAudio(gunReload, 0);
+	            }
+	            if(isDoubleShooter == true && getShells() > 1) {
+	            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
+		            gunMesh.draw();
+	            	AudioUtil.playAudio(gunReload, 0);
+	            }
 	        }else if ((double) time < gunTime3) {
 	            if(isDoubleShooter == false && getShells() > 0) {
 	            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial3);
 		            gunMesh.draw();
 	            	AudioUtil.playAudio(gunClipp, 0);
-	            }else {
-	            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial3);
-		            gunMesh.draw();
 	            }
 	            if(isDoubleShooter == true && getShells() > 1) {
 	            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial3);
@@ -640,9 +644,6 @@ public class Player {
 	            }
 	        }else if ((double) time < gunTime4) {
 	            if(isDoubleShooter == false && getShells() > 0) {
-	            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial4);
-		            gunMesh.draw();
-	            }else {
 	            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial4);
 		            gunMesh.draw();
 	            }
@@ -681,6 +682,7 @@ public class Player {
             isAlive = false;
 	        //if(Input.getKey(Input.KEY_E)) {
 	            Auschwitz.loadLevel(Auschwitz.levelNum-Auschwitz.levelNum);
+	            gotPistol();
 	            deathNoise.stop();
 	        //}
             //System.exit(0);

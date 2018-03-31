@@ -139,6 +139,7 @@ public class Auschwitz implements Game {
             boolean machinegunTemp = false;
             boolean superShotgunTemp = false;
             boolean armorbTemp = false;
+            String weaponStateTemp = "";
             String sector;
 
             if (level != null) {
@@ -177,6 +178,7 @@ public class Auschwitz implements Game {
                 shotgunTemp = level.getPlayer().getShotgun();
                 machinegunTemp = level.getPlayer().getMachinegun();
                 superShotgunTemp = level.getPlayer().getSuperShotgun();
+                weaponStateTemp = level.getPlayer().getWeaponState();
             }
 
             if(levelNum > 9) {
@@ -219,6 +221,7 @@ public class Auschwitz implements Game {
             level.getPlayer().setMachinegun(machinegunTemp);
             level.getPlayer().setSuperShotgun(superShotgunTemp);
             level.getPlayer().setArmorb(armorbTemp);
+            level.getPlayer().setWeaponState(weaponStateTemp);
             
             track += offset;
 
@@ -236,11 +239,16 @@ public class Auschwitz implements Game {
             	System.out.println("Killed " + deadMonsters + "/" + totalMonsters + " baddies: " +
             	((float) deadMonsters / (float) totalMonsters) * 100f + "%");
             	
-            	if(level.getPlayer().getShotgun() == true) {
+            	if(level.getPlayer().getWeaponState() == level.getPlayer().PISTOL) {
+            		level.getPlayer().gotPistol();
+            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().SHOTGUN) {
             		level.getPlayer().gotShotgun();
-            	}
-            	if(level.getPlayer().getMachinegun() == true) {
+            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().MACHINEGUN) {
             		level.getPlayer().gotMachinegun();
+            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().SUPER_SHOTGUN) {
+            		level.getPlayer().gotSShotgun();
+            	}else {
+            		level.getPlayer().gotHand();
             	}
             }
         } catch (Exception ex) {

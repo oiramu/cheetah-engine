@@ -62,11 +62,16 @@ public class Player {
     
     private static final String PLAYER_RES_LOC = "player/";
     private static final String WEAPONS_RES_LOC = "weapons/";
-    private static final String HAND_RES_LOC = WEAPONS_RES_LOC + "hand/";
-    private static final String PISTOL_RES_LOC = WEAPONS_RES_LOC + "pistol/";
-    private static final String SHOTGUN_RES_LOC = WEAPONS_RES_LOC + "shotgun/";
-    private static final String MACHINEGUN_RES_LOC = WEAPONS_RES_LOC + "machinegun/";
-    private static final String SUPER_SHOTGUN_RES_LOC = WEAPONS_RES_LOC + "superShotgun/";
+    public static final String HAND = "hand";
+    public static final String PISTOL = "pistol";
+    public static final String SHOTGUN = "shotgun";
+    public static final String MACHINEGUN = "machinegun";
+    public static final String SUPER_SHOTGUN = "superShotgun";
+    private static final String HAND_RES_LOC = WEAPONS_RES_LOC + HAND + "/";
+    private static final String PISTOL_RES_LOC = WEAPONS_RES_LOC + PISTOL + "/";
+    private static final String SHOTGUN_RES_LOC = WEAPONS_RES_LOC + SHOTGUN +"/";
+    private static final String MACHINEGUN_RES_LOC = WEAPONS_RES_LOC + MACHINEGUN + "/";
+    private static final String SUPER_SHOTGUN_RES_LOC = WEAPONS_RES_LOC + SUPER_SHOTGUN + "/";
     private static final String PISGB0 = "PISGB0";
     private static final String PISFA0 = "PISFA0";
     private static final String PISFC0 = "PISFC0";
@@ -76,6 +81,8 @@ public class Player {
     private static final String GUNSOUND = "GUN";
     private static final String CLIPSOUND = "CLIPIN";
     private static final String RELOADSOUND = "RELOAD";
+    
+    private String weaponState;
     
     private static ArrayList<Texture> gunsMaterial;
     private static ArrayList<Texture> gunsAnimationMaterial1;
@@ -305,6 +312,7 @@ public class Player {
         isHand = true;    
         isBulletBased = false;
         isShellBased = false;
+        weaponState = HAND;
         
         isDoubleShooter = false;
     }
@@ -326,6 +334,7 @@ public class Player {
         isHand = false;
         isBulletBased = true;
         isShellBased = false;
+        weaponState = PISTOL;
         
         isDoubleShooter = false;
     }
@@ -351,6 +360,7 @@ public class Player {
         isHand = false;
         isBulletBased = false;
         isShellBased = true;
+        weaponState = SHOTGUN;
         
         isDoubleShooter = false;
     }
@@ -372,6 +382,7 @@ public class Player {
         isHand = false;
         isBulletBased = true;
         isShellBased = false;
+        weaponState = MACHINEGUN;
         
         isDoubleShooter = false;
     }
@@ -397,6 +408,7 @@ public class Player {
         isHand = false;
         isBulletBased = false;
         isShellBased = true;
+        weaponState = SUPER_SHOTGUN;
         
         isDoubleShooter = true;
     }
@@ -958,6 +970,22 @@ public class Player {
 	 */
 	public int getMaxLife() {
 		return MAX_LIFE;
+	}
+	
+	/**
+	 * Gets the player's weapon that currently is using.
+	 * @return the weapon that player is using.
+	 */
+	public String getWeaponState() {
+		return weaponState;
+	}
+	
+	/**
+	 * Sets the player's weapon that currently is using.
+	 * @param amt the weapon that player is using.
+	 */
+	public void setWeaponState(String amt) {
+		this.weaponState = amt;
 	}
 
 }

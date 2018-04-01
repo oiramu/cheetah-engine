@@ -175,7 +175,7 @@ public class Player {
     		gunsAnimationMaterial2 = new ArrayList<Texture>();
     		
     		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(HAND_RES_LOC + PISFC0));
-    		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(PISTOL_RES_LOC + PISGB0));
+    		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(PISTOL_RES_LOC + PISFC0));
     		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(SHOTGUN_RES_LOC + PISFC0));
     		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(MACHINEGUN_RES_LOC + PISFC0));
     		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(SUPER_SHOTGUN_RES_LOC + PISFC0));
@@ -424,17 +424,17 @@ public class Player {
 	        }
 	        
 	        if (Input.getKeyDown(Input.KEY_1)) {
-	        	gotHand();
 	        	if(weaponState == HAND) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	}else {
+	        		gotHand();
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_2)) {
-	        	gotPistol();
 	        	if(weaponState == PISTOL) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	}else {
+	        		gotPistol();
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_3)) {
@@ -579,7 +579,7 @@ public class Player {
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
-        if (orientation.getX() > 0) {
+        if (orientation.getX() >= 0) {
             angle = 180 + angle;
         }
 

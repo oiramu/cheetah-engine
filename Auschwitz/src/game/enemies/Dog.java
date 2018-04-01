@@ -101,19 +101,18 @@ public class Dog implements GameObject {
 
             animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVH0"));
             animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVI0"));
+            
             animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVJ0"));
-
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVM0"));
         }
 
         if (mesh == null) {
             mesh = new Mesh();
 
-            final float sizeY = 0.75f;
-            final float sizeX = (float) ((double) sizeY / (2.217391304347826 * 2.0));
+            final float sizeY = 1f;
+            final float sizeX = (float) ((double) sizeY / (1 * 2.0));
 
-            final float offsetX = 0.05f;
-            final float offsetY = 0.01f;
+            final float offsetX = 0.00f;
+            final float offsetY = 0.00f;
 
             final float texMinX = -offsetX;
             final float texMaxX = -1 - offsetX;
@@ -149,7 +148,7 @@ public class Dog implements GameObject {
      */
     public void update() {
         //Set Height
-        transform.setPosition(transform.getPosition().getX(), 0f, transform.getPosition().getZ());
+        transform.setPosition(transform.getPosition().getX(), 0, transform.getPosition().getZ());
 
         //Face player
         Vector3f playerDistance = transform.getPosition().sub(Transform.getCamera().getPos());
@@ -315,10 +314,8 @@ public class Dog implements GameObject {
 
             if (time <= deathTime + 0.2f) {
                 material.setTexture(animation.get(7));
-                transform.setScale(1.347222222222222f, 0.7422680412371134f, 1);
             } else if (time > deathTime + time1 && time <= deathTime + time2) {
                 material.setTexture(animation.get(8));
-                transform.setScale(1.347222222222222f, 0.7422680412371134f, 1);
                 offsetX = -0.1f;
             } else if (time > deathTime + time3) {
                 state = STATE_DEAD;
@@ -327,8 +324,7 @@ public class Dog implements GameObject {
 
         if (state == STATE_DEAD) {
             dead = true;
-            material.setTexture(animation.get(10));
-            transform.setScale(2.964285714285714f, 0.2522522522522523f, 1);
+            material.setTexture(animation.get(9));
         }
         
         if (state == STATE_DONE) {

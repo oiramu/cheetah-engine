@@ -50,9 +50,9 @@ public class Player {
     
     private static final int MAX_LIFE = 100;
 
-    private static final float MOUSE_SENSITIVITY = 0.15f;
-    private static final float MAX_LOOK_ANGLE = 0f;
-    private static final float MIN_LOOK_ANGLE = 0f;
+    private static final float MOUSE_SENSITIVITY = 0.25f;
+    private static final float MAX_LOOK_ANGLE = 0;
+    private static final float MIN_LOOK_ANGLE = 0;
     private static final float PLAYER_WIDTH = 0.2f;
     private static float moveSpeed;
     private static float gunFireAnimationTime;
@@ -424,37 +424,45 @@ public class Player {
 	        }
 	        
 	        if (Input.getKeyDown(Input.KEY_1)) {
-	        	AudioUtil.playAudio(moveNoise, 0);
 	        	gotHand();
-	        } else if (Input.getKeyDown(Input.KEY_2)) {
-	        	AudioUtil.playAudio(moveNoise, 0);
-	        	gotPistol();
-	        } else if (Input.getKeyDown(Input.KEY_3)) {
-	        	if(shotgun == true) {
-	        		AudioUtil.playAudio(moveNoise, 0);
-	        		gotShotgun();
-	        	}else {
+	        	if(weaponState == HAND) {
 	        		AudioUtil.playAudio(missueNoise, 0);
+	        	}else {
+	        		AudioUtil.playAudio(moveNoise, 0);
+	        	}
+	        } else if (Input.getKeyDown(Input.KEY_2)) {
+	        	gotPistol();
+	        	if(weaponState == PISTOL) {
+	        		AudioUtil.playAudio(missueNoise, 0);
+	        	}else {
+	        		AudioUtil.playAudio(moveNoise, 0);
+	        	}
+	        } else if (Input.getKeyDown(Input.KEY_3)) {
+	        	if(shotgun == false || weaponState == SHOTGUN) {
+	        		AudioUtil.playAudio(missueNoise, 0);
+	        	}else {
+	        		gotShotgun();
+	        		AudioUtil.playAudio(moveNoise, 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_4)) {
-	        	if(machinegun == true) {
-	        		AudioUtil.playAudio(moveNoise, 0);
-	        		gotMachinegun();
-	        	}else {
+	        	if(machinegun == false || weaponState == MACHINEGUN) {
 	        		AudioUtil.playAudio(missueNoise, 0);
+	        	}else {
+	        		gotMachinegun();
+	        		AudioUtil.playAudio(moveNoise, 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_5)) {
-	        	if(sShotgun == true) {
-	        		AudioUtil.playAudio(moveNoise, 0);
-	        		gotSShotgun();
-	        	}else {
+	        	if(sShotgun == false || weaponState == SUPER_SHOTGUN) {
 	        		AudioUtil.playAudio(missueNoise, 0);
+	        	}else {
+	        		gotSShotgun();
+	        		AudioUtil.playAudio(moveNoise, 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_6)) {
-	        	if(chaingun == true) {
+	        	if(chaingun == false) {
 	        		AudioUtil.playAudio(moveNoise, 0);
-	        		//gotChaingun();
 	        	}else {
+	        		//gotChaingun();
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	}
 	        }
@@ -532,7 +540,7 @@ public class Player {
 	             -MAX_LOOK_ANGLE; } else { playerCamera.rotateX(amt); upAngle +=
 	             amt; } }
 	            
-	            if (rotY) {
+	            if (rotY || rotX) {
 	                Input.setMousePosition(new Vector2f(Display.getWidth() / 2, Display.getHeight() / 2));
 	            }
 	        }
@@ -605,56 +613,66 @@ public class Player {
 	        }
         }
 		if(isBulletBased == true) {
-	        if ((double) time < gunTime && (!(bullets <= 0))) {
-	            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial1);
-	            gunMesh.draw();
-	        }else if ((double) time < gunTime2) {	
-	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
-	            gunMesh.draw();
-	        }else {
-	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
+			if((!(bullets <= 0))) {
+		        if ((double) time < gunTime) {
+		            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial1);
+		            gunMesh.draw();
+		        }else if ((double) time < gunTime2) {	
+		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
+		            gunMesh.draw();
+		        }else {
+		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
+	            	gunMesh.draw();
+		        }
+			}else {
+				Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
             	gunMesh.draw();
-	        }
+			}
 		}
-		if(isShellBased == true) {    
-	        if ((double) time < gunTime && (!(shells <= 0))) {
-	            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial1);
+		if(isShellBased == true) {
+			if((!(shells <= 0))) {
+		        if ((double) time < gunTime) {
+		            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial1);
+		            gunMesh.draw();
+		        }else if ((double) time < gunTime2) {
+		            if(isDoubleShooter == false && getShells() > 0) {
+		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
+			            gunMesh.draw();
+		            	AudioUtil.playAudio(gunReload, 0);
+		            }
+		            if(isDoubleShooter == true && getShells() > 1) {
+		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
+			            gunMesh.draw();
+		            	AudioUtil.playAudio(gunReload, 0);
+		            }
+		        }else if ((double) time < gunTime3) {
+		            if(isDoubleShooter == false && getShells() > 0) {
+		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial3);
+			            gunMesh.draw();
+		            	AudioUtil.playAudio(gunClipp, 0);
+		            }
+		            if(isDoubleShooter == true && getShells() > 1) {
+		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial3);
+			            gunMesh.draw();
+		            	AudioUtil.playAudio(gunClipp, 0);
+		            }
+		        }else if ((double) time < gunTime4) {
+		            if(isDoubleShooter == false && getShells() > 0) {
+		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial4);
+			            gunMesh.draw();
+		            }
+		            if(isDoubleShooter == true && getShells() > 1) {
+		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial4);
+			            gunMesh.draw();
+		            }
+		        }else {
+		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
+		            gunMesh.draw();
+		        }
+			}else {
+				Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
 	            gunMesh.draw();
-	        }else if ((double) time < gunTime2) {
-	            if(isDoubleShooter == false && getShells() > 0) {
-	            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
-		            gunMesh.draw();
-	            	AudioUtil.playAudio(gunReload, 0);
-	            }
-	            if(isDoubleShooter == true && getShells() > 1) {
-	            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
-		            gunMesh.draw();
-	            	AudioUtil.playAudio(gunReload, 0);
-	            }
-	        }else if ((double) time < gunTime3) {
-	            if(isDoubleShooter == false && getShells() > 0) {
-	            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial3);
-		            gunMesh.draw();
-	            	AudioUtil.playAudio(gunClipp, 0);
-	            }
-	            if(isDoubleShooter == true && getShells() > 1) {
-	            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial3);
-		            gunMesh.draw();
-	            	AudioUtil.playAudio(gunClipp, 0);
-	            }
-	        }else if ((double) time < gunTime4) {
-	            if(isDoubleShooter == false && getShells() > 0) {
-	            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial4);
-		            gunMesh.draw();
-	            }
-	            if(isDoubleShooter == true && getShells() > 1) {
-	            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial4);
-		            gunMesh.draw();
-	            }
-	        }else {
-	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
-	            gunMesh.draw();
-	        }
+			}
 		}
         
     }
@@ -672,17 +690,16 @@ public class Player {
 
         if (health <= 0) {
             AudioUtil.playAudio(deathNoise, 0);
-            gotHand();
             bullets = 0;
             shells = 0;
             armori = 0;
             armorb = false;
             shotgun = false;
             machinegun = false;
+            sShotgun = false;
             isAlive = false;
 	        //if(Input.getKey(Input.KEY_E)) {
 	            Auschwitz.loadLevel(Auschwitz.levelNum-Auschwitz.levelNum);
-	            gotPistol();
 	            deathNoise.stop();
 	        //}
             //System.exit(0);

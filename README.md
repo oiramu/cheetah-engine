@@ -1,4 +1,4 @@
-# Auschwitz source code
+# Auschwitz's engine source code
 
 **Version 1.0.0**
 

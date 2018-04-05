@@ -108,8 +108,8 @@ public class Dog implements GameObject {
         if (mesh == null) {
             mesh = new Mesh();
 
-            final float sizeY = 1f;
-            final float sizeX = (float) ((double) sizeY / (1 * 2.0));
+            final float sizeY = 0.9f;	//Could be 1.0f
+            final float sizeX = (float) ((double) sizeY / (sizeY * 2.0));
 
             final float offsetX = 0.00f;
             final float offsetY = 0.00f;

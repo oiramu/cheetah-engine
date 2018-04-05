@@ -68,6 +68,7 @@ public class Player implements GameObject{
     public static final String SHOTGUN = "shotgun";
     public static final String MACHINEGUN = "machinegun";
     public static final String SUPER_SHOTGUN = "superShotgun";
+    public static final String CHAINGUN = "chaingun";
     private static final String HAND_RES_LOC = WEAPONS_RES_LOC + HAND + "/";
     private static final String PISTOL_RES_LOC = WEAPONS_RES_LOC + PISTOL + "/";
     private static final String SHOTGUN_RES_LOC = WEAPONS_RES_LOC + SHOTGUN +"/";
@@ -460,7 +461,7 @@ public class Player implements GameObject{
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_6)) {
-	        	if(chaingun == false) {
+	        	if(chaingun == false || weaponState == CHAINGUN) {
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        	}else {
 	        		//gotChaingun();

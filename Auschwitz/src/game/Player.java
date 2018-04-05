@@ -24,6 +24,7 @@ import org.lwjgl.opengl.Display;
 
 import engine.ResourceLoader;
 import engine.audio.AudioUtil;
+import engine.core.GameObject;
 import engine.core.Input;
 import engine.core.Time;
 import engine.core.Transform;
@@ -41,7 +42,7 @@ import engine.rendering.Vertex;
 * @version 1.4
 * @since 2017
 */
-public class Player {
+public class Player implements GameObject{
 
     private static final float GUN_SIZE = 0.1f; 
     private static final float GUN_OFFSET = -0.077f;

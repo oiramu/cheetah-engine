@@ -540,6 +540,7 @@ public class Player implements GameObject{
 	            if(Input.getKey(Input.KEY_RIGHT)) {
 	            	playerCamera.rotateY(deltaPos.getX() + SIDE_SENSITIVITY);
 	            }
+	            
 	            //Looking up and down
 	             if(rotX) { float amt = -deltaPos.getY() * MOUSE_SENSITIVITY;
 	             if(amt + upAngle > -MIN_LOOK_ANGLE) {

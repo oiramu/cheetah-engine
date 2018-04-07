@@ -39,7 +39,7 @@ public class GUIMouse {
 		Mouse.setCursorPosition(Display.getWidth()/2, Display.getHeight()/2);
 		mousePos = new Vector2f(Display.getWidth()/2, Display.getHeight()/2);
 		try {
-			mouseTexture = new Image("res/mouse.png");
+			mouseTexture = new Image("res/textures/coreDisplay/mouse.png");
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

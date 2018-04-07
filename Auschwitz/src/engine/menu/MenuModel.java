@@ -124,7 +124,7 @@ public class MenuModel extends GUIComponent {
 						    		temporaryTreatment = treatment[0];
 						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
 						    		
-						    		menuObject.addChild(new Button("res/button.png", temporaryTreatment, Integer.parseInt(treatment[0]), Integer.parseInt(treatment[1]), Integer.parseInt(treatment[2]), Integer.parseInt(treatment[3]))
+						    		menuObject.addChild(new Button("/res/textures/coreDisplay/button.png", temporaryTreatment, Integer.parseInt(treatment[0]), Integer.parseInt(treatment[1]), Integer.parseInt(treatment[2]), Integer.parseInt(treatment[3]))
 						    				, temporaryName);
 						    		break;
 						    	case "Image":

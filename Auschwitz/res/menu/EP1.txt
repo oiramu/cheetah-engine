@@ -22,11 +22,11 @@ episode3>selectId
 backBtn>selectId
 
 #Context
-TextBold line1=Escape from auschwitz:550 250
-Text line2=War is coming to hes end, the soviets are pushing:550 300
-Text line3=the germans to their knees so hard, that the german:550 330
-Text line3=goverment are cutting the auschwitz's budget:550 360
-Text line4=so guards start a plan to clean all the jews:550 390
+TextBold line1=Escape from Auschwitz:550 250
+Text line2=War are coming to he's end, the soviets are pushing:550 300
+Text line3=the German to their knees so hard, that the German:550 330
+Text line3=government are cutting the auschwitz's budget:550 360
+Text line4=so guards start a plan to clean all the Jews:550 390
 Text line5=so now is up to you if you want to survive and try to:550 420
 Text line6=escape; after a guard execute your room partner, you:550 450
 Text line7=kill the guard with your own arms. Now you have a pistol:550 480

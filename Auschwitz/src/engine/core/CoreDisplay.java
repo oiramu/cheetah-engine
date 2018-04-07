@@ -72,7 +72,7 @@ public class CoreDisplay {
 		
 		Display.setTitle(title);
 		Display.setIcon(new ByteBuffer[] {
-				ResourceLoader.loadIcon("icon32"),
+				ResourceLoader.loadIcon("/textures/coreDisplay/icon32"),
 		});
 		try {
 			

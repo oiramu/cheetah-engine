@@ -58,12 +58,11 @@ public class Ghost implements GameObject {
     private static final int STATE_DONE = 5;
     
     private static final String RES_LOC = "ghost/";
-    private static final String RES_LOC2 = "dog/";
 
-    private static final Clip seeNoise = ResourceLoader.loadAudio(RES_LOC2 + "SSSSIT");
-    private static final Clip shootNoise = ResourceLoader.loadAudio(RES_LOC2 + "SSHOTGN");
-    private static final Clip hitNoise = ResourceLoader.loadAudio(RES_LOC2 + "SPOPAIN");
-    private static final Clip deathNoise = ResourceLoader.loadAudio(RES_LOC2 + "SSSDTH");
+    private static final Clip seeNoise = ResourceLoader.loadAudio(RES_LOC + "SSSSIT");
+    private static final Clip shootNoise = ResourceLoader.loadAudio(RES_LOC + "SSHOTGN");
+    private static final Clip hitNoise = ResourceLoader.loadAudio(RES_LOC + "SPOPAIN");
+    private static final Clip deathNoise = ResourceLoader.loadAudio(RES_LOC + "SSSDTH");
 
     private static ArrayList<Texture> animation;
     private static Mesh mesh;

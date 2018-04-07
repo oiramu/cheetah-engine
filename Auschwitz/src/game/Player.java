@@ -52,6 +52,7 @@ public class Player implements GameObject{
     private static final int MAX_LIFE = 100;
 
     private static final float MOUSE_SENSITIVITY = 0.25f;
+    private static final float SIDE_SENSITIVITY = 0.75f;
     private static final float MAX_LOOK_ANGLE = 0;
     private static final float MIN_LOOK_ANGLE = 0;
     private static final float PLAYER_WIDTH = 0.2f;
@@ -517,10 +518,10 @@ public class Player implements GameObject{
 	        if (Input.getKey(Input.KEY_S) || Input.getKey(Input.KEY_DOWN)) {
 	            movementVector = movementVector.sub(playerCamera.getForward());
 	        }
-	        if (Input.getKey(Input.KEY_A) || Input.getKey(Input.KEY_LEFT)) {
+	        if (Input.getKey(Input.KEY_A)) {
 	            movementVector = movementVector.add(playerCamera.getLeft());
 	        }
-	        if (Input.getKey(Input.KEY_D) || Input.getKey(Input.KEY_RIGHT)) {
+	        if (Input.getKey(Input.KEY_D)) {
 	            movementVector = movementVector.add(playerCamera.getRight());
 	        }
 	
@@ -533,6 +534,13 @@ public class Player implements GameObject{
 	            if (rotY) {
 	                playerCamera.rotateY(deltaPos.getX() * MOUSE_SENSITIVITY);
 	            }
+	            if(Input.getKey(Input.KEY_LEFT)) {
+	            	playerCamera.rotateY(deltaPos.getX() - SIDE_SENSITIVITY);
+		        }
+	            if(Input.getKey(Input.KEY_RIGHT)) {
+	            	playerCamera.rotateY(deltaPos.getX() + SIDE_SENSITIVITY);
+	            }
+	    
 	            //Looking up and down
 	             if(rotX) { float amt = -deltaPos.getY() * MOUSE_SENSITIVITY;
 	             if(amt + upAngle > -MIN_LOOK_ANGLE) {

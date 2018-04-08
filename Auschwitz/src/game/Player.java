@@ -357,7 +357,7 @@ public class Player implements GameObject{
         gunClipp = gunsClippingSounds.get(2);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(2);
         gunFireAnimationTime = 0.2f;   
-        damageMin = 50f;
+        damageMin = 60f;
         damageRange = 60f;
         moveSpeed = 4f;
         isHand = false;
@@ -379,8 +379,8 @@ public class Player implements GameObject{
         gunNoise = gunsNoiseSounds.get(3);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(3);
         gunFireAnimationTime = 0.05f;   
-        damageMin = 30f;
-        damageRange = 50f;
+        damageMin = 25f;
+        damageRange = 60f;
         moveSpeed = 4.5f;
         isHand = false;
         isBulletBased = true;
@@ -405,8 +405,8 @@ public class Player implements GameObject{
         gunClipp = gunsClippingSounds.get(4);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(4);
         gunFireAnimationTime = 0.2f;   
-        damageMin = 75f;
-        damageRange = 50f;
+        damageMin = 80f;
+        damageRange = 60f;
         moveSpeed = 4f;
         isHand = false;
         isBulletBased = false;
@@ -420,7 +420,11 @@ public class Player implements GameObject{
      * The player's input system.
      */
     public void input() {
-        //showGunFire = false;
+    	Vector2f deltaPos = Input.getMousePosition().sub(centerPosition);
+    	
+        boolean rotY = deltaPos.getX() != 0;
+        boolean rotX = deltaPos.getY() != 0;
+        
     	if(!(health <= 0)) {
 	        if (Input.getKeyDown(Input.KEY_E) || Input.getKeyDown(Input.KEY_SPACE)) {
 	            Auschwitz.getLevel().openDoors(Transform.getCamera().getPos(), true);
@@ -441,17 +445,17 @@ public class Player implements GameObject{
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_3)) {
-	        	if(shotgun == false || weaponState == SHOTGUN) {
-	        		AudioUtil.playAudio(missueNoise, 0);
-	        	}else {
-	        		gotShotgun();
-	        		AudioUtil.playAudio(moveNoise, 0);
-	        	}
-	        } else if (Input.getKeyDown(Input.KEY_4)) {
 	        	if(machinegun == false || weaponState == MACHINEGUN) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	}else {
 	        		gotMachinegun();
+	        		AudioUtil.playAudio(moveNoise, 0);
+	        	}
+	        } else if (Input.getKeyDown(Input.KEY_4)) {
+	        	if(shotgun == false || weaponState == SHOTGUN) {
+	        		AudioUtil.playAudio(missueNoise, 0);
+	        	}else {
+	        		gotShotgun();
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_5)) {
@@ -524,21 +528,16 @@ public class Player implements GameObject{
 	        if (Input.getKey(Input.KEY_D)) {
 	            movementVector = movementVector.add(playerCamera.getRight());
 	        }
+	        if(Input.getKey(Input.KEY_LEFT)) {
+            	playerCamera.rotateY(deltaPos.getX() - SIDE_SENSITIVITY);
+	        }
+            if(Input.getKey(Input.KEY_RIGHT)) {
+            	playerCamera.rotateY(deltaPos.getX() + SIDE_SENSITIVITY);
+            }
 	
 	        if (mouseLocked) {
-	            Vector2f deltaPos = Input.getMousePosition().sub(centerPosition);
-	
-	            boolean rotY = deltaPos.getX() != 0;
-	            boolean rotX = deltaPos.getY() != 0;
-	
 	            if (rotY) {
 	                playerCamera.rotateY(deltaPos.getX() * MOUSE_SENSITIVITY);
-	            }
-	            if(Input.getKey(Input.KEY_LEFT)) {
-	            	playerCamera.rotateY(deltaPos.getX() - SIDE_SENSITIVITY);
-		        }
-	            if(Input.getKey(Input.KEY_RIGHT)) {
-	            	playerCamera.rotateY(deltaPos.getX() + SIDE_SENSITIVITY);
 	            }
 	            
 	            //Looking up and down

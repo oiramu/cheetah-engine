@@ -16,10 +16,10 @@
 package game.objects;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import engine.ResourceLoader;
 import engine.core.GameObject;
-import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
@@ -38,11 +38,11 @@ import game.Auschwitz;
 public class Hanged implements GameObject {
 	
 	private static final String RES_LOC = "hanged/";
-	private static final int STATE_IDLE = 0;
-	private int state;
     
     private static Mesh mesh;
     private Material material;
+    @SuppressWarnings("unused")
+	private int random;
     
     private float sizeX;
     
@@ -59,10 +59,10 @@ public class Hanged implements GameObject {
     	if (animation == null) {
             animation = new ArrayList<Texture>();
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "HANGA0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "HANGB0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "HANGC0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "HANGD0"));
+            //animation.add(ResourceLoader.loadTexture(RES_LOC + "HUNGA0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "HUNGB0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "HUNGC0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "HUNGD0"));
         }
     	
         if (mesh == null) {
@@ -90,8 +90,7 @@ public class Hanged implements GameObject {
             mesh.addVertices(verts, indices);
         }
         
-        this.material = new Material(animation.get(2));
-        this.state = STATE_IDLE;
+        this.material = new Material(animation.get(random = new Random().nextInt(animation.size())));
         this.transform = transform;
     }
 
@@ -112,7 +111,7 @@ public class Hanged implements GameObject {
         }
 
         transform.setRotation(0, angle + 90, 0);
-        
+        /**
         double time = (double) Time.getTime() / Time.SECOND;
         
         if (state == STATE_IDLE) {
@@ -128,7 +127,7 @@ public class Hanged implements GameObject {
                 material.setTexture(animation.get(2));
             }
         }
-
+		*/
     }
 
     /**

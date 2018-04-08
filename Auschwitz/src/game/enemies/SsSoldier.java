@@ -46,8 +46,8 @@ public class SsSoldier implements GameObject {
 
     private static final float MAX_HEALTH = 200f;
     private static final float SHOT_ANGLE = 20.0f;
-    private static final float DAMAGE_MIN = 20f;
-    private static final float DAMAGE_RANGE = 50f;
+    private static final float DAMAGE_MIN = 2f;//20
+    private static final float DAMAGE_RANGE = 2f;//50
     private static final float MONSTER_WIDTH = 0.5f;
 
     private static final int STATE_IDLE = 0;
@@ -89,16 +89,19 @@ public class SsSoldier implements GameObject {
 
         if (animation == null) {
             animation = new ArrayList<Texture>();
-
+            //IDLE
             animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVA1"));
+            //RUNNING
             animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVB1"));
             animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVC1"));
             animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVD1"));
-
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVD2"));
+            //ATACK
             animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVE0"));
             animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVF0"));
             animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVG0"));
-
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVG1"));
+            //DYING
             animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVH0"));
             animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVI0"));
             animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVJ0"));
@@ -110,11 +113,11 @@ public class SsSoldier implements GameObject {
         if (mesh == null) {
             mesh = new Mesh();
 
-            final float sizeY = 0.75f;
-            final float sizeX = (float) ((double) sizeY / (1.681818181818182 * 2.0));
+            final float sizeY = 0.9f;
+            final float sizeX = (float) ((double) sizeY / (sizeY * 2.0));
 
-            final float offsetX = 0.05f;
-            final float offsetY = 0.01f;
+            final float offsetX = 0.0f;
+            final float offsetY = 0.0f;
 
             final float texMinX = -offsetX;
             final float texMaxX = -1 - offsetX;
@@ -150,7 +153,7 @@ public class SsSoldier implements GameObject {
      */
     public void update() {
         //Set Height
-        transform.setPosition(transform.getPosition().getX(), -0.075f, transform.getPosition().getZ());
+        transform.setPosition(transform.getPosition().getX(), 0, transform.getPosition().getZ());
         
         //Face player
         Vector3f playerDistance = transform.getPosition().sub(Transform.getCamera().getPos());
@@ -247,13 +250,13 @@ public class SsSoldier implements GameObject {
                     timeDecimals *= 1.5f;
 
                     if (timeDecimals <= 0.25f) {
-                        material.setTexture(animation.get(0));
-                    } else if (timeDecimals <= 0.5f) {
                         material.setTexture(animation.get(1));
-                    } else if (timeDecimals <= 0.75f) {
+                    } else if (timeDecimals <= 0.5f) {
                         material.setTexture(animation.get(2));
-                    } else {
+                    } else if (timeDecimals <= 0.75f) {
                         material.setTexture(animation.get(3));
+                    } else {
+                        material.setTexture(animation.get(4));
                     }
                 }
             }
@@ -262,18 +265,48 @@ public class SsSoldier implements GameObject {
                 double timeDecimals = (time - (double) ((int) time));
 
                 if (timeDecimals <= 0.25f) {
-                    material.setTexture(animation.get(4));
-                } else if (timeDecimals <= 0.5f) {
                     material.setTexture(animation.get(5));
-                } else if (timeDecimals <= 0.9f) {
-                    if (canAttack) {
+                } else if (timeDecimals <= 0.5f) {
+                    material.setTexture(animation.get(6));
+                } else if (timeDecimals <= 0.75f) {
+                	if (canAttack == true) {
+                    	Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
+
+                        Vector2f lineStart = transform.getPosition().getXZ();
+                        Vector2f lineEnd = lineStart.sub(shootDirection.mul(1000.0f));
+
+                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
+
+                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
+
+                        if (playerIntersect != null && (nearestIntersect == null
+                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
+
+                        	float damage;
+                            if(player.getHealth() == 0) {
+                            	state = STATE_DONE;
+                            	damage = 0;
+                            }else {
+                            	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
+                            	if(player.getArmorb() == false) {
+                            		player.health((int) -damage);
+                            	}else {
+                            		player.setArmori((int) -damage);
+                            	}
+                            }
+                        }
+                        AudioUtil.playAudio(shootNoise, distance);
+                    }
+                    canAttack = true;
+                    material.setTexture(animation.get(7));
+                }else if (timeDecimals <= 1f) {
+                    if (canAttack == true) {
                         Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
 
                         Vector2f lineStart = transform.getPosition().getXZ();
                         Vector2f lineEnd = lineStart.sub(shootDirection.mul(1000.0f));
 
                         Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
-                        canAttack = false;
 
                         Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
 
@@ -295,11 +328,10 @@ public class SsSoldier implements GameObject {
                         }
                         AudioUtil.playAudio(shootNoise, distance);
                     }
-
-                    material.setTexture(animation.get(6));
+                    material.setTexture(animation.get(8));
                 } else {
                     canAttack = true;
-                    material.setTexture(animation.get(5));
+                    material.setTexture(animation.get(9));
                     state = STATE_CHASE;
                 }
             }
@@ -314,21 +346,13 @@ public class SsSoldier implements GameObject {
             final float time4 = 0.6f;
 
             if (time <= deathTime + 0.2f) {
-                material.setTexture(animation.get(8));
-                transform.setScale(1, 0.96428571428571428571428571428571f, 1);
-            } else if (time > deathTime + time1 && time <= deathTime + time2) {
-                material.setTexture(animation.get(9));
-                transform.setScale(1.7f, 0.9f, 1);
-                offsetX = -0.1f;
-            } else if (time > deathTime + time2 && time <= deathTime + time3) {
                 material.setTexture(animation.get(10));
-                transform.setScale(1.7f, 0.9f, 1);
-                offsetX = -0.05f;
-            } else if (time > deathTime + time3 && time <= deathTime + time4) {
+            } else if (time > deathTime + time1 && time <= deathTime + time2) {
                 material.setTexture(animation.get(11));
-                transform.setScale(1.7f, 0.5f, 1);
-                offsetX = -0.025f;
-                offsetY = 0.1f;
+            } else if (time > deathTime + time2 && time <= deathTime + time3) {
+                material.setTexture(animation.get(12));
+            } else if (time > deathTime + time3 && time <= deathTime + time4) {
+                material.setTexture(animation.get(13));
             } else if (time > deathTime + time4) {
                 state = STATE_DEAD;
             }
@@ -336,8 +360,7 @@ public class SsSoldier implements GameObject {
 
         if (state == STATE_DEAD) {
             dead = true;
-            material.setTexture(animation.get(12));
-            transform.setScale(1.7586206896551724137931034482759f, 0.28571428571428571428571428571429f, 1);
+            material.setTexture(animation.get(14));
         }
         
         if (state == STATE_DONE) {

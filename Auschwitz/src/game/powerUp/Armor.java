@@ -58,11 +58,11 @@ public class Armor implements GameObject {
         if (mesh == null) {
             mesh = new Mesh();
 
-            float sizeY = 1.5f / 4;
-            float sizeX = sizeY / (0.6666666666666667f*2);
+            float sizeY = 0.5f;
+            float sizeX = 0.25f;
 
-            float offsetX = 0.05f;
-            float offsetY = 0.06f;
+            float offsetX = 0.0f;
+            float offsetY = 0.0f;
 
             float texMinX = -offsetX;
             float texMaxX = -1 - offsetX;

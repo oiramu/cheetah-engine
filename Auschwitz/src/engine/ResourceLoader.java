@@ -146,13 +146,13 @@ public class ResourceLoader {
 	 * @param fileName Name of the image file.
 	 * @return Image.
 	 */
-    public static Texture loadTexture(String fileName) {
+	public static Texture loadTexture(String fileName) {
         String[] splitArray = fileName.split("\\.");
         String ext = splitArray[splitArray.length - 1];
-
-        try {
+        
+        try {            
             int id = TextureLoader.getTexture(ext, new FileInputStream(new File("./res/textures/" + fileName + ".png")), GL_NEAREST).getTextureID();
-            
+                        
             glGenerateMipmap(GL_TEXTURE_2D);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 					GL_LINEAR_MIPMAP_LINEAR);

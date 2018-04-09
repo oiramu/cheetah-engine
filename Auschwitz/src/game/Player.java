@@ -244,7 +244,9 @@ public class Player implements GameObject{
     		gunsEmptyNoiseSounds.add(ResourceLoader.loadAudio(SUPER_SHOTGUN_RES_LOC + EMPTY));
     	}
     	
-    	gotPistol();
+    	if(weaponState == null) {
+    		gotPistol();
+    	}
     	
     	if(guiMaterial == null) {
     		guiMaterial = new Material(ResourceLoader.loadTexture("gui/MEDIA"));
@@ -445,17 +447,17 @@ public class Player implements GameObject{
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_3)) {
-	        	if(machinegun == false || weaponState == MACHINEGUN) {
-	        		AudioUtil.playAudio(missueNoise, 0);
-	        	}else {
-	        		gotMachinegun();
-	        		AudioUtil.playAudio(moveNoise, 0);
-	        	}
-	        } else if (Input.getKeyDown(Input.KEY_4)) {
 	        	if(shotgun == false || weaponState == SHOTGUN) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	}else {
 	        		gotShotgun();
+	        		AudioUtil.playAudio(moveNoise, 0);
+	        	}
+	        } else if (Input.getKeyDown(Input.KEY_4)) {
+	        	if(machinegun == false || weaponState == MACHINEGUN) {
+	        		AudioUtil.playAudio(missueNoise, 0);
+	        	}else {
+	        		gotMachinegun();
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_5)) {

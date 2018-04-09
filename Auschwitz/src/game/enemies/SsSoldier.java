@@ -47,7 +47,7 @@ public class SsSoldier implements GameObject {
     private static final float MAX_HEALTH = 200f;
     private static final float SHOT_ANGLE = 20.0f;
     private static final float DAMAGE_MIN = 2f;//20
-    private static final float DAMAGE_RANGE = 2f;//50
+    private static final float DAMAGE_RANGE = 1f;//50
     private static final float MONSTER_WIDTH = 0.5f;
 
     private static final int STATE_IDLE = 0;
@@ -113,7 +113,7 @@ public class SsSoldier implements GameObject {
         if (mesh == null) {
             mesh = new Mesh();
 
-            final float sizeY = 0.9f;
+            final float sizeY = 0.8f;
             final float sizeX = (float) ((double) sizeY / (sizeY * 2.0));
 
             final float offsetX = 0.0f;
@@ -218,9 +218,9 @@ public class SsSoldier implements GameObject {
                     state = STATE_ATTACK;
                 }
 
-                if (distance > 1.6f) {
+                if (distance > 1.5f) {
                     orientation.setY(0);
-                    float moveSpeed = 0.9f;
+                    float moveSpeed = 1.25f;
 
                     Vector3f oldPos = transform.getPosition();
                     Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * Time.getDelta())));
@@ -299,6 +299,7 @@ public class SsSoldier implements GameObject {
                     }
                     canAttack = true;
                     material.setTexture(animation.get(7));
+                    shootNoise.stop();
                 }else if (timeDecimals <= 1f) {
                     if (canAttack == true) {
                         Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
@@ -331,7 +332,7 @@ public class SsSoldier implements GameObject {
                     material.setTexture(animation.get(8));
                 } else {
                     canAttack = true;
-                    material.setTexture(animation.get(9));
+                    material.setTexture(animation.get(6));
                     state = STATE_CHASE;
                 }
             }

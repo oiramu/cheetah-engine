@@ -44,7 +44,7 @@ import game.Player;
 */
 public class NaziSergeants implements GameObject {
 
-    private static final float MAX_HEALTH = 150f;
+    private static final float MAX_HEALTH = 175f;
     private static final float SHOT_ANGLE = 10.0f;
     private static final float DAMAGE_MIN = 1.0f;
     private static final float DAMAGE_RANGE = 1.0f;
@@ -218,7 +218,7 @@ public class NaziSergeants implements GameObject {
 
                 if (distance > 1.7f) {
                     orientation.setY(0);
-                    float moveSpeed = 1.25f;
+                    float moveSpeed = 1.15f;
 
                     Vector3f oldPos = transform.getPosition();
                     Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * Time.getDelta())));

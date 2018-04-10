@@ -45,7 +45,7 @@ public class SEngineUtil {
 	/**
 	 * Constructor of the Menu tools.
 	 */
-	private  SEngineUtil() {
+	private SEngineUtil() {
 		try {
 			font = new AngelCodeFont("res/textures/fonts/defaultBitmapFont.fnt", new Image("res/textures/fonts/defaultBitmapFont_0.png")); 
 			boldFont = new AngelCodeFont("res/textures/fonts/boldBitmapFont.fnt", new Image("res/textures/fonts/boldBitmapFont_0.png")); 

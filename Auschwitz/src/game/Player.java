@@ -709,6 +709,7 @@ public class Player implements GameObject{
             machinegun = false;
             sShotgun = false;
             isAlive = false;
+    		gotPistol();
 	        //if(Input.getKey(Input.KEY_E)) {
 	            Auschwitz.loadLevel(Auschwitz.levelNum-Auschwitz.levelNum);
 	            deathNoise.stop();
@@ -755,6 +756,8 @@ public class Player implements GameObject{
      * @param amt amount.
      */
     public void setShotgun(boolean amt) {
+        if(amt == true && shotgun == false)
+    		gotShotgun();
         shotgun = amt;
     }
     
@@ -771,6 +774,8 @@ public class Player implements GameObject{
      * @param amt amount.
      */
     public void setMachinegun(boolean amt) {
+    	if(amt == true && machinegun == false)
+    		gotMachinegun();
         machinegun = amt;
     }
     
@@ -787,6 +792,8 @@ public class Player implements GameObject{
      * @param amt amount.
      */
     public void setSuperShotgun(boolean amt) {
+    	if(amt == true && sShotgun == false)
+    		gotSShotgun();
     	sShotgun = amt;
     }
     

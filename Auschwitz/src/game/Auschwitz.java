@@ -239,7 +239,9 @@ public class Auschwitz implements Game {
             	System.out.println("Killed " + deadMonsters + "/" + totalMonsters + " baddies: " +
             	((float) deadMonsters / (float) totalMonsters) * 100f + "%");
             	
-            	if(level.getPlayer().getWeaponState() == level.getPlayer().PISTOL) {
+            	if(level.getPlayer().getWeaponState() == level.getPlayer().HAND){
+            		level.getPlayer().gotHand();
+            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().PISTOL) {
             		level.getPlayer().gotPistol();
             	}else if(level.getPlayer().getWeaponState() == level.getPlayer().MACHINEGUN && machinegunTemp == true) {
             		level.getPlayer().gotMachinegun();
@@ -247,8 +249,6 @@ public class Auschwitz implements Game {
             		level.getPlayer().gotShotgun();
             	}else if(level.getPlayer().getWeaponState() == level.getPlayer().SUPER_SHOTGUN && superShotgunTemp == true) {
             		level.getPlayer().gotSShotgun();
-            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().HAND){
-            		level.getPlayer().gotHand();
             	}
             }
         } catch (Exception ex) {

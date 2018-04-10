@@ -58,7 +58,7 @@ public class CoreDisplay {
 	 * @param height of the display.
 	 * @param FRAME_RATE of the display.
 	 */
-	public CoreDisplay(int width, int height,final int FRAME_RATE) {
+	public CoreDisplay(int width, int height, final int FRAME_RATE) {
 		this.width = width;
 		this.height = height;
 		frameTime = 1.0/FRAME_RATE;
@@ -67,8 +67,10 @@ public class CoreDisplay {
 	
 	/**
 	 * Method that creates the window for the program.
+	 * @param title of the window.
+	 * @param window If its windowed or full-screen.
 	 */
-	public void createWindow(String title) {
+	public void createWindow(String title, boolean window) {
 		
 		Display.setTitle(title);
 		Display.setIcon(new ByteBuffer[] {
@@ -76,25 +78,25 @@ public class CoreDisplay {
 		});
 		try {
 			
-			/**
-			Display.setDisplayMode(new DisplayMode(width, height));
-			Display.setFullscreen(false);
-			*/
-			
-			@SuppressWarnings("unused")
-			DisplayMode displayMode = null;
-	        DisplayMode[] modes = Display.getAvailableDisplayModes();
-
-	         for (int i = 0; i < modes.length; i++)
-	         {
-	             if (modes[i].getWidth() == width
-	             && modes[i].getHeight() == height
-	             && modes[i].isFullscreenCapable())
-	               {
-	                    displayMode = modes[i];
-	               }
-	         }
-			Display.setFullscreen(true);
+			if(window == true) {
+				Display.setDisplayMode(new DisplayMode(width, height));
+				Display.setFullscreen(false);
+			} else {
+				@SuppressWarnings("unused")
+				DisplayMode displayMode = null;
+		        DisplayMode[] modes = Display.getAvailableDisplayModes();
+	
+		         for (int i = 0; i < modes.length; i++)
+		         {
+		             if (modes[i].getWidth() == width
+		             && modes[i].getHeight() == height
+		             && modes[i].isFullscreenCapable())
+		               {
+		                    displayMode = modes[i];
+		               }
+		         }
+				Display.setFullscreen(true);
+			}
 			
 			Display.create();
 			

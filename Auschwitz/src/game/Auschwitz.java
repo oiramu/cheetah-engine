@@ -129,7 +129,9 @@ public class Auschwitz implements Game {
 	@SuppressWarnings("static-access")
 	public static void loadLevel(int offset) {
         try {
+        	int secrets = 0;
             int deadMonsters = 0;
+            int totalSecrets = 0;
             int totalMonsters = 0;
             int bulletTemp = 0;
             int shellTemp = 0;
@@ -145,6 +147,14 @@ public class Auschwitz implements Game {
             if (level != null) {
                 totalMonsters = level.getNaziSoldiers().size() + level.getSsSoldiers().size()
                 		+ level.getDogs().size() + + level.getNaziSergeants().size();
+                
+                totalSecrets = level.getSecretWalls().size();
+                
+                for (SecretWall secret : level.getSecretWalls()) {
+                    if (secret.opens()) {
+                    	secrets++;
+                    }
+                }
 
                 for (NaziSoldier monster : level.getNaziSoldiers()) {
                     if (!monster.isAlive()) {
@@ -237,7 +247,9 @@ public class Auschwitz implements Game {
 
             if (displayMonsters) {    
             	System.out.println("Killed " + deadMonsters + "/" + totalMonsters + " baddies: " +
-            	((float) deadMonsters / (float) totalMonsters) * 100f + "%");
+            	((float) deadMonsters / (float) totalMonsters) * 100f + "%");        	
+            	System.out.println("Secrets " + secrets + "/" + totalSecrets + " secrets: " +
+                    	((float) secrets / (float) totalSecrets) * 100f + "%");
             	
             	if(level.getPlayer().getWeaponState() == level.getPlayer().HAND){
             		level.getPlayer().gotHand();

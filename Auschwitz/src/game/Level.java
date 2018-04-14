@@ -73,9 +73,9 @@ import game.powerUp.SuperShotgun;
 public class Level {
 
 	//Constants
-    private static final float SPOT_WIDTH = 1;
-    private static final float SPOT_LENGTH = 1;
-    private static final float LEVEL_HEIGHT = 1;
+    public static final float SPOT_WIDTH = 1;
+    public static final float SPOT_LENGTH = 1;
+    public static final float LEVEL_HEIGHT = 1;
 
     private static final float NUM_TEX_X = 4f;
     private static final float NUM_TEX_Y = 4f;
@@ -112,6 +112,7 @@ public class Level {
     
     //Doors
     private ArrayList<Door> doors;
+    private ArrayList<SecretWall> secretWalls;
     
     //Power-Ups
     private ArrayList<Shotgun> shotguns;
@@ -172,6 +173,7 @@ public class Level {
         this.level = bitmap;
         this.geometry = new Mesh();
         this.doors = new ArrayList<Door>();
+        this.secretWalls = new ArrayList<SecretWall>();
         this.exitOffsets = new ArrayList<Integer>();
         this.exitPoints = new ArrayList<Vector3f>();
         this.naziSoldiers = new ArrayList<NaziSoldier>();
@@ -207,7 +209,10 @@ public class Level {
         this.collisionPosStart = new ArrayList<Vector2f>();
         this.collisionPosEnd = new ArrayList<Vector2f>();
         generateLevel();
-
+        
+        PhongShader.setAmbientLight(new Vector3f(0.1f,0.1f,0.1f));
+   	 	PhongShader.setDirectionalLight(new DirectionalLight(
+   	 			new BaseLight(new Vector3f(1,1,1), 8f), player.getCamera().getPos()));
         Transform.setCamera(player.getCamera());
     }
 
@@ -398,6 +403,10 @@ public class Level {
         for (Door door : doors) {
             door.update();
         }
+        
+        for (SecretWall secretWall : secretWalls) {
+        	secretWall.update();
+        }
 
         for (NaziSoldier monster : naziSoldiers) {
             monster.update();
@@ -568,6 +577,14 @@ public class Level {
         for (Door door : doors) {
             door.render();
         }
+        
+        for (SecretWall secretWall : secretWalls) {
+        	secretWall.render();
+        }
+        
+        if (secretWalls.size() > 0) {
+        	sortSecrets(0, secretWalls.size() - 1);
+        }
 
         if (naziSoldiers.size() > 0) {
             sortNaziSoldiers(0, naziSoldiers.size() - 1);
@@ -698,6 +715,45 @@ public class Level {
         }
 
         player.render();
+    }
+    
+    /**
+     * Sorts all the secrets in the level.
+     * @param low of the array
+     * @param high of the array
+     */
+    private void sortSecrets(int low, int high) {
+        int i = low;
+        int j = high;
+
+        SecretWall pivot = secretWalls.get(low + (high - low) / 2);
+        float pivotDistance = pivot.getTransform().getPosition().sub(Transform.getCamera().getPos()).length();
+
+        while (i <= j) {
+            while (secretWalls.get(i).getTransform().getPosition().sub(Transform.getCamera().getPos()).length() > pivotDistance) {
+                i++;
+            }
+            while (secretWalls.get(j).getTransform().getPosition().sub(Transform.getCamera().getPos()).length() < pivotDistance) {
+                j--;
+            }
+
+            if (i <= j) {
+            	SecretWall temp = secretWalls.get(i);
+
+            	secretWalls.set(i, secretWalls.get(j));
+            	secretWalls.set(j, temp);
+
+                i++;
+                j--;
+            }
+        }
+
+        if (low < j) {
+        	sortSecrets(low, j);
+        }
+        if (i < high) {
+        	sortSecrets(i, high);
+        }
     }
 
     /**
@@ -870,6 +926,13 @@ public class Level {
                 door.open(0.5f, 3f);
             }
         }
+        
+        for (SecretWall secretWall : secretWalls) {
+        	if (Math.abs(secretWall.getTransform().getPosition().sub(position).length()) < 1f) {
+                worked = true;
+                secretWall.open(0.5f, 3f);
+            }
+        }
 
         if (playSound) {
             for (int i = 0; i < exitPoints.size(); i++) {
@@ -916,6 +979,10 @@ public class Level {
 
             for (Door door : doors) {
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, door.getTransform().getPosition().getXZ(), door.getSize()));
+            }
+            
+            for (SecretWall secretWall : secretWalls) {
+                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, secretWall.getTransform().getPosition().getXZ(), secretWall.getSize()));
             }
             
             /**
@@ -1005,6 +1072,15 @@ public class Level {
 
         for (Door door : doors) {
             Vector2f collision = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, door.getTransform().getPosition().getXZ(), door.getSize());
+
+            if (collision != null && (nearestIntersect == null
+                    || nearestIntersect.sub(lineStart).length() > collision.sub(lineStart).length())) {
+                nearestIntersect = collision;
+            }
+        }
+        
+        for (SecretWall secretWall : secretWalls) {
+            Vector2f collision = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, secretWall.getTransform().getPosition().getXZ(), secretWall.getSize());
 
             if (collision != null && (nearestIntersect == null
                     || nearestIntersect.sub(lineStart).length() > collision.sub(lineStart).length())) {
@@ -1191,6 +1267,26 @@ public class Level {
                             doorTransform.setRotation(0, 90, 0);
                             doors.add(new Door(doorTransform, material, doorTransform.getPosition().add(new Vector3f(0, 0, -0.9f))));
                         }
+                    }else if ((level.getPixel(i, j) & 0x0000FF) == 20) {
+                        Transform wallTransform = new Transform();
+
+                        boolean xSecretWall = (level.getPixel(i, j - 1) & 0xFFFFFF) == 0 && (level.getPixel(i, j + 1) & 0xFFFFFF) == 0;
+                        boolean ySecretWall = (level.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (level.getPixel(i + 1, j) & 0xFFFFFF) == 0;
+
+                        if ((ySecretWall && xSecretWall) || !(ySecretWall || xSecretWall)) {
+                            System.err.println("Level Generation Error at (" + i + ", " + j + "): Secret Walls must be between two solid walls.");
+                            new Exception().printStackTrace();
+                            System.exit(1);
+                        }
+
+                        if (ySecretWall) {
+                            wallTransform.setPosition(i, 0, j);
+                            secretWalls.add(new SecretWall(wallTransform, material, wallTransform.getPosition().add(new Vector3f(-0.9f, 0, 0))));
+                        } else if (xSecretWall) {
+                            wallTransform.setPosition((i+ (SPOT_LENGTH / 2)*2)-0.01f, 0, j);
+                            wallTransform.setRotation(0, 90, 0);
+                            secretWalls.add(new SecretWall(wallTransform, material, wallTransform.getPosition().add(new Vector3f(0, 0, -0.9f))));
+                        }
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 128) {
                     	naziSoldiers.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         bullets.add(new Bullet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.025f, (j + 0.5f) * SPOT_LENGTH))));
@@ -1294,6 +1390,11 @@ public class Level {
                     XLower = XHigher - 1 / NUM_TEX_X;
                     YHigher = 1f - texY / NUM_TEX_Y;
                     YLower = YHigher - 1 / NUM_TEX_Y;
+                    
+                    SecretWall.xHigher = YHigher;
+                    SecretWall.xLower = XLower;
+                    SecretWall.yHigher = YHigher;
+                    SecretWall.yLower = YLower;
 
                     //Generate Walls
                     if ((level.getPixel(i, j - 1) & 0xFFFFFF) == 0) {
@@ -1369,11 +1470,15 @@ public class Level {
 
         vertices.toArray(vertArray);
         indices.toArray(intArray);
-
         geometry.addVertices(vertArray, Util.toIntArray(intArray), true);
-   	 	PhongShader.setAmbientLight(new Vector3f(0.1f,0.1f,0.1f));
-   	 	PhongShader.setDirectionalLight(new DirectionalLight(
-   	 			new BaseLight(new Vector3f(1,1,1), 0.8f), new Vector3f(1,1,1)));
+    }
+    
+    /**
+     * Returns all the secret walls in the array-list.
+     * @return Secret walls.
+     */
+    public ArrayList<SecretWall> getSecretWalls() {
+        return secretWalls;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Carlos Rodriguez.
+ * Copyright 2018 Carlos Rodriguez.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,19 +32,23 @@ import engine.rendering.Vertex;
  *
  * @author Carlos Rodriguez
  * @version 1.0
- * @since 2017
+ * @since 2018
  */
-public class Door implements GameObject {
+public class SecretWall implements GameObject {
 	
 	private static final float HEIGHT = Level.LEVEL_HEIGHT;
 	private static final float LENGTH = Level.SPOT_LENGTH;
 	private static final float WIDTH = 0.125f;
 	private static final int START = 0;
 	
-	private static final String RES_LOC = "door/";
+	public static float xLower;
+	public static float xHigher;
+	public static float yLower;
+	public static float yHigher;
+	
+	private static final String RES_LOC = "secretWall/";
 
-    private static final Clip openNoise = ResourceLoader.loadAudio(RES_LOC + "MEDIA0");
-    private static final Clip closeNoise = ResourceLoader.loadAudio(RES_LOC + "MEDIA1");
+    private static final Clip openNoise = ResourceLoader.loadAudio(RES_LOC + "MEDIA");
 
     private static Mesh door;
 
@@ -54,56 +58,50 @@ public class Door implements GameObject {
     private Vector3f openPos;
 
     private boolean opening;
-    private boolean closing;
     private boolean open;
 
     private double startTime;
     private double openTime;
-    private double startCloseTime;
-    private double closeTime;
 
     /**
-     * Constructor of the door object.
+     * Constructor of the secret wall object.
      * @param transform of the door.
      * @param material of the door.
      * @param openPosition of the door.
      */
-    public Door(Transform transform, Material material, Vector3f openPosition) {
+    public SecretWall(Transform transform, Material material, Vector3f openPosition) {
         this.transform = transform;
         this.openPos = openPosition;
         this.closedPos = transform.getPosition();
         this.material = material;
 
         opening = false;
-        closing = false;
         open = false;
         startTime = 0;
         openTime = 0;
-        closeTime = 0;
-        startCloseTime = 0;
 
         if (door == null) {
             door = new Mesh();
 
-            Vertex[] doorVerts = new Vertex[]{	new Vertex(new Vector3f(START, START, START), new Vector2f(0.5f, 1)),
-												new Vertex(new Vector3f(START, HEIGHT, START), new Vector2f(0.5f, 0.75f)),
-												new Vertex(new Vector3f(LENGTH, HEIGHT, START), new Vector2f(0.75f, 0.75f)),
-												new Vertex(new Vector3f(LENGTH, START, START), new Vector2f(0.75f, 1)),
+            Vertex[] doorVerts = new Vertex[]{	new Vertex(new Vector3f(START, START, START), new Vector2f(xHigher, yHigher)),
+												new Vertex(new Vector3f(START, HEIGHT, START), new Vector2f(xHigher, yLower)),
+												new Vertex(new Vector3f(LENGTH, HEIGHT, START), new Vector2f(xLower, yLower)),
+												new Vertex(new Vector3f(LENGTH, START, START), new Vector2f(xLower, yHigher)),
 												
-												new Vertex(new Vector3f(START, START, START), new Vector2f(0.73f, 1)),
-												new Vertex(new Vector3f(START, HEIGHT, START), new Vector2f(0.73f, 0.75f)),
-												new Vertex(new Vector3f(START, HEIGHT, WIDTH), new Vector2f(0.75f, 0.75f)),
-												new Vertex(new Vector3f(START, START, WIDTH), new Vector2f(0.75f, 1)),
+												new Vertex(new Vector3f(START, START, START), new Vector2f(xHigher, yHigher)),
+												new Vertex(new Vector3f(START, HEIGHT, START), new Vector2f(xHigher, yLower)),
+												new Vertex(new Vector3f(LENGTH, HEIGHT, START), new Vector2f(xLower, yLower)),
+												new Vertex(new Vector3f(LENGTH, START, START), new Vector2f(xLower, yHigher)),
 												
-												new Vertex(new Vector3f(START, START, WIDTH), new Vector2f(0.5f, 1)),
-												new Vertex(new Vector3f(START, HEIGHT, WIDTH), new Vector2f(0.5f, 0.75f)),
-												new Vertex(new Vector3f(LENGTH, HEIGHT, WIDTH), new Vector2f(0.75f, 0.75f)),
-												new Vertex(new Vector3f(LENGTH, START, WIDTH), new Vector2f(0.75f, 1)),
+												new Vertex(new Vector3f(START, START, START), new Vector2f(xHigher, yHigher)),
+												new Vertex(new Vector3f(START, HEIGHT, START), new Vector2f(xHigher, yLower)),
+												new Vertex(new Vector3f(LENGTH, HEIGHT, START), new Vector2f(xLower, yLower)),
+												new Vertex(new Vector3f(LENGTH, START, START), new Vector2f(xLower, yHigher)),
 												
-												new Vertex(new Vector3f(LENGTH, START, START), new Vector2f(0.73f, 1)),
-												new Vertex(new Vector3f(LENGTH, HEIGHT, START), new Vector2f(0.73f, 0.75f)),
-												new Vertex(new Vector3f(LENGTH, HEIGHT, WIDTH), new Vector2f(0.75f, 0.75f)),
-												new Vertex(new Vector3f(LENGTH, START, WIDTH), new Vector2f(0.75f, 1))};
+												new Vertex(new Vector3f(START, START, START), new Vector2f(xHigher, yHigher)),
+												new Vertex(new Vector3f(START, HEIGHT, START), new Vector2f(xHigher, yLower)),
+												new Vertex(new Vector3f(LENGTH, HEIGHT, START), new Vector2f(xLower, yLower)),
+												new Vertex(new Vector3f(LENGTH, START, START), new Vector2f(xLower, yHigher))};
 
             int[] doorIndices = new int[]{0, 1, 2,
             								0, 2, 3,
@@ -119,7 +117,7 @@ public class Door implements GameObject {
     }
 
     /**
-     * Opening door's method.
+     * Opening secret wall's method.
      * @param time of opening.
      * @param delay of opening.
      */
@@ -130,16 +128,14 @@ public class Door implements GameObject {
 
         startTime = (double) Time.getTime() / (double) Time.SECOND;
         openTime = startTime + (double) time;
-        startCloseTime = openTime + (double) delay;
-        closeTime = startCloseTime + (double) time;
 
         opening = true;
-        closing = false;
+        if(opening == true)
         AudioUtil.playAudio(openNoise, transform.getPosition().sub(Transform.getCamera().getPos()).length());
     }
 
     /**
-     * Refresh the door every single frame.
+     * Refresh the secret wall every single frame.
      */
     public void update() {
         if (opening) {
@@ -149,23 +145,6 @@ public class Door implements GameObject {
                 double lerpFactor = (time - startTime) / (openTime - startTime);
 
                 transform.setPosition(openPos.lerp(closedPos, (float) lerpFactor));
-            } else if (time > openTime && time < startCloseTime) {
-                transform.setPosition(openPos);
-                open = true;
-            } else if (time > startCloseTime && time < closeTime) {
-                if (!closing) {
-                    AudioUtil.playAudio(closeNoise, transform.getPosition().sub(Transform.getCamera().getPos()).length());
-                }
-
-                closing = true;
-                open = false;
-                double lerpFactor = (time - startCloseTime) / (closeTime - startCloseTime);
-
-                transform.setPosition(closedPos.lerp(openPos, (float) lerpFactor));
-            } else {
-                closing = true;
-                opening = false;
-                open = false;
             }
         } else {
             transform.setPosition(closedPos);
@@ -173,7 +152,7 @@ public class Door implements GameObject {
     }
 
     /**
-     * Renders the door.
+     * Renders the secret wall.
      */
     public void render() {
         Auschwitz.updateShader(transform.getTransformation(), transform.getPerspectiveTransformation(), material);
@@ -181,15 +160,23 @@ public class Door implements GameObject {
     }
 
     /**
-     * Checks if the door is open or not.
-     * @return Door state.
+     * Checks if the secret wall is open or not.
+     * @return Secret wall state.
      */
     public boolean isOpen() {
         return open;
     }
+    
+    /**
+     * Checks if the secret wall tries to open or not.
+     * @return Secret wall state.
+     */
+    public boolean opens() {
+        return opening;
+    }
 
     /**
-     * Returns the transform of the door.
+     * Returns the transform of the secret wall.
      * @return Transform.
      */
     public Transform getTransform() {
@@ -209,7 +196,7 @@ public class Door implements GameObject {
     }
     
     /**
-     * Returns the XZ position of the door in transform.
+     * Returns the XZ position of the secret wall in transform.
      * @return XZ position.
      */
     public Vector2f getPosXZ() {

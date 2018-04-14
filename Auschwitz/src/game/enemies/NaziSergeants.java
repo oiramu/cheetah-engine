@@ -90,29 +90,28 @@ public class NaziSergeants implements GameObject {
         if (animation == null) {
             animation = new ArrayList<Texture>();
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVA1"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVB1"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVC1"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVD1"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANA0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANB0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANC0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRAND0"));
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVE0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVF0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVG0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVG1"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANE0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANF0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANG0"));
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVH0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVI0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVJ0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVK0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVL0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVM0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANH0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANI0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANJ0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANK0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANL0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANL0"));
         }
 
         if (mesh == null) {
             mesh = new Mesh();
 
-            final float sizeY = 0.8f;
-            final float sizeX = (float) ((double) sizeY / (2.166666666666667 * 2.0));
+            final float sizeY = 0.9f;
+            final float sizeX = (float) ((double) sizeY / (sizeY * 2.0));
 
             final float offsetX = 0.05f;
             final float offsetY = 0.01f;
@@ -296,98 +295,6 @@ public class NaziSergeants implements GameObject {
                     }
                     canAttack = true;
                     material.setTexture(animation.get(6));
-                }else if (timeDecimals <= 1f) {
-                    if (canAttack == true) {
-                        Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
-
-                        Vector2f lineStart = transform.getPosition().getXZ();
-                        Vector2f lineEnd = lineStart.sub(shootDirection.mul(1000.0f));
-
-                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
-
-                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
-
-                        if (playerIntersect != null && (nearestIntersect == null
-                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
-
-                        	float damage;
-                            if(player.getHealth() <= 0) {
-                            	damage = 0;
-                            	state = STATE_DONE;
-                            }else {
-                            	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
-                            	if(player.getArmorb() == false) {
-                            		player.health((int) -damage);
-                            	}else {
-                            		player.setArmori((int) -damage);
-                            	}
-                            }
-
-                        }
-                    }
-                    material.setTexture(animation.get(7));
-                } else if (timeDecimals <= 1.25f) {
-                    if (canAttack == true) {
-                    	Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
-
-                        Vector2f lineStart = transform.getPosition().getXZ();
-                        Vector2f lineEnd = lineStart.sub(shootDirection.mul(1000.0f));
-
-                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
-
-                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
-
-                        if (playerIntersect != null && (nearestIntersect == null
-                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
-
-                        	float damage;
-                            if(player.getHealth() == 0) {
-                            	state = STATE_DONE;
-                            	damage = 0;
-                            }else {
-                            	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
-                            	if(player.getArmorb() == false) {
-                            		player.health((int) -damage);
-                            	}else {
-                            		player.setArmori((int) -damage);
-                            	}
-                            }
-
-                        }
-                    }
-                    canAttack = true;
-                    material.setTexture(animation.get(6));
-                }else if (timeDecimals <= 1.5f) {
-                    if (canAttack == true) {
-                        Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
-
-                        Vector2f lineStart = transform.getPosition().getXZ();
-                        Vector2f lineEnd = lineStart.sub(shootDirection.mul(1000.0f));
-
-                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
-
-                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
-
-                        if (playerIntersect != null && (nearestIntersect == null
-                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
-
-                        	float damage;
-                            if(player.getHealth() <= 0) {
-                            	damage = 0;
-                            	state = STATE_DONE;
-                            }else {
-                            	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
-                            	if(player.getArmorb() == false) {
-                            		player.health((int) -damage);
-                            	}else {
-                            		player.setArmori((int) -damage);
-                            	}
-                            }
-
-                        }
-                    }
-                    material.setTexture(animation.get(7));
-                    shootNoise.stop();
                 } else {
                     canAttack = true;
                     material.setTexture(animation.get(5));
@@ -402,33 +309,21 @@ public class NaziSergeants implements GameObject {
             final float time1 = 0.1f;
             final float time2 = 0.3f;
             final float time3 = 0.45f;
-            final float time4 = 0.6f;
 
             if (time <= deathTime + 0.2f) {
-                material.setTexture(animation.get(9));
-                transform.setScale(1, 0.96428571428571428571428571428571f, 1);
+                material.setTexture(animation.get(7));
             } else if (time > deathTime + time1 && time <= deathTime + time2) {
-                material.setTexture(animation.get(10));
-                transform.setScale(1.7f, 0.9f, 1);
-                offsetX = -0.1f;
+                material.setTexture(animation.get(8));
             } else if (time > deathTime + time2 && time <= deathTime + time3) {
-                material.setTexture(animation.get(11));
-                transform.setScale(1.7f, 0.5f, 1);
-                offsetX = -0.05f;
-            } else if (time > deathTime + time3 && time <= deathTime + time4) {
-                material.setTexture(animation.get(12));
-                transform.setScale(1.7f, 0.5f, 1);
-                offsetX = -0.025f;
-                offsetY = 0.1f;
-            } else if (time > deathTime + time4) {
+                material.setTexture(animation.get(9));
+            } else if (time > deathTime + time3) {
                 state = STATE_DEAD;
             }
         }
 
         if (state == STATE_DEAD) {
             dead = true;
-            material.setTexture(animation.get(13));
-            transform.setScale(1.7586206896551724137931034482759f, 0.28571428571428571428571428571429f, 1);
+            material.setTexture(animation.get(10));
         }
         
         if (state == STATE_DONE) {

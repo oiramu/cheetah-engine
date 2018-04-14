@@ -381,7 +381,7 @@ public class Player implements GameObject{
         gunNoise = gunsNoiseSounds.get(3);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(3);
         gunFireAnimationTime = 0.05f;   
-        damageMin = 25f;
+        damageMin = 20f;
         damageRange = 60f;
         moveSpeed = 4.5f;
         isHand = false;
@@ -407,7 +407,7 @@ public class Player implements GameObject{
         gunClipp = gunsClippingSounds.get(4);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(4);
         gunFireAnimationTime = 0.2f;   
-        damageMin = 80f;
+        damageMin = 100f;
         damageRange = 60f;
         moveSpeed = 4f;
         isHand = false;

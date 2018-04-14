@@ -46,7 +46,7 @@ public class SsSoldier implements GameObject {
 
     private static final float MAX_HEALTH = 200f;
     private static final float SHOT_ANGLE = 20.0f;
-    private static final float DAMAGE_MIN = 2f;//20
+    private static final float DAMAGE_MIN = 1.5f;//20
     private static final float DAMAGE_RANGE = 1f;//50
     private static final float MONSTER_WIDTH = 0.5f;
 
@@ -116,8 +116,8 @@ public class SsSoldier implements GameObject {
             final float sizeY = 0.8f;
             final float sizeX = (float) ((double) sizeY / (sizeY * 2.0));
 
-            final float offsetX = 0.0f;
-            final float offsetY = 0.0f;
+            final float offsetX = 0.05f;
+            final float offsetY = 0.01f;
 
             final float texMinX = -offsetX;
             final float texMaxX = -1 - offsetX;

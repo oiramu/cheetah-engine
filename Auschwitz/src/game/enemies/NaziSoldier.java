@@ -46,8 +46,8 @@ public class NaziSoldier implements GameObject {
 
     private static final float MAX_HEALTH = 100f;
     private static final float SHOT_ANGLE = 10.0f;
-    private static final float DAMAGE_MIN = 10f;
-    private static final float DAMAGE_RANGE = 20f;
+    private static final float DAMAGE_MIN = 11f;
+    private static final float DAMAGE_RANGE = 22f;
     private static final float MONSTER_WIDTH = 0.4f;
 
     private static final int STATE_IDLE = 0;
@@ -91,21 +91,22 @@ public class NaziSoldier implements GameObject {
         if (animation == null) {
             animation = new ArrayList<Texture>();
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVA1"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVB1"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVC1"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVD1"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANA0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANB0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANC0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRAND0"));
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVE0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVF0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVG0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANE0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANF0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANG0"));
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVH0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVI0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVJ0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVK0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVL0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVM0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANH0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANI0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANJ0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANK0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANL0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANL0"));
+            
             animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVN0"));
             animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVO0"));
         }
@@ -113,8 +114,8 @@ public class NaziSoldier implements GameObject {
         if (mesh == null) {
             mesh = new Mesh();
 
-            final float sizeY = 0.75f;
-            sizeX = (float) ((double) sizeY / (2.217391304347826 * 2.0));
+            final float sizeY = 0.8f;
+            sizeX = (float) ((double) sizeY / (sizeY * 2.0));
 
             final float offsetX = 0.05f;
             final float offsetY = 0.01f;
@@ -153,7 +154,7 @@ public class NaziSoldier implements GameObject {
      */
     public void update() {
         //Set Height
-        transform.setPosition(transform.getPosition().getX(), -0.075f, transform.getPosition().getZ());
+        transform.setPosition(transform.getPosition().getX(), 0, transform.getPosition().getZ());
 
         //Face player
         Vector3f playerDistance = transform.getPosition().sub(Transform.getCamera().getPos());
@@ -298,11 +299,10 @@ public class NaziSoldier implements GameObject {
                         }
                         AudioUtil.playAudio(shootNoise, distance);
                     }
-
                     material.setTexture(animation.get(6));
                 } else {
                     canAttack = true;
-                    material.setTexture(animation.get(5));
+                    material.setTexture(animation.get(6));
                     state = STATE_CHASE;
                 }
             }
@@ -318,20 +318,12 @@ public class NaziSoldier implements GameObject {
 
             if (time <= deathTime + 0.2f) {
                 material.setTexture(animation.get(8));
-                transform.setScale(1, 0.96428571428571428571428571428571f, 1);
             } else if (time > deathTime + time1 && time <= deathTime + time2) {
                 material.setTexture(animation.get(9));
-                transform.setScale(1.7f, 0.9f, 1);
-                offsetX = -0.1f;
             } else if (time > deathTime + time2 && time <= deathTime + time3) {
                 material.setTexture(animation.get(10));
-                transform.setScale(1.7f, 0.9f, 1);
-                offsetX = -0.05f;
             } else if (time > deathTime + time3 && time <= deathTime + time4) {
                 material.setTexture(animation.get(11));
-                transform.setScale(1.7f, 0.5f, 1);
-                offsetX = -0.025f;
-                offsetY = 0.1f;
             } else if (time > deathTime + time4) {
                 state = STATE_DEAD;
             }
@@ -340,7 +332,6 @@ public class NaziSoldier implements GameObject {
         if (state == STATE_DEAD) {
             dead = true;
             material.setTexture(animation.get(12));
-            transform.setScale(1.7586206896551724137931034482759f, 0.28571428571428571428571428571429f, 1);
         }
         
         if (state == STATE_DONE) {

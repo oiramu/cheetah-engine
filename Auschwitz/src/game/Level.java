@@ -984,7 +984,6 @@ public class Level {
             for (SecretWall secretWall : secretWalls) {
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, secretWall.getTransform().getPosition().getXZ(), secretWall.getSize()));
             }
-            
             /**
             for (NaziSoldier monster : naziSoldiers) {
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, monster.getTransform().getPosition().getXZ(), monster.getSize()));
@@ -998,10 +997,10 @@ public class Level {
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, dog.getTransform().getPosition().getXZ(), dog.getSize()));
             }
             
-            for (NaziSargent naziSargent : naziSargents) {
-                collisionVector = collisionVector.mul(PhysicsUtil.(oldPos2, newPos2, objectSize, naziSargent.getTransform().getPosition().getXZ(), naziSargent.getSize()));
+            for (NaziSergeants naziSergeants : naziSeargeants) {
+                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, naziSergeants.getTransform().getPosition().getXZ(), naziSergeants.getSize()));
             }
-            */     
+            */  
             for (Bones bone : bones) {
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, bone.getTransform().getPosition().getXZ(), bone.getSize()));
             }
@@ -1293,7 +1292,7 @@ public class Level {
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 1) {
                         player = new Player(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.4375f, (j + 0.5f) * SPOT_LENGTH));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 192) {
-                        medkits.add(new Medkit(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0f, (j + 0.5f) * SPOT_LENGTH))));
+                        medkits.add(new Medkit(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 100) {
                         trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.25f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 50) {

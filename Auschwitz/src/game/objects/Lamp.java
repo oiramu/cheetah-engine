@@ -21,7 +21,7 @@ import javax.sound.sampled.Clip;
 
 import engine.ResourceLoader;
 import engine.audio.AudioUtil;
-import engine.core.GameObject;
+import engine.core.GameComponent;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -38,7 +38,7 @@ import game.Auschwitz;
  * @version 1.0
  * @since 2017
  */
-public class Lamp implements GameObject {
+public class Lamp implements GameComponent {
 	
 	private static final String RES_LOC = "lamp/";
 	private static final int STATE_IDLE = 0;

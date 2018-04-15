@@ -22,7 +22,7 @@ import javax.sound.sampled.Clip;
 
 import engine.ResourceLoader;
 import engine.audio.AudioUtil;
-import engine.core.GameObject;
+import engine.core.GameComponent;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -42,7 +42,7 @@ import game.Player;
 * @version 1.0
 * @since 2018
 */
-public class Ghost implements GameObject {
+public class Ghost implements GameComponent {
 
 	private static final float MAX_HEALTH = 10f;
     private static final float SHOT_ANGLE = 10.0f;

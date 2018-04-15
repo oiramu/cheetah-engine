@@ -18,7 +18,7 @@ package game.objects;
 import java.util.ArrayList;
 
 import engine.ResourceLoader;
-import engine.core.GameObject;
+import engine.core.GameComponent;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -35,7 +35,7 @@ import game.Auschwitz;
  * @version 1.1
  * @since 2018
  */
-public class LightBeam implements GameObject {
+public class LightBeam implements GameComponent {
     
     private static Mesh mesh;
     private static Material material;

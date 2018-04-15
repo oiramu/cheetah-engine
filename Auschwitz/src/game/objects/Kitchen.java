@@ -16,7 +16,7 @@
 package game.objects;
 
 import engine.ResourceLoader;
-import engine.core.GameObject;
+import engine.core.GameComponent;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
@@ -31,7 +31,7 @@ import game.Auschwitz;
  * @version 1.0
  * @since 2018
  */
-public class Kitchen implements GameObject {
+public class Kitchen implements GameComponent {
 	
 	private static final String RES_LOC = "kitchen/PANSA0";
     

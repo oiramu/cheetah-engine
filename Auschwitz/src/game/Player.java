@@ -24,7 +24,7 @@ import org.lwjgl.opengl.Display;
 
 import engine.ResourceLoader;
 import engine.audio.AudioUtil;
-import engine.core.GameObject;
+import engine.core.GameComponent;
 import engine.core.Input;
 import engine.core.Time;
 import engine.core.Transform;
@@ -42,7 +42,7 @@ import engine.rendering.Vertex;
 * @version 1.4
 * @since 2017
 */
-public class Player implements GameObject{
+public class Player implements GameComponent{
 
     private static final float GUN_SIZE = 0.1f; 
     private static final float GUN_OFFSET = -0.077f;
@@ -358,7 +358,7 @@ public class Player implements GameObject{
         gunReload = gunsReloadSounds.get(2);
         gunClipp = gunsClippingSounds.get(2);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(2);
-        gunFireAnimationTime = 0.2f;   
+        gunFireAnimationTime = 0.175f;   
         damageMin = 60f;
         damageRange = 60f;
         moveSpeed = 4f;

@@ -22,7 +22,7 @@ import javax.sound.sampled.Clip;
 
 import engine.ResourceLoader;
 import engine.audio.AudioUtil;
-import engine.core.GameObject;
+import engine.core.GameComponent;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -42,12 +42,12 @@ import game.Player;
 * @version 1.0
 * @since 2017
 */
-public class Dog implements GameObject {
+public class Dog implements GameComponent {
 
 	private static final float MAX_HEALTH = 100f;
     private static final float SHOT_ANGLE = 10.0f;
     private static final float DAMAGE_MIN = 20f;
-    private static final float DAMAGE_RANGE = 0.55f;
+    private static final float DAMAGE_RANGE = 25f;
     private static final float MONSTER_WIDTH = 0.2f;
 
     private static final int STATE_IDLE = 0;

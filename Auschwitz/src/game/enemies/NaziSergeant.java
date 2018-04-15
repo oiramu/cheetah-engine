@@ -22,7 +22,7 @@ import javax.sound.sampled.Clip;
 
 import engine.ResourceLoader;
 import engine.audio.AudioUtil;
-import engine.core.GameObject;
+import engine.core.GameComponent;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -42,12 +42,12 @@ import game.Player;
 * @version 1.0
 * @since 2017
 */
-public class NaziSergeants implements GameObject {
+public class NaziSergeant implements GameComponent {
 
-    private static final float MAX_HEALTH = 175f;
+    private static final float MAX_HEALTH = 180f;
     private static final float SHOT_ANGLE = 10.0f;
-    private static final float DAMAGE_MIN = 1.0f;
-    private static final float DAMAGE_RANGE = 1.0f;
+    private static final float DAMAGE_MIN = 3f;
+    private static final float DAMAGE_RANGE = 6f;
     private static final float MONSTER_WIDTH = 0.4f;
 
     private static final int STATE_IDLE = 0;
@@ -57,7 +57,7 @@ public class NaziSergeants implements GameObject {
     private static final int STATE_DEAD = 4;
     private static final int STATE_DONE = 5;
     
-    private static final String RES_LOC = "naziSargent/";
+    private static final String RES_LOC = "naziSergeant/";
 
     private static final Clip seeNoise = ResourceLoader.loadAudio(RES_LOC + "SSSSIT");
     private static final Clip shootNoise = ResourceLoader.loadAudio(RES_LOC + "SSHOTGN");
@@ -82,7 +82,7 @@ public class NaziSergeants implements GameObject {
      * Constructor of the actual enemy.
      * @param transform the transform of the data.
      */
-    public NaziSergeants(Transform transform) {
+    public NaziSergeant(Transform transform) {
         if (rand == null) {
             rand = new Random();
         }
@@ -103,8 +103,6 @@ public class NaziSergeants implements GameObject {
             animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANI0"));
             animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANJ0"));
             animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANK0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANL0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANL0"));
         }
 
         if (mesh == null) {
@@ -114,7 +112,7 @@ public class NaziSergeants implements GameObject {
             final float sizeX = (float) ((double) sizeY / (sizeY * 2.0));
 
             final float offsetX = 0.05f;
-            final float offsetY = 0.01f;
+            final float offsetY = 0.0f;
 
             final float texMinX = -offsetX;
             final float texMaxX = -1 - offsetX;
@@ -150,7 +148,7 @@ public class NaziSergeants implements GameObject {
      */
     public void update() {
         //Set Height
-        transform.setPosition(transform.getPosition().getX(), -0.08f, transform.getPosition().getZ());
+        transform.setPosition(transform.getPosition().getX(), 0, transform.getPosition().getZ());
 
         //Face player
         Vector3f playerDistance = transform.getPosition().sub(Transform.getCamera().getPos());
@@ -215,9 +213,9 @@ public class NaziSergeants implements GameObject {
                     state = STATE_ATTACK;
                 }
 
-                if (distance > 1.7f) {
+                if (distance > 1.15f) {
                     orientation.setY(0);
-                    float moveSpeed = 1.15f;
+                    float moveSpeed = 1.25f;
 
                     Vector3f oldPos = transform.getPosition();
                     Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * Time.getDelta())));
@@ -293,7 +291,6 @@ public class NaziSergeants implements GameObject {
                             }
                         }
                     }
-                    canAttack = true;
                     material.setTexture(animation.get(6));
                 } else {
                     canAttack = true;

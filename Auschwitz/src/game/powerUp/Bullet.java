@@ -19,7 +19,7 @@ import javax.sound.sampled.Clip;
 
 import engine.ResourceLoader;
 import engine.audio.AudioUtil;
-import engine.core.GameObject;
+import engine.core.GameComponent;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
@@ -35,7 +35,7 @@ import game.Level;
 * @version 1.2
 * @since 2017
 */
-public class Bullet implements GameObject {
+public class Bullet implements GameComponent {
 
     private static final float PICKUP_THRESHHOLD = 0.75f;
     private static final int AMOUNT = 9;

@@ -22,7 +22,7 @@ import javax.sound.sampled.Clip;
 
 import engine.ResourceLoader;
 import engine.audio.AudioUtil;
-import engine.core.GameObject;
+import engine.core.GameComponent;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -42,7 +42,7 @@ import game.Player;
 * @version 1.0
 * @since 2017
 */
-public class NaziSoldier implements GameObject {
+public class NaziSoldier implements GameComponent {
 
     private static final float MAX_HEALTH = 100f;
     private static final float SHOT_ANGLE = 10.0f;
@@ -219,9 +219,9 @@ public class NaziSoldier implements GameObject {
                     state = STATE_ATTACK;
                 }
 
-                if (distance > 1.25f) {
+                if (distance > 1.0f) {
                     orientation.setY(0);
-                    float moveSpeed = 1.5f;
+                    float moveSpeed = 1.55f;
 
                     Vector3f oldPos = transform.getPosition();
                     Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * Time.getDelta())));

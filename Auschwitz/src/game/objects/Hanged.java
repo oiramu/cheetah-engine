@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import engine.ResourceLoader;
-import engine.core.GameObject;
+import engine.core.GameComponent;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
@@ -35,7 +35,7 @@ import game.Auschwitz;
  * @version 1.0
  * @since 2018
  */
-public class Hanged implements GameObject {
+public class Hanged implements GameComponent {
 	
 	private static final String RES_LOC = "hanged/";
     

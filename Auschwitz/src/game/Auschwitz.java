@@ -174,7 +174,7 @@ public class Auschwitz implements Game {
                     }
                 }
                 
-                for (NaziSergeants naziSargent : level.getNaziSergeants()) {
+                for (NaziSergeant naziSargent : level.getNaziSergeants()) {
                     if (!naziSargent.isAlive()) {
                         deadMonsters++;
                     }

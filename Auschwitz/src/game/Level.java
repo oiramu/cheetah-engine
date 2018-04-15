@@ -37,7 +37,7 @@ import engine.rendering.PhongShader;
 import engine.rendering.Vertex;
 import game.enemies.Dog;
 import game.enemies.Ghost;
-import game.enemies.NaziSergeants;
+import game.enemies.NaziSergeant;
 import game.enemies.NaziSoldier;
 import game.enemies.SsSoldier;
 import game.objects.Bones;
@@ -145,7 +145,7 @@ public class Level {
     private ArrayList<NaziSoldier> naziSoldiers;
     private ArrayList<Dog> dogs;
     private ArrayList<SsSoldier> ssSoldiers;
-    private ArrayList<NaziSergeants> naziSeargeants;
+    private ArrayList<NaziSergeant> naziSeargeants;
     private ArrayList<Ghost> ghosts;
 
     //Level
@@ -195,7 +195,7 @@ public class Level {
         this.ssSoldiers = new ArrayList<SsSoldier>();
         this.tables = new ArrayList<Table>();
         this.shotguns = new ArrayList<Shotgun>();
-        this.naziSeargeants = new ArrayList<NaziSergeants>();
+        this.naziSeargeants = new ArrayList<NaziSergeant>();
         this.machineguns = new ArrayList<Machinegun>();
         this.pillars = new ArrayList<Pillar>();
         this.ghosts = new ArrayList<Ghost>();
@@ -281,7 +281,7 @@ public class Level {
                 	}
             }
             
-            for (NaziSergeants naziSergeants : naziSeargeants) {
+            for (NaziSergeant naziSergeants : naziSeargeants) {
             	if(player.isBulletBased == true) {
 	                if (Math.abs(naziSergeants.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
 	                	naziSergeants.damage(player.getDamage());
@@ -504,7 +504,7 @@ public class Level {
             kitchen.update();
         }
         
-        for (NaziSergeants naziSergeants : naziSeargeants) {
+        for (NaziSergeant naziSergeants : naziSeargeants) {
         	naziSergeants.update();
         }
         
@@ -690,7 +690,7 @@ public class Level {
         	ssSoldier.render();
         }
         
-        for (NaziSergeants naziSergeants : naziSeargeants) {
+        for (NaziSergeant naziSergeants : naziSeargeants) {
         	naziSergeants.render();
         }
         
@@ -882,7 +882,7 @@ public class Level {
         int i = low;
         int j = high;
 
-        NaziSergeants pivot = naziSeargeants.get(low + (high - low) / 2);
+        NaziSergeant pivot = naziSeargeants.get(low + (high - low) / 2);
         float pivotDistance = pivot.getTransform().getPosition().sub(Transform.getCamera().getPos()).length();
 
         while (i <= j) {
@@ -894,7 +894,7 @@ public class Level {
             }
 
             if (i <= j) {
-            	NaziSergeants temp = naziSeargeants.get(i);
+            	NaziSergeant temp = naziSeargeants.get(i);
 
                 naziSeargeants.set(i, naziSeargeants.get(j));
                 naziSeargeants.set(j, temp);
@@ -1098,7 +1098,7 @@ public class Level {
             SsSoldier nearestSsSoldier = null;
             
             Vector2f naziSergeantsIntersect = null;
-            NaziSergeants nearestNaziSargent = null;
+            NaziSergeant nearestNaziSargent = null;
             
             Vector2f ghostIntersect = null;
             Ghost nearestghost = null;
@@ -1134,7 +1134,7 @@ public class Level {
                 }
             }
             
-            for (NaziSergeants naziSargent : naziSeargeants) {
+            for (NaziSergeant naziSargent : naziSeargeants) {
                 Vector2f collision = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, naziSargent.getTransform().getPosition().getXZ(), naziSargent.getSize());
 
                 if (collision != null && (naziSergeantsIntersect == null
@@ -1328,7 +1328,7 @@ public class Level {
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 130) {
                     	superShotguns.add(new SuperShotgun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 140) {
-                    	naziSeargeants.add(new NaziSergeants(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                    	naziSeargeants.add(new NaziSergeant(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         shotguns.add(new Shotgun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 150) {
                     	pipes.add(new Pipe(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
@@ -1508,7 +1508,7 @@ public class Level {
      * Returns all the Nazi sergeants in the array-list.
      * @return Nazi sergeants.
      */
-    public ArrayList<NaziSergeants> getNaziSergeants() {
+    public ArrayList<NaziSergeant> getNaziSergeants() {
         return naziSeargeants;
     }
 

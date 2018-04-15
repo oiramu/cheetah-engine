@@ -19,7 +19,7 @@ import javax.sound.sampled.Clip;
 
 import engine.ResourceLoader;
 import engine.audio.AudioUtil;
-import engine.core.GameObject;
+import engine.core.GameComponent;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -34,7 +34,7 @@ import engine.rendering.Vertex;
  * @version 1.0
  * @since 2018
  */
-public class SecretWall implements GameObject {
+public class SecretWall implements GameComponent {
 	
 	private static final float HEIGHT = Level.LEVEL_HEIGHT;
 	private static final float LENGTH = Level.SPOT_LENGTH;

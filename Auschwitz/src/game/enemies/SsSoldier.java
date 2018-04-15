@@ -22,7 +22,7 @@ import javax.sound.sampled.Clip;
 
 import engine.ResourceLoader;
 import engine.audio.AudioUtil;
-import engine.core.GameObject;
+import engine.core.GameComponent;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -42,12 +42,12 @@ import game.Player;
 * @version 1.0
 * @since 2017
 */
-public class SsSoldier implements GameObject {
+public class SsSoldier implements GameComponent {
 
     private static final float MAX_HEALTH = 200f;
     private static final float SHOT_ANGLE = 20.0f;
-    private static final float DAMAGE_MIN = 1.5f;//20
-    private static final float DAMAGE_RANGE = 1f;//50
+    private static final float DAMAGE_MIN = 2f;//2
+    private static final float DAMAGE_RANGE = 6f;//1
     private static final float MONSTER_WIDTH = 0.5f;
 
     private static final int STATE_IDLE = 0;
@@ -113,11 +113,11 @@ public class SsSoldier implements GameObject {
         if (mesh == null) {
             mesh = new Mesh();
 
-            final float sizeY = 0.8f;
+            final float sizeY = 0.85f;
             final float sizeX = (float) ((double) sizeY / (sizeY * 2.0));
 
             final float offsetX = 0.05f;
-            final float offsetY = 0.01f;
+            final float offsetY = 0.0f;
 
             final float texMinX = -offsetX;
             final float texMaxX = -1 - offsetX;
@@ -218,9 +218,9 @@ public class SsSoldier implements GameObject {
                     state = STATE_ATTACK;
                 }
 
-                if (distance > 1.5f) {
+                if (distance > 1.2f) {
                     orientation.setY(0);
-                    float moveSpeed = 1.25f;
+                    float moveSpeed = 1.5f;
 
                     Vector3f oldPos = transform.getPosition();
                     Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * Time.getDelta())));
@@ -297,10 +297,8 @@ public class SsSoldier implements GameObject {
                         }
                         AudioUtil.playAudio(shootNoise, distance);
                     }
-                    canAttack = true;
                     material.setTexture(animation.get(7));
-                    shootNoise.stop();
-                }else if (timeDecimals <= 1f) {
+                }/**else if (timeDecimals <= 1f) {
                     if (canAttack == true) {
                         Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
 
@@ -330,7 +328,7 @@ public class SsSoldier implements GameObject {
                         AudioUtil.playAudio(shootNoise, distance);
                     }
                     material.setTexture(animation.get(8));
-                } else {
+                }*/ else {
                     canAttack = true;
                     material.setTexture(animation.get(6));
                     state = STATE_CHASE;

@@ -46,8 +46,8 @@ public class NaziSoldier implements GameComponent {
 
     private static final float MAX_HEALTH = 100f;
     private static final float SHOT_ANGLE = 10.0f;
-    private static final float DAMAGE_MIN = 11f;
-    private static final float DAMAGE_RANGE = 22f;
+    private static final float DAMAGE_MIN = 20f;
+    private static final float DAMAGE_RANGE = 30f;
     private static final float MONSTER_WIDTH = 0.4f;
 
     private static final int STATE_IDLE = 0;

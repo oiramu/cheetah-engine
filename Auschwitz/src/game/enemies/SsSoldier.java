@@ -46,8 +46,8 @@ public class SsSoldier implements GameComponent {
 
     private static final float MAX_HEALTH = 200f;
     private static final float SHOT_ANGLE = 20.0f;
-    private static final float DAMAGE_MIN = 2f;//2
-    private static final float DAMAGE_RANGE = 6f;//1
+    private static final float DAMAGE_MIN = 20f;//2
+    private static final float DAMAGE_RANGE = 60f;//1
     private static final float MONSTER_WIDTH = 0.5f;
 
     private static final int STATE_IDLE = 0;
@@ -154,7 +154,7 @@ public class SsSoldier implements GameComponent {
     public void update() {
         //Set Height
         transform.setPosition(transform.getPosition().getX(), 0, transform.getPosition().getZ());
-        
+
         //Face player
         Vector3f playerDistance = transform.getPosition().sub(Transform.getCamera().getPos());
 
@@ -218,9 +218,9 @@ public class SsSoldier implements GameComponent {
                     state = STATE_ATTACK;
                 }
 
-                if (distance > 1.2f) {
+                if (distance > 1.25f) {
                     orientation.setY(0);
-                    float moveSpeed = 1.5f;
+                    float moveSpeed = 1.25f;
 
                     Vector3f oldPos = transform.getPosition();
                     Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * Time.getDelta())));
@@ -269,43 +269,14 @@ public class SsSoldier implements GameComponent {
                 } else if (timeDecimals <= 0.5f) {
                     material.setTexture(animation.get(6));
                 } else if (timeDecimals <= 0.75f) {
-                	if (canAttack == true) {
-                    	Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
-
-                        Vector2f lineStart = transform.getPosition().getXZ();
-                        Vector2f lineEnd = lineStart.sub(shootDirection.mul(1000.0f));
-
-                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
-
-                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
-
-                        if (playerIntersect != null && (nearestIntersect == null
-                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
-
-                        	float damage;
-                            if(player.getHealth() == 0) {
-                            	state = STATE_DONE;
-                            	damage = 0;
-                            }else {
-                            	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
-                            	if(player.getArmorb() == false) {
-                            		player.health((int) -damage);
-                            	}else {
-                            		player.setArmori((int) -damage);
-                            	}
-                            }
-                        }
-                        AudioUtil.playAudio(shootNoise, distance);
-                    }
-                    material.setTexture(animation.get(7));
-                }/**else if (timeDecimals <= 1f) {
-                    if (canAttack == true) {
+                    if (canAttack) {
                         Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
 
                         Vector2f lineStart = transform.getPosition().getXZ();
                         Vector2f lineEnd = lineStart.sub(shootDirection.mul(1000.0f));
 
                         Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
+                        canAttack = false;
 
                         Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
 
@@ -314,7 +285,6 @@ public class SsSoldier implements GameComponent {
 
                         	float damage;
                             if(player.getHealth() <= 0) {
-                            	damage = 0;
                             	state = STATE_DONE;
                             }else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
@@ -324,11 +294,12 @@ public class SsSoldier implements GameComponent {
                             		player.setArmori((int) -damage);
                             	}
                             }
+                            
                         }
                         AudioUtil.playAudio(shootNoise, distance);
                     }
-                    material.setTexture(animation.get(8));
-                }*/ else {
+                    material.setTexture(animation.get(7));
+                } else {
                     canAttack = true;
                     material.setTexture(animation.get(6));
                     state = STATE_CHASE;
@@ -341,18 +312,21 @@ public class SsSoldier implements GameComponent {
 
             final float time1 = 0.1f;
             final float time2 = 0.3f;
-            final float time3 = 0.45f;
-            final float time4 = 0.6f;
+            final float time3 = 0.4f;
+            final float time4 = 0.5f;
+            final float time5 = 0.6f;
 
             if (time <= deathTime + 0.2f) {
-                material.setTexture(animation.get(10));
+                material.setTexture(animation.get(9));
             } else if (time > deathTime + time1 && time <= deathTime + time2) {
-                material.setTexture(animation.get(11));
+                material.setTexture(animation.get(10));
             } else if (time > deathTime + time2 && time <= deathTime + time3) {
-                material.setTexture(animation.get(12));
+                material.setTexture(animation.get(11));
             } else if (time > deathTime + time3 && time <= deathTime + time4) {
+                material.setTexture(animation.get(12));
+            } else if (time > deathTime + time4 && time <= deathTime + time5) {
                 material.setTexture(animation.get(13));
-            } else if (time > deathTime + time4) {
+            } else if (time > deathTime + time5) {
                 state = STATE_DEAD;
             }
         }
@@ -363,7 +337,7 @@ public class SsSoldier implements GameComponent {
         }
         
         if (state == STATE_DONE) {
-            material.setTexture(animation.get(0));
+        	material.setTexture(animation.get(0));
         }
     }
 

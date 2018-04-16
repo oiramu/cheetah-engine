@@ -46,8 +46,8 @@ public class NaziSergeant implements GameComponent {
 
     private static final float MAX_HEALTH = 180f;
     private static final float SHOT_ANGLE = 10.0f;
-    private static final float DAMAGE_MIN = 3f;
-    private static final float DAMAGE_RANGE = 6f;
+    private static final float DAMAGE_MIN = 30f;
+    private static final float DAMAGE_RANGE = 60f;
     private static final float MONSTER_WIDTH = 0.4f;
 
     private static final int STATE_IDLE = 0;
@@ -213,9 +213,9 @@ public class NaziSergeant implements GameComponent {
                     state = STATE_ATTACK;
                 }
 
-                if (distance > 1.15f) {
+                if (distance > 1.20f) {
                     orientation.setY(0);
-                    float moveSpeed = 1.25f;
+                    float moveSpeed = 1.20f;
 
                     Vector3f oldPos = transform.getPosition();
                     Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * Time.getDelta())));
@@ -263,14 +263,15 @@ public class NaziSergeant implements GameComponent {
                     material.setTexture(animation.get(4));
                 } else if (timeDecimals <= 0.5f) {
                     material.setTexture(animation.get(5));
-                } else if (timeDecimals <= 0.75f) {
-                    if (canAttack == true) {
-                    	Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
+                } else if (timeDecimals <= 0.7f) {
+                    if (canAttack) {
+                        Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
 
                         Vector2f lineStart = transform.getPosition().getXZ();
                         Vector2f lineEnd = lineStart.sub(shootDirection.mul(1000.0f));
 
                         Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
+                        canAttack = false;
 
                         Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
 
@@ -278,9 +279,8 @@ public class NaziSergeant implements GameComponent {
                                 || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
 
                         	float damage;
-                            if(player.getHealth() == 0) {
+                            if(player.getHealth() <= 0) {
                             	state = STATE_DONE;
-                            	damage = 0;
                             }else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
                             	if(player.getArmorb() == false) {
@@ -289,12 +289,14 @@ public class NaziSergeant implements GameComponent {
                             		player.setArmori((int) -damage);
                             	}
                             }
+                            
                         }
+                        AudioUtil.playAudio(shootNoise, distance);
                     }
                     material.setTexture(animation.get(6));
                 } else {
                     canAttack = true;
-                    material.setTexture(animation.get(5));
+                    material.setTexture(animation.get(6));
                     state = STATE_CHASE;
                 }
             }
@@ -326,7 +328,9 @@ public class NaziSergeant implements GameComponent {
         if (state == STATE_DONE) {
         	double timeDecimals = (time - (double) ((int) time));
 
-        	if (timeDecimals <= 0.25f) {
+        	timeDecimals *= 1.5f;
+
+            if (timeDecimals <= 0.25f) {
                 material.setTexture(animation.get(0));
             } else if (timeDecimals <= 0.5f) {
                 material.setTexture(animation.get(1));

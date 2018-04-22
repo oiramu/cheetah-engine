@@ -14,7 +14,7 @@ Auschwitz its an FPS based on world war II taking place at one of the concentrat
 The engine its been writed with Java with the usage of the OpenGL API libraries: LWJGL and slick-utils. It make use of the modern coding
 and rendering mechanics for a more expandable and friendly end.
 
-This engine as well as the game is currently in developement, so we will keep expanding it as the game need it, thats why we don't realease
+This game engine as well as the game is currently in developement, so we will keep expanding it as the game need it, thats why we don't realease
 a blank version finished of the source code.
 
 The engine is free to use and upgrade, extend or modify so feel free to add, extend or upgrade code and all of your creation will be protected if you follow the code extension licence down below.

@@ -62,14 +62,14 @@ public class Player implements GameComponent{
     public float damageMin;
     public float damageRange;
     
-    private static final String PLAYER_RES_LOC = "player/";
-    private static final String WEAPONS_RES_LOC = "weapons/";
     public static final String HAND = "hand";
     public static final String PISTOL = "pistol";
     public static final String SHOTGUN = "shotgun";
     public static final String MACHINEGUN = "machinegun";
     public static final String SUPER_SHOTGUN = "superShotgun";
     public static final String CHAINGUN = "chaingun";
+    private static final String PLAYER_RES_LOC = "player/";
+    private static final String WEAPONS_RES_LOC = "weapons/";
     private static final String HAND_RES_LOC = WEAPONS_RES_LOC + HAND + "/";
     private static final String PISTOL_RES_LOC = WEAPONS_RES_LOC + PISTOL + "/";
     private static final String SHOTGUN_RES_LOC = WEAPONS_RES_LOC + SHOTGUN +"/";
@@ -92,13 +92,15 @@ public class Player implements GameComponent{
     private static ArrayList<Texture> gunsAnimationMaterial2;
     private static ArrayList<Texture> gunsAnimationMaterial3;
     private static ArrayList<Texture> gunsAnimationMaterial4;
+    private static ArrayList<Texture> crossHairMaterials;
+    private static ArrayList<Texture> crossHairAnimationMaterials;
     
     private static ArrayList<Clip> gunsNoiseSounds;
     private static ArrayList<Clip> gunsReloadSounds;
     private static ArrayList<Clip> gunsClippingSounds;
     private static ArrayList<Clip> gunsEmptyNoiseSounds;
     
-    private static Material guiMaterial;
+    private static Material hudMaterial;
 
     private static final Vector2f centerPosition = new Vector2f(Display.getWidth()/2, Display.getHeight()/2);
     private static final Vector3f zeroVector = new Vector3f(0, 0, 0);
@@ -118,6 +120,9 @@ public class Player implements GameComponent{
     private static Material gunAnimationMaterial2;
     private static Material gunAnimationMaterial3;
     private static Material gunAnimationMaterial4;
+    private static Material crossHairMaterial;
+    private static Material crossHairAnimationMaterial;
+    private static Material painMaterial;
     private static Transform gunTransform;
     
     private int maxBullets = 100;
@@ -131,6 +136,7 @@ public class Player implements GameComponent{
     private static boolean mouseLocked;
     
     private double gunFireTime;
+    private double painTime;
     private float width;
     private int health;
     private int armori;
@@ -204,6 +210,20 @@ public class Player implements GameComponent{
     		gunsAnimationMaterial4.add(ResourceLoader.loadTexture(SUPER_SHOTGUN_RES_LOC + PISFE0));
     	}
     	
+    	if(crossHairMaterials == null) {
+    		crossHairMaterials = new ArrayList<Texture>();
+    		crossHairMaterials.add(ResourceLoader.loadTexture("/hud/CROSS0"));
+    		crossHairMaterials.add(ResourceLoader.loadTexture("/hud/CROSS1"));
+    		crossHairMaterials.add(ResourceLoader.loadTexture("/hud/CROSS2"));
+    	}
+    	
+    	if(crossHairAnimationMaterials == null) {
+    		crossHairAnimationMaterials = new ArrayList<Texture>();
+    		crossHairAnimationMaterials.add(ResourceLoader.loadTexture("/hud/CROSS01"));
+    		crossHairAnimationMaterials.add(ResourceLoader.loadTexture("/hud/CROSS11"));
+    		crossHairAnimationMaterials.add(ResourceLoader.loadTexture("/hud/CROSS21"));
+    	}
+    	
     	if(gunsNoiseSounds == null) {
     		gunsNoiseSounds = new ArrayList<Clip>();
     		
@@ -248,8 +268,12 @@ public class Player implements GameComponent{
     		gotPistol();
     	}
     	
-    	if(guiMaterial == null) {
-    		guiMaterial = new Material(ResourceLoader.loadTexture("gui/MEDIA"));
+    	if(hudMaterial == null) {
+    		hudMaterial = new Material(ResourceLoader.loadTexture("hud/MEDIA"));
+    	}
+    	
+    	if(painMaterial == null) {
+    		painMaterial = new Material(ResourceLoader.loadTexture("hud/HEALTH0"), new Vector3f(1,0,0));
     	}
     	
         if (gunMesh == null) {
@@ -289,6 +313,7 @@ public class Player implements GameComponent{
         }
 
         gunFireTime = 0;
+        painTime = 0;
         mouseLocked = true;
         isAlive = true;
         Input.setMousePosition(centerPosition);
@@ -330,6 +355,8 @@ public class Player implements GameComponent{
     	gunMaterial = new Material(gunsMaterial.get(1));
     	gunAnimationMaterial1 = new Material(gunsAnimationMaterial1.get(1));
     	gunAnimationMaterial2 = new Material(gunsAnimationMaterial2.get(1));
+    	crossHairMaterial = new Material(crossHairMaterials.get(0));
+    	crossHairAnimationMaterial = new Material(crossHairAnimationMaterials.get(0));
         gunNoise = gunsNoiseSounds.get(1);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(1);
         gunFireAnimationTime = 0.1f;
@@ -354,6 +381,8 @@ public class Player implements GameComponent{
     	gunAnimationMaterial2 = new Material(gunsAnimationMaterial2.get(2));
     	gunAnimationMaterial3 = new Material(gunsAnimationMaterial3.get(2));
     	gunAnimationMaterial4 = new Material(gunsAnimationMaterial4.get(2));
+    	crossHairMaterial = new Material(crossHairMaterials.get(1));
+    	crossHairAnimationMaterial = new Material(crossHairAnimationMaterials.get(1));
         gunNoise = gunsNoiseSounds.get(2);
         gunReload = gunsReloadSounds.get(2);
         gunClipp = gunsClippingSounds.get(2);
@@ -378,9 +407,11 @@ public class Player implements GameComponent{
     	gunMaterial = new Material(gunsMaterial.get(3));
     	gunAnimationMaterial1 = new Material(gunsAnimationMaterial1.get(3));
     	gunAnimationMaterial2 = new Material(gunsAnimationMaterial2.get(3));
+    	crossHairMaterial = new Material(crossHairMaterials.get(2));
+    	crossHairAnimationMaterial = new Material(crossHairAnimationMaterials.get(2));
         gunNoise = gunsNoiseSounds.get(3);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(3);
-        gunFireAnimationTime = 0.05f;   
+        gunFireAnimationTime = 0.08f;   
         damageMin = 20f;
         damageRange = 60f;
         moveSpeed = 4.5f;
@@ -402,6 +433,8 @@ public class Player implements GameComponent{
     	gunAnimationMaterial2 = new Material(gunsAnimationMaterial2.get(4));
     	gunAnimationMaterial3 = new Material(gunsAnimationMaterial3.get(4));
     	gunAnimationMaterial4 = new Material(gunsAnimationMaterial4.get(4));
+    	crossHairMaterial = new Material(crossHairMaterials.get(1));
+    	crossHairAnimationMaterial = new Material(crossHairAnimationMaterials.get(1));
         gunNoise = gunsNoiseSounds.get(4);
         gunReload = gunsReloadSounds.get(4);
         gunClipp = gunsClippingSounds.get(4);
@@ -608,8 +641,13 @@ public class Player implements GameComponent{
     	double gunTime3 = gunTime2 + gunFireAnimationTime;
     	double gunTime4 = gunTime3 + gunFireAnimationTime;
     	
-    	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), guiMaterial);
+    	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), hudMaterial);
         gunMesh.draw();
+        
+        if((double)time < painTime + 0.5f) {
+        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), painMaterial);
+            gunMesh.draw();
+        }
         
 		if(isHand == true) {
 	        if ((double) time < gunTime) {
@@ -626,16 +664,25 @@ public class Player implements GameComponent{
 		if(isBulletBased == true) {
 			if((!(bullets <= 0))) {
 		        if ((double) time < gunTime) {
+		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairAnimationMaterial);
+			        gunMesh.draw();
+			        
 		            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial1);
 		            gunMesh.draw();
-		        }else if ((double) time < gunTime2) {	
+		        }else if ((double) time < gunTime2) {
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
 		            gunMesh.draw();
 		        }else {
+		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
+		            gunMesh.draw();
+		        	
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
 	            	gunMesh.draw();
 		        }
 			}else {
+				Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
+		        gunMesh.draw();
+				
 				Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
             	gunMesh.draw();
 			}
@@ -643,10 +690,16 @@ public class Player implements GameComponent{
 		if(isShellBased == true) {
 			if((!(shells <= 0))) {
 		        if ((double) time < gunTime) {
+		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairAnimationMaterial);
+			        gunMesh.draw();
+			        
 		            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial1);
 		            gunMesh.draw();
 		        }else if ((double) time < gunTime2) {
-		            if(isDoubleShooter == false && getShells() > 0) {
+		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
+		            gunMesh.draw();
+		        	
+		            if(isDoubleShooter == false && getShells() > 0) {         	
 		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
 			            gunMesh.draw();
 		            	AudioUtil.playAudio(gunReload, 0);
@@ -657,6 +710,9 @@ public class Player implements GameComponent{
 		            	AudioUtil.playAudio(gunReload, 0);
 		            }
 		        }else if ((double) time < gunTime3) {
+		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
+		            gunMesh.draw();
+		        	
 		            if(isDoubleShooter == false && getShells() > 0) {
 		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial3);
 			            gunMesh.draw();
@@ -668,6 +724,9 @@ public class Player implements GameComponent{
 		            	AudioUtil.playAudio(gunClipp, 0);
 		            }
 		        }else if ((double) time < gunTime4) {
+		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
+		            gunMesh.draw();
+		        	
 		            if(isDoubleShooter == false && getShells() > 0) {
 		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial4);
 			            gunMesh.draw();
@@ -677,10 +736,16 @@ public class Player implements GameComponent{
 			            gunMesh.draw();
 		            }
 		        }else {
+		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
+		            gunMesh.draw();
+		        	
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
 		            gunMesh.draw();
 		        }
 			}else {
+				Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
+		        gunMesh.draw();
+				
 				Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
 	            gunMesh.draw();
 			}
@@ -693,6 +758,8 @@ public class Player implements GameComponent{
      * @param amt amount.
      */
     public void health(int amt) {
+    	double time = (double) Time.getTime() / Time.SECOND;
+    	double timeDecimals = (time - (double) ((int) time));
         health += amt;
 
         if (health > MAX_LIFE) {
@@ -711,12 +778,15 @@ public class Player implements GameComponent{
             isAlive = false;
     		gotPistol();
 	        //if(Input.getKey(Input.KEY_E)) {
+    		if (timeDecimals <= 5.0f) {
 	            Auschwitz.loadLevel(Auschwitz.levelNum-Auschwitz.levelNum);
-	            deathNoise.stop();
+		        //deathNoise.stop();
+    		}
 	        //}
             //System.exit(0);
         } else {
             if (amt < 0) {
+            	painTime = (double) Time.getTime() / Time.SECOND;
                 AudioUtil.playAudio(painNoise, 0);
             }
             System.out.println("Life: "+ health + "/" + getMaxLife() + ".");

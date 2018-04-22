@@ -47,8 +47,8 @@ public class SEngineUtil {
 	 */
 	private SEngineUtil() {
 		try {
-			font = new AngelCodeFont("res/textures/fonts/defaultBitmapFont.fnt", new Image("res/textures/fonts/defaultBitmapFont_0.png")); 
-			boldFont = new AngelCodeFont("res/textures/fonts/boldBitmapFont.fnt", new Image("res/textures/fonts/boldBitmapFont_0.png")); 
+			font = new AngelCodeFont("res/textures/fonts/font.fnt", new Image("res/textures/fonts/font.png")); 
+			boldFont = new AngelCodeFont("res/textures/fonts/fontBold.fnt", new Image("res/textures/fonts/fontBold.png")); 
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,4 +1,4 @@
-![Banner](cheetah-engine/docs/javaw 2018-04-04 21-04-24-36.png)
+![Banner](/cheetah-engine/docs/javaw 2018-04-04 21-04-24-36.png)
 # Cheetah Engine (Java - OpenGL)
 Welcome to the Cross-Platform 3D Engine.
 As OpenGL Binding for Java the [LWJGL](https://www.lwjgl.org/) API is used.

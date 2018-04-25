@@ -1,23 +1,22 @@
-# Auschwitz's engine source code
+# Cheetah engine source code
 
 **Version 1.0.0**
 
-Code, news and information of the Auschwitz engine on this repository.
-
-## About Auschwitz:
-
-Auschwitz its an FPS based on world war II taking place at one of the concentration camp of auschwitz, its inspired on those old school
-90's FPS on their gameplay as well as their asthetic putting together with modern gameplay and visual desing. 
+Code, news and information of the Cheetah engine on this repository.
 
 ## About the engine:
 
-The engine its been writed with Java with the usage of the OpenGL API libraries: LWJGL and slick-utils. It make use of the modern coding
-and rendering mechanics for a more expandable and friendly end.
+Cheetah engine has been writed with Java with the usage of the OpenGL API libraries: LWJGL and slick-utils. It make use of the modern coding and rendering mechanics for a more expandable and friendly end.
 
 This game engine as well as the game is currently in developement, so we will keep expanding it as the game need it, thats why we don't realease
 a blank version finished of the source code.
 
 The engine is free to use and upgrade, extend or modify so feel free to add, extend or upgrade code and all of your creation will be protected if you follow the code extension licence down below.
+
+## About Auschwitz:
+
+Auschwitz its an FPS based on world war II taking place at one of the concentration camp of auschwitz, its inspired on those old school
+90's FPS on their gameplay as well as their asthetic putting together with modern gameplay and visual desing. 
 
 ## About the licence and usage:
 

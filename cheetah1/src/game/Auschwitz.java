@@ -25,6 +25,7 @@ import engine.ResourceLoader;
 import engine.audio.AudioUtil;
 import engine.core.*;
 import engine.rendering.*;
+import game.doors.SecretWall;
 import game.enemies.*;
 
 /**

@@ -35,6 +35,8 @@ import engine.rendering.Material;
 import engine.rendering.Mesh;
 import engine.rendering.PhongShader;
 import engine.rendering.Vertex;
+import game.doors.Door;
+import game.doors.SecretWall;
 import game.enemies.Dog;
 import game.enemies.Ghost;
 import game.enemies.NaziSergeant;

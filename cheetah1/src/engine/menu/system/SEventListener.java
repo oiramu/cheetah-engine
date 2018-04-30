@@ -50,7 +50,6 @@ public class SEventListener {
 		switch(actionId) {
 			case 1:
 				//Exit Event
-				coreEnginePointer.stop();
 				System.exit(0);
 				break;
 			case 3:

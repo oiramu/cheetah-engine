@@ -37,7 +37,7 @@ import engine.menu.system.SGameTime;
 /**
 *
 * @author Carlos Rodriguez
-* @version 1.1
+* @version 1.2
 * @since 2017
 */
 public class CoreDisplay {
@@ -45,7 +45,6 @@ public class CoreDisplay {
 	private int width;
 	private int height;
 	private static double frameTime;
-	private boolean isRunning;
 	private Menu menu;
 	private Rendering2DEngine twoDimensionalEngine;
 	private static CoreDisplay enginePointer;
@@ -68,9 +67,9 @@ public class CoreDisplay {
 	/**
 	 * Method that creates the window for the program.
 	 * @param title of the window.
-	 * @param window If its windowed or full-screen.
+	 * @param windowed If its windowed or full-screen.
 	 */
-	public void createWindow(String title, boolean window) {
+	public void createDisplay(String title, boolean windowed) {
 		
 		Display.setTitle(title);
 		Display.setIcon(new ByteBuffer[] {
@@ -78,7 +77,7 @@ public class CoreDisplay {
 		});
 		try {
 			
-			if(window == true) {
+			if(windowed == true) {
 				Display.setDisplayMode(new DisplayMode(width, height));
 				Display.setFullscreen(false);
 			} else {
@@ -106,7 +105,6 @@ public class CoreDisplay {
 			AudioUtil.playMidi(song);
 			twoDimensionalEngine = new Rendering2DEngine(getWidth(), getHeight());
 			menu = new DefaultMenu();
-			isRunning = true;
 			
 			//SEngineUtil.getInstance().setInputType(InputType.MOUSE); //Default input type
 		} catch(LWJGLException e) {
@@ -119,7 +117,7 @@ public class CoreDisplay {
 	 * Updates everything related for the window like the inputs or objects
 	 * and time.
 	 */
-	public void update() {	
+	public void updateDisplay() {	
 		SGameTime.getInstance().update();
 		
 		//Input type
@@ -133,6 +131,7 @@ public class CoreDisplay {
 		}
 		*/
 		//Update objects
+		Display.update();
 		menu.update();
 	}
 	
@@ -151,19 +150,12 @@ public class CoreDisplay {
 	 * Method that sets to run everything when the program ask it for.
 	 */
 	public void run() {
-		while(isRunning) {
-			this.update();
+		while(!isCloseRequested()) {
+			this.updateDisplay();
 			this.render();
-
-			Display.update(); //Update Window
+			//Update Window
 		}
-	}
-	
-	/**
-	 * Method that stops everything that the program is doing.
-	 */
-	public void stop() {
-		isRunning = false;
+		dispose();
 	}
 	
 	/**
@@ -189,6 +181,7 @@ public class CoreDisplay {
         Display.destroy();
         Keyboard.destroy();
         Mouse.destroy();
+        System.exit(0);
     }
 
     /**

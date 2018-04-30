@@ -33,7 +33,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		CoreDisplay display = new CoreDisplay(1280, 720, 250);
-		display.createDisplay("Auschwitz", true);
+		display.createDisplay("Auschwitz", false);
 		display.run();
 	}
 

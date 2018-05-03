@@ -35,7 +35,6 @@ public class CoreGame {
      * Constructor for the core of the game to compile.
      */
     public CoreGame() {
-        System.out.println(RenderUtil.getOpenGLVersion());
         RenderUtil.initGraphics();
         isRunning = false;
         game = new Auschwitz();

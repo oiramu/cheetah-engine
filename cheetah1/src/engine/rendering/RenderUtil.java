@@ -80,14 +80,15 @@ public class RenderUtil {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         
         glEnable(GL_DEPTH_CLAMP);
+        
+        System.out.println("|||CHEETAH ENGINE 1.0|||");
+        System.out.println("Compiliation specs: ");
+        System.out.println("OS name " + System.getProperty("os.name"));
+        System.out.println("OS version " + System.getProperty("os.version"));
+        System.out.println("LWJGL version " + org.lwjgl.Sys.getVersion());
+        System.out.println("OpenGL version " + glGetString(GL_VERSION));
+        System.out.println("\n");
 
     }
 
-    /**
-     * Returns the openGL version to a string.
-     * @return OpenGl version.
-     */
-    public static String getOpenGLVersion() {
-        return glGetString(GL_VERSION);
-    }
 }

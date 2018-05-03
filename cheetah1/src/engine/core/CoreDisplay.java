@@ -37,7 +37,7 @@ import engine.menu.system.SGameTime;
 /**
 *
 * @author Carlos Rodriguez
-* @version 1.2
+* @version 1.4
 * @since 2017
 */
 public class CoreDisplay {
@@ -109,6 +109,7 @@ public class CoreDisplay {
 			//SEngineUtil.getInstance().setInputType(InputType.MOUSE); //Default input type
 		} catch(LWJGLException e) {
 			e.printStackTrace();
+			Display.destroy();
 			System.exit(0);
 		}
 	}

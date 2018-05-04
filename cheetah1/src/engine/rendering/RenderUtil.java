@@ -81,7 +81,7 @@ public class RenderUtil {
         
         glEnable(GL_DEPTH_CLAMP);
         
-        System.out.println("|||CHEETAH ENGINE 1.0|||");
+        System.out.println("|CHEETAH ENGINE; BUILD v1.0|");
         System.out.println("Compiliation specs: ");
         System.out.println("OS name " + System.getProperty("os.name"));
         System.out.println("OS version " + System.getProperty("os.version"));

@@ -225,138 +225,124 @@ public class Level {
      */
 	public void input() {
     	
-        if (Input.getMouseDown(0)) {
+        if (Input.getMouseDown(0) && !player.isReloading) {
             for (NaziSoldier monster : naziSoldiers) {
-            	if(player.isBulletBased == true) {
+            	if(player.isBulletBased) {
 	                if (Math.abs(monster.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
 	                    monster.damage(player.getDamage());
 	                }
-            	}else
-            		if(player.isShellBased == true) {
-            			if (Math.abs(monster.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
-            				monster.damage(player.getDamage());
-            			}
-            	}else
-                	if(player.isHand == true) {
-    	                if (Math.abs(monster.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive == true) {
-    	                	AudioUtil.playAudio(punchNoise, 0);
-    	                	monster.damage(player.getDamage());
-    	                }
-                	}
+            	}else if(player.isShellBased) {
+            		if (Math.abs(monster.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
+            			monster.damage(player.getDamage());
+            		}
+            	}else if(player.isHand) {
+    	            if (Math.abs(monster.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive == true) {
+    	               AudioUtil.playAudio(punchNoise, 0);
+    	               monster.damage(player.getDamage());
+    	            }
+                }
             }
             
             for (Dog dog : dogs) {
-            	if(player.isBulletBased == true) {
+            	if(player.isBulletBased) {
 	                if (Math.abs(dog.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
 	                	dog.damage(player.getDamage());
 	                }
-            	}else
-            	if(player.isShellBased == true) {
-	                if (Math.abs(dog.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
-	                	dog.damage(player.getDamage());
-	                }
-            	}else
-                	if(player.isHand == true) {
-    	                if (Math.abs(dog.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive == true) {
-    	                	AudioUtil.playAudio(punchNoise, 0);
-    	                	dog.damage(player.getDamage());
-    	                }
-                	}
+            	}else if(player.isShellBased) {
+            		if (Math.abs(dog.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
+            			dog.damage(player.getDamage());
+            		}
+            	}else if(player.isHand) {
+    	            if (Math.abs(dog.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive == true) {
+    	               AudioUtil.playAudio(punchNoise, 0);
+    	               dog.damage(player.getDamage());
+    	            }
+                }
             }
             
             for (SsSoldier ssSoldier : ssSoldiers) {
-            	if(player.isBulletBased == true) {
+            	if(player.isBulletBased) {
 	                if (Math.abs(ssSoldier.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
 	                	ssSoldier.damage(player.getDamage());
 	                }
-            	}else
-            	if(player.isShellBased == true) {
-	                if (Math.abs(ssSoldier.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
-	                	ssSoldier.damage(player.getDamage());
-	                }
-            	}else
-                	if(player.isHand == true) {
-    	                if (Math.abs(ssSoldier.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive == true) {
-    	                	AudioUtil.playAudio(punchNoise, 0);
-    	                	ssSoldier.damage(player.getDamage());
-    	                }
-                	}
+            	}else if(player.isShellBased) {
+            		if (Math.abs(ssSoldier.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
+            			ssSoldier.damage(player.getDamage());
+            		}
+            	}else if(player.isHand) {
+    	            if (Math.abs(ssSoldier.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive == true) {
+    	               AudioUtil.playAudio(punchNoise, 0);
+    	               ssSoldier.damage(player.getDamage());
+    	            }
+                }
             }
             
             for (NaziSergeant naziSergeants : naziSeargeants) {
-            	if(player.isBulletBased == true) {
+            	if(player.isBulletBased) {
 	                if (Math.abs(naziSergeants.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
 	                	naziSergeants.damage(player.getDamage());
 	                }
-            	}else
-            	if(player.isShellBased == true) {
-	                if (Math.abs(naziSergeants.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
-	                	naziSergeants.damage(player.getDamage());
-	                }
-            	}else
-                	if(player.isHand == true) {
-    	                if (Math.abs(naziSergeants.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive == true) {
-    	                	AudioUtil.playAudio(punchNoise, 0);
-    	                	naziSergeants.damage(player.getDamage());
-    	                }
-                	}
+            	}else if(player.isShellBased) {
+            		if (Math.abs(naziSergeants.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
+            			naziSergeants.damage(player.getDamage());
+            		}
+            	}else if(player.isHand) {
+    	            if (Math.abs(naziSergeants.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive == true) {
+    	               AudioUtil.playAudio(punchNoise, 0);
+    	               naziSergeants.damage(player.getDamage());
+    	            }
+                }
             }
             
             for (Ghost ghost : ghosts) {
-            	if(player.isBulletBased == true) {
+            	if(player.isBulletBased) {
 	                if (Math.abs(ghost.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
 	                	ghost.damage(player.getDamage());
 	                }
-            	}else
-            	if(player.isShellBased == true) {
-	                if (Math.abs(ghost.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
-	                	ghost.damage(player.getDamage());
-	                }
-            	}else
-                	if(player.isHand == true) {
-    	                if (Math.abs(ghost.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive == true) {
-    	                	AudioUtil.playAudio(punchNoise, 0);
-    	                	ghost.damage(player.getDamage());
-    	                }
+            	}else if(player.isShellBased) {
+            		if (Math.abs(ghost.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
+            			ghost.damage(player.getDamage());
+            		}
+            	}else if(player.isHand) {
+    	            if (Math.abs(ghost.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive == true) {
+    	               AudioUtil.playAudio(punchNoise, 0);
+    	               ghost.damage(player.getDamage());
+    	            }
                 }
             }
             
             for (Lamp lamp : lamps) {
-            	if(player.isBulletBased == true) {
+            	if(player.isBulletBased) {
 	                if (Math.abs(lamp.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
 	                	lamp.damage(player.getDamage());
 	                }
-            	}else
-            	if(player.isShellBased == true) {
-	                if (Math.abs(lamp.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
-	                	lamp.damage(player.getDamage());
-	                }
-            	}else
-                	if(player.isHand == true) {
-    	                if (Math.abs(lamp.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive == true) {
-    	                	AudioUtil.playAudio(punchNoise, 0);
-    	                	lamp.damage(player.getDamage());
-    	                }
-                	}
+            	}else if(player.isShellBased) {
+            		if (Math.abs(lamp.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
+            			lamp.damage(player.getDamage());
+            		}
+            	}else if(player.isHand) {
+    	            if (Math.abs(lamp.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive == true) {
+    	               AudioUtil.playAudio(punchNoise, 0);
+    	               lamp.damage(player.getDamage());
+    	            }
+                }
             }
             
             for (Pillar pillar : pillars) {
-            	if(player.isBulletBased == true) {
+            	if(player.isBulletBased) {
 	                if (Math.abs(pillar.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
 	                	pillar.damage(player.getDamage());
 	                }
-            	}else
-            	if(player.isShellBased == true) {
-	                if (Math.abs(pillar.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
-	                	pillar.damage(player.getDamage());
-	                }
-            	}else
-                	if(player.isHand == true) {
-    	                if (Math.abs(pillar.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive == true) {
-    	                	AudioUtil.playAudio(punchSolidNoise, 0);
-    	                	pillar.damage(player.getDamage());
-    	                }
-                	}
+            	}else if(player.isShellBased) {
+            		if (Math.abs(pillar.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
+            			pillar.damage(player.getDamage());
+            		}
+            	}else if(player.isHand) {
+    	            if (Math.abs(pillar.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive == true) {
+    	               AudioUtil.playAudio(punchNoise, 0);
+    	               pillar.damage(player.getDamage());
+    	            }
+                }
             }
             
             for (Hanged hanged : hangeds) {

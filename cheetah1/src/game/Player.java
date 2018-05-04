@@ -149,6 +149,7 @@ public class Player implements GameComponent{
     private boolean chaingun;
     
     public boolean isAlive;
+    public boolean isReloading;
     public boolean isHand;
     public boolean isBulletBased;
     public boolean isShellBased;
@@ -495,7 +496,7 @@ public class Player implements GameComponent{
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_5)) {
 	        	if(sShotgun == false || weaponState == SUPER_SHOTGUN) {
-	        		AudioUtil.playAudio(missueNoise, 0);
+	        		//AudioUtil.playAudio(missueNoise, 0);
 	        	}else {
 	        		gotSShotgun();
 	        		AudioUtil.playAudio(moveNoise, 0);
@@ -514,7 +515,7 @@ public class Player implements GameComponent{
 	            mouseLocked = false;
 	        }
 	        
-	        if (Input.getMouseDown(0) || Input.getKeyDown(Input.KEY_LCONTROL)) {
+	        if ((Input.getMouseDown(0) || Input.getKeyDown(Input.KEY_LCONTROL)) && !isReloading) {
 	            if (!mouseLocked) {
 	                Input.setMousePosition(centerPosition);
 	                Input.setCursor(false);
@@ -526,20 +527,20 @@ public class Player implements GameComponent{
 		            Vector2f lineEnd = lineStart.add(shootDirection.mul(1000.0f));
 		
 		            Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, true);
-		            if(isHand == true) {
+		            if(isHand) {
 		            	gunFireTime = (double) Time.getTime() / Time.SECOND;
 		            	AudioUtil.playAudio(gunNoise, 0);
 		            }
-		            if(bullets != 0 && isBulletBased == true) {
-		            	if(isDoubleShooter == true)
+		            if(bullets != 0 && isBulletBased) {
+		            	if(isDoubleShooter)
 		            		setBullets(-2);
 		            	else
 		            		setBullets(-1);
 		            	gunFireTime = (double) Time.getTime() / Time.SECOND;
 		            	AudioUtil.playAudio(gunNoise, 0);
 		            }
-		            if(shells != 0 && isShellBased == true) {
-		            	if(isDoubleShooter == true)
+		            if(shells != 0 && isShellBased) {
+		            	if(isDoubleShooter)
 		            		setShells(-2);
 		            	else
 		            		setShells(-1);
@@ -651,6 +652,7 @@ public class Player implements GameComponent{
         
 		if(isHand == true) {
 	        if ((double) time < gunTime) {
+	        	isReloading = true;
 	            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial1);
 	            gunMesh.draw();
 	        }else if ((double) time < gunTime2) {
@@ -659,11 +661,13 @@ public class Player implements GameComponent{
 	        }else {
 	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
 	            gunMesh.draw();
+	            isReloading = false;
 	        }
         }
 		if(isBulletBased == true) {
 			if((!(bullets <= 0))) {
 		        if ((double) time < gunTime) {
+		        	isReloading = true;
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairAnimationMaterial);
 			        gunMesh.draw();
 			        
@@ -678,6 +682,7 @@ public class Player implements GameComponent{
 		        	
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
 	            	gunMesh.draw();
+	            	isReloading = false;
 		        }
 			}else {
 				Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
@@ -685,11 +690,13 @@ public class Player implements GameComponent{
 				
 				Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
             	gunMesh.draw();
+            	isReloading = false;
 			}
 		}
 		if(isShellBased == true) {
 			if((!(shells <= 0))) {
 		        if ((double) time < gunTime) {
+		        	isReloading = true;
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairAnimationMaterial);
 			        gunMesh.draw();
 			        
@@ -699,12 +706,7 @@ public class Player implements GameComponent{
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
 		            gunMesh.draw();
 		        	
-		            if(isDoubleShooter == false && getShells() > 0) {         	
-		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
-			            gunMesh.draw();
-		            	AudioUtil.playAudio(gunReload, 0);
-		            }
-		            if(isDoubleShooter == true && getShells() > 1) {
+		            if(getShells() > 0) {         	
 		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
 			            gunMesh.draw();
 		            	AudioUtil.playAudio(gunReload, 0);
@@ -713,12 +715,7 @@ public class Player implements GameComponent{
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
 		            gunMesh.draw();
 		        	
-		            if(isDoubleShooter == false && getShells() > 0) {
-		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial3);
-			            gunMesh.draw();
-		            	AudioUtil.playAudio(gunClipp, 0);
-		            }
-		            if(isDoubleShooter == true && getShells() > 1) {
+		            if(getShells() > 0) {
 		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial3);
 			            gunMesh.draw();
 		            	AudioUtil.playAudio(gunClipp, 0);
@@ -727,11 +724,7 @@ public class Player implements GameComponent{
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
 		            gunMesh.draw();
 		        	
-		            if(isDoubleShooter == false && getShells() > 0) {
-		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial4);
-			            gunMesh.draw();
-		            }
-		            if(isDoubleShooter == true && getShells() > 1) {
+		            if(getShells() > 0) {
 		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial4);
 			            gunMesh.draw();
 		            }
@@ -741,6 +734,7 @@ public class Player implements GameComponent{
 		        	
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
 		            gunMesh.draw();
+		            isReloading = false;
 		        }
 			}else {
 				Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
@@ -748,6 +742,7 @@ public class Player implements GameComponent{
 				
 				Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
 	            gunMesh.draw();
+	            isReloading = false;
 			}
 		}
         

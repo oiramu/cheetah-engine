@@ -67,9 +67,9 @@ public class CoreDisplay {
 	/**
 	 * Method that creates the window for the program.
 	 * @param title of the window.
-	 * @param windowed If its windowed or full-screen.
+	 * @param fullscreen If its windowed or full-screen.
 	 */
-	public void createDisplay(String title, boolean windowed) {
+	public void createDisplay(String title, boolean fullscreen) {
 		
 		Display.setTitle(title);
 		Display.setIcon(new ByteBuffer[] {
@@ -77,27 +77,22 @@ public class CoreDisplay {
 		});
 		try {
 			
-			if(windowed == true) {
-				Display.setDisplayMode(new DisplayMode(width, height));
-				Display.setFullscreen(false);
-			} else {
+			if(fullscreen) {
 				@SuppressWarnings("unused")
 				DisplayMode displayMode = null;
 		        DisplayMode[] modes = Display.getAvailableDisplayModes();
 	
-		         for (int i = 0; i < modes.length; i++)
-		         {
+		         for (int i = 0; i < modes.length; i++) {
 		             if (modes[i].getWidth() == width
 		             && modes[i].getHeight() == height
-		             && modes[i].isFullscreenCapable())
-		               {
-		                    displayMode = modes[i];
-		               }
+		             && modes[i].isFullscreenCapable()) { displayMode = modes[i]; }
 		         }
-				Display.setFullscreen(true);
+			} else {
+				Display.setDisplayMode(new DisplayMode(width, height));
 			}
 			
-			Display.create();
+			Display.setFullscreen(fullscreen);
+	        Display.create();
 			
 			//Hide mouse
 			Cursor emptyCursor = new Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null);

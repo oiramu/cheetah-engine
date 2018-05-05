@@ -106,7 +106,7 @@ public class Shotgun implements GameComponent {
 
         if (distance < PICKUP_THRESHHOLD) {
             Level.getPlayer().setShotgun(true);
-            Level.getPlayer().setShells(AMOUNT);
+            Level.getPlayer().addShells(AMOUNT);
             Level.removeShotgun(this);
             AudioUtil.playAudio(pickupNoise, 0);
         }

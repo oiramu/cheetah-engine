@@ -212,21 +212,21 @@ public class Auschwitz implements Game {
             
             if(level.getPlayer().getArmori() == 0) {
             	if(armoriTemp == 0) {
-            		level.getPlayer().setArmori(0);
+            		level.getPlayer().addArmori(0);
             	}
-            	level.getPlayer().setArmori(armoriTemp);
+            	level.getPlayer().addArmori(armoriTemp);
             }
             if(level.getPlayer().getBullets() == 0) {
             	if(bulletTemp == 0) {
-            		level.getPlayer().setBullets(20);
+            		level.getPlayer().addBullets(20);
             	}
-            	level.getPlayer().setBullets(bulletTemp);
+            	level.getPlayer().addBullets(bulletTemp);
             }
             if(level.getPlayer().getShells() == 0) {
             	if(shellTemp == 0) {
-            		level.getPlayer().setShells(20);
+            		level.getPlayer().addShells(20);
             	}
-            	level.getPlayer().setShells(shellTemp);
+            	level.getPlayer().addShells(shellTemp);
             }
             level.getPlayer().setShotgun(shotgunTemp);
             level.getPlayer().setMachinegun(machinegunTemp);

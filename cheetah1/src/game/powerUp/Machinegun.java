@@ -106,7 +106,7 @@ public class Machinegun implements GameComponent {
 
         if (distance < PICKUP_THRESHHOLD) {
             Level.getPlayer().setMachinegun(true);
-            Level.getPlayer().setBullets(AMOUNT);
+            Level.getPlayer().addBullets(AMOUNT);
             Level.removeMachineGun(this);
             AudioUtil.playAudio(pickupNoise, 0);
         }

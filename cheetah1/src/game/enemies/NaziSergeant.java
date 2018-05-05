@@ -46,7 +46,7 @@ public class NaziSergeant implements GameComponent {
 
     private static final float MAX_HEALTH = 180f;
     private static final float SHOT_ANGLE = 10.0f;
-    private static final float DAMAGE_MIN = 30f;
+    private static final float DAMAGE_MIN = 60f;
     private static final float DAMAGE_RANGE = 60f;
     private static final float MONSTER_WIDTH = 0.4f;
 
@@ -284,9 +284,9 @@ public class NaziSergeant implements GameComponent {
                             }else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
                             	if(player.getArmorb() == false) {
-                            		player.health((int) -damage);
+                            		player.addHealth((int) -damage);
                             	}else {
-                            		player.setArmori((int) -damage);
+                            		player.addArmori((int) -damage);
                             	}
                             }
                             

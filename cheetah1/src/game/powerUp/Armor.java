@@ -108,7 +108,7 @@ public class Armor implements GameComponent {
         Level.getPlayer();
 		if (distance < PICKUP_THRESHHOLD) {
             Level.getPlayer().setArmorb(STATE);
-            Level.getPlayer().setArmori(AMOUNT);
+            Level.getPlayer().addArmori(AMOUNT);
             Level.removeArmor(this);
             AudioUtil.playAudio(pickupNoise, 0);
         }

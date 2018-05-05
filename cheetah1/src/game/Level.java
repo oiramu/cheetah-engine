@@ -22,6 +22,8 @@ import javax.sound.sampled.Clip;
 
 import engine.ResourceLoader;
 import engine.audio.AudioUtil;
+import engine.core.Input;
+import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Util;
 import engine.core.Vector2f;
@@ -223,7 +225,17 @@ public class Level {
      * Inputs accessible in the level.
      */
 	public void input() {
-    	
+		double time = (double) Time.getTime() / Time.SECOND;
+    	double timeDecimals = (time - (double) ((int) time));
+		if (player.getHealth() <= 0) {
+	        if(Input.getKeyDown(Input.KEY_E)) {
+	    		if (timeDecimals <= 5.0f) {
+		            Auschwitz.loadLevel(Auschwitz.levelNum-Auschwitz.levelNum);
+		            player.gotPistol();
+	    		}
+	        }
+        }
+
         if (player.fires && !player.isReloading) {
             for (NaziSoldier monster : naziSoldiers) {
             	if(player.isBulletBased) {
@@ -235,7 +247,7 @@ public class Level {
             			monster.damage(player.getDamage());
             		}
             	}else if(player.isHand) {
-    	            if (Math.abs(monster.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive == true) {
+    	            if (Math.abs(monster.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive) {
     	               AudioUtil.playAudio(punchNoise, 0);
     	               monster.damage(player.getDamage());
     	            }
@@ -252,7 +264,7 @@ public class Level {
             			dog.damage(player.getDamage());
             		}
             	}else if(player.isHand) {
-    	            if (Math.abs(dog.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive == true) {
+    	            if (Math.abs(dog.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive) {
     	               AudioUtil.playAudio(punchNoise, 0);
     	               dog.damage(player.getDamage());
     	            }
@@ -269,7 +281,7 @@ public class Level {
             			ssSoldier.damage(player.getDamage());
             		}
             	}else if(player.isHand) {
-    	            if (Math.abs(ssSoldier.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive == true) {
+    	            if (Math.abs(ssSoldier.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive) {
     	               AudioUtil.playAudio(punchNoise, 0);
     	               ssSoldier.damage(player.getDamage());
     	            }
@@ -286,7 +298,7 @@ public class Level {
             			naziSergeants.damage(player.getDamage());
             		}
             	}else if(player.isHand) {
-    	            if (Math.abs(naziSergeants.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive == true) {
+    	            if (Math.abs(naziSergeants.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive) {
     	               AudioUtil.playAudio(punchNoise, 0);
     	               naziSergeants.damage(player.getDamage());
     	            }
@@ -303,7 +315,7 @@ public class Level {
             			ghost.damage(player.getDamage());
             		}
             	}else if(player.isHand) {
-    	            if (Math.abs(ghost.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive == true) {
+    	            if (Math.abs(ghost.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive) {
     	               AudioUtil.playAudio(punchNoise, 0);
     	               ghost.damage(player.getDamage());
     	            }
@@ -320,7 +332,7 @@ public class Level {
             			lamp.damage(player.getDamage());
             		}
             	}else if(player.isHand) {
-    	            if (Math.abs(lamp.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive == true) {
+    	            if (Math.abs(lamp.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive) {
     	               AudioUtil.playAudio(punchNoise, 0);
     	               lamp.damage(player.getDamage());
     	            }
@@ -337,7 +349,7 @@ public class Level {
             			pillar.damage(player.getDamage());
             		}
             	}else if(player.isHand) {
-    	            if (Math.abs(pillar.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive == true) {
+    	            if (Math.abs(pillar.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive) {
     	               AudioUtil.playAudio(punchNoise, 0);
     	               pillar.damage(player.getDamage());
     	            }
@@ -346,7 +358,7 @@ public class Level {
             
             for (Hanged hanged : hangeds) {
                 if(player.isHand == true) {
-    	           if (Math.abs(hanged.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive == true) {
+    	           if (Math.abs(hanged.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive) {
     	                AudioUtil.playAudio(punchNoise, 0);
     	           }
                 }
@@ -354,7 +366,7 @@ public class Level {
             
             for (Table table : tables) {
                 if(player.isHand == true) {
-    	           if (Math.abs(table.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive == true) {
+    	           if (Math.abs(table.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive) {
     	                AudioUtil.playAudio(punchSolidNoise, 0);
     	           }
                 }
@@ -362,7 +374,7 @@ public class Level {
             
             for (Clock clock : clocks) {
                 if(player.isHand == true) {
-    	           if (Math.abs(clock.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive == true) {
+    	           if (Math.abs(clock.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive) {
     	                AudioUtil.playAudio(punchSolidNoise, 0);
     	           }
                 }
@@ -370,7 +382,7 @@ public class Level {
             
             for (Furnace furnace : furnaces) {
                 if(player.isHand == true) {
-    	           if (Math.abs(furnace.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive == true) {
+    	           if (Math.abs(furnace.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive) {
     	                AudioUtil.playAudio(punchSolidNoise, 0);
     	           }
                 }

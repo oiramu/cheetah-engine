@@ -106,7 +106,7 @@ public class SuperShotgun implements GameComponent {
 
         if (distance < PICKUP_THRESHHOLD) {
             Level.getPlayer().setSuperShotgun(true);
-            Level.getPlayer().setShells(AMOUNT);
+            Level.getPlayer().addShells(AMOUNT);
             Level.removeSuperShotgun(this);
             AudioUtil.playAudio(pickupNoise, 0);
         }

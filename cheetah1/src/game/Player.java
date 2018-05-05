@@ -416,7 +416,7 @@ public class Player implements GameComponent{
         gunNoise = gunsNoiseSounds.get(3);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(3);
         gunFireAnimationTime = 0.1f;   
-        damageMin = 30f;
+        damageMin = 20f;
         damageRange = 60f;
         moveSpeed = 4.5f;
         isHand = false;
@@ -463,6 +463,9 @@ public class Player implements GameComponent{
     	
         boolean rotY = deltaPos.getX() != 0;
         boolean rotX = deltaPos.getY() != 0;
+        
+        double time = (double) Time.getTime() / Time.SECOND;
+    	double timeDecimals = (time - (double) ((int) time));
         
         if(isAutomatic)
         	fires = (Input.getMouse(0) || Input.getKey(Input.KEY_LCONTROL));
@@ -540,18 +543,20 @@ public class Player implements GameComponent{
 		            	AudioUtil.playAudio(gunNoise, 0);
 		            }
 		            if(bullets != 0 && isBulletBased) {
-		            	if(isDoubleShooter)
-		            		setBullets(-2);
+		            	if(isAutomatic)
+		            		if (timeDecimals <= 1.0f) {
+		            			addBullets(-1);
+		        	        }
 		            	else
-		            		setBullets(-1);
+		            		addBullets(-1);
 		            	gunFireTime = (double) Time.getTime() / Time.SECOND;
 		            	AudioUtil.playAudio(gunNoise, 0);
 		            }
 		            if(shells != 0 && isShellBased) {
 		            	if(isDoubleShooter)
-		            		setShells(-2);
+		            		addShells(-2);
 		            	else
-		            		setShells(-1);
+		            		addShells(-1);
 		            	gunFireTime = (double) Time.getTime() / Time.SECOND;
 		            	AudioUtil.playAudio(gunNoise, 0);
 		            }
@@ -703,6 +708,9 @@ public class Player implements GameComponent{
 		}
 		if(isShellBased == true) {
 			if((!(shells <= 0))) {
+				int sh;
+				if(isDoubleShooter)
+					sh = 1; else sh = 0;
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairAnimationMaterial);
@@ -714,7 +722,7 @@ public class Player implements GameComponent{
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
 		            gunMesh.draw();
 		        	
-		            if(getShells() > 0) {         	
+		            if(getShells() > sh) {         	
 		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
 			            gunMesh.draw();
 		            	AudioUtil.playAudio(gunReload, 0);
@@ -723,7 +731,7 @@ public class Player implements GameComponent{
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
 		            gunMesh.draw();
 		        	
-		            if(getShells() > 0) {
+		            if(getShells() > sh) {
 		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial3);
 			            gunMesh.draw();
 		            	AudioUtil.playAudio(gunClipp, 0);
@@ -732,7 +740,7 @@ public class Player implements GameComponent{
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
 		            gunMesh.draw();
 		        	
-		            if(getShells() > 0) {
+		            if(getShells() > sh) {
 		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial4);
 			            gunMesh.draw();
 		            }
@@ -757,12 +765,10 @@ public class Player implements GameComponent{
     }
 
     /**
-     * Method that calculates the damage that the player receives.
+     * Method that sets an amount of health if player get some, or lose some.
      * @param amt amount.
      */
-    public void health(int amt) {
-    	double time = (double) Time.getTime() / Time.SECOND;
-    	double timeDecimals = (time - (double) ((int) time));
+    public void addHealth(int amt) {
         health += amt;
 
         if (health > MAX_LIFE) {
@@ -779,14 +785,7 @@ public class Player implements GameComponent{
             machinegun = false;
             sShotgun = false;
             isAlive = false;
-    		gotPistol();
-	        //if(Input.getKey(Input.KEY_E)) {
-    		if (timeDecimals <= 5.0f) {
-	            Auschwitz.loadLevel(Auschwitz.levelNum-Auschwitz.levelNum);
-		        //deathNoise.stop();
-    		}
-	        //}
-            //System.exit(0);
+            gotHand();
         } else {
             if (amt < 0) {
             	painTime = (double) Time.getTime() / Time.SECOND;
@@ -805,16 +804,16 @@ public class Player implements GameComponent{
 	}
     
     /**
-     * Method that set the bullets if player get some, or lose some.
+     * Method that sets an amount of bullets if player get some, or lose some.
      * @param amt amount of bullets to set.
      */
-    public void setBullets(int amt) {
+    public void addBullets(int amt) {
         bullets += amt;
 
         if (bullets > getMaxBullets()) {
         	bullets = getMaxBullets();
         }
-        if(isBulletBased == true) {
+        if(isBulletBased) {
 		   if (bullets <= 0) {
 		      AudioUtil.playAudio(gunEmptyNoise, 0);
 		      System.out.println("You need more bullets!");
@@ -829,9 +828,10 @@ public class Player implements GameComponent{
      * @param amt amount.
      */
     public void setShotgun(boolean amt) {
-        if(amt == true && shotgun == false)
+        if(amt == true && shotgun == false) {
+    		shotgun = amt;
     		gotShotgun();
-        shotgun = amt;
+        }
     }
     
     /**
@@ -847,9 +847,10 @@ public class Player implements GameComponent{
      * @param amt amount.
      */
     public void setMachinegun(boolean amt) {
-    	if(amt == true && machinegun == false)
+    	if(amt == true && machinegun == false) {
+    		machinegun = amt;
     		gotMachinegun();
-        machinegun = amt;
+    	}
     }
     
     /**
@@ -865,9 +866,10 @@ public class Player implements GameComponent{
      * @param amt amount.
      */
     public void setSuperShotgun(boolean amt) {
-    	if(amt == true && sShotgun == false)
-    		gotSShotgun();
-    	sShotgun = amt;
+    	if(amt == true && sShotgun == false) {
+    		sShotgun = amt;
+    		gotSShotgun();	
+    	}
     }
     
     /**
@@ -973,17 +975,17 @@ public class Player implements GameComponent{
 	}
 
 	/**
-     * Method that set the shells if player get some, or lose some.
+     * Method that sets an amount of shells if player get some, or lose some.
      * @param amt amount of shells to set.
      */
-	public void setShells(int amt) {
+	public void addShells(int amt) {
 		shells += amt;
 
         if (shells > getMaxShells()) {
         	shells = getMaxShells();
         }
         
-        if(isShellBased == true) {
+        if(isShellBased) {
 		   if (shells <= 0) {
 		      AudioUtil.playAudio(gunEmptyNoise, 1);
 		      System.out.println("You need more shells!");
@@ -1002,10 +1004,10 @@ public class Player implements GameComponent{
 	}
 
 	/**
-     * Method that set the armor if player get some, or lose some.
+     * Method that sets an amount of armor if player get some, or lose some.
      * @param amt amount of armor to set.
      */
-	public void setArmori(int amt) {
+	public void addArmori(int amt) {
 		armori += amt;
 
         if (armori > getMaxArmor()) {

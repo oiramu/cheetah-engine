@@ -104,7 +104,7 @@ public class Medkit implements GameComponent {
         transform.setRotation(0, angle + 90, 0);
 
         if (distance < PICKUP_THRESHHOLD && Level.getPlayer().getHealth() < 100) {
-            Level.getPlayer().health(HEAL_AMOUNT);
+            Level.getPlayer().addHealth(HEAL_AMOUNT);
             Level.removeMedkit(this);
             AudioUtil.playAudio(pickupNoise, 0);
         }

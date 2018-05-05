@@ -289,9 +289,9 @@ public class SsSoldier implements GameComponent {
                             }else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
                             	if(player.getArmorb() == false) {
-                            		player.health((int) -damage);
+                            		player.addHealth((int) -damage);
                             	}else {
-                            		player.setArmori((int) -damage);
+                            		player.addArmori((int) -damage);
                             	}
                             }
                             

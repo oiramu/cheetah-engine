@@ -105,7 +105,7 @@ public class Food implements GameComponent {
         transform.setScale(1.7f, 0.5f, 1);
 
         if (distance < PICKUP_THRESHHOLD && Level.getPlayer().getHealth() < 100) {
-            Level.getPlayer().health(HEAL_AMOUNT);
+            Level.getPlayer().addHealth(HEAL_AMOUNT);
             Level.removeFood(this);
             AudioUtil.playAudio(pickupNoise, 0);
         }

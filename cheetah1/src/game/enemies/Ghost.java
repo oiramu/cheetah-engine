@@ -47,7 +47,7 @@ public class Ghost implements GameComponent {
 	private static final float MAX_HEALTH = 10f;
     private static final float SHOT_ANGLE = 10.0f;
     private static final float DAMAGE_MIN = 50f;
-    private static final float DAMAGE_RANGE = 0.225f;
+    private static final float DAMAGE_RANGE = 30f;
     private static final float MONSTER_WIDTH = 0.2f;
 
     private static final int STATE_IDLE = 0;
@@ -283,9 +283,9 @@ public class Ghost implements GameComponent {
                             }else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
                             	if(player.getArmorb() == false) {
-                            		player.health((int) -damage);
+                            		player.addHealth((int) -damage);
                             	}else {
-                            		player.setArmori((int) -damage);
+                            		player.addArmori((int) -damage);
                             	}
                             }
                         }

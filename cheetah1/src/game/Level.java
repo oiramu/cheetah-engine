@@ -86,6 +86,8 @@ public class Level {
     private static final float HAND_RANGE = 0.55f;
     private static final float BULLET_RANGE = 2f;
     private static final float SHELL_RANGE = 3f;
+    
+    private static final float PLAYER_HEIGHT = 0.4375f;
 
     private static final String PLAYER_RES_LOC = "player/";
     
@@ -996,10 +998,10 @@ public class Level {
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, dog.getTransform().getPosition().getXZ(), dog.getSize()));
             }
             
-            for (NaziSergeants naziSergeants : naziSeargeants) {
+            for (NaziSergeant naziSergeants : naziSeargeants) {
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, naziSergeants.getTransform().getPosition().getXZ(), naziSergeants.getSize()));
             }
-            */  
+            */
             for (Bones bone : bones) {
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, bone.getTransform().getPosition().getXZ(), bone.getSize()));
             }
@@ -1258,7 +1260,7 @@ public class Level {
                         }
 
                         if (yDoor) {
-                            doorTransform.setPosition(i, 0, j + SPOT_LENGTH / 2);
+                            doorTransform.setPosition(i, 0,0.1f+j + SPOT_LENGTH / 2);
                             doors.add(new Door(doorTransform, material, doorTransform.getPosition().add(new Vector3f(-0.9f, 0, 0))));
                         } else if (xDoor) {
                             doorTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
@@ -1289,7 +1291,7 @@ public class Level {
                     	naziSoldiers.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         bullets.add(new Bullet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.025f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 1) {
-                        player = new Player(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.4375f, (j + 0.5f) * SPOT_LENGTH));
+                        player = new Player(new Vector3f((i + 0.5f) * SPOT_WIDTH, PLAYER_HEIGHT, (j + 0.5f) * SPOT_LENGTH));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 192) {
                         medkits.add(new Medkit(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 100) {

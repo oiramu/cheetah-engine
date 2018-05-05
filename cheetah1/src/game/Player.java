@@ -148,11 +148,14 @@ public class Player implements GameComponent{
     private boolean sShotgun;
     private boolean chaingun;
     
+    public boolean fires;
+    
     public boolean isAlive;
     public boolean isReloading;
     public boolean isHand;
     public boolean isBulletBased;
     public boolean isShellBased;
+    public boolean isAutomatic;
     public boolean isDoubleShooter;
     
     /**
@@ -344,7 +347,7 @@ public class Player implements GameComponent{
         isBulletBased = false;
         isShellBased = false;
         weaponState = HAND;
-        
+        isAutomatic = false;
         isDoubleShooter = false;
     }
     
@@ -368,7 +371,7 @@ public class Player implements GameComponent{
         isBulletBased = true;
         isShellBased = false;
         weaponState = PISTOL;
-        
+        isAutomatic = false;
         isDoubleShooter = false;
     }
     
@@ -396,7 +399,7 @@ public class Player implements GameComponent{
         isBulletBased = false;
         isShellBased = true;
         weaponState = SHOTGUN;
-        
+        isAutomatic = false;
         isDoubleShooter = false;
     }
     
@@ -412,15 +415,15 @@ public class Player implements GameComponent{
     	crossHairAnimationMaterial = new Material(crossHairAnimationMaterials.get(2));
         gunNoise = gunsNoiseSounds.get(3);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(3);
-        gunFireAnimationTime = 0.08f;   
-        damageMin = 20f;
+        gunFireAnimationTime = 0.1f;   
+        damageMin = 30f;
         damageRange = 60f;
         moveSpeed = 4.5f;
         isHand = false;
         isBulletBased = true;
         isShellBased = false;
         weaponState = MACHINEGUN;
-        
+        isAutomatic = true;
         isDoubleShooter = false;
     }
     
@@ -448,7 +451,7 @@ public class Player implements GameComponent{
         isBulletBased = false;
         isShellBased = true;
         weaponState = SUPER_SHOTGUN;
-        
+        isAutomatic = false;
         isDoubleShooter = true;
     }
 
@@ -460,6 +463,11 @@ public class Player implements GameComponent{
     	
         boolean rotY = deltaPos.getX() != 0;
         boolean rotX = deltaPos.getY() != 0;
+        
+        if(isAutomatic)
+        	fires = (Input.getMouse(0) || Input.getKey(Input.KEY_LCONTROL));
+        else
+        	fires = (Input.getMouseDown(0) || Input.getKeyDown(Input.KEY_LCONTROL));
         
     	if(!(health <= 0)) {
 	        if (Input.getKeyDown(Input.KEY_E) || Input.getKeyDown(Input.KEY_SPACE)) {
@@ -496,7 +504,7 @@ public class Player implements GameComponent{
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_5)) {
 	        	if(sShotgun == false || weaponState == SUPER_SHOTGUN) {
-	        		//AudioUtil.playAudio(missueNoise, 0);
+	        		AudioUtil.playAudio(missueNoise, 0);
 	        	}else {
 	        		gotSShotgun();
 	        		AudioUtil.playAudio(moveNoise, 0);
@@ -515,7 +523,7 @@ public class Player implements GameComponent{
 	            mouseLocked = false;
 	        }
 	        
-	        if ((Input.getMouseDown(0) || Input.getKeyDown(Input.KEY_LCONTROL)) && !isReloading) {
+	        if (fires && !isReloading) {
 	            if (!mouseLocked) {
 	                Input.setMousePosition(centerPosition);
 	                Input.setCursor(false);

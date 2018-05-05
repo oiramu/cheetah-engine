@@ -22,7 +22,6 @@ import javax.sound.sampled.Clip;
 
 import engine.ResourceLoader;
 import engine.audio.AudioUtil;
-import engine.core.Input;
 import engine.core.Transform;
 import engine.core.Util;
 import engine.core.Vector2f;
@@ -225,7 +224,7 @@ public class Level {
      */
 	public void input() {
     	
-        if (Input.getMouseDown(0) && !player.isReloading) {
+        if (player.fires && !player.isReloading) {
             for (NaziSoldier monster : naziSoldiers) {
             	if(player.isBulletBased) {
 	                if (Math.abs(monster.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {

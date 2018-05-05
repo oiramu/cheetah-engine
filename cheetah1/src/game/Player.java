@@ -39,7 +39,7 @@ import engine.rendering.Vertex;
 /**
 *
 * @author Carlos Rodriguez
-* @version 1.4
+* @version 1.5
 * @since 2017
 */
 public class Player implements GameComponent{
@@ -94,6 +94,7 @@ public class Player implements GameComponent{
     private static ArrayList<Texture> gunsAnimationMaterial4;
     private static ArrayList<Texture> crossHairMaterials;
     private static ArrayList<Texture> crossHairAnimationMaterials;
+    private static ArrayList<Texture> painMaterials;
     
     private static ArrayList<Clip> gunsNoiseSounds;
     private static ArrayList<Clip> gunsReloadSounds;
@@ -276,8 +277,11 @@ public class Player implements GameComponent{
     		hudMaterial = new Material(ResourceLoader.loadTexture("hud/MEDIA"));
     	}
     	
-    	if(painMaterial == null) {
-    		painMaterial = new Material(ResourceLoader.loadTexture("hud/HEALTH0"), new Vector3f(1,0,0));
+    	if(painMaterials == null) {
+    		painMaterials = new ArrayList<Texture>();
+    		
+    		painMaterials.add(ResourceLoader.loadTexture("hud/HEALTH0"));
+    		painMaterials.add(ResourceLoader.loadTexture("hud/HEALTH1"));
     	}
     	
         if (gunMesh == null) {
@@ -658,8 +662,13 @@ public class Player implements GameComponent{
     	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), hudMaterial);
         gunMesh.draw();
         
-        if((double)time < painTime + 0.5f) {
-        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), painMaterial);
+        if(isAlive) {
+	        if((double)time < painTime + 0.5f) {
+	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), painMaterial);
+	            gunMesh.draw();
+	        }
+        } else {
+        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), new Material(ResourceLoader.loadTexture("hud/DEATH")));
             gunMesh.draw();
         }
         
@@ -769,6 +778,7 @@ public class Player implements GameComponent{
      * @param amt amount.
      */
     public void addHealth(int amt) {
+    	
         health += amt;
 
         if (health > MAX_LIFE) {
@@ -788,6 +798,7 @@ public class Player implements GameComponent{
             gotHand();
         } else {
             if (amt < 0) {
+            	painMaterial = new Material(painMaterials.get(new Random().nextInt(painMaterials.size())));
             	painTime = (double) Time.getTime() / Time.SECOND;
                 AudioUtil.playAudio(painNoise, 0);
             }

@@ -143,6 +143,7 @@ public class Auschwitz implements Game {
             boolean superShotgunTemp = false;
             boolean chaingunTemp = false;
             boolean armorbTemp = false;
+            boolean mouseLocktemp = false;
             String weaponStateTemp = "";
             String sector;
 
@@ -192,6 +193,7 @@ public class Auschwitz implements Game {
                 superShotgunTemp = level.getPlayer().getSuperShotgun();
                 chaingunTemp = level.getPlayer().getChaingun();
                 weaponStateTemp = level.getPlayer().getWeaponState();
+                mouseLocktemp = level.getPlayer().mouseLocked;
             }
 
             if(levelNum > 9) {
@@ -236,6 +238,7 @@ public class Auschwitz implements Game {
             level.getPlayer().setChaingun(chaingunTemp);
             level.getPlayer().setArmorb(armorbTemp);
             level.getPlayer().setWeaponState(weaponStateTemp);
+            level.getPlayer().mouseLocked = mouseLocktemp;
             
             track += offset;
 

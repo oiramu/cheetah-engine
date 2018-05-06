@@ -136,8 +136,6 @@ public class Player implements GameComponent{
     private Camera playerCamera;
     private Random rand;
     private Vector3f movementVector;
-
-    private static boolean mouseLocked;
     
     private double gunFireTime;
     private double healthTime;
@@ -153,6 +151,8 @@ public class Player implements GameComponent{
     private boolean machinegun;
     private boolean sShotgun;
     private boolean chaingun;
+    
+    public static boolean mouseLocked;
     
     public boolean fires;
     
@@ -342,7 +342,7 @@ public class Player implements GameComponent{
 
         gunFireTime = 0;
         painTime = 0;
-        mouseLocked = true;
+        mouseLocked = false;
         isAlive = true;
         Input.setMousePosition(centerPosition);
         Input.setCursor(false);
@@ -595,7 +595,11 @@ public class Player implements GameComponent{
 		            	AudioUtil.playAudio(gunNoise, 0);
 		            }
 		            if(bullets != 0 && isBulletBased) {
-		            	addBullets(-1);     
+		            	if(isAutomatic) {
+		            		addBullets(-1);
+		            	} else {
+		            		addBullets(-1);
+		            	}
 		            	gunFireTime = (double) Time.getTime() / Time.SECOND;
 		            	AudioUtil.playAudio(gunNoise, 0);
 		            }

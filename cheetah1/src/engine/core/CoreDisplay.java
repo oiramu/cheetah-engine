@@ -93,6 +93,8 @@ public class CoreDisplay {
 			
 			Display.setFullscreen(fullscreen);
 	        Display.create();
+	        Keyboard.create();
+            Mouse.create();
 			
 			//Hide mouse
 			Cursor emptyCursor = new Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null);

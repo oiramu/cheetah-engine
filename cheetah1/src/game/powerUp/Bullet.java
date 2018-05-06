@@ -38,7 +38,7 @@ import game.Level;
 public class Bullet implements GameComponent {
 
     private static final float PICKUP_THRESHHOLD = 0.75f;
-    private static final int AMOUNT = 9;
+    private static final int AMOUNT = 7;
     
     private static final String RES_LOC = "bullet/MEDIA";
 

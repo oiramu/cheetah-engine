@@ -38,7 +38,7 @@ import game.Level;
 public class Machinegun implements GameComponent {
 
     private static final float PICKUP_THRESHHOLD = 0.75f;
-    private static final int AMOUNT = 10;
+    private static final int AMOUNT = 14;
     
     private static final String WEAPONS_RES_LOC = "weapons/";
     private static final String RES_LOC = "machinegun/MEDIA";

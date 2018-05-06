@@ -141,6 +141,7 @@ public class Auschwitz implements Game {
             boolean shotgunTemp = false;
             boolean machinegunTemp = false;
             boolean superShotgunTemp = false;
+            boolean chaingunTemp = false;
             boolean armorbTemp = false;
             String weaponStateTemp = "";
             String sector;
@@ -189,6 +190,7 @@ public class Auschwitz implements Game {
                 shotgunTemp = level.getPlayer().getShotgun();
                 machinegunTemp = level.getPlayer().getMachinegun();
                 superShotgunTemp = level.getPlayer().getSuperShotgun();
+                chaingunTemp = level.getPlayer().getChaingun();
                 weaponStateTemp = level.getPlayer().getWeaponState();
             }
 
@@ -231,6 +233,7 @@ public class Auschwitz implements Game {
             level.getPlayer().setShotgun(shotgunTemp);
             level.getPlayer().setMachinegun(machinegunTemp);
             level.getPlayer().setSuperShotgun(superShotgunTemp);
+            level.getPlayer().setChaingun(chaingunTemp);
             level.getPlayer().setArmorb(armorbTemp);
             level.getPlayer().setWeaponState(weaponStateTemp);
             
@@ -262,6 +265,8 @@ public class Auschwitz implements Game {
             		level.getPlayer().gotShotgun();
             	}else if(level.getPlayer().getWeaponState() == level.getPlayer().SUPER_SHOTGUN && superShotgunTemp == true) {
             		level.getPlayer().gotSShotgun();
+            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().CHAINGUN && chaingunTemp == true) {
+            		level.getPlayer().gotChaingun();
             	}
             }
         } catch (Exception ex) {

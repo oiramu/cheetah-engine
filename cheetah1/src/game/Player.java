@@ -75,11 +75,15 @@ public class Player implements GameComponent{
     private static final String SHOTGUN_RES_LOC = WEAPONS_RES_LOC + SHOTGUN +"/";
     private static final String MACHINEGUN_RES_LOC = WEAPONS_RES_LOC + MACHINEGUN + "/";
     private static final String SUPER_SHOTGUN_RES_LOC = WEAPONS_RES_LOC + SUPER_SHOTGUN + "/";
+    private static final String CHAINGUN_RES_LOC = WEAPONS_RES_LOC + CHAINGUN + "/";
     private static final String PISGB0 = "PISGB0";
     private static final String PISFA0 = "PISFA0";
     private static final String PISFC0 = "PISFC0";
     private static final String PISFD0 = "PISFD0";
     private static final String PISFE0 = "PISFE0";
+    //private static final String MIGGD0 = "MIGGD0";
+    //private static final String MIGFA0 = "MIGFA0";
+    //private static final String MIGFB0 = "MIGFB0";
     private static final String EMPTY = "EMPTY";
     private static final String GUNSOUND = "GUN";
     private static final String CLIPSOUND = "CLIPIN";
@@ -174,6 +178,7 @@ public class Player implements GameComponent{
     		gunsMaterial.add(ResourceLoader.loadTexture(SHOTGUN_RES_LOC + PISGB0));
     		gunsMaterial.add(ResourceLoader.loadTexture(MACHINEGUN_RES_LOC + PISGB0));
     		gunsMaterial.add(ResourceLoader.loadTexture(SUPER_SHOTGUN_RES_LOC + PISGB0));
+    		gunsMaterial.add(ResourceLoader.loadTexture(CHAINGUN_RES_LOC + PISGB0));
     	}
     	
     	if(gunsAnimationMaterial1 == null) {
@@ -184,6 +189,7 @@ public class Player implements GameComponent{
     		gunsAnimationMaterial1.add(ResourceLoader.loadTexture(SHOTGUN_RES_LOC + PISFA0));
     		gunsAnimationMaterial1.add(ResourceLoader.loadTexture(MACHINEGUN_RES_LOC + PISFA0));
     		gunsAnimationMaterial1.add(ResourceLoader.loadTexture(SUPER_SHOTGUN_RES_LOC + PISFA0));
+    		gunsAnimationMaterial1.add(ResourceLoader.loadTexture(CHAINGUN_RES_LOC + PISFA0));
     	}
     	
     	if(gunsAnimationMaterial2 == null) {
@@ -194,6 +200,7 @@ public class Player implements GameComponent{
     		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(SHOTGUN_RES_LOC + PISFC0));
     		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(MACHINEGUN_RES_LOC + PISFC0));
     		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(SUPER_SHOTGUN_RES_LOC + PISFC0));
+    		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(CHAINGUN_RES_LOC + PISFC0));
     	}
     	
     	if(gunsAnimationMaterial3 == null) {
@@ -204,6 +211,7 @@ public class Player implements GameComponent{
     		gunsAnimationMaterial3.add(ResourceLoader.loadTexture(SHOTGUN_RES_LOC + PISFD0));
     		gunsAnimationMaterial3.add(null);
     		gunsAnimationMaterial3.add(ResourceLoader.loadTexture(SUPER_SHOTGUN_RES_LOC + PISFD0));
+    		gunsAnimationMaterial3.add(null);
     	}
     	
     	if(gunsAnimationMaterial4 == null) {
@@ -214,6 +222,7 @@ public class Player implements GameComponent{
     		gunsAnimationMaterial4.add(ResourceLoader.loadTexture(SHOTGUN_RES_LOC + PISFE0));
     		gunsAnimationMaterial4.add(null);
     		gunsAnimationMaterial4.add(ResourceLoader.loadTexture(SUPER_SHOTGUN_RES_LOC + PISFE0));
+    		gunsAnimationMaterial4.add(null);
     	}
     	
     	if(healthMaterials == null) {
@@ -430,7 +439,7 @@ public class Player implements GameComponent{
     	crossHairAnimationMaterial = new Material(crossHairAnimationMaterials.get(2));
         gunNoise = gunsNoiseSounds.get(3);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(3);
-        gunFireAnimationTime = 0.1f;   
+        gunFireAnimationTime = 0.120f;   
         damageMin = 20f;
         damageRange = 60f;
         moveSpeed = 4.5f;
@@ -469,6 +478,30 @@ public class Player implements GameComponent{
         isAutomatic = false;
         isDoubleShooter = true;
     }
+    
+    /**
+     * The settings that the player sets if he chooses the chain-gun
+     * of he's bag, only if he have it on it.
+     */
+    public void gotChaingun() {
+    	gunMaterial = new Material(gunsMaterial.get(5));
+    	gunAnimationMaterial1 = new Material(gunsAnimationMaterial1.get(5));
+    	gunAnimationMaterial2 = new Material(gunsAnimationMaterial2.get(5));
+    	crossHairMaterial = new Material(crossHairMaterials.get(2));
+    	crossHairAnimationMaterial = new Material(crossHairAnimationMaterials.get(2));
+        gunNoise = gunsNoiseSounds.get(3);
+        gunEmptyNoise = gunsEmptyNoiseSounds.get(3);
+        gunFireAnimationTime = 0.09f;   
+        damageMin = 20f;
+        damageRange = 120f;
+        moveSpeed = 4.5f;
+        isHand = false;
+        isBulletBased = true;
+        isShellBased = false;
+        weaponState = CHAINGUN;
+        isAutomatic = true;
+        isDoubleShooter = false;
+    }
 
     /**
      * The player's input system.
@@ -490,54 +523,55 @@ public class Player implements GameComponent{
 	        }
 	        
 	        if (Input.getKeyDown(Input.KEY_1)) {
-	        	ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	if(weaponState == HAND) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	}else {
 	        		gotHand();
 	        		AudioUtil.playAudio(moveNoise, 0);
+	        		ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_2)) {
-	        	ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	if(weaponState == PISTOL) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	}else {
 	        		gotPistol();
 	        		AudioUtil.playAudio(moveNoise, 0);
+	        		ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_3)) {
-	        	ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	if(shotgun == false || weaponState == SHOTGUN) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	}else {
 	        		gotShotgun();
 	        		AudioUtil.playAudio(moveNoise, 0);
+	        		ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_4)) {
-	        	ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	if(machinegun == false || weaponState == MACHINEGUN) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	}else {
 	        		gotMachinegun();
 	        		AudioUtil.playAudio(moveNoise, 0);
+	        		ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_5)) {
-	        	ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	if(sShotgun == false || weaponState == SUPER_SHOTGUN) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	}else {
 	        		gotSShotgun();
 	        		AudioUtil.playAudio(moveNoise, 0);
+	        		ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_6)) {
-	        	ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	if(chaingun == false || weaponState == CHAINGUN) {
-	        		AudioUtil.playAudio(moveNoise, 0);
-	        	}else {
-	        		//gotChaingun();
 	        		AudioUtil.playAudio(missueNoise, 0);
+	        	}else {
+	        		gotChaingun();
+	        		AudioUtil.playAudio(moveNoise, 0);
+	        		ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	}
 	        }
+    	
 	        
 	        if (Input.getKey(Input.KEY_ESCAPE)) {
 	            Input.setCursor(true);
@@ -623,7 +657,8 @@ public class Player implements GameComponent{
      */
     public void update() {
 
-        float movAmt = (float) (moveSpeed * Time.getDelta());
+    	float movAmt = 0;
+    	if(isAlive) movAmt = (float) (moveSpeed * Time.getDelta());
 
         movementVector.setY(0);
 
@@ -891,7 +926,7 @@ public class Player implements GameComponent{
      * @param amt amount.
      */
     public void setShotgun(boolean amt) {
-        if(amt == true && shotgun == false) {
+        if(amt == true && shotgun == false && isAlive) {
     		shotgun = amt;
     		gotShotgun();
         }
@@ -910,7 +945,7 @@ public class Player implements GameComponent{
      * @param amt amount.
      */
     public void setMachinegun(boolean amt) {
-    	if(amt == true && machinegun == false) {
+    	if(amt == true && machinegun == false && isAlive) {
     		machinegun = amt;
     		gotMachinegun();
     	}
@@ -929,7 +964,7 @@ public class Player implements GameComponent{
      * @param amt amount.
      */
     public void setSuperShotgun(boolean amt) {
-    	if(amt == true && sShotgun == false) {
+    	if(amt == true && sShotgun == false && isAlive) {
     		sShotgun = amt;
     		gotSShotgun();	
     	}
@@ -942,6 +977,25 @@ public class Player implements GameComponent{
     public boolean getSuperShotgun() {
         return sShotgun;
     }
+    
+    /**
+     * Method that returns if the player have or not a chain-gun
+     * on he's bag.
+     */
+    public boolean getChaingun() {
+        return chaingun;
+    }
+    
+    /**
+     * Method that assigns the chain-gun to the player object.
+     * @param amt amount.
+     */
+    public void setChaingun(boolean amt) {
+    	if(amt == true && chaingun == false && isAlive) {
+    		chaingun = amt;
+    		gotChaingun();	
+    	}
+    } 
     
     /**
      * Method that assigns the armor to the player object.

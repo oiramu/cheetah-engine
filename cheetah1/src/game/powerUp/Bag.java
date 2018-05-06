@@ -38,9 +38,6 @@ import game.Level;
 public class Bag implements GameComponent {
 
     private static final float PICKUP_THRESHHOLD = 0.75f;
-    private static final int BULLET_AMOUNT = Level.getPlayer().getMaxBullets();
-    private static final int SHELL_AMOUNT = Level.getPlayer().getMaxShells();
-    private static final int ARMOR_AMOUNT = Level.getPlayer().getMaxArmor();
 	
 	private static final String RES_LOC = "bag/MEDIA";
    
@@ -108,9 +105,11 @@ public class Bag implements GameComponent {
 
         Level.getPlayer();
 		if (distance < PICKUP_THRESHHOLD) {
+			/**
             Level.getPlayer().setMaxBullets(BULLET_AMOUNT);
             Level.getPlayer().setMaxShells(SHELL_AMOUNT);
             Level.getPlayer().setMaxArmor(ARMOR_AMOUNT);
+            */
             Level.removeBags(this);
             AudioUtil.playAudio(pickupNoise, 0);
         }

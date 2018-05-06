@@ -87,6 +87,7 @@ public class Player implements GameComponent{
     
     private String weaponState;
     
+    private static ArrayList<Texture> healthMaterials;
     private static ArrayList<Texture> gunsMaterial;
     private static ArrayList<Texture> gunsAnimationMaterial1;
     private static ArrayList<Texture> gunsAnimationMaterial2;
@@ -94,6 +95,7 @@ public class Player implements GameComponent{
     private static ArrayList<Texture> gunsAnimationMaterial4;
     private static ArrayList<Texture> crossHairMaterials;
     private static ArrayList<Texture> crossHairAnimationMaterials;
+    private static ArrayList<Texture> ammoMaterials;
     private static ArrayList<Texture> painMaterials;
     
     private static ArrayList<Clip> gunsNoiseSounds;
@@ -101,7 +103,8 @@ public class Player implements GameComponent{
     private static ArrayList<Clip> gunsClippingSounds;
     private static ArrayList<Clip> gunsEmptyNoiseSounds;
     
-    private static Material hudMaterial;
+    private static Material healthMaterial;
+    private static Material ammoMaterial;
 
     private static final Vector2f centerPosition = new Vector2f(Display.getWidth()/2, Display.getHeight()/2);
     private static final Vector3f zeroVector = new Vector3f(0, 0, 0);
@@ -125,10 +128,6 @@ public class Player implements GameComponent{
     private static Material crossHairAnimationMaterial;
     private static Material painMaterial;
     private static Transform gunTransform;
-    
-    private int maxBullets = 100;
-    private int maxShells = 50;
-    private int maxArmor = 100;
 
     private Camera playerCamera;
     private Random rand;
@@ -137,6 +136,8 @@ public class Player implements GameComponent{
     private static boolean mouseLocked;
     
     private double gunFireTime;
+    private double healthTime;
+    private double ammoTime;
     private double painTime;
     private float width;
     private int health;
@@ -215,6 +216,20 @@ public class Player implements GameComponent{
     		gunsAnimationMaterial4.add(ResourceLoader.loadTexture(SUPER_SHOTGUN_RES_LOC + PISFE0));
     	}
     	
+    	if(healthMaterials == null) {
+    		healthMaterials = new ArrayList<Texture>();
+    		for (int i = 0; i < 101; i++) {
+    			healthMaterials.add(ResourceLoader.loadTexture("/hud/hud/HP" + i));
+			}
+    	}
+    	
+    	if(ammoMaterials == null) {
+    		ammoMaterials = new ArrayList<Texture>();
+    		for (int i = 0; i < 101; i++) {
+    			ammoMaterials.add(ResourceLoader.loadTexture("/hud/hud/AR" + i));
+			}
+    	}
+    	
     	if(crossHairMaterials == null) {
     		crossHairMaterials = new ArrayList<Texture>();
     		crossHairMaterials.add(ResourceLoader.loadTexture("/hud/CROSS0"));
@@ -271,10 +286,6 @@ public class Player implements GameComponent{
     	
     	if(weaponState == null) {
     		gotPistol();
-    	}
-    	
-    	if(hudMaterial == null) {
-    		hudMaterial = new Material(ResourceLoader.loadTexture("hud/MEDIA"));
     	}
     	
     	if(painMaterials == null) {
@@ -468,9 +479,6 @@ public class Player implements GameComponent{
         boolean rotY = deltaPos.getX() != 0;
         boolean rotX = deltaPos.getY() != 0;
         
-        double time = (double) Time.getTime() / Time.SECOND;
-    	double timeDecimals = (time - (double) ((int) time));
-        
         if(isAutomatic)
         	fires = (Input.getMouse(0) || Input.getKey(Input.KEY_LCONTROL));
         else
@@ -482,6 +490,7 @@ public class Player implements GameComponent{
 	        }
 	        
 	        if (Input.getKeyDown(Input.KEY_1)) {
+	        	ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	if(weaponState == HAND) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	}else {
@@ -489,6 +498,7 @@ public class Player implements GameComponent{
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_2)) {
+	        	ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	if(weaponState == PISTOL) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	}else {
@@ -496,6 +506,7 @@ public class Player implements GameComponent{
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_3)) {
+	        	ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	if(shotgun == false || weaponState == SHOTGUN) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	}else {
@@ -503,6 +514,7 @@ public class Player implements GameComponent{
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_4)) {
+	        	ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	if(machinegun == false || weaponState == MACHINEGUN) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	}else {
@@ -510,6 +522,7 @@ public class Player implements GameComponent{
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_5)) {
+	        	ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	if(sShotgun == false || weaponState == SUPER_SHOTGUN) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	}else {
@@ -517,6 +530,7 @@ public class Player implements GameComponent{
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_6)) {
+	        	ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	if(chaingun == false || weaponState == CHAINGUN) {
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        	}else {
@@ -547,12 +561,7 @@ public class Player implements GameComponent{
 		            	AudioUtil.playAudio(gunNoise, 0);
 		            }
 		            if(bullets != 0 && isBulletBased) {
-		            	if(isAutomatic)
-		            		if (timeDecimals <= 1.0f) {
-		            			addBullets(-1);
-		        	        }
-		            	else
-		            		addBullets(-1);
+		            	addBullets(-1);     
 		            	gunFireTime = (double) Time.getTime() / Time.SECOND;
 		            	AudioUtil.playAudio(gunNoise, 0);
 		            }
@@ -646,6 +655,7 @@ public class Player implements GameComponent{
         }
 
         gunTransform.setRotation(0, angle + 90, 0);
+        
     }
 
     /**
@@ -653,14 +663,34 @@ public class Player implements GameComponent{
      */
     public void render() {	
     	
+    	int ammo = 0;
+    	if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
     	double time = (double) Time.getTime() / Time.SECOND;
     	double gunTime = gunFireTime + gunFireAnimationTime;
     	double gunTime2 = gunTime + gunFireAnimationTime;
     	double gunTime3 = gunTime2 + gunFireAnimationTime;
     	double gunTime4 = gunTime3 + gunFireAnimationTime;
-    	
-    	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), hudMaterial);
-        gunMesh.draw();
+        
+        if((double)time < healthTime + 0.5f) {
+            healthMaterial = new Material(healthMaterials.get(getHealth()));
+        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), healthMaterial);
+            gunMesh.draw();
+        } else {
+        	healthMaterial = new Material(healthMaterials.get(getHealth()));
+        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), healthMaterial);
+            gunMesh.draw();
+        }
+        
+        if((double)time < ammoTime + 0.5f) {
+        	if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
+            ammoMaterial = new Material(ammoMaterials.get(ammo));
+        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), ammoMaterial);
+            gunMesh.draw();
+        } else {
+        	healthMaterial = new Material(healthMaterials.get(ammo));
+        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), ammoMaterial);
+            gunMesh.draw();
+        } 
         
         if(isAlive) {
 	        if((double)time < painTime + 0.5f) {
@@ -777,15 +807,14 @@ public class Player implements GameComponent{
      * Method that sets an amount of health if player get some, or lose some.
      * @param amt amount.
      */
-    public void addHealth(int amt) {
-    	
-        health += amt;
-
+    public void addHealth(int amt) {	
+        health += amt;  
+        healthTime = (double) Time.getTime() / Time.SECOND;
         if (health > MAX_LIFE) {
             health = MAX_LIFE;
         }
-
         if (health <= 0) {
+        	health = 0;
             AudioUtil.playAudio(deathNoise, 0);
             bullets = 0;
             shells = 0;
@@ -802,7 +831,6 @@ public class Player implements GameComponent{
             	painTime = (double) Time.getTime() / Time.SECOND;
                 AudioUtil.playAudio(painNoise, 0);
             }
-            System.out.println("Life: "+ health + "/" + getMaxLife() + ".");
         }
     }
     
@@ -819,20 +847,44 @@ public class Player implements GameComponent{
      * @param amt amount of bullets to set.
      */
     public void addBullets(int amt) {
-        bullets += amt;
-
-        if (bullets > getMaxBullets()) {
-        	bullets = getMaxBullets();
-        }
+    	bullets += amt;
+		ammoTime = (double) Time.getTime() / Time.SECOND;
+        if (bullets > 100) {
+        	bullets = 100;
+        }    
         if(isBulletBased) {
-		   if (bullets <= 0) {
-		      AudioUtil.playAudio(gunEmptyNoise, 0);
-		      System.out.println("You need more bullets!");
-		   	} else {
-		      System.out.println("Bullets: "+ bullets + "/"+getMaxBullets()+".");        
-	        }
+        	if (bullets <= 0) {
+        		bullets = 0;
+        		AudioUtil.playAudio(gunEmptyNoise, 1);
+        	}
         }
     }
+    
+    /**
+	 * Gets the player's actual shells.
+	 * @return player's shells.
+	 */
+	public int getShells() {
+		return shells;
+	}
+
+	/**
+     * Method that sets an amount of shells if player get some, or lose some.
+     * @param amt amount of shells to set.
+     */
+	public void addShells(int amt) {
+		shells += amt;
+		ammoTime = (double) Time.getTime() / Time.SECOND;
+        if (shells > 50) {
+        	shells = 50;
+        }
+        if(isShellBased) {
+        	if (shells <= 0) {
+        		shells = 0;
+        		AudioUtil.playAudio(gunEmptyNoise, 1);
+        	}
+        }
+	}
     
     /**
      * Method that assigns the shotgun to the player object.
@@ -949,62 +1001,6 @@ public class Player implements GameComponent{
     public int getHealth() {
         return health;
     }
-
-	/**
-	 * Gets the player's maximum number of bullets that can handle.
-	 * @return the maximum number of bullets.
-	 */
-	public int getMaxBullets() {
-		return maxBullets;
-	}
-
-	/**
-	 * Sets the player's maximum number of bullets that could handle.
-	 * @param maxBullets the new maximum numbers.
-	 */
-	public void setMaxBullets(int maxBullets) {
-		this.maxBullets += maxBullets;
-		if(this.maxBullets == 600) {
-			this.maxBullets = 600;
-		}
-	}
-	
-	/**
-	 * Saves the player's maximum number of bullets that could handle.
-	 * @param maxBullets the new maximum numbers.
-	 */
-	public void saveMaxBullets(int maxBullets) {
-		this.maxBullets = maxBullets;
-	}
-
-	/**
-	 * Gets the player's actual shells.
-	 * @return player's shells.
-	 */
-	public int getShells() {
-		return shells;
-	}
-
-	/**
-     * Method that sets an amount of shells if player get some, or lose some.
-     * @param amt amount of shells to set.
-     */
-	public void addShells(int amt) {
-		shells += amt;
-
-        if (shells > getMaxShells()) {
-        	shells = getMaxShells();
-        }
-        
-        if(isShellBased) {
-		   if (shells <= 0) {
-		      AudioUtil.playAudio(gunEmptyNoise, 1);
-		      System.out.println("You need more shells!");
-		   } else {
-		      System.out.println("Shells: "+ shells + "/"+getMaxShells()+".");        
-	       }
-        }
-	}
 	
 	/**
 	 * Gets the player's actual armor.
@@ -1021,8 +1017,8 @@ public class Player implements GameComponent{
 	public void addArmori(int amt) {
 		armori += amt;
 
-        if (armori > getMaxArmor()) {
-        	armori = getMaxArmor();
+        if (armori > 100) {
+        	armori = 100;
         }
         
         if (armori <= 0) {
@@ -1030,61 +1026,7 @@ public class Player implements GameComponent{
         	armorb = false;
         }
         
-        System.out.println("Armor: "+ armori + "/"+getMaxArmor()+".");
-	}
-
-	/**
-	 * Gets the player's maximum number of shells that can handle.
-	 * @return the maximum number of shells.
-	 */
-	public int getMaxShells() {
-		return maxShells;
-	}
-
-	/**
-	 * Sets the player's maximum number of shells that could handle.
-	 * @param maxShells the new maximum numbers.
-	 */
-	public void setMaxShells(int maxShells) {
-		this.maxShells += maxShells;
-		if(this.maxShells == 200) {
-			this.maxShells = 200;
-		}
-	}
-	
-	/**
-	 * Saves the player's maximum number of shells that could handle.
-	 * @param maxShells the new maximum numbers.
-	 */
-	public void saveMaxShells(int maxShells) {
-		this.maxShells = maxShells;
-	}
-	
-	/**
-	 * Sets the player's maximum number of armor that could handle.
-	 * @param amt the new maximum numbers.
-	 */
-	public void setMaxArmor(int amt) {
-		this.maxArmor = amt;
-	}
-	
-	/**
-	 * Gets the player's maximum number of armor that can handle.
-	 * @return the maximum number of shells.
-	 */
-	public int getMaxArmor() {
-		return maxArmor;
-	}
-	
-	/**
-	 * Saves the player's maximum number of armor that could handle.
-	 * @param amt the new maximum numbers.
-	 */
-	public void saveMaxArmor(int amt) {
-		this.maxArmor += amt;
-		if(maxArmor == 200) {
-			maxArmor = 200;
-		}
+        System.out.println("Armor: "+ armori + "/"+100+".");
 	}
 
 	/**

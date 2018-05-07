@@ -595,11 +595,7 @@ public class Player implements GameComponent{
 		            	AudioUtil.playAudio(gunNoise, 0);
 		            }
 		            if(bullets != 0 && isBulletBased) {
-		            	if(isAutomatic) {
-		            		addBullets(-1);
-		            	} else {
-		            		addBullets(-1);
-		            	}
+		            	addBullets(-1);
 		            	gunFireTime = (double) Time.getTime() / Time.SECOND;
 		            	AudioUtil.playAudio(gunNoise, 0);
 		            }

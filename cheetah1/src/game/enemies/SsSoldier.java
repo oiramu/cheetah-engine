@@ -341,9 +341,8 @@ public class SsSoldier implements GameComponent {
         
         if (state == STATE_HIT) {
         	double timeDecimals = (time - (double) ((int) time));
-        	Random r = new Random();
             if (timeDecimals <= 0.5f) {
-                material.setTexture(animation.get(r.nextInt(9-10) + 9));
+                material.setTexture(animation.get(9));
             } else {
                 state = STATE_CHASE;
             }

@@ -68,6 +68,7 @@ public class Player implements GameComponent{
     public static final String MACHINEGUN = "machinegun";
     public static final String SUPER_SHOTGUN = "superShotgun";
     public static final String CHAINGUN = "chaingun";
+    
     private static final String PLAYER_RES_LOC = "player/";
     private static final String WEAPONS_RES_LOC = "weapons/";
     private static final String HAND_RES_LOC = WEAPONS_RES_LOC + HAND + "/";
@@ -113,6 +114,9 @@ public class Player implements GameComponent{
     private static final Vector2f centerPosition = new Vector2f(Display.getWidth()/2, Display.getHeight()/2);
     private static final Vector3f zeroVector = new Vector3f(0, 0, 0);
     
+    private static float dy = 0;
+    private static float dx = 0;
+    
     private static Clip gunNoise;
     private static Clip gunEmptyNoise;
     private static Clip gunReload;
@@ -132,6 +136,7 @@ public class Player implements GameComponent{
     private static Material crossHairAnimationMaterial;
     private static Material painMaterial;
     private static Transform gunTransform;
+    private static Transform hudTransform;
 
     private Camera playerCamera;
     private Random rand;
@@ -338,6 +343,10 @@ public class Player implements GameComponent{
 
         if (gunTransform == null) {
             gunTransform = new Transform(playerCamera.getPos());
+        }
+        
+        if (hudTransform == null) {
+        	hudTransform = new Transform(playerCamera.getPos());
         }
 
         gunFireTime = 0;
@@ -659,7 +668,8 @@ public class Player implements GameComponent{
 
     	int ammo = 0;
     	float movAmt = 0;
-    	if(isAlive) movAmt = (float) (moveSpeed * Time.getDelta());
+    	double time = (double) Time.getTime() / Time.SECOND;
+    	if(isAlive) { movAmt = (float) (moveSpeed * Time.getDelta()); dy = GUN_OFFSET; dx = GUN_OFFSET_X;} 	
 
         movementVector.setY(0);
 
@@ -672,15 +682,24 @@ public class Player implements GameComponent{
 
         if (movementVector.length() > 0) {
             playerCamera.move(movementVector, movAmt);
+            dy -= (Math.sin(time*3)*(movAmt/6f));
+            System.out.println(dy);
+            dx -= (Math.cos(time*3)*(movAmt/6f));
         }
 
         //Gun movement
         gunTransform.setScale(1, 1, 1);
         gunTransform.setPosition(playerCamera.getPos().add(playerCamera.getForward().normalized().mul(GUN_TRANSFORM_MUL)));
-        gunTransform.setPosition(gunTransform.getPosition().add(playerCamera.getLeft().normalized().mul(GUN_OFFSET_X)));
-        gunTransform.getPosition().setY(gunTransform.getPosition().getY() + GUN_OFFSET);
+        gunTransform.setPosition(gunTransform.getPosition().add(playerCamera.getLeft().normalized().mul(dx)));
+        gunTransform.getPosition().setY(gunTransform.getPosition().getY() + dy);
+        
+        //Hud movement
+        hudTransform.setScale(1, 1, 1);
+        hudTransform.setPosition(playerCamera.getPos().add(playerCamera.getForward().normalized().mul(GUN_TRANSFORM_MUL)));
+        hudTransform.setPosition(hudTransform.getPosition().add(playerCamera.getLeft().normalized().mul(GUN_OFFSET_X)));
+        hudTransform.getPosition().setY(hudTransform.getPosition().getY() + GUN_OFFSET);
 
-        Vector3f playerDistance = gunTransform.getPosition().sub(Transform.getCamera().getPos());
+        Vector3f playerDistance = hudTransform.getPosition().sub(Transform.getCamera().getPos());
 
         Vector3f orientation = playerDistance.normalized();
 
@@ -691,6 +710,7 @@ public class Player implements GameComponent{
         }
 
         gunTransform.setRotation(0, angle + 90, 0);
+        hudTransform.setRotation(0, angle + 90, 0);
         
         healthMaterial = new Material(healthMaterials.get(getHealth()));
         if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
@@ -709,18 +729,18 @@ public class Player implements GameComponent{
     	double gunTime4 = gunTime3 + gunFireAnimationTime;
         
         if((double)time < healthTime + 0.5f) {
-        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), healthMaterial);
+        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), healthMaterial);
             gunMesh.draw();
         } else {
-        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), healthMaterial);
+        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), healthMaterial);
             gunMesh.draw();
         }
         
         if((double)time < ammoTime + 0.5f) {
-        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), ammoMaterial);
+        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), ammoMaterial);
             gunMesh.draw();
         } else {
-        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), ammoMaterial);
+        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), ammoMaterial);
             gunMesh.draw();
         } 
         
@@ -752,7 +772,7 @@ public class Player implements GameComponent{
 			if((!(bullets <= 0))) {
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
-		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairAnimationMaterial);
+		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairAnimationMaterial);
 			        gunMesh.draw();
 			        
 		            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial1);
@@ -761,7 +781,7 @@ public class Player implements GameComponent{
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
 		            gunMesh.draw();
 		        }else {
-		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
+		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairMaterial);
 		            gunMesh.draw();
 		        	
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
@@ -769,7 +789,7 @@ public class Player implements GameComponent{
 	            	isReloading = false;
 		        }
 			}else {
-				Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
+				Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairMaterial);
 		        gunMesh.draw();
 				
 				Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
@@ -784,13 +804,13 @@ public class Player implements GameComponent{
 					sh = 1; else sh = 0;
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
-		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairAnimationMaterial);
+		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairAnimationMaterial);
 			        gunMesh.draw();
 			        
 		            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial1);
 		            gunMesh.draw();
 		        }else if ((double) time < gunTime2) {
-		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
+		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairMaterial);
 		            gunMesh.draw();
 		        	
 		            if(getShells() > sh) {         	
@@ -799,7 +819,7 @@ public class Player implements GameComponent{
 		            	AudioUtil.playAudio(gunReload, 0);
 		            }
 		        }else if ((double) time < gunTime3) {
-		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
+		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairMaterial);
 		            gunMesh.draw();
 		        	
 		            if(getShells() > sh) {
@@ -808,7 +828,7 @@ public class Player implements GameComponent{
 		            	AudioUtil.playAudio(gunClipp, 0);
 		            }
 		        }else if ((double) time < gunTime4) {
-		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
+		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairMaterial);
 		            gunMesh.draw();
 		        	
 		            if(getShells() > sh) {
@@ -816,7 +836,7 @@ public class Player implements GameComponent{
 			            gunMesh.draw();
 		            }
 		        }else {
-		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
+		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairMaterial);
 		            gunMesh.draw();
 		        	
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
@@ -824,7 +844,7 @@ public class Player implements GameComponent{
 		            isReloading = false;
 		        }
 			}else {
-				Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), crossHairMaterial);
+				Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairMaterial);
 		        gunMesh.draw();
 				
 				Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);

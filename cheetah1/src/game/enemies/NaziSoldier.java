@@ -348,9 +348,8 @@ public class NaziSoldier implements GameComponent {
         
         if (state == STATE_HIT) {
         	double timeDecimals = (time - (double) ((int) time));
-        	Random r = new Random();
             if (timeDecimals <= 0.5f) {
-                material.setTexture(animation.get(r.nextInt(8-7) + 7));
+                material.setTexture(animation.get(7));
             } else {
                 state = STATE_CHASE;
             }

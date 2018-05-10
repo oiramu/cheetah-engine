@@ -702,7 +702,6 @@ public class Player implements GameComponent{
      */
     public void render() {	
     	
-    	int ammo = 0;
     	double time = (double) Time.getTime() / Time.SECOND;
     	double gunTime = gunFireTime + gunFireAnimationTime;
     	double gunTime2 = gunTime + gunFireAnimationTime;

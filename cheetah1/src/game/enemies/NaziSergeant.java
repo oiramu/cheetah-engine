@@ -56,6 +56,7 @@ public class NaziSergeant implements GameComponent {
     private static final int STATE_DYING = 3;
     private static final int STATE_DEAD = 4;
     private static final int STATE_DONE = 5;
+    private static final int STATE_HIT = 6;
     
     private static final String RES_LOC = "naziSergeant/";
 
@@ -100,6 +101,7 @@ public class NaziSergeant implements GameComponent {
             animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANG0"));
 
             animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANH0"));
+            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANH1"));
             animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANI0"));
             animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANJ0"));
             animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANK0"));
@@ -307,22 +309,19 @@ public class NaziSergeant implements GameComponent {
 
             final float time1 = 0.1f;
             final float time2 = 0.3f;
-            final float time3 = 0.45f;
 
             if (time <= deathTime + 0.2f) {
-                material.setTexture(animation.get(7));
-            } else if (time > deathTime + time1 && time <= deathTime + time2) {
-                material.setTexture(animation.get(8));
-            } else if (time > deathTime + time2 && time <= deathTime + time3) {
                 material.setTexture(animation.get(9));
-            } else if (time > deathTime + time3) {
+            } else if (time > deathTime + time1 && time <= deathTime + time2) {
+                material.setTexture(animation.get(10));
+            } else if (time > deathTime + time2) {
                 state = STATE_DEAD;
             }
         }
 
         if (state == STATE_DEAD) {
             dead = true;
-            material.setTexture(animation.get(10));
+            material.setTexture(animation.get(11));
         }
         
         if (state == STATE_DONE) {
@@ -340,6 +339,16 @@ public class NaziSergeant implements GameComponent {
                 material.setTexture(animation.get(3));
             }
         }
+        
+        if (state == STATE_HIT) {
+        	double timeDecimals = (time - (double) ((int) time));
+        	Random r = new Random();
+            if (timeDecimals <= 0.5f) {
+                material.setTexture(animation.get(r.nextInt(8-7) + 7));
+            } else {
+                state = STATE_CHASE;
+            }
+        }
     }
 
     /**
@@ -354,6 +363,7 @@ public class NaziSergeant implements GameComponent {
         health -= amt;
 
         if (health > 0) {
+        	state = STATE_HIT;
             AudioUtil.playAudio(hitNoise, transform.getPosition().sub(Transform.getCamera().getPos()).length());
         }
     }

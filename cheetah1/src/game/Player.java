@@ -683,7 +683,6 @@ public class Player implements GameComponent{
         if (movementVector.length() > 0) {
             playerCamera.move(movementVector, movAmt);
             dy -= (Math.sin(time*3)*(movAmt/6f));
-            System.out.println(dy);
             dx -= (Math.cos(time*3)*(movAmt/6f));
         }
 

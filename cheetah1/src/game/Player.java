@@ -500,7 +500,7 @@ public class Player implements GameComponent{
     	crossHairAnimationMaterial = new Material(crossHairAnimationMaterials.get(2));
         gunNoise = gunsNoiseSounds.get(3);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(3);
-        gunFireAnimationTime = 0.09f;   
+        gunFireAnimationTime = 0.075f;   
         damageMin = 20f;
         damageRange = 120f;
         moveSpeed = 4.5f;
@@ -695,7 +695,7 @@ public class Player implements GameComponent{
         
         //Hud movement
         hudTransform.setScale(1, 1, 1);
-        hudTransform.setPosition(playerCamera.getPos().add(playerCamera.getForward().normalized().mul(GUN_TRANSFORM_MUL)));
+        hudTransform.setPosition(playerCamera.getPos().add(playerCamera.getForward().normalized().mul(GUN_TRANSFORM_MUL-0.002f)));
         hudTransform.setPosition(hudTransform.getPosition().add(playerCamera.getLeft().normalized().mul(GUN_OFFSET_X)));
         hudTransform.getPosition().setY(hudTransform.getPosition().getY() + GUN_OFFSET);
 
@@ -778,6 +778,9 @@ public class Player implements GameComponent{
 		            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial1);
 		            gunMesh.draw();
 		        }else if ((double) time < gunTime2) {
+		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairAnimationMaterial);
+			        gunMesh.draw();
+		        	
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
 		            gunMesh.draw();
 		        }else {

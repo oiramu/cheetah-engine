@@ -657,6 +657,7 @@ public class Player implements GameComponent{
      */
     public void update() {
 
+    	int ammo = 0;
     	float movAmt = 0;
     	if(isAlive) movAmt = (float) (moveSpeed * Time.getDelta());
 
@@ -691,6 +692,9 @@ public class Player implements GameComponent{
 
         gunTransform.setRotation(0, angle + 90, 0);
         
+        healthMaterial = new Material(healthMaterials.get(getHealth()));
+        if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
+        ammoMaterial = new Material(ammoMaterials.get(ammo));
     }
 
     /**
@@ -699,7 +703,6 @@ public class Player implements GameComponent{
     public void render() {	
     	
     	int ammo = 0;
-    	if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
     	double time = (double) Time.getTime() / Time.SECOND;
     	double gunTime = gunFireTime + gunFireAnimationTime;
     	double gunTime2 = gunTime + gunFireAnimationTime;
@@ -707,22 +710,17 @@ public class Player implements GameComponent{
     	double gunTime4 = gunTime3 + gunFireAnimationTime;
         
         if((double)time < healthTime + 0.5f) {
-            healthMaterial = new Material(healthMaterials.get(getHealth()));
         	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), healthMaterial);
             gunMesh.draw();
         } else {
-        	healthMaterial = new Material(healthMaterials.get(getHealth()));
         	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), healthMaterial);
             gunMesh.draw();
         }
         
         if((double)time < ammoTime + 0.5f) {
-        	if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
-            ammoMaterial = new Material(ammoMaterials.get(ammo));
         	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), ammoMaterial);
             gunMesh.draw();
         } else {
-        	healthMaterial = new Material(healthMaterials.get(ammo));
         	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), ammoMaterial);
             gunMesh.draw();
         } 

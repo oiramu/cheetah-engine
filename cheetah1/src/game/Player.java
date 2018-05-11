@@ -580,7 +580,6 @@ public class Player implements GameComponent{
 	        		ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	}
 	        }
-    	
 	        
 	        if (Input.getKey(Input.KEY_ESCAPE)) {
 	            Input.setCursor(true);
@@ -768,7 +767,7 @@ public class Player implements GameComponent{
 	        }
         }
 		if(isBulletBased == true) {
-			if((!(bullets <= 0))) {
+			if(bullets != 0) {
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
 		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairAnimationMaterial);
@@ -800,10 +799,9 @@ public class Player implements GameComponent{
 			}
 		}
 		if(isShellBased == true) {
-			if((!(shells <= 0))) {
-				int sh;
-				if(isDoubleShooter)
-					sh = 1; else sh = 0;
+			int i;
+			if(isDoubleShooter)i=1;else i =0;
+			if(shells != i) {
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
 		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairAnimationMaterial);
@@ -814,29 +812,23 @@ public class Player implements GameComponent{
 		        }else if ((double) time < gunTime2) {
 		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairMaterial);
 		            gunMesh.draw();
-		        	
-		            if(getShells() > sh) {         	
-		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
-			            gunMesh.draw();
-		            	AudioUtil.playAudio(gunReload, 0);
-		            }
+      	
+		            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
+			        gunMesh.draw();
+			        AudioUtil.playAudio(gunReload, 0);
 		        }else if ((double) time < gunTime3) {
 		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairMaterial);
 		            gunMesh.draw();
-		        	
-		            if(getShells() > sh) {
-		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial3);
-			            gunMesh.draw();
-		            	AudioUtil.playAudio(gunClipp, 0);
-		            }
+
+		            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial3);
+			        gunMesh.draw();
+			        AudioUtil.playAudio(gunClipp, 0);
 		        }else if ((double) time < gunTime4) {
 		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairMaterial);
 		            gunMesh.draw();
-		        	
-		            if(getShells() > sh) {
-		            	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial4);
-			            gunMesh.draw();
-		            }
+
+		            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial4);
+			        gunMesh.draw();
 		        }else {
 		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairMaterial);
 		            gunMesh.draw();
@@ -902,9 +894,10 @@ public class Player implements GameComponent{
      */
     public void addBullets(int amt) {
     	bullets += amt;
-		ammoTime = (double) Time.getTime() / Time.SECOND;
+    	ammoTime = (double) Time.getTime() / Time.SECOND;
         if (bullets > 100) {
         	bullets = 100;
+        	ammoTime = (double) Time.getTime() / Time.SECOND;
         }    
         if(isBulletBased) {
         	if (bullets <= 0) {
@@ -931,6 +924,7 @@ public class Player implements GameComponent{
 		ammoTime = (double) Time.getTime() / Time.SECOND;
         if (shells > 50) {
         	shells = 50;
+        	ammoTime = (double) Time.getTime() / Time.SECOND;
         }
         if(isShellBased) {
         	if (shells <= 0) {

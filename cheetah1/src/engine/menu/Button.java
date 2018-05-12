@@ -23,9 +23,9 @@ import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
-import engine.ResourceLoader;
 import engine.audio.AudioUtil;
 import engine.core.Input;
+import engine.core.ResourceLoader;
 import engine.menu.system.SEngineUtil;
 import engine.menu.widget.WidgetModel;
 

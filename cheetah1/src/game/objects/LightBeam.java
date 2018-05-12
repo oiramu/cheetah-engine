@@ -17,8 +17,8 @@ package game.objects;
 
 import java.util.ArrayList;
 
-import engine.ResourceLoader;
 import engine.core.GameComponent;
+import engine.core.ResourceLoader;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;

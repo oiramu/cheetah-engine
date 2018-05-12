@@ -21,7 +21,6 @@ import javax.sound.midi.Sequence;
 
 import org.lwjgl.opengl.Display;
 
-import engine.ResourceLoader;
 import engine.audio.AudioUtil;
 import engine.core.*;
 import engine.rendering.*;

@@ -15,8 +15,8 @@
  */
 package engine.rendering;
 
-import engine.ResourceLoader;
 import engine.core.Matrix4f;
+import engine.core.ResourceLoader;
 
 /**
  *

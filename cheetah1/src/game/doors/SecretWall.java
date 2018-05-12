@@ -17,9 +17,9 @@ package game.doors;
 
 import javax.sound.sampled.Clip;
 
-import engine.ResourceLoader;
 import engine.audio.AudioUtil;
 import engine.core.GameComponent;
+import engine.core.ResourceLoader;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;

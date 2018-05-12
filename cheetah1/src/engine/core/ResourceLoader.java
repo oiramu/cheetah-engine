@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package engine;
+package engine.core;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -34,8 +34,6 @@ import javax.sound.sampled.DataLine;
 import org.newdawn.slick.opengl.PNGDecoder;
 import org.newdawn.slick.opengl.TextureLoader;
 
-import engine.core.Util;
-import engine.core.Vector3f;
 import engine.rendering.Bitmap;
 import engine.rendering.Mesh;
 import engine.rendering.Texture;

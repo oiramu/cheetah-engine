@@ -27,7 +27,6 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
-import engine.ResourceLoader;
 import engine.audio.AudioUtil;
 import engine.menu.DefaultMenu;
 import engine.menu.Menu;

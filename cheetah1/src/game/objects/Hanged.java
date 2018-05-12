@@ -18,8 +18,8 @@ package game.objects;
 import java.util.ArrayList;
 import java.util.Random;
 
-import engine.ResourceLoader;
 import engine.core.GameComponent;
+import engine.core.ResourceLoader;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;

@@ -318,7 +318,6 @@ public class Level {
             		}
             	}else if(player.isHand) {
     	            if (Math.abs(ghost.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive) {
-    	               AudioUtil.playAudio(punchNoise, 0);
     	               ghost.damage(player.getDamage());
     	            }
                 }
@@ -335,7 +334,7 @@ public class Level {
             		}
             	}else if(player.isHand) {
     	            if (Math.abs(lamp.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive) {
-    	               AudioUtil.playAudio(punchNoise, 0);
+    	               AudioUtil.playAudio(punchSolidNoise, 0);
     	               lamp.damage(player.getDamage());
     	            }
                 }
@@ -352,7 +351,7 @@ public class Level {
             		}
             	}else if(player.isHand) {
     	            if (Math.abs(pillar.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive) {
-    	               AudioUtil.playAudio(punchNoise, 0);
+    	               AudioUtil.playAudio(punchSolidNoise, 0);
     	               pillar.damage(player.getDamage());
     	            }
                 }

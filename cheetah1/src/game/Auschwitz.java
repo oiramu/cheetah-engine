@@ -39,7 +39,7 @@ public class Auschwitz implements Game {
     private static final int EPISODE_2 = 2;
     private static final int EPISODE_3 = 2;
     private static final int FOV = 70;
-    private static Level level;
+    public static Level level;
     private static Shader shader;
 
     public static int levelNum;

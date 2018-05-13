@@ -20,7 +20,7 @@ import engine.core.CoreDisplay;
 /**
 *
 * @author Carlos Rodriguez
-* @version 1.3.1
+* @version 1.3
 * @since 2017
 */
 public class Main {

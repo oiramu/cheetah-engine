@@ -936,7 +936,7 @@ public class Level {
 
         if (playSound) {
             for (int i = 0; i < exitPoints.size(); i++) {
-                if (Math.abs(exitPoints.get(i).sub(position).length()) < 0.75f) {
+                if (Math.abs(exitPoints.get(i).sub(position).length()) < 1f) {
                     Auschwitz.loadLevel(exitOffsets.get(i));
                 }
             }

@@ -37,13 +37,13 @@ import game.Level;
 */
 public class Machinegun implements GameComponent {
 
-    private static final float PICKUP_THRESHHOLD = 0.75f;
-    private static final int AMOUNT = 14;
+    public static final float PICKUP_THRESHHOLD = 0.75f;
+    public static final int AMOUNT = 14;
     
     private static final String WEAPONS_RES_LOC = "weapons/";
     private static final String RES_LOC = "machinegun/MEDIA";
     
-    private static final Clip pickupNoise = ResourceLoader.loadAudio(RES_LOC);
+    public static final Clip pickupNoise = ResourceLoader.loadAudio(RES_LOC);
 
     private static Mesh mesh;
     private static Material material;

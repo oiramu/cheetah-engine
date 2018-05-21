@@ -35,6 +35,7 @@ import engine.rendering.Vertex;
 import game.Auschwitz;
 import game.Level;
 import game.Player;
+import game.powerUp.Machinegun;
 
 /**
 *
@@ -54,9 +55,10 @@ public class SsSoldier implements GameComponent {
     private static final int STATE_CHASE = 1;
     private static final int STATE_ATTACK = 2;
     private static final int STATE_DYING = 3;
-    private static final int STATE_DEAD = 4;
+    private static final int STATE_PICK_UP = 4;
     private static final int STATE_DONE = 5;
     private static final int STATE_HIT = 6;
+    private static final int STATE_DEAD = 7;
     
     private static final String RES_LOC = "ssSoldier/";
 
@@ -154,6 +156,12 @@ public class SsSoldier implements GameComponent {
      * Updates the enemy every single frame.
      */
     public void update() {
+    	
+    	final float PICKUP_THRESHHOLD = Machinegun.PICKUP_THRESHHOLD;
+        final int AMOUNT = Machinegun.AMOUNT;
+
+        final Clip pickupNoise = Machinegun.pickupNoise;
+    	
         //Set Height
         transform.setPosition(transform.getPosition().getX(), 0, transform.getPosition().getZ());
 
@@ -326,8 +334,19 @@ public class SsSoldier implements GameComponent {
             } else if (time > deathTime + time3 && time <= deathTime + time4) {
                 material.setTexture(animation.get(14));
             } else if (time > deathTime + time4) {
+                state = STATE_PICK_UP;
+            }
+        }
+        
+        if (state == STATE_PICK_UP) {      	
+        	if (distance < PICKUP_THRESHHOLD) {
+                Level.getPlayer().setMachinegun(true);
+                Level.getPlayer().addBullets(AMOUNT);
+                AudioUtil.playAudio(pickupNoise, 0);
                 state = STATE_DEAD;
             }
+        	material.setTexture(animation.get(14));
+            dead = true;            
         }
 
         if (state == STATE_DEAD) {

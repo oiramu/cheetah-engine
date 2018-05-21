@@ -69,6 +69,6 @@ void main() {
     vec3 normal = normalize(normal0);
     totalLight += calcDirectionalLight(directionalLight, normal);
     
-    fragColor = color;
+    fragColor = color * totalLight;
     fragColor = mix(vec4(fogColor,1.0), fragColor, visibility);
 }

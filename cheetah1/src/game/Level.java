@@ -215,9 +215,6 @@ public class Level {
         this.collisionPosEnd = new ArrayList<Vector2f>();
         generateLevel();
         
-        PhongShader.setAmbientLight(new Vector3f(0.1f,0.1f,0.1f));
-   	 	PhongShader.setDirectionalLight(new DirectionalLight(
-   	 			new BaseLight(new Vector3f(1,1,1), 8f), player.getCamera().getPos()));
         Transform.setCamera(player.getCamera());
     }
 
@@ -1470,6 +1467,9 @@ public class Level {
         vertices.toArray(vertArray);
         indices.toArray(intArray);
         geometry.addVertices(vertArray, Util.toIntArray(intArray), true);
+        PhongShader.setAmbientLight(new Vector3f(0.75f,0.75f,0.75f));
+   	 	PhongShader.setDirectionalLight(new DirectionalLight(
+   	 			new BaseLight(new Vector3f(1,1,1), 0.8f), new Vector3f(1,PLAYER_HEIGHT,1)));
     }
     
     /**

@@ -331,7 +331,7 @@ public class Player implements GameComponent{
             int[] indices = new int[]{0, 1, 2,
             						  0, 2, 3};
 
-            gunMesh.addVertices(verts, indices);
+            gunMesh.addVertices(verts, indices, true);
         }
 
         playerCamera = new Camera(position);

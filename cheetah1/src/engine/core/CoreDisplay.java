@@ -26,6 +26,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.PixelFormat;
 
 import engine.audio.AudioUtil;
 import engine.menu.DefaultMenu;
@@ -91,7 +92,7 @@ public class CoreDisplay {
 			}
 			
 			Display.setFullscreen(fullscreen);
-	        Display.create();
+	        Display.create(new PixelFormat().withSamples(0));
 	        Keyboard.create();
             Mouse.create();
 			

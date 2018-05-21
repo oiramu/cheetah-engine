@@ -85,7 +85,7 @@ public class LightBeam implements GameComponent {
             int[] indices = new int[]{0, 1, 2,
                                     0, 2, 3};
 
-            mesh.addVertices(verts, indices);
+            mesh.addVertices(verts, indices, true);
         }
 
         if (material == null) {

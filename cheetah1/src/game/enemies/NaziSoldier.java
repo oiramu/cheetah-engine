@@ -138,7 +138,7 @@ public class NaziSoldier implements GameComponent {
             int[] indices = new int[]{0, 1, 2,
                                         0, 2, 3};
 
-            mesh.addVertices(verts, indices);
+            mesh.addVertices(verts, indices, true);
         }
 
         this.transform = transform;

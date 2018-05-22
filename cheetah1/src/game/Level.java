@@ -100,7 +100,7 @@ public class Level {
     private static final Clip punchSolidNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "PUNCH2");
     
     //Light
-    SpotLight sLight1 = new SpotLight(new PointLight(new BaseLight(new Vector3f(0.375f,0.375f,0.2f), 0.8f), 
+    SpotLight sLight1 = new SpotLight(new PointLight(new BaseLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f), 
     		new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), 30), new Vector3f(1,1,1), 0.7f);
 
     //Remove list

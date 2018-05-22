@@ -30,9 +30,13 @@ import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
+import engine.rendering.Attenuation;
+import engine.rendering.BaseLight;
 import engine.rendering.Camera;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.PhongShader;
+import engine.rendering.PointLight;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
 
@@ -142,6 +146,8 @@ public class Player implements GameComponent{
     private Random rand;
     private Vector3f movementVector;
     
+    private PointLight pLight1;
+    
     private double gunFireTime;
     private double healthTime;
     private double ammoTime;
@@ -151,6 +157,7 @@ public class Player implements GameComponent{
     private int armori;
     private int bullets;
     private int shells;
+    private int gunLightBeam;
     private boolean armorb;
     private boolean shotgun;
     private boolean machinegun;
@@ -309,6 +316,11 @@ public class Player implements GameComponent{
     		painMaterials.add(ResourceLoader.loadTexture("hud/HEALTH1"));
     	}
     	
+    	if(pLight1 == null) {
+    		pLight1 = new PointLight(new BaseLight(new Vector3f(0,0,0), 0), 
+    	    		new Attenuation(0,0,0), new Vector3f(0,0,0), 0);
+    	}
+    	
         if (gunMesh == null) {
             gunMesh = new Mesh();
 
@@ -331,7 +343,7 @@ public class Player implements GameComponent{
             int[] indices = new int[]{0, 1, 2,
             						  0, 2, 3};
 
-            gunMesh.addVertices(verts, indices, true);
+            gunMesh.addVertices(verts, indices);
         }
 
         playerCamera = new Camera(position);
@@ -376,6 +388,7 @@ public class Player implements GameComponent{
         damageRange = 0.1f;
         gunFireAnimationTime = 0.1f;
         moveSpeed = 6f;
+        gunLightBeam = 0;
         isHand = true;    
         isBulletBased = false;
         isShellBased = false;
@@ -400,6 +413,7 @@ public class Player implements GameComponent{
         damageMin = 20f;
         damageRange = 30f;
         moveSpeed = 5f;
+        gunLightBeam = 10;
         isHand = false;
         isBulletBased = true;
         isShellBased = false;
@@ -428,6 +442,7 @@ public class Player implements GameComponent{
         damageMin = 60f;
         damageRange = 60f;
         moveSpeed = 4f;
+        gunLightBeam = 20;
         isHand = false;
         isBulletBased = false;
         isShellBased = true;
@@ -452,6 +467,7 @@ public class Player implements GameComponent{
         damageMin = 20f;
         damageRange = 60f;
         moveSpeed = 4.5f;
+        gunLightBeam = 15;
         isHand = false;
         isBulletBased = true;
         isShellBased = false;
@@ -480,6 +496,7 @@ public class Player implements GameComponent{
         damageMin = 100f;
         damageRange = 60f;
         moveSpeed = 4f;
+        gunLightBeam = 40;
         isHand = false;
         isBulletBased = false;
         isShellBased = true;
@@ -504,6 +521,7 @@ public class Player implements GameComponent{
         damageMin = 20f;
         damageRange = 120f;
         moveSpeed = 4.5f;
+        gunLightBeam = 30;
         isHand = false;
         isBulletBased = true;
         isShellBased = false;
@@ -713,6 +731,7 @@ public class Player implements GameComponent{
         healthMaterial = new Material(healthMaterials.get(getHealth()));
         if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
         ammoMaterial = new Material(ammoMaterials.get(ammo));
+        
     }
 
     /**
@@ -770,6 +789,10 @@ public class Player implements GameComponent{
 			if(bullets != 0) {
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
+		        	pLight1 = new PointLight(new BaseLight(new Vector3f(0.5f,0.3f,0.1f), 0.8f), 
+		            		new Attenuation(0,0,1), new Vector3f(-2,0,3f), gunLightBeam);
+		        	pLight1.setPosition(getCamera().getPos());
+		        	PhongShader.setPointLight(new PointLight[] {pLight1});
 		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairAnimationMaterial);
 			        gunMesh.draw();
 			        
@@ -787,6 +810,7 @@ public class Player implements GameComponent{
 		        	
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
 	            	gunMesh.draw();
+	            	pLight1.setPosition(new Vector3f(1000,1000,1000));
 	            	isReloading = false;
 		        }
 			}else {
@@ -795,6 +819,7 @@ public class Player implements GameComponent{
 				
 				Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
             	gunMesh.draw();
+            	pLight1.setPosition(new Vector3f(1000,1000,1000));
             	isReloading = false;
 			}
 		}
@@ -804,6 +829,10 @@ public class Player implements GameComponent{
 			if(shells != i) {
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
+		        	pLight1 = new PointLight(new BaseLight(new Vector3f(0.45f,0.35f,0.1f), 0.8f), 
+		            		new Attenuation(0,0,1), new Vector3f(-2,0,3f), gunLightBeam);
+		        	pLight1.setPosition(getCamera().getPos());
+		        	PhongShader.setPointLight(new PointLight[] {pLight1});
 		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairAnimationMaterial);
 			        gunMesh.draw();
 			        
@@ -835,6 +864,7 @@ public class Player implements GameComponent{
 		        	
 		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
 		            gunMesh.draw();
+		            pLight1.setPosition(new Vector3f(1000,1000,1000));
 		            isReloading = false;
 		        }
 			}else {
@@ -843,6 +873,7 @@ public class Player implements GameComponent{
 				
 				Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
 	            gunMesh.draw();
+	            pLight1.setPosition(new Vector3f(1000,1000,1000));
 	            isReloading = false;
 			}
 		}

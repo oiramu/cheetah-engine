@@ -99,7 +99,7 @@ public class Lamp implements GameComponent {
             mesh.addVertices(verts, indices, true);
         }
         
-        this.material = new Material(animation.get(0));
+        this.material = new Material(animation.get(0), new Vector3f(1,1,1));
         this.state = STATE_IDLE;
         this.transform = transform;
         this.dead = false;

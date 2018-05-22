@@ -205,7 +205,7 @@ public class Auschwitz implements Game {
             
             levelNum += offset;
             level = new Level(ResourceLoader.loadBitmap("level" + levelNum).flipX(), 
-            		new Material(ResourceLoader.loadTexture("mapTexture" + currentEpisode)));
+            		new Material(ResourceLoader.loadTexture("mapTexture" + currentEpisode), new Vector3f(1,1,1)));
 
             if((levelNum/2) * 2 == levelNum) {
             	sector = "B.";

@@ -79,7 +79,7 @@ public class Bag implements GameComponent {
         }
 
         if (material == null) {
-            material = new Material(ResourceLoader.loadTexture(RES_LOC));
+            material = new Material(ResourceLoader.loadTexture(RES_LOC), new Vector3f(1,1,1));
         }
 
         this.transform = transform;

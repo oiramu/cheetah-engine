@@ -29,12 +29,15 @@ import engine.core.Util;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.physics.PhysicsUtil;
+import engine.rendering.Attenuation;
 import engine.rendering.BaseLight;
 import engine.rendering.Bitmap;
 import engine.rendering.DirectionalLight;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
 import engine.rendering.PhongShader;
+import engine.rendering.PointLight;
+import engine.rendering.SpotLight;
 import engine.rendering.Vertex;
 import game.doors.Door;
 import game.doors.SecretWall;
@@ -95,6 +98,10 @@ public class Level {
     private static final Clip misuseNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "OOF");
     private static final Clip punchNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "PLSPNCH6");
     private static final Clip punchSolidNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "PUNCH2");
+    
+    //Light
+    SpotLight sLight1 = new SpotLight(new PointLight(new BaseLight(new Vector3f(0.375f,0.375f,0.2f), 0.8f), 
+    		new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), 30), new Vector3f(1,1,1), 0.7f);
 
     //Remove list
     private static ArrayList<Medkit> removeMedkitList;
@@ -552,6 +559,9 @@ public class Level {
         for (SuperShotgun superShotgun : removeSuperShotgunList) {
         	superShotguns.remove(superShotgun);
         }
+        
+        sLight1.getPointLight().setPosition(player.getCamera().getPos());
+        sLight1.setDirection(player.getCamera().getForward());
         
         removeMedkitList.clear();
         removeFoodList.clear();
@@ -1467,9 +1477,10 @@ public class Level {
         vertices.toArray(vertArray);
         indices.toArray(intArray);
         geometry.addVertices(vertArray, Util.toIntArray(intArray), true);
-        PhongShader.setAmbientLight(new Vector3f(0.75f,0.75f,0.75f));
+        PhongShader.setAmbientLight(new Vector3f(1f,1f,1f));
    	 	PhongShader.setDirectionalLight(new DirectionalLight(
-   	 			new BaseLight(new Vector3f(1,1,1), 0.8f), new Vector3f(1,PLAYER_HEIGHT,1)));
+   	 			new BaseLight(new Vector3f(1,1,1), 1f), new Vector3f(1,PLAYER_HEIGHT,1)));
+   	 	PhongShader.setSpotLights(new SpotLight[] {sLight1});
     }
     
     /**

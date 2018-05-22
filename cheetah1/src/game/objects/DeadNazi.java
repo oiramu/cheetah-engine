@@ -71,7 +71,7 @@ public class DeadNazi implements GameComponent {
         }
 
         if (material == null) {
-			material = new Material(ResourceLoader.loadTexture(RES_LOC + "SSWVM0"));
+			material = new Material(ResourceLoader.loadTexture(RES_LOC + "SSWVM0"), new Vector3f(1,1,1));
         }
 
         this.transform = transform;

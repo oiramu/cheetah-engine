@@ -89,7 +89,7 @@ public class LightBeam implements GameComponent {
         }
 
         if (material == null) {
-			material = new Material(animation.get(2));
+			material = new Material(animation.get(2), new Vector3f(2.5f,2.5f,2.5f));
         }
 
         this.transform = transform;

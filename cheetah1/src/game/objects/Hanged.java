@@ -90,7 +90,7 @@ public class Hanged implements GameComponent {
             mesh.addVertices(verts, indices, true);
         }
         
-        this.material = new Material(animation.get(random = new Random().nextInt(animation.size())));
+        this.material = new Material(animation.get(random = new Random().nextInt(animation.size())), new Vector3f(1,1,1));
         this.transform = transform;
     }
 

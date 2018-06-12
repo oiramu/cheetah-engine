@@ -106,6 +106,17 @@ public class Shader {
     public void addFragmentShader(String text) {
         addProgram(text, GL_FRAGMENT_SHADER);
     }
+    
+    /**
+     * If the system ain't compatible with openGL 3 and above
+     * Use this attribute binding attribute with a fixed
+     * location.
+     * @param attributeName of the uniform in GLSL code.
+     * @param location of the uniform.
+     */
+    public void setAttribLocation(String attributeName, int location) {
+    	glBindAttribLocation(program, location, attributeName);
+    }
 
     /**
      * Method that sets all the shading programs and then

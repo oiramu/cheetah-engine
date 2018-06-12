@@ -40,15 +40,11 @@ public class Time {
      * Returns the time's delta.
      * @return delta
      */
-    public static double getDelta() {
-        return delta;
-    }
+    public static double getDelta() { return delta; }
 
     /**
      * Sets a delta for the time.
      * @param delta For time.
      */
-    public static void setDelta(double delta) {
-        Time.delta = delta;
-    }
+    public static void setDelta(double delta) { Time.delta = delta; }
 }

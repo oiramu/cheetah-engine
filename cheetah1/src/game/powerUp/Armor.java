@@ -104,7 +104,6 @@ public class Armor implements GameComponent {
 
         transform.setRotation(0, angle + 90, 0);
         
-
         Level.getPlayer();
 		if (distance < PICKUP_THRESHHOLD) {
             Level.getPlayer().setArmorb(STATE);

@@ -193,8 +193,8 @@ public class Transform {
     }
 
     /**
-     * Obtiene el tamaño.
-     * @return tamaño
+     * Obtiene el tamaï¿½o.
+     * @return tamaï¿½o
      */
     public Vector3f getScale() {
         return scale;

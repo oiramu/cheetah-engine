@@ -23,7 +23,7 @@ package engine.core;
 * @since 2018
 */
 public interface Game {
-	
+
 	public void input();
 	public void update();
 	public void render();

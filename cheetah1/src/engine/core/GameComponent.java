@@ -22,9 +22,8 @@ package engine.core;
 * @since 2018
 */
 public interface GameComponent {
-	
+
 	public void update();
 	public void render();
-	public Transform transform = null;
 
 }

@@ -54,7 +54,7 @@ public class Auschwitz implements Game {
      */
     public Auschwitz() {
         shader = PhongShader.getInstance();
-        Transform.setProjection(FOV, Display.getWidth(), Display.getHeight(), 0.01f, 1000f);
+        Transform.setProjection((float) Math.toRadians(FOV), Display.getWidth(), Display.getHeight(), 0.01f, 1000f);
 
         for (int i = 0; i < 13; i++) {
         	playlist.add(ResourceLoader.loadMidi("THEME" + i));

@@ -53,6 +53,15 @@ public class MenuEvent {
 			case "loadEpisode3":
 				actionId = 5;
 				break;
+			case "highDetailBtn":
+				actionId = 6;
+				break;
+			case "mediumDetailBtn":
+				actionId = 7;
+				break;
+			case "lowDetailBtn":
+				actionId = 8;
+				break;
 			default:
 				actionId = 0;
 				break;

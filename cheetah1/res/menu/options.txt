@@ -9,10 +9,12 @@ returnBtn>addAction:loadMenu:res/Menu/menu.txt
 
 TextBold detailText=Detail:550 300 466 37
 
-Button hightDetailBtn=Hight:550 350 250 37
-hightDetailBtn>addAction:loadMenu:res/Menu/game.txt
-Button lowDetailBtn=Low:550 400 250 37
-lowDetailBtn>addAction:loadMenu:res/Menu/game.txt
+Button highDetailBtn=High:550 250 200 37
+highDetailBtn>addAction:highDetailBtn
+Button mediumDetailBtn=Medium:800 250 200 37
+mediumDetailBtn>addAction:highDetailBtn
+Button lowDetailBtn=Low:1050 250 200 37
+lowDetailBtn>addAction:highDetailBtn
 
 TextBold detailText=Vsync:550 450 466 37
 
@@ -22,7 +24,8 @@ Button vsyncOffBtn=Off:550 550 250 37
 vsyncOffBtn>addAction:loadMenu:res/Menu/credit.txt
 
 #Button list for keyboard/gamepad in order
-hightDetailBtn>selectId
+highDetailBtn>selectId
+mediumDetailBtn>selectId
 lowDetailBtn>selectId
 vsyncOnBtn>selectId
 vsyncOffBtn>selectId

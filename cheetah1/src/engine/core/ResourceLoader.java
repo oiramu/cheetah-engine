@@ -51,7 +51,7 @@ import static org.lwjgl.opengl.GL30.*;
 */
 public class ResourceLoader {
 	
-	private static final int MIPMAP_SAMPLES = 4; 
+	public static int mipMapSamples = 4; 
 
 	/**
 	 * Loads a MIDI sequence file named like that.
@@ -155,7 +155,7 @@ public class ResourceLoader {
             glGenerateMipmap(GL_TEXTURE_2D);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 					GL_LINEAR_MIPMAP_LINEAR);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -MIPMAP_SAMPLES);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -mipMapSamples);
 			
             return new Texture(id);
         } catch (Exception e) {

@@ -17,6 +17,7 @@ package engine.menu.system;
 
 import engine.core.CoreDisplay;
 import engine.core.CoreGame;
+import engine.core.ResourceLoader;
 import engine.menu.MenuModel;
 import game.Auschwitz;
 
@@ -55,23 +56,32 @@ public class SEventListener {
 			case 3:
 				//Load game
 				Auschwitz.setStartingLevel(EPISODE_1);
-				CoreGame game1 = new CoreGame();
+				CoreGame game1 = new CoreGame(new Auschwitz());
 				game1.start();
 		        System.exit(0);
 				break;
 			case 4:
 				//Load game
 				Auschwitz.setStartingLevel(EPISODE_2);
-				CoreGame game2 = new CoreGame();
+				CoreGame game2 = new CoreGame(new Auschwitz());
 				game2.start();
 		        System.exit(0);
 				break;
 			case 5:
 				//Load game
 				Auschwitz.setStartingLevel(EPISODE_3);	
-				CoreGame game3 = new CoreGame();
+				CoreGame game3 = new CoreGame(new Auschwitz());
 				game3.start();
 		        System.exit(0);
+				break;
+			case 6:
+				ResourceLoader.mipMapSamples = 4;
+				break;
+			case 7:
+				ResourceLoader.mipMapSamples = 1;
+				break;
+			case 8:
+				ResourceLoader.mipMapSamples = -4;
 				break;
 		}
 	}

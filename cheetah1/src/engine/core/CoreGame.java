@@ -18,7 +18,6 @@ package engine.core;
 import org.lwjgl.opengl.Display;
 
 import engine.rendering.RenderUtil;
-import game.Auschwitz;
 
 /**
 *
@@ -34,10 +33,10 @@ public class CoreGame {
     /**
      * Constructor for the core of the game to compile.
      */
-    public CoreGame() {
+    public CoreGame(Game game) {
         RenderUtil.initGraphics();
         isRunning = false;
-        game = new Auschwitz();
+        this.game = game;
     }
 
     /**

@@ -45,6 +45,7 @@ public class CoreDisplay {
 	private int width;
 	private int height;
 	private static double frameTime;
+	private boolean fullscreen;
 	private Menu menu;
 	private Rendering2DEngine twoDimensionalEngine;
 	private static CoreDisplay enginePointer;
@@ -69,12 +70,13 @@ public class CoreDisplay {
 	 * @param title of the window.
 	 * @param fullscreen If its windowed or full-screen.
 	 */
-	public void createDisplay(String title, boolean fullscreen) {
+	public void createDisplay(String title, int aliasing, boolean fullscreen) {
 		
 		Display.setTitle(title);
 		Display.setIcon(new ByteBuffer[] {
 				ResourceLoader.loadIcon("/textures/coreDisplay/icon32"),
 		});
+		this.fullscreen = fullscreen;
 		try {
 			
 			if(fullscreen) {
@@ -91,8 +93,8 @@ public class CoreDisplay {
 				Display.setDisplayMode(new DisplayMode(width, height));
 			}
 			
-			Display.setFullscreen(fullscreen);
-	        Display.create(new PixelFormat().withSamples(0));
+			Display.setFullscreen(this.fullscreen);
+	        Display.create(new PixelFormat().withSamples(aliasing));
 	        Keyboard.create();
             Mouse.create();
 			

@@ -42,9 +42,7 @@ public class PhongShader extends Shader {
      * Instances the shader to be used.
      * @return Shader.
      */
-    public static PhongShader getInstance() {
-        return instance;
-    }
+    public static PhongShader getInstance() {return instance;}
     
     /**
      * Constructor of the basic shader with all his uniforms.
@@ -54,6 +52,12 @@ public class PhongShader extends Shader {
 
         addVertexShader(ResourceLoader.loadShader("phongVertex"));
         addFragmentShader(ResourceLoader.loadShader("phongFragment"));
+        
+        /**Just in case you want to unlock the opengl2.0 power!
+        setAttribLocation("position", 0);
+        setAttribLocation("texCoord", 1);
+        setAttribLocation("normal", 2);
+        */
         
         compileShader();
 

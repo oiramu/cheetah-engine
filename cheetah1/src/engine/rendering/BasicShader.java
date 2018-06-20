@@ -32,9 +32,7 @@ public class BasicShader extends Shader {
      * Instances the shader to be used.
      * @return Shader.
      */
-    public static BasicShader getInstance() {
-        return instance;
-    }
+    public static BasicShader getInstance() {return instance;}
     
     /**
      * Constructor of the basic shader with all his uniforms.

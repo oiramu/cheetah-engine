@@ -18,7 +18,6 @@ package game.doors;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.GameComponent;
 import engine.core.ResourceLoader;
 import engine.core.Time;
 import engine.core.Transform;
@@ -36,7 +35,7 @@ import game.Level;
  * @version 1.0
  * @since 2017
  */
-public class Door implements GameComponent {
+public class Door {
 	
 	private static final float HEIGHT = Level.LEVEL_HEIGHT;
 	private static final float LENGTH = Level.SPOT_LENGTH;

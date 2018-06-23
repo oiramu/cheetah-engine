@@ -21,7 +21,7 @@ package engine.core;
 * @version 1.0
 * @since 2018
 */
-public interface GameComponent {
+public interface IGameComponent {
 
 	public void update();
 	public void render();

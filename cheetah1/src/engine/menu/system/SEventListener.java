@@ -15,10 +15,10 @@
  */
 package engine.menu.system;
 
-import engine.core.CoreDisplay;
-import engine.core.CoreGame;
+import engine.core.CoreEngine;
 import engine.core.ResourceLoader;
 import engine.menu.MenuModel;
+import engine.rendering.Window;
 import game.Auschwitz;
 
 /**
@@ -40,8 +40,7 @@ public class SEventListener {
 	private static SEventListener INSTANCE = new SEventListener();
 	public static SEventListener getInstance()
 	{	return INSTANCE;	}
-	
-	private CoreDisplay coreEnginePointer = CoreDisplay.getEnginePointer();
+	private CoreEngine game = new CoreEngine();
 	
 	/**
 	 * Load the information at the event in a button from the menu.
@@ -56,22 +55,19 @@ public class SEventListener {
 			case 3:
 				//Load game
 				Auschwitz.setStartingLevel(EPISODE_1);
-				CoreGame game1 = new CoreGame(new Auschwitz());
-				game1.start();
+				game.start();
 		        System.exit(0);
 				break;
 			case 4:
 				//Load game
 				Auschwitz.setStartingLevel(EPISODE_2);
-				CoreGame game2 = new CoreGame(new Auschwitz());
-				game2.start();
+				game.start();
 		        System.exit(0);
 				break;
 			case 5:
 				//Load game
-				Auschwitz.setStartingLevel(EPISODE_3);	
-				CoreGame game3 = new CoreGame(new Auschwitz());
-				game3.start();
+				Auschwitz.setStartingLevel(EPISODE_3);
+				game.start();
 		        System.exit(0);
 				break;
 			case 6:
@@ -95,10 +91,10 @@ public class SEventListener {
 		switch(actionId) {
 			case 2:
 				//Load new menu
-				if(coreEnginePointer.getMenu().getMenu() != null) //Destroy last Menu
-					coreEnginePointer.getMenu().getMenu().delete();
+				if(Window.getMenu().getMenu() != null) //Destroy last Menu
+					Window.getMenu().getMenu().delete();
 					
-				coreEnginePointer.getMenu().setMenu(new MenuModel(menuPath));
+				Window.getMenu().setMenu(new MenuModel(menuPath));
 				break;
 		}
 	}

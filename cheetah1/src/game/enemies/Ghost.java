@@ -21,7 +21,7 @@ import java.util.Random;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.GameComponent;
+import engine.core.IGameComponent;
 import engine.core.ResourceLoader;
 import engine.core.Time;
 import engine.core.Transform;
@@ -42,7 +42,7 @@ import game.Player;
 * @version 1.0
 * @since 2018
 */
-public class Ghost implements GameComponent {
+public class Ghost implements IGameComponent {
 
 	private static final float MAX_HEALTH = 10f;
     private static final float SHOT_ANGLE = 10.0f;

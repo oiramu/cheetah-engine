@@ -17,7 +17,7 @@ package game.objects;
 
 import java.util.ArrayList;
 
-import engine.core.GameComponent;
+import engine.core.IGameComponent;
 import engine.core.ResourceLoader;
 import engine.core.Time;
 import engine.core.Transform;
@@ -35,7 +35,7 @@ import game.Auschwitz;
  * @version 1.1
  * @since 2018
  */
-public class LightBeam implements GameComponent {
+public class LightBeam implements IGameComponent {
     
     private static Mesh mesh;
     private static Material material;

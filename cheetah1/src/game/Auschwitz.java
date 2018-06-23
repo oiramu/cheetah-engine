@@ -33,7 +33,7 @@ import game.enemies.*;
  * @version 1.1
  * @since 2017
  */
-public class Auschwitz implements Game {
+public class Auschwitz implements IGame {
 	
     private static final int EPISODE_1 = 1;
     private static final int EPISODE_2 = 2;
@@ -50,9 +50,9 @@ public class Auschwitz implements Game {
     private static boolean isRunning;
 
     /**
-     * The constructor method of the compiling game.
+     * Initialization method of the game.
      */
-    public Auschwitz() {
+    public void init() {
         shader = PhongShader.getInstance();
         Transform.setProjection((float) Math.toRadians(FOV), Display.getWidth(), Display.getHeight(), 0.01f, 1000f);
 

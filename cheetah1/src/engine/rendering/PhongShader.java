@@ -50,14 +50,12 @@ public class PhongShader extends Shader {
     private PhongShader() {
         super();
 
-        addVertexShader(ResourceLoader.loadShader("phongVertex"));
-        addFragmentShader(ResourceLoader.loadShader("phongFragment"));
+        addVertexShader(ResourceLoader.loadShader("phongVertex120"));
+        addFragmentShader(ResourceLoader.loadShader("phongFragment120"));
         
-        /**Just in case you want to unlock the opengl2.0 power!
         setAttribLocation("position", 0);
         setAttribLocation("texCoord", 1);
         setAttribLocation("normal", 2);
-        */
         
         compileShader();
 

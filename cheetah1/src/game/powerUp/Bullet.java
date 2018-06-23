@@ -18,7 +18,7 @@ package game.powerUp;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.GameComponent;
+import engine.core.IGameComponent;
 import engine.core.ResourceLoader;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -35,7 +35,7 @@ import game.Level;
 * @version 1.2
 * @since 2017
 */
-public class Bullet implements GameComponent {
+public class Bullet implements IGameComponent {
 
     public static final float PICKUP_THRESHHOLD = 0.75f;
     public static final int AMOUNT = 7;

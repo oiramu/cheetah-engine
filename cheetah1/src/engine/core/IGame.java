@@ -22,8 +22,9 @@ package engine.core;
 * @version 1.0
 * @since 2018
 */
-public interface Game {
+public interface IGame {
 
+	public void init();
 	public void input();
 	public void update();
 	public void render();

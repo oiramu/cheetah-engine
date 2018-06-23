@@ -1,19 +1,4 @@
-/*
- * Copyright 2017 Carlos Rodriguez.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package engine.core;
+package engine.rendering;
 
 import java.nio.ByteBuffer;
 
@@ -29,54 +14,28 @@ import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.PixelFormat;
 
 import engine.audio.AudioUtil;
+import engine.core.ResourceLoader;
 import engine.menu.DefaultMenu;
 import engine.menu.Menu;
-import engine.menu.Rendering2DEngine;
+import engine.menu.Rendering2DUtil;
 import engine.menu.system.SGameTime;
 
-/**
-*
-* @author Carlos Rodriguez
-* @version 1.4
-* @since 2017
-*/
-public class CoreDisplay {
+public class Window {
 	
-	private int width;
-	private int height;
-	private static double frameTime;
-	private boolean fullscreen;
-	private Menu menu;
-	private Rendering2DEngine twoDimensionalEngine;
-	private static CoreDisplay enginePointer;
-	
-	private Sequence song = ResourceLoader.loadMidi("THEME0");
-
-	/**
-	 * Constructor for the engine display.
-	 * @param width of the display.
-	 * @param height of the display.
-	 * @param FRAME_RATE of the display.
-	 */
-	public CoreDisplay(int width, int height, final int FRAME_RATE) {
-		this.width = width;
-		this.height = height;
-		frameTime = 1.0/FRAME_RATE;
-		enginePointer = this;
-	}
+	private static Menu menu;
+	private static Sequence song = ResourceLoader.loadMidi("THEME0");
 	
 	/**
 	 * Method that creates the window for the program.
 	 * @param title of the window.
 	 * @param fullscreen If its windowed or full-screen.
 	 */
-	public void createDisplay(String title, int aliasing, boolean fullscreen) {
+	public static void createWindow(int width, int height, int aliasing, String title, boolean fullscreen) {
 		
 		Display.setTitle(title);
 		Display.setIcon(new ByteBuffer[] {
 				ResourceLoader.loadIcon("/textures/coreDisplay/icon32"),
 		});
-		this.fullscreen = fullscreen;
 		try {
 			
 			if(fullscreen) {
@@ -93,7 +52,7 @@ public class CoreDisplay {
 				Display.setDisplayMode(new DisplayMode(width, height));
 			}
 			
-			Display.setFullscreen(this.fullscreen);
+			Display.setFullscreen(fullscreen);
 	        Display.create(new PixelFormat().withSamples(aliasing));
 	        Keyboard.create();
             Mouse.create();
@@ -102,7 +61,6 @@ public class CoreDisplay {
 			Cursor emptyCursor = new Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null);
 			Mouse.setNativeCursor(emptyCursor);
 			AudioUtil.playMidi(song);
-			twoDimensionalEngine = new Rendering2DEngine(getWidth(), getHeight());
 			menu = new DefaultMenu();
 			
 			//SEngineUtil.getInstance().setInputType(InputType.MOUSE); //Default input type
@@ -117,7 +75,7 @@ public class CoreDisplay {
 	 * Updates everything related for the window like the inputs or objects
 	 * and time.
 	 */
-	public void updateDisplay() {	
+	public static void updateMenu() {	
 		SGameTime.getInstance().update();
 		
 		//Input type
@@ -138,40 +96,19 @@ public class CoreDisplay {
 	/**
 	 * Renders all the "2D" related stuff like the menus.
 	 */
-	public void render() {
-		twoDimensionalEngine.restore();
-		
+	public static void renderMenu() {
+		Rendering2DUtil.restore();	
 		//2D
-		twoDimensionalEngine.context2D();
+		Rendering2DUtil.context2D();
 		menu.draw2D();
-	}
-	
-	/**
-	 * Method that sets to run everything when the program ask it for.
-	 */
-	public void run() {
-		while(!isCloseRequested()) {
-			this.updateDisplay();
-			this.render();
-			//Update Window
-		}
-		dispose();
 	}
 	
 	/**
 	 * Gets the menu that is showing.
 	 * @return
 	 */
-	public Menu getMenu() {
+	public static Menu getMenu() {
 		return menu;
-	}
-	
-	/**
-	 * Return the limit of refreshing time.
-	 * @return FrameTime.
-	 */
-	public static double getFrameTime() {
-		return frameTime;
 	}
 	
 	/**
@@ -215,13 +152,5 @@ public class CoreDisplay {
     public static String getTitle() {
         return Display.getTitle();
     }
-
-	/**
-	 * Returns the engine pointer to display.
-	 * @return Engine pointer.
-	 */
-	public static CoreDisplay getEnginePointer() {
-		return enginePointer;
-	}
 
 }

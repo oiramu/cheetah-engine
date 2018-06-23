@@ -15,7 +15,8 @@
  */
 package engine;
 
-import engine.core.CoreDisplay;
+import engine.core.CoreEngine;
+import game.Auschwitz;
 
 /**
 *
@@ -32,9 +33,9 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		
-		CoreDisplay display = new CoreDisplay(1280, 720, 250);
-		display.createDisplay("Auschwitz", 8, true);
-		display.run();
+		CoreEngine engine = new CoreEngine(1280, 720, 250, new Auschwitz());
+		engine.createWindow("Auschwitz", 8, false);
+		engine.run();
 	}
 
 }

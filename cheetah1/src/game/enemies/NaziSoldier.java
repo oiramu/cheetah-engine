@@ -21,7 +21,7 @@ import java.util.Random;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.GameComponent;
+import engine.core.IGameComponent;
 import engine.core.ResourceLoader;
 import engine.core.Time;
 import engine.core.Transform;
@@ -43,7 +43,7 @@ import game.powerUp.Bullet;
 * @version 1.0
 * @since 2017
 */
-public class NaziSoldier implements GameComponent {
+public class NaziSoldier implements IGameComponent {
 
     private static final float MAX_HEALTH = 100f;
     private static final float SHOT_ANGLE = 10.0f;

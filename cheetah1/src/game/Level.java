@@ -1297,7 +1297,7 @@ public class Level {
                     	naziSoldiers.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         //bullets.add(new Bullet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.025f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 1) {
-                        player = new Player(new Vector3f((i + 0.5f) * SPOT_WIDTH, PLAYER_HEIGHT, (j + 0.5f) * SPOT_LENGTH));
+                        player.init(new Vector3f((i + 0.5f) * SPOT_WIDTH, PLAYER_HEIGHT, (j + 0.5f) * SPOT_LENGTH));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 192) {
                         medkits.add(new Medkit(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 100) {

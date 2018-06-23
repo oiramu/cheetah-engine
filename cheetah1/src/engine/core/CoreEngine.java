@@ -18,26 +18,51 @@ package engine.core;
 import org.lwjgl.opengl.Display;
 
 import engine.rendering.RenderUtil;
+import engine.rendering.Window;
 
 /**
 *
 * @author Carlos Rodriguez
-* @version 1.1
+* @version 1.5
 * @since 2017
 */
-public class CoreGame {
-
-    private boolean isRunning;
-    private Game game;
+public class CoreEngine {
+	
+	private int width;
+	private int height;
+	private double frameTime;
+	private IGame game;
+	private boolean isRunning;
 
     /**
      * Constructor for the core of the game to compile.
      */
-    public CoreGame(Game game) {
+    public CoreEngine() {
         RenderUtil.initGraphics();
         isRunning = false;
-        this.game = game;
     }
+
+	/**
+	 * Constructor for the engine display.
+	 * @param width of the display.
+	 * @param height of the display.
+	 * @param framerate of the display.
+	 */
+	public CoreEngine(int width, int height, double framerate, IGame game) {
+		this.width = width;
+		this.height = height;
+		this.frameTime = 1.0/framerate;
+		this.game = game;
+	}
+	
+	/**
+	 * Method that creates the window for the program.
+	 * @param title of the window.
+	 * @param fullscreen If its windowed or full-screen.
+	 */
+	public void createWindow(String title, int aliasing, boolean fullscreen) {	
+		Window.createWindow(width, height, aliasing, title, fullscreen);
+	}
 
     /**
      * Method that declares that the game should run.
@@ -48,7 +73,7 @@ public class CoreGame {
             return;
         }
         
-        run();
+        runGame();
     }
 
     /**
@@ -68,15 +93,15 @@ public class CoreGame {
      * per second, the frame-times, the time of compiling, the processing
      * states, etc.
      */
-    private void run() {
+    private void runGame() {
     	
     	isRunning = true;
 
 		@SuppressWarnings("unused")
 		int frames = 0;
         long frameCounter = 0;
-
-        final double frameTime = CoreDisplay.getFrameTime();
+        
+        game.init();
 
         double lastTime = Time.getTime();
         double unprocessedTime = 0;
@@ -98,7 +123,7 @@ public class CoreGame {
 
                 unprocessedTime -= frameTime;
 
-                if (CoreDisplay.isCloseRequested()) {
+                if (Window.isCloseRequested()) {
                     stop();
                 }
 
@@ -144,6 +169,19 @@ public class CoreGame {
      * Method that cleans everything in the program's window.
      */
     private void cleanUp() {
-        CoreDisplay.dispose();
+        Window.dispose();
     }
+	
+	/**
+	 * Method that sets to run everything when the program ask it for.
+	 */
+	public void run() {
+		while(!Window.isCloseRequested()) {
+			Window.updateMenu();
+			Window.renderMenu();
+			//Update Window
+		}
+		Window.dispose();
+	}
+
 }

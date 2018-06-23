@@ -23,7 +23,6 @@ import javax.sound.sampled.Clip;
 import org.lwjgl.opengl.Display;
 
 import engine.audio.AudioUtil;
-import engine.core.GameComponent;
 import engine.core.Input;
 import engine.core.ResourceLoader;
 import engine.core.Time;
@@ -46,7 +45,7 @@ import engine.rendering.Vertex;
 * @version 1.5
 * @since 2017
 */
-public class Player implements GameComponent{
+public class Player {
 
     private static final float GUN_SIZE = 0.1f; 
     private static final float GUN_OFFSET = -0.077f;
@@ -177,10 +176,10 @@ public class Player implements GameComponent{
     public boolean isDoubleShooter;
     
     /**
-     * Constructor of the main player.
+     * Initialization method of the main player.
      * @param position the position in the 3D space.
      */
-    public Player(Vector3f position) {
+    public void init(Vector3f position) {
     	
     	if(gunsMaterial == null) {
     		gunsMaterial = new ArrayList<Texture>();
@@ -1150,5 +1149,6 @@ public class Player implements GameComponent{
 	public void setWeaponState(String amt) {
 		this.weaponState = amt;
 	}
+
 
 }

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.GameComponent;
+import engine.core.IGameComponent;
 import engine.core.ResourceLoader;
 import engine.core.Time;
 import engine.core.Transform;
@@ -38,7 +38,7 @@ import game.Auschwitz;
  * @version 1.0
  * @since 2018
  */
-public class Pillar implements GameComponent {
+public class Pillar implements IGameComponent {
 	
 	private static final String RES_LOC = "pillar/";
 	private static final int STATE_IDLE = 0;

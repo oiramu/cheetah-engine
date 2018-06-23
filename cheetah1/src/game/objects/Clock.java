@@ -17,7 +17,7 @@ package game.objects;
 
 import java.util.ArrayList;
 
-import engine.core.GameComponent;
+import engine.core.IGameComponent;
 import engine.core.ResourceLoader;
 import engine.core.Time;
 import engine.core.Transform;
@@ -35,7 +35,7 @@ import game.Auschwitz;
  * @version 1.0
  * @since 2018
  */
-public class Clock implements GameComponent {
+public class Clock implements IGameComponent {
 	
 	private static final String RES_LOC = "clock/";
 	private static final int STATE_IDLE = 0;

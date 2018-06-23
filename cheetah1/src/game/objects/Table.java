@@ -15,7 +15,7 @@
  */
 package game.objects;
 
-import engine.core.GameComponent;
+import engine.core.IGameComponent;
 import engine.core.ResourceLoader;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -31,7 +31,7 @@ import game.Auschwitz;
  * @version 1.0
  * @since 2017
  */
-public class Table implements GameComponent {
+public class Table implements IGameComponent {
     
     private static Mesh mesh;
     private static Material material;

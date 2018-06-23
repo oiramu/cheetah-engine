@@ -50,11 +50,11 @@ public class Auschwitz implements Game {
     private static boolean isRunning;
 
     /**
-     * Initialization method of the game.
+     * The constructor method of the compiling game.
      */
     public void init() {
         shader = PhongShader.getInstance();
-        Transform.setProjection((float) Math.toRadians(FOV), Display.getWidth(), Display.getHeight(), 0.01f, 1000f);
+        Transform.setProjection(FOV, Display.getWidth(), Display.getHeight(), 0.01f, 1000f);
 
         for (int i = 0; i < 13; i++) {
         	playlist.add(ResourceLoader.loadMidi("THEME" + i));
@@ -204,7 +204,7 @@ public class Auschwitz implements Game {
             }
             
             levelNum += offset;
-            level.init(ResourceLoader.loadBitmap("level" + levelNum).flipX(), 
+            level = new Level(ResourceLoader.loadBitmap("level" + levelNum).flipX(), 
             		new Material(ResourceLoader.loadTexture("mapTexture" + currentEpisode), new Vector3f(1,1,1)));
 
             if((levelNum/2) * 2 == levelNum) {

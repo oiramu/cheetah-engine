@@ -15,8 +15,9 @@
  */
 package engine.menu;
 
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
+
+import engine.rendering.Window;
 
 /**
 *
@@ -37,11 +38,11 @@ public class Rendering2DUtil {
 		GL11.glEnable(GL11.GL_BLEND);
     	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     	
-		GL11.glViewport(0,0,Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight());
+		GL11.glViewport(0,0,Window.getWidth(), Window.getHeight());
 		
 		GL11.glMatrixMode(GL11.GL_PROJECTION); //Projection with camera, eyes
 		GL11.glLoadIdentity(); //Replace the current matrix with the identity matrix (1 in diagonally)
-		GL11.glOrtho(0, Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight(),0,-1,1); //Orthogonal landmark for 2D.
+		GL11.glOrtho(0, Window.getWidth(), Window.getHeight(),0,-1,1); //Orthogonal landmark for 2D.
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		
 		GL11.glLoadIdentity(); //resets the matrix back to its default state.

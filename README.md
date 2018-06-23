@@ -33,7 +33,7 @@ If you have any problems with the engine code or documentation please don't forg
 - OS: `Windows, MacOS, Linux`
 - IDE: `Eclipse`
 - Java: `1.8 and above`
-- OpenGL: `3.2 and above`
+- OpenGL: `2.1 and above`
 
 ## Credits:
 

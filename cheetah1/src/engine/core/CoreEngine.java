@@ -15,24 +15,19 @@
  */
 package engine.core;
 
-import org.lwjgl.opengl.Display;
-
 import engine.rendering.RenderUtil;
 import engine.rendering.Window;
 
 /**
 *
 * @author Carlos Rodriguez
-* @version 1.5
+* @version 1.1
 * @since 2017
 */
 public class CoreEngine {
-	
-	private int width;
-	private int height;
-	private double frameTime;
-	private Game game;
-	private boolean isRunning;
+
+    private boolean isRunning;
+    private Game game;
 
     /**
      * Constructor for the core of the game to compile.
@@ -40,29 +35,8 @@ public class CoreEngine {
     public CoreEngine() {
         RenderUtil.initGraphics();
         isRunning = false;
+        this.game = CoreDisplay.getGame();
     }
-
-	/**
-	 * Constructor for the engine display.
-	 * @param width of the display.
-	 * @param height of the display.
-	 * @param framerate of the display.
-	 */
-	public CoreEngine(int width, int height, double framerate, Game game) {
-		this.width = width;
-		this.height = height;
-		this.frameTime = 1.0/framerate;
-		this.game = game;
-	}
-	
-	/**
-	 * Method that creates the window for the program.
-	 * @param title of the window.
-	 * @param fullscreen If its windowed or full-screen.
-	 */
-	public void createWindow(String title, int aliasing, boolean fullscreen) {	
-		Window.createWindow(width, height, aliasing, title, fullscreen);
-	}
 
     /**
      * Method that declares that the game should run.
@@ -100,7 +74,8 @@ public class CoreEngine {
 		@SuppressWarnings("unused")
 		int frames = 0;
         long frameCounter = 0;
-        
+
+        final double frameTime = CoreDisplay.getFrameTime();
         game.init();
 
         double lastTime = Time.getTime();
@@ -162,27 +137,13 @@ public class CoreEngine {
         RenderUtil.clearScreen();
         game.render();
         
-        Display.update();
+        Window.render();
     }
 
-	
-	/**
-	 * Method that sets to run everything when the program ask it for.
-	 */
-	public void run() {
-		while(!Window.isCloseRequested()) {
-			Window.updateMenu();
-			Window.renderMenu();
-			//Update Window
-		}
-		cleanUp();
-	}
-	
-	/**
+    /**
      * Method that cleans everything in the program's window.
      */
     private void cleanUp() {
         Window.dispose();
     }
-
 }

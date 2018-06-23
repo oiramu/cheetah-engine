@@ -40,7 +40,6 @@ public class SEventListener {
 	private static SEventListener INSTANCE = new SEventListener();
 	public static SEventListener getInstance()
 	{	return INSTANCE;	}
-	private CoreEngine game = new CoreEngine();
 	
 	/**
 	 * Load the information at the event in a button from the menu.
@@ -55,19 +54,22 @@ public class SEventListener {
 			case 3:
 				//Load game
 				Auschwitz.setStartingLevel(EPISODE_1);
-				game.start();
+				CoreEngine game1 = new CoreEngine();
+				game1.start();
 		        System.exit(0);
 				break;
 			case 4:
 				//Load game
 				Auschwitz.setStartingLevel(EPISODE_2);
-				game.start();
+				CoreEngine game2 = new CoreEngine();
+				game2.start();
 		        System.exit(0);
 				break;
 			case 5:
 				//Load game
-				Auschwitz.setStartingLevel(EPISODE_3);
-				game.start();
+				Auschwitz.setStartingLevel(EPISODE_3);	
+				CoreEngine game3 = new CoreEngine();
+				game3.start();
 		        System.exit(0);
 				break;
 			case 6:

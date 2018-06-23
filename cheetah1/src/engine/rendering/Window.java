@@ -45,13 +45,13 @@ public class Window {
 	
 	private static Menu menu;
 	private static Sequence song = ResourceLoader.loadMidi("THEME0");
-	
+
 	/**
-	 * Method that creates the window for the program.
+	 * Method that creates the window with menu for the program.
 	 * @param title of the window.
 	 * @param fullscreen If its windowed or full-screen.
 	 */
-	public static void createWindow(int width, int height, int aliasing, String title, boolean fullscreen) {
+	public static void createMenuWindow(int width, int height, int aliasing, String title, boolean fullscreen) {
 		
 		Display.setTitle(title);
 		Display.setIcon(new ByteBuffer[] {
@@ -90,6 +90,10 @@ public class Window {
 			Display.destroy();
 			System.exit(0);
 		}
+	}
+	
+	public static void render() {
+		Display.update();
 	}
 	
 	/**

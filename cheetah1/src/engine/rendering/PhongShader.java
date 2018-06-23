@@ -52,7 +52,7 @@ public class PhongShader extends Shader {
 
         addVertexShader(ResourceLoader.loadShader("phongVertex120"));
         addFragmentShader(ResourceLoader.loadShader("phongFragment120"));
-        
+
         setAttribLocation("position", 0);
         setAttribLocation("texCoord", 1);
         setAttribLocation("normal", 2);

@@ -176,10 +176,10 @@ public class Player {
     public boolean isDoubleShooter;
     
     /**
-     * Initialization method of the main player.
+     * Constructor of the main player.
      * @param position the position in the 3D space.
      */
-    public void init(Vector3f position) {
+    public Player(Vector3f position) {
     	
     	if(gunsMaterial == null) {
     		gunsMaterial = new ArrayList<Texture>();
@@ -1149,6 +1149,5 @@ public class Player {
 	public void setWeaponState(String amt) {
 		this.weaponState = amt;
 	}
-
 
 }

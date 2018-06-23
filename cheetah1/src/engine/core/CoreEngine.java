@@ -165,12 +165,6 @@ public class CoreEngine {
         Display.update();
     }
 
-    /**
-     * Method that cleans everything in the program's window.
-     */
-    private void cleanUp() {
-        Window.dispose();
-    }
 	
 	/**
 	 * Method that sets to run everything when the program ask it for.
@@ -181,7 +175,14 @@ public class CoreEngine {
 			Window.renderMenu();
 			//Update Window
 		}
-		Window.dispose();
+		cleanUp();
 	}
+	
+	/**
+     * Method that cleans everything in the program's window.
+     */
+    private void cleanUp() {
+        Window.dispose();
+    }
 
 }

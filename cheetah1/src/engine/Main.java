@@ -34,7 +34,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		CoreEngine engine = new CoreEngine(1280, 720, 250, new Auschwitz());
-		engine.createWindow("Auschwitz", 8, false);
+		engine.createWindow("Auschwitz", 8, true);
 		engine.run();
 	}
 

@@ -15,7 +15,6 @@
  */
 package game.objects;
 
-import engine.core.IGameComponent;
 import engine.core.ResourceLoader;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -31,7 +30,7 @@ import game.Auschwitz;
  * @version 1.1
  * @since 2017
  */
-public class DeadMan implements IGameComponent {
+public class DeadMan {
     
     private static Mesh mesh;
     private static Material material;

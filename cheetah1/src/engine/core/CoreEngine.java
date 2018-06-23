@@ -31,7 +31,7 @@ public class CoreEngine {
 	private int width;
 	private int height;
 	private double frameTime;
-	private IGame game;
+	private Game game;
 	private boolean isRunning;
 
     /**
@@ -48,7 +48,7 @@ public class CoreEngine {
 	 * @param height of the display.
 	 * @param framerate of the display.
 	 */
-	public CoreEngine(int width, int height, double framerate, IGame game) {
+	public CoreEngine(int width, int height, double framerate, Game game) {
 		this.width = width;
 		this.height = height;
 		this.frameTime = 1.0/framerate;

@@ -21,7 +21,6 @@ import java.util.Random;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.IGameComponent;
 import engine.core.ResourceLoader;
 import engine.core.Time;
 import engine.core.Transform;
@@ -43,7 +42,7 @@ import game.powerUp.Machinegun;
 * @version 1.0
 * @since 2017
 */
-public class SsSoldier implements IGameComponent {
+public class SsSoldier {
 
     private static final float MAX_HEALTH = 200f;
     private static final float SHOT_ANGLE = 20.0f;

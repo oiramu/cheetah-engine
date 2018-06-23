@@ -18,7 +18,6 @@ package game.powerUp;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.IGameComponent;
 import engine.core.ResourceLoader;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -35,7 +34,7 @@ import game.Level;
 * @version 1.0
 * @since 2018
 */
-public class Armor implements IGameComponent {
+public class Armor {
 
     private static final float PICKUP_THRESHHOLD = 0.75f;
     private static final boolean STATE = true;

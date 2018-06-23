@@ -167,11 +167,11 @@ public class Level {
     private Transform transform;
 
     /**
-     * Constructor of the level in the game.
+     * Initialization method of the level in the game.
      * @param bitmap to load and use.
      * @param material to load and use.
      */
-    public Level(Bitmap bitmap, Material material) {	
+    public void init(Bitmap bitmap, Material material) {	
         Level.removeMedkitList = new ArrayList<Medkit>();
         Level.removeFoodList = new ArrayList<Food>();
         Level.removeBulletList = new ArrayList<Bullet>();

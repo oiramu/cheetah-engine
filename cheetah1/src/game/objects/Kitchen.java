@@ -15,7 +15,6 @@
  */
 package game.objects;
 
-import engine.core.IGameComponent;
 import engine.core.ResourceLoader;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -31,7 +30,7 @@ import game.Auschwitz;
  * @version 1.0
  * @since 2018
  */
-public class Kitchen implements IGameComponent {
+public class Kitchen {
 	
 	private static final String RES_LOC = "kitchen/PANSA0";
     
@@ -83,7 +82,6 @@ public class Kitchen implements IGameComponent {
     /**
      * Method that updates the object's data.
      */
-    @Override
     public void update() {
         Vector3f playerDistance = transform.getPosition().sub(Transform.getCamera().getPos());
 
@@ -104,7 +102,6 @@ public class Kitchen implements IGameComponent {
     /**
      * Method that renders the object's mesh to screen.
      */
-    @Override
     public void render() {
         Auschwitz.updateShader(transform.getTransformation(), transform.getPerspectiveTransformation(), material);
         mesh.draw();

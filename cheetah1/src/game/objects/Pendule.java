@@ -17,7 +17,6 @@ package game.objects;
 
 import java.util.ArrayList;
 
-import engine.core.IGameComponent;
 import engine.core.ResourceLoader;
 import engine.core.Time;
 import engine.core.Transform;
@@ -35,7 +34,7 @@ import game.Auschwitz;
  * @version 1.0
  * @since 2018
  */
-public class Pendule implements IGameComponent {
+public class Pendule {
 	
 	private static final String RES_LOC = "pendule/";
 	private static final int STATE_IDLE = 0;

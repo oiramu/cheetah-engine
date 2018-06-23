@@ -33,7 +33,7 @@ import game.enemies.*;
  * @version 1.1
  * @since 2017
  */
-public class Auschwitz implements IGame {
+public class Auschwitz implements Game {
 	
     private static final int EPISODE_1 = 1;
     private static final int EPISODE_2 = 2;
@@ -204,7 +204,7 @@ public class Auschwitz implements IGame {
             }
             
             levelNum += offset;
-            level = new Level(ResourceLoader.loadBitmap("level" + levelNum).flipX(), 
+            level.init(ResourceLoader.loadBitmap("level" + levelNum).flipX(), 
             		new Material(ResourceLoader.loadTexture("mapTexture" + currentEpisode), new Vector3f(1,1,1)));
 
             if((levelNum/2) * 2 == levelNum) {

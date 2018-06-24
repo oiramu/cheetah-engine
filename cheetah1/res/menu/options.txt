@@ -7,7 +7,7 @@ Image imgBackground=res/textures/Menu/shadow.png 0 0 500 1080
 Button returnBtn=Back:20 420 460 37
 returnBtn>addAction:loadMenu:res/Menu/menu.txt
 
-TextBold detailText=Detail:550 300 466 37
+TextBold detailText=Detail:550 200 466 37
 
 Button highDetailBtn=High:550 250 200 37
 highDetailBtn>addAction:highDetailBtn

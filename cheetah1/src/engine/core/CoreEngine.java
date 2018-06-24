@@ -21,21 +21,40 @@ import engine.rendering.Window;
 /**
 *
 * @author Carlos Rodriguez
-* @version 1.1
+* @version 1.4
 * @since 2017
 */
 public class CoreEngine {
-
-    private boolean isRunning;
-    private Game game;
-
-    /**
+	
+	private int width;
+	private int height;
+	private double frameTime;
+	private boolean fullscreen;
+	private boolean isRunning;
+	private Game game;
+	
+	private static CoreEngine instance;
+	
+	/**
+	 * Constructor for the engine display.
+	 * @param width of the display.
+	 * @param height of the display.
+	 * @param framerate of the display.
+	 */
+	public CoreEngine(int width, int height, double framerate, Game game) {
+		this.width = width;
+		this.height = height;
+		this.frameTime = 1.0/framerate;
+		this.game = game;
+		instance = this;
+	}
+	
+	/**
      * Constructor for the core of the game to compile.
      */
-    public CoreEngine() {
-        RenderUtil.initGraphics();
+    public CoreEngine init() {
         isRunning = false;
-        this.game = CoreDisplay.getGame();
+        return instance;
     }
 
     /**
@@ -75,11 +94,12 @@ public class CoreEngine {
 		int frames = 0;
         long frameCounter = 0;
 
-        final double frameTime = CoreDisplay.getFrameTime();
         game.init();
 
         double lastTime = Time.getTime();
         double unprocessedTime = 0;
+        
+        RenderUtil.initGraphics();
 
         while (isRunning) {
 
@@ -146,4 +166,43 @@ public class CoreEngine {
     private void cleanUp() {
         Window.dispose();
     }
+	
+	/**
+	 * Method that creates the window with menu for the program.
+	 * @param title of the window.
+	 * @param fullscreen If its windowed or full-screen.
+	 */
+	public void createWindow(String title, int aliasing, boolean fullscreen) {
+		this.fullscreen = fullscreen;
+		Window.createMenuWindow(width, height, aliasing, title, this.fullscreen);
+	}
+	
+	/**
+	 * Method that sets to run everything when the program ask it for.
+	 */
+	public void run() {
+		while(!Window.isCloseRequested()) {
+			Window.updateMenu();
+			Window.renderMenu();
+			//Update Window
+		}
+		Window.dispose();
+	}
+
+	/**
+	 * Returns the main game.
+	 * @return Game
+	 */
+	public Game getGame() {
+		return game;
+	}
+	
+	/**
+	 * Returns the main engine instance.
+	 * @return Engine instance
+	 */
+	public static CoreEngine getInstance() {
+		return instance;
+	}
+
 }

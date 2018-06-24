@@ -342,7 +342,7 @@ public class Player {
             int[] indices = new int[]{0, 1, 2,
             						  0, 2, 3};
 
-            gunMesh.addVertices(verts, indices);
+            gunMesh.addVertices(verts, indices, false);
         }
 
         playerCamera = new Camera(position);
@@ -788,7 +788,7 @@ public class Player {
 			if(bullets != 0) {
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
-		        	pLight1 = new PointLight(new BaseLight(new Vector3f(0.5f,0.3f,0.1f), 0.8f), 
+		        	pLight1 = new PointLight(new BaseLight(new Vector3f(0.5f,0.3f,0.1f), 1.6f), 
 		            		new Attenuation(0,0,1), new Vector3f(-2,0,3f), gunLightBeam);
 		        	pLight1.setPosition(getCamera().getPos());
 		        	PhongShader.setPointLight(new PointLight[] {pLight1});
@@ -828,7 +828,7 @@ public class Player {
 			if(shells != i) {
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
-		        	pLight1 = new PointLight(new BaseLight(new Vector3f(0.45f,0.35f,0.1f), 0.8f), 
+		        	pLight1 = new PointLight(new BaseLight(new Vector3f(0.45f,0.35f,0.1f), 1.6f), 
 		            		new Attenuation(0,0,1), new Vector3f(-2,0,3f), gunLightBeam);
 		        	pLight1.setPosition(getCamera().getPos());
 		        	PhongShader.setPointLight(new PointLight[] {pLight1});

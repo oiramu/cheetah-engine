@@ -33,7 +33,7 @@ public class CoreEngine {
 	private boolean isRunning;
 	private Game game;
 	
-	private static CoreEngine instance;
+	private static CoreEngine engine;
 	
 	/**
 	 * Constructor for the engine display.
@@ -46,7 +46,17 @@ public class CoreEngine {
 		this.height = height;
 		this.frameTime = 1.0/framerate;
 		this.game = game;
-		instance = this;
+		engine = this;
+	}
+	
+	/**
+	 * Method that creates the window with menu for the program.
+	 * @param title of the window.
+	 * @param fullscreen If its windowed or full-screen.
+	 */
+	public void createWindow(String title, int aliasing, boolean fullscreen) {
+		this.fullscreen = fullscreen;
+		Window.createMenuWindow(width, height, aliasing, title, this.fullscreen);
 	}
 	
 	/**
@@ -54,7 +64,7 @@ public class CoreEngine {
      */
     public CoreEngine init() {
         isRunning = false;
-        return instance;
+        return engine;
     }
 
     /**
@@ -159,23 +169,6 @@ public class CoreEngine {
         
         Window.render();
     }
-
-    /**
-     * Method that cleans everything in the program's window.
-     */
-    private void cleanUp() {
-        Window.dispose();
-    }
-	
-	/**
-	 * Method that creates the window with menu for the program.
-	 * @param title of the window.
-	 * @param fullscreen If its windowed or full-screen.
-	 */
-	public void createWindow(String title, int aliasing, boolean fullscreen) {
-		this.fullscreen = fullscreen;
-		Window.createMenuWindow(width, height, aliasing, title, this.fullscreen);
-	}
 	
 	/**
 	 * Method that sets to run everything when the program ask it for.
@@ -186,7 +179,7 @@ public class CoreEngine {
 			Window.renderMenu();
 			//Update Window
 		}
-		Window.dispose();
+		cleanUp();
 	}
 
 	/**
@@ -201,8 +194,15 @@ public class CoreEngine {
 	 * Returns the main engine instance.
 	 * @return Engine instance
 	 */
-	public static CoreEngine getInstance() {
-		return instance;
+	public static CoreEngine getEngine() {
+		return engine;
 	}
+	
+	/**
+     * Method that cleans everything in the program's window.
+     */
+    private void cleanUp() {
+        Window.dispose();
+    }
 
 }

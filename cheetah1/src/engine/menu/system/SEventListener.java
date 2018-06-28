@@ -54,18 +54,18 @@ public class SEventListener {
 			case 3:
 				//Load game
 				Auschwitz.setStartingLevel(EPISODE_1);
-				CoreEngine.getInstance().start();
+				CoreEngine.getEngine().start();
 		        System.exit(0);
 				break;
 			case 4:
 				//Load game
 				Auschwitz.setStartingLevel(EPISODE_2);
-				CoreEngine.getInstance().start();
+				CoreEngine.getEngine().start();
 				break;
 			case 5:
 				//Load game
 				Auschwitz.setStartingLevel(EPISODE_3);
-				CoreEngine.getInstance().start();
+				CoreEngine.getEngine().start();
 				break;
 			case 6:
 				ResourceLoader.mipMapSamples = 4;

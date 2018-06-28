@@ -36,6 +36,7 @@ import engine.rendering.Material;
 import engine.rendering.Mesh;
 import engine.rendering.PhongShader;
 import engine.rendering.PointLight;
+import engine.rendering.SpotLight;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
 
@@ -147,6 +148,8 @@ public class Player {
     
     private PointLight pLight1;
     
+    private SpotLight sLight1;
+    
     private double gunFireTime;
     private double healthTime;
     private double ammoTime;
@@ -164,6 +167,7 @@ public class Player {
     private boolean chaingun;
     
     public static boolean mouseLocked;
+    public static boolean isOn;
     
     public boolean fires;
     
@@ -320,6 +324,11 @@ public class Player {
     	    		new Attenuation(0,0,0), new Vector3f(0,0,0), 0);
     	}
     	
+    	if(sLight1 == null) {
+    		sLight1 = new SpotLight(new PointLight(new BaseLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f), 
+        	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), 30), new Vector3f(1,1,1), 0.7f);
+    	}
+    	
         if (gunMesh == null) {
             gunMesh = new Mesh();
 
@@ -363,6 +372,7 @@ public class Player {
         gunFireTime = 0;
         painTime = 0;
         mouseLocked = false;
+        isOn = false;
         isAlive = true;
         Input.setMousePosition(centerPosition);
         Input.setCursor(false);
@@ -634,6 +644,14 @@ public class Player {
 		            }
 	            }
 	        }
+
+	        if(isOn) {
+				if (Input.getKeyDown(Input.KEY_F))
+	            	isOn = false;
+            } else {
+            	if (Input.getKeyDown(Input.KEY_F))
+	            	isOn = true;
+            }
 	
 	        movementVector = zeroVector;
 	
@@ -726,6 +744,13 @@ public class Player {
 
         gunTransform.setRotation(0, angle + 90, 0);
         hudTransform.setRotation(0, angle + 90, 0);
+        
+        if(isOn) {
+        	PhongShader.setSpotLights(new SpotLight[] {sLight1});
+        }
+        
+        sLight1.getPointLight().setPosition(getCamera().getPos());
+        sLight1.setDirection(getCamera().getForward());
         
         healthMaterial = new Material(healthMaterials.get(getHealth()));
         if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;

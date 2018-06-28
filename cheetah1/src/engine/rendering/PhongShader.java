@@ -30,8 +30,12 @@ public class PhongShader extends Shader {
 	
 	private static final int MAX_POINT_LIGHTS = 4;
 	private static final int MAX_SPOT_LIGHTS = 4;
+	
+	private static float fogDensity;
+	private static float fogGradient;
 
     private static final PhongShader instance = new PhongShader();
+    private static Vector3f fogColor;
     private static Vector3f ambientLight;
     private static DirectionalLight directionalLight = new DirectionalLight(
     		new BaseLight(new Vector3f(0,0,0), 0), new Vector3f(0,0,0));
@@ -62,6 +66,11 @@ public class PhongShader extends Shader {
         addUniform("transform");
         addUniform("transformProjected");
         addUniform("baseColor");
+        
+        addUniform("fogDensity");
+        addUniform("fogGradient");
+        addUniform("fogColor");
+        
         addUniform("ambientLight");
         
         addUniform("specularIntensity");
@@ -112,6 +121,10 @@ public class PhongShader extends Shader {
         setUniform("transformProjected", projectedMatrix);
         setUniform("baseColor", material.getColor());
         
+        setUniformf("fogDensity", fogDensity);
+        setUniformf("fogGradient", fogGradient);
+        setUniform("fogColor", fogColor);
+        
         setUniform("ambientLight", ambientLight);
         setUniform("directionalLight", directionalLight);
         
@@ -126,6 +139,55 @@ public class PhongShader extends Shader {
         
         setUniform("eyePos", Transform.getCamera().getPos());
     }
+    
+    /**
+     * Returns the fog's density.
+	 * @return Fog density
+	 */
+	public static float getFogDensity() {
+		return fogDensity;
+	}
+
+	/**
+	 * Sets the actual fog density to a new fog density.
+	 * @param fogDensity the fogDensity to set
+	 */
+	public static void setFogDensity(float fogDensity) {
+		PhongShader.fogDensity = fogDensity;
+	}
+
+	/**
+	 * Returns the fog's gradient.
+	 * @return Fog gradient
+	 */
+	public static float getFogGradient() {
+		return fogGradient;
+	}
+
+	/**
+	 * Sets the actual fog gradient to a new fog gradient.
+	 * @param fogGradient the fogGradient to set
+	 */
+	public static void setFogGradient(float fogGradient) {
+		PhongShader.fogGradient = fogGradient;
+	}
+
+	/**
+	 * Returns the actual fog color.
+	 * @return fog color.
+	 */
+	public static Vector3f getFogColor() {
+		return fogColor;
+	}
+
+	/**
+	 * Sets the actual fog color to a new fog color.
+	 * @param ambientLight to set.
+	 */
+	public static void setFogColor(Vector3f fogColor) {
+		PhongShader.fogColor = fogColor;
+		RenderUtil.setClearColor(fogColor);
+	}
 
 	/**
 	 * Returns the actual ambient light.

@@ -45,6 +45,7 @@ struct SpotLight
 
 uniform vec3 baseColor;
 uniform vec3 eyePos;
+uniform vec3 fogColor;
 uniform vec3 ambientLight;
 uniform sampler2D sampler;
 
@@ -120,7 +121,6 @@ void main() {
 	vec4 totalLight = vec4(ambientLight,1);
 	vec4 color = vec4(baseColor, 1);
 	vec4 textureColor = texture2D(sampler, texCoord0.xy);
-	vec3 fogColor = vec3(0.5,0.5,0.5);
 	
 	if(textureColor.a < 0.5) {discard;}
 	if(textureColor != vec4(0,0,0,0)) {color *= textureColor;}

@@ -14,8 +14,8 @@ uniform mat4 transform;
 uniform mat4 transformProjected;
 uniform vec3 eyePos;
 
-const float density = 0.07;
-const float gradient = 1.5;
+uniform float fogDensity;
+uniform float fogGradient;
 
 void main() {
     gl_Position = transformProjected * vec4(position, 1.0);
@@ -23,6 +23,6 @@ void main() {
     normal0 = (transform * vec4(normal, 0.0)).xyz;
     worldPos0 = (transform * vec4(position, 1.0)).xyz;
     float distance = length((eyePos - worldPos0).xyz);
-    visibility = exp(-pow((distance * density), gradient));
+    visibility = exp(-pow((distance * fogDensity), fogGradient));
     visibility = clamp(visibility, 0.0, 1.0);
 }

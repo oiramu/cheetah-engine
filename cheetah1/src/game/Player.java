@@ -147,7 +147,6 @@ public class Player {
     private Vector3f movementVector;
     
     private PointLight pLight1;
-    
     private SpotLight sLight1;
     
     private double gunFireTime;
@@ -726,7 +725,7 @@ public class Player {
         gunTransform.setPosition(gunTransform.getPosition().add(playerCamera.getLeft().normalized().mul(dx)));
         gunTransform.getPosition().setY(gunTransform.getPosition().getY() + dy);
         
-        //Hud movement
+        //HUD movement
         hudTransform.setScale(1, 1, 1);
         hudTransform.setPosition(playerCamera.getPos().add(playerCamera.getForward().normalized().mul(GUN_TRANSFORM_MUL-0.002f)));
         hudTransform.setPosition(hudTransform.getPosition().add(playerCamera.getLeft().normalized().mul(GUN_OFFSET_X)));
@@ -745,10 +744,11 @@ public class Player {
         gunTransform.setRotation(0, angle + 90, 0);
         hudTransform.setRotation(0, angle + 90, 0);
         
-        if(isOn) {
-        	PhongShader.setSpotLights(new SpotLight[] {sLight1});
-        }
+        //if(isOn) {
+        	//PhongShader.setSpotLights(new SpotLight[] {sLight1});
+        //}
         
+        PhongShader.setSpotLights(new SpotLight[] {sLight1});
         sLight1.getPointLight().setPosition(getCamera().getPos());
         sLight1.setDirection(getCamera().getForward());
         

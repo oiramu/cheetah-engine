@@ -48,8 +48,8 @@ public class DeadMan {
         if (mesh == null) {
             mesh = new Mesh();
 
-            sizeY = 0.4f;
-            sizeX = (float) ((double) sizeY / (0.4 * 4.0));
+            sizeY = 0.3095238095238095f;
+            sizeX = (float) ((double) sizeY / (3.230769230769231 / 4));
 
             float offsetX = 0.05f;
             float offsetY = 0.01f;

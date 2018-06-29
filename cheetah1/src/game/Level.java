@@ -43,6 +43,7 @@ import game.enemies.Ghost;
 import game.enemies.NaziSergeant;
 import game.enemies.NaziSoldier;
 import game.enemies.SsSoldier;
+import game.objects.Barrel;
 import game.objects.Bones;
 import game.objects.Clock;
 import game.objects.DeadMan;
@@ -62,6 +63,7 @@ import game.powerUp.Armor;
 import game.powerUp.Bag;
 import game.powerUp.Bullet;
 import game.powerUp.Food;
+import game.powerUp.Helmet;
 import game.powerUp.Machinegun;
 import game.powerUp.Medkit;
 import game.powerUp.Shotgun;
@@ -106,6 +108,8 @@ public class Level {
     private static ArrayList<Ghost> removeGhostList;
     private static ArrayList<Armor> removeArmorList;
     private static ArrayList<SuperShotgun> removeSuperShotgunList;
+    private static ArrayList<Helmet> removeHelmets;
+    private static ArrayList<Barrel> removeBarrels;
     
     //Player
     private static Player player;
@@ -128,6 +132,7 @@ public class Level {
     private ArrayList<Machinegun> machineguns;
     private ArrayList<Armor> armors;
     private ArrayList<SuperShotgun> superShotguns;
+    private ArrayList<Helmet> helmets;
     
     //Static objects
     private ArrayList<Tree> trees;
@@ -145,6 +150,7 @@ public class Level {
     private ArrayList<Clock> clocks;
     private ArrayList<Furnace> furnaces;
     private ArrayList<Kitchen> kitchens;
+    private ArrayList<Barrel> barrels;
    
     //Enemies
     private ArrayList<NaziSoldier> naziSoldiers;
@@ -165,6 +171,7 @@ public class Level {
      * @param material to load and use.
      */
     public Level(Bitmap bitmap, Material material) {	
+        //Remove list
         Level.removeMedkitList = new ArrayList<Medkit>();
         Level.removeFoodList = new ArrayList<Food>();
         Level.removeBulletList = new ArrayList<Bullet>();
@@ -174,18 +181,30 @@ public class Level {
         Level.removeGhostList = new ArrayList<Ghost>();
         Level.removeArmorList = new ArrayList<Armor>();
         Level.removeSuperShotgunList = new ArrayList<SuperShotgun>();
-
-        this.level = bitmap;
-        this.geometry = new Mesh();
+        Level.removeHelmets = new ArrayList<Helmet>();
+        Level.removeBarrels = new ArrayList<Barrel>();
+        //Doors and stuff
         this.doors = new ArrayList<Door>();
         this.secretWalls = new ArrayList<SecretWall>();
         this.exitOffsets = new ArrayList<Integer>();
         this.exitPoints = new ArrayList<Vector3f>();
+        //Enemies
         this.naziSoldiers = new ArrayList<NaziSoldier>();
+        this.dogs = new ArrayList<Dog>();
+        this.ssSoldiers = new ArrayList<SsSoldier>();
+        this.naziSeargeants = new ArrayList<NaziSergeant>();
+        this.ghosts = new ArrayList<Ghost>();
+        //Power-ups
         this.medkits = new ArrayList<Medkit>();
         this.foods = new ArrayList<Food>();
         this.bullets = new ArrayList<Bullet>();
+        this.shotguns = new ArrayList<Shotgun>();
         this.bags = new ArrayList<Bag>();
+        this.machineguns = new ArrayList<Machinegun>();
+        this.armors = new ArrayList<Armor>();
+        this.superShotguns = new ArrayList<SuperShotgun>();
+        this.helmets = new ArrayList<Helmet>();
+        //Objects
         this.trees = new ArrayList<Tree>();
         this.flares = new ArrayList<Lantern>();
         this.lightPoints = new ArrayList<LightBeam>();
@@ -196,19 +215,15 @@ public class Level {
         this.lamps = new ArrayList<Lamp>();
         this.hangeds = new ArrayList<Hanged>();
         this.deadMan = new ArrayList<DeadMan>();
-        this.dogs = new ArrayList<Dog>();
-        this.ssSoldiers = new ArrayList<SsSoldier>();
         this.tables = new ArrayList<Table>();
-        this.shotguns = new ArrayList<Shotgun>();
-        this.naziSeargeants = new ArrayList<NaziSergeant>();
-        this.machineguns = new ArrayList<Machinegun>();
         this.pillars = new ArrayList<Pillar>();
-        this.ghosts = new ArrayList<Ghost>();
         this.clocks = new ArrayList<Clock>();
-        this.armors = new ArrayList<Armor>();
         this.furnaces = new ArrayList<Furnace>();
         this.kitchens = new ArrayList<Kitchen>();
-        this.superShotguns = new ArrayList<SuperShotgun>();
+        this.barrels = new ArrayList<Barrel>();
+        //Level stuff
+        this.level = bitmap;
+        this.geometry = new Mesh();
         this.material = material;
         this.transform = new Transform();
         this.collisionPosStart = new ArrayList<Vector2f>();
@@ -513,8 +528,16 @@ public class Level {
         	armor.update();
         }
         
+        for (Helmet helmet : helmets) {
+            helmet.update();
+        }
+        
         for (SuperShotgun superShotgun : superShotguns) {
-        	superShotgun.update();
+            superShotgun.update();
+        }
+        
+        for (Barrel barrel : barrels) {
+            barrel.update();
         }
 
         for (Medkit medkit : removeMedkitList) {
@@ -549,8 +572,16 @@ public class Level {
         	armors.remove(armor);
         }
         
+        for (Helmet helmet : removeHelmets) {
+            helmets.remove(helmet);
+        }
+        
         for (SuperShotgun superShotgun : removeSuperShotgunList) {
-        	superShotguns.remove(superShotgun);
+            superShotguns.remove(superShotgun);
+        }
+        
+        for (Barrel barrel : removeBarrels) {
+            barrels.remove(barrel);
         }
         
         removeMedkitList.clear();
@@ -562,6 +593,8 @@ public class Level {
         removeGhostList.clear();
         removeArmorList.clear();
         removeSuperShotgunList.clear();
+        removeHelmets.clear();
+        removeBarrels.clear();
     }
 
     /**
@@ -699,6 +732,10 @@ public class Level {
         	armor.render();
         }
         
+        for (Helmet helmet : helmets) {
+            helmet.render();
+        }
+        
         for (Furnace furnace : furnaces) {
         	furnace.render();
         }
@@ -709,6 +746,10 @@ public class Level {
         
         for (SuperShotgun superShotgun : superShotguns) {
         	superShotgun.render();
+        }
+        
+        for (Barrel barrel : barrels) {
+            barrel.render();
         }
 
         player.render();
@@ -1042,6 +1083,10 @@ public class Level {
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, furnace.getTransform().getPosition().getXZ(), furnace.getSize()));
             }
             
+            for (Barrel barrel : barrels) {
+                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, barrel.getTransform().getPosition().getXZ(), barrel.getSize()));
+            }
+            
         }
 
         return new Vector3f(collisionVector.getX(), 0, collisionVector.getY());
@@ -1227,6 +1272,35 @@ public class Level {
 	            	nearestghost.damage(player.getDamage());
 	            }
         	}
+            
+            for (Barrel barrel : barrels) {
+                if(barrel.boom == true) {
+                    if (monsterIntersect != null && (nearestIntersect == null
+                                                     || nearestIntersect.sub(lineStart).length() > monsterIntersect.sub(lineStart).length())) {
+                        nearestMonster.damage(barrel.damage);
+                    }
+                    
+                    if (dogIntersect != null && (nearestIntersect == null
+                                                 || nearestIntersect.sub(lineStart).length() > dogIntersect.sub(lineStart).length())) {
+                        nearestDog.damage(barrel.damage);
+                    }
+                    
+                    if (ssSoldierIntersect != null && (nearestIntersect == null
+                                                       || nearestIntersect.sub(lineStart).length() > ssSoldierIntersect.sub(lineStart).length())) {
+                        nearestSsSoldier.damage(barrel.damage);
+                    }
+                    
+                    if (naziSergeantsIntersect != null && (nearestIntersect == null
+                                                           || nearestIntersect.sub(lineStart).length() > naziSergeantsIntersect.sub(lineStart).length())) {
+                        nearestNaziSargent.damage(barrel.damage);
+                    }
+                    
+                    if (ghostIntersect != null && (nearestIntersect == null
+                                                   || nearestIntersect.sub(lineStart).length() > ghostIntersect.sub(lineStart).length())) {
+                        nearestghost.damage(barrel.damage);
+                    }
+                }
+            }
         }
 
         return nearestIntersect;
@@ -1337,6 +1411,11 @@ public class Level {
                         pillars.add(new Pillar(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 154) {
                         armors.add(new Armor(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.1f, (j + 0.5f) * SPOT_LENGTH))));
+                    } else if ((level.getPixel(i, j) & 0x0000FF) == 155) {
+                        helmets.add(new Helmet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.1f, (j + 0.5f) * SPOT_LENGTH))));
+                        //barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.2f, (j + 0.5f) * SPOT_LENGTH))));
+                    } else if ((level.getPixel(i, j) & 0x0000FF) == 160) {
+                        barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.2f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) < 128 && (level.getPixel(i, j) & 0x0000FF) > 96) {
                         int offset = (level.getPixel(i, j) & 0x0000FF) - 96;
                         exitPoints.add(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0f, (j + 0.5f) * SPOT_LENGTH));
@@ -1522,77 +1601,92 @@ public class Level {
     public static Player getPlayer() {
         return player;
     }
-
-    /**
-     * Removes the medical kits when the player grabs it.
-     * @param medkit Medical kit.
-     */
-    public static void removeMedkit(Medkit medkit) {
-        removeMedkitList.add(medkit);
-    }
-    
-    /**
-     * Removes the food when the player grabs it.
-     * @param food Food.
-     */
-    public static void removeFood(Food food) {
-        removeFoodList.add(food);
-    }
-
-    /**
-     * Removes the bullet packs when the player grabs it.
-     * @param bullet Bullet pack.
-     */
-	public static void removeBullets(Bullet bullet) {
-		removeBulletList.add(bullet);
-	}
-	
-	/**
-     * Removes the bags when the player grabs it.
-     * @param bag Bag.
-     */
-	public static void removeBags(Bag bag) {
-		removeBagList.add(bag);
-	}
-
-	/**
-     * Removes the shotguns when the player grabs it.
-     * @param shotgun Shotgun.
-     */
-	public static void removeShotgun(Shotgun shotgun) {
-		removeShotgunList.add(shotgun);
-	}
-	
-	/**
-     * Removes the machine-guns when the player grabs it.
-     * @param machineGun Machine-Gun.
-     */
-	public static void removeMachineGun(Machinegun machineGun) {
-		removeMachineGunList.add(machineGun);
-	}
-	
-	/**
-     * Removes the ghost when disappears.
-     * @param ghost Ghost.
-     */
-	public static void removeGhost(Ghost ghost) {
-		removeGhostList.add(ghost);
-	}
-
-	/**
-     * Removes the armor when disappears.
-     * @param armor Armor.
-     */
-	public static void removeArmor(Armor armor) {
-		removeArmorList.add(armor);
-	}
-	
-	/**
-     * Removes the super shotguns when the player grabs it.
-     * @param sShotgun Super shotgun.
-     */
-	public static void removeSuperShotgun(SuperShotgun sShotgun) {
-		removeSuperShotgunList.add(sShotgun);
-	}
+        /**
+         * Removes the medical kits when the player grabs it.
+         * @param medkit Medical kit.
+         */
+        public static void removeMedkit(Medkit medkit) {
+            removeMedkitList.add(medkit);
+        }
+        
+        /**
+         * Removes the food when the player grabs it.
+         * @param food Food.
+         */
+        public static void removeFood(Food food) {
+            removeFoodList.add(food);
+        }
+        
+        /**
+         * Removes the bullet packs when the player grabs it.
+         * @param bullet Bullet pack.
+         */
+        public static void removeBullets(Bullet bullet) {
+            removeBulletList.add(bullet);
+        }
+        
+        /**
+         * Removes the bags when the player grabs it.
+         * @param bag Bag.
+         */
+        public static void removeBags(Bag bag) {
+            removeBagList.add(bag);
+        }
+        
+        /**
+         * Removes the shotguns when the player grabs it.
+         * @param shotgun Shotgun.
+         */
+        public static void removeShotgun(Shotgun shotgun) {
+            removeShotgunList.add(shotgun);
+        }
+        
+        /**
+         * Removes the machine-guns when the player grabs it.
+         * @param machineGun Machine-Gun.
+         */
+        public static void removeMachineGun(Machinegun machineGun) {
+            removeMachineGunList.add(machineGun);
+        }
+        
+        /**
+         * Removes the ghost when disappears.
+         * @param ghost Ghost.
+         */
+        public static void removeGhost(Ghost ghost) {
+            removeGhostList.add(ghost);
+        }
+        
+        /**
+         * Removes the armor when disappears.
+         * @param armor Armor.
+         */
+        public static void removeArmor(Armor armor) {
+            removeArmorList.add(armor);
+        }
+        
+        /**
+         * Removes the super shotguns when the player grabs it.
+         * @param sShotgun Super shotgun.
+         */
+        public static void removeSuperShotgun(SuperShotgun sShotgun) {
+            removeSuperShotgunList.add(sShotgun);
+        }
+        
+        /**
+         * Removes the helmet when disappears.
+         * @param helmet Helmet.
+         */
+        public static void removeHelmet(Helmet helmet) {
+            removeHelmets.add(helmet);
+        }
+        
+        /**
+         * Removes the barrel when disappears.
+         * @param barrel Barrels.
+         */
+        public static void removeBarrel(Barrel barrel) {
+            removeBarrels.add(barrel);
+        }
 	
 }

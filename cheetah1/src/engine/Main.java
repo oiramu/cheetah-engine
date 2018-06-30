@@ -35,7 +35,7 @@ public class Main {
 		
 		CoreEngine engine = new CoreEngine(1280, 720, 250, new Auschwitz());
 		engine.createWindow("Auschwitz", 8, true);
-		engine.run();		
+		engine.run();
 	}
 
 }

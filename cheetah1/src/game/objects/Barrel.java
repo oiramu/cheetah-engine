@@ -27,14 +27,14 @@ import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.MeshRenderer;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
-import game.Auschwitz;
 import game.Level;
 
 /**
  *
- * @author Julio Vergara.
+ * @author Carlos Rodriguez.
  * @version 1.0
  * @since 2018
  */
@@ -51,6 +51,7 @@ public class Barrel {
     
     private static Mesh mesh;
     private Material material;
+    private MeshRenderer meshRenderer;
     
     private float sizeX;
     private double health;
@@ -118,6 +119,7 @@ public class Barrel {
         this.material = new Material(animation.get(0), new Vector3f(1,1,1));
         this.state = STATE_IDLE;
         this.transform = transform;
+        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
         this.dead = false;
         this.health = 200;
         this.damage = 0;
@@ -213,8 +215,7 @@ public class Barrel {
      * Method that renders the object's mesh to screen.
      */
     public void render() {
-        Auschwitz.updateShader(transform.getTransformation(), transform.getPerspectiveTransformation(), material);
-        mesh.draw();
+        meshRenderer.render();
     }
     
     /**

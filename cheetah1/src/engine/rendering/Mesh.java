@@ -94,7 +94,7 @@ public class Mesh {
     }
     
     /**
-     * Calculates the normals on the mesh.
+     * Calculates the normals of the mesh.
      * @param vertices of the object.
      * @param indices of vertices.
      */

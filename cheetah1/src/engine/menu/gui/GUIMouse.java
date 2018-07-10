@@ -16,10 +16,11 @@
 package engine.menu.gui;
 
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+
+import engine.rendering.Window;
 
 /**
 *
@@ -36,8 +37,8 @@ public class GUIMouse {
 	 * Constructor for the mouse cursor.
 	 */
 	public GUIMouse() {
-		Mouse.setCursorPosition(Display.getWidth()/2, Display.getHeight()/2);
-		mousePos = new Vector2f(Display.getWidth()/2, Display.getHeight()/2);
+		Mouse.setCursorPosition(Window.getWidth()/2, Window.getHeight()/2);
+		mousePos = new Vector2f(Window.getWidth()/2, Window.getHeight()/2);
 		try {
 			mouseTexture = new Image("res/textures/coreDisplay/mouse.png");
 		} catch (SlickException e) {
@@ -62,7 +63,7 @@ public class GUIMouse {
 	 */
 	public void update() {
 		mousePos.x = Mouse.getX();
-		mousePos.y = -Mouse.getY()+Display.getHeight(); //Change landmark position, bottom-left -> top-left
+		mousePos.y = -Mouse.getY()+Window.getHeight(); //Change landmark position, bottom-left -> top-left
 	}
 	
 	/**

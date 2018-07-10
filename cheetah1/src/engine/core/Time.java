@@ -16,11 +16,11 @@
 package engine.core;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class Time {
 
     private static final long OLD_LONG_SECOND = 1000000000L;

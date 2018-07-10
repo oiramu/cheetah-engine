@@ -81,12 +81,14 @@ public class RenderUtil {
         
         glEnable(GL_DEPTH_CLAMP);
         
-        System.out.println("|CHEETAH ENGINE; BUILD v1.0|");
+        System.out.println("==============================");
+        System.out.println("||CHEETAH ENGINE; BUILD v1.0||");
+        System.out.println("==============================");
         System.out.println("Compiliation specs: ");
-        System.out.println("OS name " + System.getProperty("os.name"));
-        System.out.println("OS version " + System.getProperty("os.version"));
-        System.out.println("LWJGL version " + org.lwjgl.Sys.getVersion());
-        System.out.println("OpenGL version " + glGetString(GL_VERSION));
+        System.out.println("-OS name: " + System.getProperty("os.name"));
+        System.out.println("-OS version: " + System.getProperty("os.version"));
+        System.out.println("-LWJGL version: " + org.lwjgl.Sys.getVersion());
+        System.out.println("-OpenGL version: " + glGetString(GL_VERSION));
         System.out.println("\n");
 
     }

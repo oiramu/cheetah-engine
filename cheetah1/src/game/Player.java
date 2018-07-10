@@ -34,6 +34,7 @@ import engine.rendering.BaseLight;
 import engine.rendering.Camera;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.MeshRenderer;
 import engine.rendering.PhongShader;
 import engine.rendering.PointLight;
 import engine.rendering.SpotLight;
@@ -52,14 +53,14 @@ public class Player {
     private static final float GUN_OFFSET = -0.077f;
     private static final float GUN_OFFSET_X = 0f;
     private static final float GUN_TRANSFORM_MUL = 0.101f;
-    
-    private static final int MAX_LIFE = 100;
-
     private static final float MOUSE_SENSITIVITY = 0.25f;
     private static final float SIDE_SENSITIVITY = 0.75f;
     private static final float MAX_LOOK_ANGLE = 0;
     private static final float MIN_LOOK_ANGLE = 0;
     private static final float PLAYER_WIDTH = 0.2f;
+    
+    private static final int MAX_LIFE = 100;
+    
     private static float moveSpeed;
     private static float gunFireAnimationTime;
     
@@ -130,17 +131,19 @@ public class Player {
     private static final Clip painNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "PLPAIN");
     private static final Clip deathNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "PLDETH");
 
-    private static Mesh gunMesh;
-    private static Material gunMaterial;
-    private static Material gunAnimationMaterial1;
-    private static Material gunAnimationMaterial2;
-    private static Material gunAnimationMaterial3;
-    private static Material gunAnimationMaterial4;
-    private static Material crossHairMaterial;
-    private static Material crossHairAnimationMaterial;
-    private static Material painMaterial;
-    private static Transform gunTransform;
-    private static Transform hudTransform;
+    private Mesh gunMesh;
+    private Material gunMaterial;
+    private Material gunAnimationMaterial1;
+    private Material gunAnimationMaterial2;
+    private Material gunAnimationMaterial3;
+    private Material gunAnimationMaterial4;
+    private Material crossHairMaterial;
+    private Material crossHairAnimationMaterial;
+    private Material painMaterial;
+    private Transform gunTransform;
+    private Transform hudTransform;
+    private MeshRenderer gunRenderer;
+    private MeshRenderer hudRenderer;
 
     private Camera playerCamera;
     private Random rand;
@@ -172,7 +175,7 @@ public class Player {
     
     public boolean isAlive;
     public boolean isReloading;
-    public boolean isHand;
+    public boolean isMelee;
     public boolean isBulletBased;
     public boolean isShellBased;
     public boolean isAutomatic;
@@ -367,6 +370,14 @@ public class Player {
         if (hudTransform == null) {
         	hudTransform = new Transform(playerCamera.getPos());
         }
+        
+        if(gunRenderer == null) {
+        	gunRenderer = new MeshRenderer(gunMesh, gunTransform);
+        }
+        
+        if(hudRenderer == null) {
+        	hudRenderer = new MeshRenderer(gunMesh, hudTransform);
+        }
 
         gunFireTime = 0;
         painTime = 0;
@@ -397,7 +408,7 @@ public class Player {
         gunFireAnimationTime = 0.1f;
         moveSpeed = 6f;
         gunLightBeam = 0;
-        isHand = true;    
+        isMelee = true;    
         isBulletBased = false;
         isShellBased = false;
         weaponState = HAND;
@@ -422,7 +433,7 @@ public class Player {
         damageRange = 30f;
         moveSpeed = 5f;
         gunLightBeam = 10;
-        isHand = false;
+        isMelee = false;
         isBulletBased = true;
         isShellBased = false;
         weaponState = PISTOL;
@@ -451,7 +462,7 @@ public class Player {
         damageRange = 60f;
         moveSpeed = 4f;
         gunLightBeam = 20;
-        isHand = false;
+        isMelee = false;
         isBulletBased = false;
         isShellBased = true;
         weaponState = SHOTGUN;
@@ -476,7 +487,7 @@ public class Player {
         damageRange = 60f;
         moveSpeed = 4.5f;
         gunLightBeam = 15;
-        isHand = false;
+        isMelee = false;
         isBulletBased = true;
         isShellBased = false;
         weaponState = MACHINEGUN;
@@ -505,7 +516,7 @@ public class Player {
         damageRange = 60f;
         moveSpeed = 4f;
         gunLightBeam = 40;
-        isHand = false;
+        isMelee = false;
         isBulletBased = false;
         isShellBased = true;
         weaponState = SUPER_SHOTGUN;
@@ -530,7 +541,7 @@ public class Player {
         damageRange = 120f;
         moveSpeed = 4.5f;
         gunLightBeam = 30;
-        isHand = false;
+        isMelee = false;
         isBulletBased = true;
         isShellBased = false;
         weaponState = CHAINGUN;
@@ -558,9 +569,9 @@ public class Player {
 	        }
 	        
 	        if (Input.getKeyDown(Input.KEY_1)) {
-	        	if(weaponState == HAND) {
+	        	if(weaponState == HAND && isReloading) {
 	        		AudioUtil.playAudio(missueNoise, 0);
-	        	}else {
+	        	} else {
 	        		gotHand();
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        		ammoTime = (double) Time.getTime() / Time.SECOND;
@@ -568,7 +579,7 @@ public class Player {
 	        } else if (Input.getKeyDown(Input.KEY_2)) {
 	        	if(weaponState == PISTOL) {
 	        		AudioUtil.playAudio(missueNoise, 0);
-	        	}else {
+	        	} else {
 	        		gotPistol();
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        		ammoTime = (double) Time.getTime() / Time.SECOND;
@@ -576,7 +587,7 @@ public class Player {
 	        } else if (Input.getKeyDown(Input.KEY_3)) {
 	        	if(shotgun == false || weaponState == SHOTGUN) {
 	        		AudioUtil.playAudio(missueNoise, 0);
-	        	}else {
+	        	} else {
 	        		gotShotgun();
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        		ammoTime = (double) Time.getTime() / Time.SECOND;
@@ -584,7 +595,7 @@ public class Player {
 	        } else if (Input.getKeyDown(Input.KEY_4)) {
 	        	if(machinegun == false || weaponState == MACHINEGUN) {
 	        		AudioUtil.playAudio(missueNoise, 0);
-	        	}else {
+	        	} else {
 	        		gotMachinegun();
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        		ammoTime = (double) Time.getTime() / Time.SECOND;
@@ -592,7 +603,7 @@ public class Player {
 	        } else if (Input.getKeyDown(Input.KEY_5)) {
 	        	if(sShotgun == false || weaponState == SUPER_SHOTGUN) {
 	        		AudioUtil.playAudio(missueNoise, 0);
-	        	}else {
+	        	} else {
 	        		gotSShotgun();
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        		ammoTime = (double) Time.getTime() / Time.SECOND;
@@ -600,7 +611,7 @@ public class Player {
 	        } else if (Input.getKeyDown(Input.KEY_6)) {
 	        	if(chaingun == false || weaponState == CHAINGUN) {
 	        		AudioUtil.playAudio(missueNoise, 0);
-	        	}else {
+	        	} else {
 	        		gotChaingun();
 	        		AudioUtil.playAudio(moveNoise, 0);
 	        		ammoTime = (double) Time.getTime() / Time.SECOND;
@@ -624,7 +635,7 @@ public class Player {
 		            Vector2f lineEnd = lineStart.add(shootDirection.mul(1000.0f));
 		
 		            Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, true);
-		            if(isHand) {
+		            if(isMelee) {
 		            	gunFireTime = (double) Time.getTime() / Time.SECOND;
 		            	AudioUtil.playAudio(gunNoise, 0);
 		            }
@@ -702,7 +713,7 @@ public class Player {
     	int ammo = 0;
     	float movAmt = 0;
     	double time = (double) Time.getTime() / Time.SECOND;
-    	if(isAlive) { movAmt = (float) (moveSpeed * Time.getDelta()); dy = GUN_OFFSET; dx = GUN_OFFSET_X;} 	
+    	if(isAlive) { movAmt = (float) (moveSpeed * Time.getDelta()); dy = GUN_OFFSET; dx = GUN_OFFSET_X;}
 
         movementVector.setY(0);
 
@@ -715,8 +726,8 @@ public class Player {
 
         if (movementVector.length() > 0) {
             playerCamera.move(movementVector, movAmt);
-            dy -= (Math.sin(time*3)*(movAmt/6f));
-            dx -= (Math.cos(time*3)*(movAmt/6f));
+            dy -= (Math.sin(time*3)*(movAmt/10));
+            dx -= (Math.cos(time*3)*(movAmt/10));
         }
 
         //Gun movement
@@ -770,46 +781,37 @@ public class Player {
     	double gunTime4 = gunTime3 + gunFireAnimationTime;
         
         if((double)time < healthTime + 0.5f) {
-        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), healthMaterial);
-            gunMesh.draw();
+        	hudRenderer.render(healthMaterial);
         } else {
-        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), healthMaterial);
-            gunMesh.draw();
+        	hudRenderer.render(healthMaterial);
         }
         
         if((double)time < ammoTime + 0.5f) {
-        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), ammoMaterial);
-            gunMesh.draw();
+        	hudRenderer.render(ammoMaterial);
         } else {
-        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), ammoMaterial);
-            gunMesh.draw();
+        	hudRenderer.render(ammoMaterial);
         } 
         
         if(isAlive) {
 	        if((double)time < painTime + 0.5f) {
-	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), painMaterial);
-	            gunMesh.draw();
+	        	hudRenderer.render(painMaterial);
 	        }
         } else {
-        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), new Material(ResourceLoader.loadTexture("hud/DEATH")));
-            gunMesh.draw();
+        	hudRenderer.render(new Material(ResourceLoader.loadTexture("hud/DEATH")));
         }
         
-		if(isHand == true) {
+		if(isMelee) {
 	        if ((double) time < gunTime) {
 	        	isReloading = true;
-	            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial1);
-	            gunMesh.draw();
+	        	gunRenderer.render(gunAnimationMaterial1);
 	        }else if ((double) time < gunTime2) {
-	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
-	            gunMesh.draw();
+	        	gunRenderer.render(gunAnimationMaterial2);
 	        }else {
-	        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
-	            gunMesh.draw();
+	        	gunRenderer.render(gunMaterial);
 	            isReloading = false;
 	        }
         }
-		if(isBulletBased == true) {
+		if(isBulletBased) {
 			if(bullets != 0) {
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
@@ -817,37 +819,25 @@ public class Player {
 		            		new Attenuation(0,0,1), new Vector3f(-2,0,3f), gunLightBeam);
 		        	pLight1.setPosition(getCamera().getPos());
 		        	PhongShader.setPointLight(new PointLight[] {pLight1});
-		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairAnimationMaterial);
-			        gunMesh.draw();
-			        
-		            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial1);
-		            gunMesh.draw();
-		        }else if ((double) time < gunTime2) {
-		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairAnimationMaterial);
-			        gunMesh.draw();
-		        	
-		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
-		            gunMesh.draw();
-		        }else {
-		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairMaterial);
-		            gunMesh.draw();
-		        	
-		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
-	            	gunMesh.draw();
-	            	pLight1.setPosition(new Vector3f(1000,1000,1000));
+		        	hudRenderer.render(crossHairAnimationMaterial);
+		        	gunRenderer.render(gunAnimationMaterial1);
+		        } else if ((double) time < gunTime2) {
+			        hudRenderer.render(crossHairAnimationMaterial);
+		        	gunRenderer.render(gunAnimationMaterial2);
+		            pLight1.setPosition(new Vector3f(1000,1000,1000));
+		        } else {
+		            hudRenderer.render(crossHairMaterial);
+		        	gunRenderer.render(gunMaterial);
 	            	isReloading = false;
 		        }
-			}else {
-				Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairMaterial);
-		        gunMesh.draw();
-				
-				Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
-            	gunMesh.draw();
-            	pLight1.setPosition(new Vector3f(1000,1000,1000));
+			} else {
+				hudRenderer.render(crossHairMaterial);
+	        	gunRenderer.render(gunMaterial);
             	isReloading = false;
+            	pLight1.setPosition(new Vector3f(1000,1000,1000));
 			}
 		}
-		if(isShellBased == true) {
+		if(isShellBased) {
 			int i;
 			if(isDoubleShooter)i=1;else i =0;
 			if(shells != i) {
@@ -857,48 +847,30 @@ public class Player {
 		            		new Attenuation(0,0,1), new Vector3f(-2,0,3f), gunLightBeam);
 		        	pLight1.setPosition(getCamera().getPos());
 		        	PhongShader.setPointLight(new PointLight[] {pLight1});
-		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairAnimationMaterial);
-			        gunMesh.draw();
-			        
-		            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial1);
-		            gunMesh.draw();
-		        }else if ((double) time < gunTime2) {
-		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairMaterial);
-		            gunMesh.draw();
-      	
-		            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial2);
-			        gunMesh.draw();
+		        	hudRenderer.render(crossHairAnimationMaterial);
+		        	gunRenderer.render(gunAnimationMaterial1);
+		        } else if ((double) time < gunTime2) {
+		        	hudRenderer.render(crossHairAnimationMaterial);
+		        	gunRenderer.render(gunAnimationMaterial2);
 			        AudioUtil.playAudio(gunReload, 0);
-		        }else if ((double) time < gunTime3) {
-		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairMaterial);
-		            gunMesh.draw();
-
-		            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial3);
-			        gunMesh.draw();
+			        pLight1.setPosition(new Vector3f(1000,1000,1000));
+		        } else if ((double) time < gunTime3) {
+		        	hudRenderer.render(crossHairMaterial);
+		        	gunRenderer.render(gunAnimationMaterial3);
 			        AudioUtil.playAudio(gunClipp, 0);
-		        }else if ((double) time < gunTime4) {
-		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairMaterial);
-		            gunMesh.draw();
-
-		            Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunAnimationMaterial4);
-			        gunMesh.draw();
-		        }else {
-		        	Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairMaterial);
-		            gunMesh.draw();
-		        	
-		        	Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
-		            gunMesh.draw();
-		            pLight1.setPosition(new Vector3f(1000,1000,1000));
+		        } else if ((double) time < gunTime4) {
+		        	hudRenderer.render(crossHairMaterial);
+		        	gunRenderer.render(gunAnimationMaterial4);
+		        } else {
+		        	hudRenderer.render(crossHairMaterial);
+		        	gunRenderer.render(gunMaterial);
 		            isReloading = false;
 		        }
-			}else {
-				Auschwitz.updateShader(hudTransform.getTransformation(), hudTransform.getPerspectiveTransformation(), crossHairMaterial);
-		        gunMesh.draw();
-				
-				Auschwitz.updateShader(gunTransform.getTransformation(), gunTransform.getPerspectiveTransformation(), gunMaterial);
-	            gunMesh.draw();
-	            pLight1.setPosition(new Vector3f(1000,1000,1000));
+			} else {
+				hudRenderer.render(crossHairMaterial);
+	        	gunRenderer.render(gunMaterial);
 	            isReloading = false;
+	            pLight1.setPosition(new Vector3f(1000,1000,1000));
 			}
 		}
         
@@ -915,8 +887,8 @@ public class Player {
             health = MAX_LIFE;
         }
         if (health <= 0) {
+        	AudioUtil.playAudio(deathNoise, 0);
         	health = 0;
-            AudioUtil.playAudio(deathNoise, 0);
             bullets = 0;
             shells = 0;
             armori = 0;

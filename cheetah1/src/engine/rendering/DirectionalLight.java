@@ -18,11 +18,11 @@ package engine.rendering;
 import engine.core.Vector3f;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2018
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2018
+ */
 public class DirectionalLight {
 	
 	private BaseLight base;

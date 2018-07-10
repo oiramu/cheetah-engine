@@ -19,11 +19,11 @@ import engine.core.CoreEngine;
 import game.Auschwitz;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.3
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.4
+ * @since 2017
+ */
 public class Main {
 	
 	/**
@@ -33,8 +33,8 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		
-		CoreEngine engine = new CoreEngine(1280, 720, 250, new Auschwitz());
-		engine.createWindow("Auschwitz", 8, true);
+		CoreEngine engine = new CoreEngine(1280, 720, 120, new Auschwitz());
+		engine.createWindow("Auschwitz", true);
 		engine.run();
 	}
 

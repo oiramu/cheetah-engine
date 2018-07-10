@@ -26,7 +26,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.PixelFormat;
 
 import engine.audio.AudioUtil;
 import engine.core.ResourceLoader;
@@ -51,7 +50,7 @@ public class Window {
 	 * @param title of the window.
 	 * @param fullscreen If its windowed or full-screen.
 	 */
-	public static void createMenuWindow(int width, int height, int aliasing, String title, boolean fullscreen) {
+	public static void createMenuWindow(int width, int height, String title, boolean fullscreen) {
 		
 		Display.setTitle(title);
 		Display.setIcon(new ByteBuffer[] {
@@ -74,7 +73,7 @@ public class Window {
 			}
 			
 			Display.setFullscreen(fullscreen);
-	        Display.create(new PixelFormat().withSamples(aliasing));
+	        Display.create();
 	        Keyboard.create();
             Mouse.create();
 			
@@ -87,8 +86,7 @@ public class Window {
 			//SEngineUtil.getInstance().setInputType(InputType.MOUSE); //Default input type
 		} catch(LWJGLException e) {
 			e.printStackTrace();
-			Display.destroy();
-			System.exit(0);
+			dispose();
 		}
 	}
 	
@@ -114,7 +112,7 @@ public class Window {
 		}
 		*/
 		//Update objects
-		Display.update();
+		render();
 		menu.update();
 	}
 	

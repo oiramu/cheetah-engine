@@ -24,8 +24,8 @@ import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.MeshRenderer;
 import engine.rendering.Vertex;
-import game.Auschwitz;
 import game.Level;
 
 /**
@@ -45,6 +45,7 @@ public class Food {
 
     private static Mesh mesh;
     private static Material material;
+    private MeshRenderer meshRenderer;
 
     private Transform transform;
 
@@ -83,6 +84,7 @@ public class Food {
         }
 
         this.transform = transform;
+        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
     }
 
     /**
@@ -114,7 +116,6 @@ public class Food {
      * Method that renders the power-up's mesh.
      */
     public void render() {
-        Auschwitz.updateShader(transform.getTransformation(), transform.getPerspectiveTransformation(), material);
-        mesh.draw();
+        meshRenderer.render();
     }
 }

@@ -19,8 +19,6 @@ import java.util.ArrayList;
 
 import javax.sound.midi.Sequence;
 
-import org.lwjgl.opengl.Display;
-
 import engine.audio.AudioUtil;
 import engine.core.*;
 import engine.rendering.*;
@@ -38,9 +36,7 @@ public class Auschwitz implements Game {
     private static final int EPISODE_1 = 1;
     private static final int EPISODE_2 = 2;
     private static final int EPISODE_3 = 2;
-    private static final int FOV = 70;
     public static Level level;
-    private static Shader shader;
 
     public static int levelNum;
     public static int startingLevel;
@@ -53,8 +49,7 @@ public class Auschwitz implements Game {
      * The constructor method of the compiling game.
      */
     public void init() {
-        shader = PhongShader.getInstance();
-        Transform.setProjection(FOV, Display.getWidth(), Display.getHeight(), 0.01f, 1000f);
+        Transform.setProjection(70, Window.getWidth(), Window.getHeight(), 0.01f, 1000f);
 
         for (int i = 0; i < 13; i++) {
         	playlist.add(ResourceLoader.loadMidi("THEME" + i));
@@ -108,18 +103,6 @@ public class Auschwitz implements Game {
         if (isRunning) {
             level.render();
         }
-    }
-
-    /**
-     * Updates everything visible calling the main shader to refresh all the
-     * code information.
-     * @param worldMatrix The world information in matrix.
-     * @param projectedMatrix The projection data in matrix.
-     * @param material The material (like textures) to update.
-     */
-    public static void updateShader(Matrix4f worldMatrix, Matrix4f projectedMatrix, Material material) {
-        shader.bind();
-        shader.updateUniforms(worldMatrix, projectedMatrix, material);
     }
 
     /**
@@ -207,11 +190,7 @@ public class Auschwitz implements Game {
             level = new Level(ResourceLoader.loadBitmap("level" + levelNum).flipX(), 
             		new Material(ResourceLoader.loadTexture("mapTexture" + currentEpisode), new Vector3f(1,1,1)));
 
-            if((levelNum/2) * 2 == levelNum) {
-            	sector = "B.";
-            }else {
-            	sector = "A.";
-            }
+            if((levelNum/2) * 2 == levelNum) sector = "B."; else sector = "A.";   
             
             if(level.getPlayer().getArmori() == 0) {
             	if(armoriTemp == 0) {
@@ -285,14 +264,6 @@ public class Auschwitz implements Game {
      */
     public static Level getLevel() {
         return level;
-    }
-
-    /**
-     * Gets the shader that has been used.
-     * @return Shader.
-     */
-    public static Shader getShader() {
-        return shader;
     }
 
     /**

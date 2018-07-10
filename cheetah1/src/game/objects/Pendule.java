@@ -24,9 +24,10 @@ import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.MeshRenderer;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
-import game.Auschwitz;
+import game.Level;
 
 /**
  *
@@ -38,10 +39,12 @@ public class Pendule {
 	
 	private static final String RES_LOC = "pendule/";
 	private static final int STATE_IDLE = 0;
+	private static final int DAMAGE = -2;
 	private int state;
     
     private static Mesh mesh;
     private Material material;
+    private MeshRenderer meshRenderer;
     
     private float sizeX;
     
@@ -99,6 +102,7 @@ public class Pendule {
         this.material = new Material(animation.get(5));
         this.state = STATE_IDLE;
         this.transform = transform;
+        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
     }
 
     /**
@@ -108,7 +112,6 @@ public class Pendule {
         Vector3f playerDistance = transform.getPosition().sub(Transform.getCamera().getPos());
 
         Vector3f orientation = playerDistance.normalized();
-        @SuppressWarnings("unused")
 		float distance = playerDistance.length();
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
@@ -138,6 +141,12 @@ public class Pendule {
                 material.setTexture(animation.get(1));
             } else if (timeDecimals <= 1.5f) {
                 material.setTexture(animation.get(0));
+                if(distance<1f) {
+                	if(!Level.getPlayer().getArmorb())
+                		Level.getPlayer().addHealth(DAMAGE);
+                	else
+                		Level.getPlayer().addArmori(DAMAGE);
+                }
             } else if (timeDecimals <= 1.75f) {
                 material.setTexture(animation.get(6));
             } else if (timeDecimals <= 2f) {
@@ -175,8 +184,7 @@ public class Pendule {
      * Method that renders the object's mesh to screen.
      */
     public void render() {
-        Auschwitz.updateShader(transform.getTransformation(), transform.getPerspectiveTransformation(), material);
-        mesh.draw();
+        meshRenderer.render();
     }
     
     /**

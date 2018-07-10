@@ -18,7 +18,6 @@ package engine.menu;
 import javax.sound.sampled.Clip;
 
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
@@ -28,6 +27,7 @@ import engine.core.Input;
 import engine.core.ResourceLoader;
 import engine.menu.system.SEngineUtil;
 import engine.menu.widget.WidgetModel;
+import engine.rendering.Window;
 
 /**
 *
@@ -86,7 +86,7 @@ public class Button extends WidgetModel {
 	 */
 	public void update() {
 		if(buttonEvent != null) {
-			if(Mouse.getX() > position.x && Mouse.getX() < position.x+ size.x && (-Mouse.getY()+Display.getHeight()) > position.y && (-Mouse.getY()+Display.getHeight()) < position.y + size.y) {
+			if(Mouse.getX() > position.x && Mouse.getX() < position.x+ size.x && (-Mouse.getY()+Window.getHeight()) > position.y && (-Mouse.getY()+Window.getHeight()) < position.y + size.y) {
 				hover = true;
 			}else {
 				hover = false;
@@ -103,9 +103,10 @@ public class Button extends WidgetModel {
 		//Button Texture
 		if(hover) {
 			texture.getSprite(0, 1).draw(position.x, position.y, size.x, size.y);
-		}else {
+			//Text
+			SEngineUtil.getInstance().getFont().drawString(position.x + 24, position.y, text);
+		} else {
 			texture.getSprite(0, 0).draw(position.x, position.y, size.x, size.y);
-		
 			//Text
 			SEngineUtil.getInstance().getFont().drawString(position.x + 24, position.y, text);
 		}

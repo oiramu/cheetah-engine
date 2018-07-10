@@ -108,7 +108,7 @@ public class Shader {
     }
     
     /**
-     * If the system ain't compatible with openGL 3 and above
+     * If the system ain't compatible with OpenGL 3 and above
      * Use this attribute binding attribute with a fixed
      * location.
      * @param attributeName of the uniform in GLSL code.

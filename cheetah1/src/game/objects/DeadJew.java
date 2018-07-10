@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Julio Vergara.
+ * Copyright 2017 Julio Vergara.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,6 @@ package game.objects;
 
 import java.util.ArrayList;
 
-import javax.sound.sampled.Clip;
-
-import engine.audio.AudioUtil;
 import engine.core.ResourceLoader;
 import engine.core.Time;
 import engine.core.Transform;
@@ -34,59 +31,41 @@ import engine.rendering.Vertex;
 /**
  *
  * @author Julio Vergara.
- * @version 1.0
- * @since 2018
+ * @version 1.1
+ * @since 2017
  */
-public class Pillar {
+public class DeadJew {
 	
-	private static final String RES_LOC = "pillar/";
-	private static final int STATE_IDLE = 0;
-    private static final int STATE_DYING = 1;
-	private static final int STATE_DEAD = 2;
-	private int state;
-	private double deathTime;
-	
-	private static final Clip breakNoice = ResourceLoader.loadAudio(RES_LOC + "MEDIA");
+	private static final String RES_LOC = "deadJew/";
+	private static final int STATE_1 = 0;
+	private static final int STATE_2 = 1;
     
     private static Mesh mesh;
-    private Material material;
+    private static Material material;
     private MeshRenderer meshRenderer;
     
-    private float sizeX;
-    private double health;
-    private boolean dead;
+    private int state;
     
-    private static ArrayList<Texture> animation;
+    private float sizeY;
+    private float sizeX;
 
     private Transform transform;
+    
+    private ArrayList<Texture> animation;
 
     /**
      * Constructor of the actual object.
      * @param transform the transform of the object in a 3D space.
      */
-    public Pillar(Transform transform) {
-    	
-    	if (animation == null) {
-            animation = new ArrayList<Texture>();
-            
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "COLWA0"));
-
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "CFALE0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "CFALA0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "CFALB0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "CFALC0"));
-            
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "CFALD0"));
-        }
-    	
+    public DeadJew(Transform transform) {
         if (mesh == null) {
             mesh = new Mesh();
 
-            float sizeY = 1f;
-            sizeX = (float) ((double) sizeY / (1f * 2.0));
+            sizeY = 0.3095238095238095f;
+            sizeX = (float) ((double) sizeY / (3.230769230769231 / 4));
 
-            float offsetX = 0.00f;
-            float offsetY = 0.00f;
+            float offsetX = 0.05f;
+            float offsetY = 0.01f;
 
             float texMinX = -offsetX;
             float texMaxX = -1 - offsetX;
@@ -104,12 +83,19 @@ public class Pillar {
             mesh.addVertices(verts, indices, true);
         }
         
-        this.material = new Material(animation.get(0), new Vector3f(1,1,1));
-        this.state = STATE_IDLE;
+        if(animation == null) {
+        	animation = new ArrayList<Texture>();
+        	
+        	animation.add(ResourceLoader.loadTexture(RES_LOC+"CMPGG0"));
+        	animation.add(ResourceLoader.loadTexture(RES_LOC+"CMPGH0"));
+        }
+
+        if (material == null) {
+			material = new Material(animation.get(1), new Vector3f(1,1,1));
+        }
+        this.state = STATE_1;
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
-        this.dead = false;
-        this.health = 500;
     }
 
     /**
@@ -130,50 +116,15 @@ public class Pillar {
         transform.setRotation(0, angle + 90, 0);
         
         double time = (double) Time.getTime() / Time.SECOND;
-        
-        if (!dead && health <= 0) {
-            dead = true;
-            state = STATE_DYING;
-            deathTime = time;
-            AudioUtil.playAudio(breakNoice, distance);
-        }
-        
-        if (state == STATE_IDLE) {
-        	double timeDecimals = (time - (double) ((int) time));
+        double timeDecimals = (time - (double) ((int) time));
 
-            timeDecimals *= 1.25f;
-
-        	if (timeDecimals <= 0.25f) {
-                material.setTexture(animation.get(0));
-            }
-        }
-        
-        if (state == STATE_DYING) {
-            dead = true;
-
-            final float time1 = 0.1f;
-            final float time2 = 0.3f;
-            final float time3 = 0.45f;
-            final float time4 = 0.6f;
-
-            if (time <= deathTime + 0.2f) {
-                material.setTexture(animation.get(1));
-            } else if (time > deathTime + time1 && time <= deathTime + time2) {
-                material.setTexture(animation.get(2));
-            } else if (time > deathTime + time2 && time <= deathTime + time3) {
-            	material.setTexture(animation.get(3));
-            } else if (time > deathTime + time3 && time <= deathTime + time4) {
-            	material.setTexture(animation.get(4));
-            }else if (time > deathTime + time4) {
-                state = STATE_DEAD;
-            }
-        }
-        
-        if (state == STATE_DEAD) {
-            dead = true;
-            material.setTexture(animation.get(5));
-        }
-
+        if(state == STATE_1) {
+        	material.setTexture(animation.get(0));
+        	if(distance<1.25f && timeDecimals <= 0.25f) state = STATE_2;
+        } else if(state == STATE_2) {
+        	material.setTexture(animation.get(1));
+        	if(distance>1.25f && timeDecimals <= 0.25f) state = STATE_1;
+        } 
     }
 
     /**
@@ -197,14 +148,6 @@ public class Pillar {
 	 */
     public Vector2f getSize() {
         return new Vector2f(sizeX, sizeX);
-    }
-    
-    /**
-     * Method that calculates the damage.
-     * @param amt amount.
-     */
-    public void damage(int amt) {
-        health -= amt;
     }
     
 }

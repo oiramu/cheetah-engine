@@ -25,8 +25,8 @@ import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.MeshRenderer;
 import engine.rendering.Vertex;
-import game.Auschwitz;
 import game.Level;
 
 /**
@@ -39,7 +39,7 @@ public class Door {
 	
 	private static final float HEIGHT = Level.LEVEL_HEIGHT;
 	private static final float LENGTH = Level.SPOT_LENGTH;
-	private static final float WIDTH = 0.125f;
+	private static final float WIDTH = 0.1f;
 	private static final int START = 0;
 	
 	private static final String RES_LOC = "door/";
@@ -51,6 +51,7 @@ public class Door {
 
     private Material material;
     private Transform transform;
+    private MeshRenderer meshRenderer;
     private Vector3f closedPos;
     private Vector3f openPos;
 
@@ -117,6 +118,8 @@ public class Door {
 
             door.addVertices(doorVerts, doorIndices, true);
         }
+        
+        this.meshRenderer = new MeshRenderer(door, this.transform, this.material);
     }
 
     /**
@@ -177,8 +180,7 @@ public class Door {
      * Renders the door.
      */
     public void render() {
-        Auschwitz.updateShader(transform.getTransformation(), transform.getPerspectiveTransformation(), material);
-        door.draw();
+        meshRenderer.render();
     }
 
     /**

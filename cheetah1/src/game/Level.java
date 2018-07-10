@@ -34,6 +34,7 @@ import engine.rendering.Bitmap;
 import engine.rendering.DirectionalLight;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.MeshRenderer;
 import engine.rendering.PhongShader;
 import engine.rendering.Vertex;
 import game.doors.Door;
@@ -46,7 +47,7 @@ import game.enemies.SsSoldier;
 import game.objects.Barrel;
 import game.objects.Bones;
 import game.objects.Clock;
-import game.objects.DeadMan;
+import game.objects.DeadJew;
 import game.objects.DeadNazi;
 import game.objects.Furnace;
 import game.objects.Hanged;
@@ -85,7 +86,7 @@ public class Level {
     private static final float NUM_TEX_X = 4f;
     private static final float NUM_TEX_Y = 4f;
     
-    private static final float HAND_RANGE = 0.55f;
+    private static final float MELEE_RANGE = 0.55f;
     private static final float BULLET_RANGE = 2f;
     private static final float SHELL_RANGE = 3f;
     
@@ -114,6 +115,7 @@ public class Level {
     //Player
     private static Player player;
 
+    //Level brain
     private ArrayList<Vector3f> exitPoints;
     private ArrayList<Integer> exitOffsets;
     private ArrayList<Vector2f> collisionPosStart;
@@ -140,7 +142,7 @@ public class Level {
     private ArrayList<LightBeam> lightPoints;
     private ArrayList<Bones> bones;
     private ArrayList<DeadNazi> deadNazi;
-    private ArrayList<DeadMan> deadMan;
+    private ArrayList<DeadJew> deadJews;
     private ArrayList<Table> tables;
     private ArrayList<Pipe> pipes;
     private ArrayList<Pendule> pendules;
@@ -164,6 +166,7 @@ public class Level {
     private Bitmap level;
     private Material material;
     private Transform transform;
+    private MeshRenderer meshRenderer;
 
     /**
      * Constructor of the level in the game.
@@ -214,7 +217,7 @@ public class Level {
         this.pendules = new ArrayList<Pendule>();
         this.lamps = new ArrayList<Lamp>();
         this.hangeds = new ArrayList<Hanged>();
-        this.deadMan = new ArrayList<DeadMan>();
+        this.deadJews = new ArrayList<DeadJew>();
         this.tables = new ArrayList<Table>();
         this.pillars = new ArrayList<Pillar>();
         this.clocks = new ArrayList<Clock>();
@@ -242,7 +245,7 @@ public class Level {
 		double time = (double) Time.getTime() / Time.SECOND;
     	double timeDecimals = (time - (double) ((int) time));
 		if (!player.isAlive) {
-	        if(Input.getKeyDown(Input.KEY_E)) {
+	        if(Input.getKeyDown(Input.KEY_E) || Input.getKeyDown(Input.KEY_SPACE)) {
 	    		if (timeDecimals <= 5.0f) {
 		            Auschwitz.loadLevel(Auschwitz.levelNum-Auschwitz.levelNum);
 		            player.gotPistol();
@@ -260,8 +263,8 @@ public class Level {
             		if (Math.abs(monster.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
             			monster.damage(player.getDamage());
             		}
-            	}else if(player.isHand) {
-    	            if (Math.abs(monster.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive) {
+            	}else if(player.isMelee) {
+    	            if (Math.abs(monster.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
     	               AudioUtil.playAudio(punchNoise, 0);
     	               monster.damage(player.getDamage());
     	            }
@@ -277,8 +280,8 @@ public class Level {
             		if (Math.abs(dog.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
             			dog.damage(player.getDamage());
             		}
-            	}else if(player.isHand) {
-    	            if (Math.abs(dog.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive) {
+            	}else if(player.isMelee) {
+    	            if (Math.abs(dog.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
     	               AudioUtil.playAudio(punchNoise, 0);
     	               dog.damage(player.getDamage());
     	            }
@@ -294,8 +297,8 @@ public class Level {
             		if (Math.abs(ssSoldier.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
             			ssSoldier.damage(player.getDamage());
             		}
-            	}else if(player.isHand) {
-    	            if (Math.abs(ssSoldier.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive) {
+            	}else if(player.isMelee) {
+    	            if (Math.abs(ssSoldier.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
     	               AudioUtil.playAudio(punchNoise, 0);
     	               ssSoldier.damage(player.getDamage());
     	            }
@@ -311,8 +314,8 @@ public class Level {
             		if (Math.abs(naziSergeants.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
             			naziSergeants.damage(player.getDamage());
             		}
-            	}else if(player.isHand) {
-    	            if (Math.abs(naziSergeants.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive) {
+            	}else if(player.isMelee) {
+    	            if (Math.abs(naziSergeants.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
     	               AudioUtil.playAudio(punchNoise, 0);
     	               naziSergeants.damage(player.getDamage());
     	            }
@@ -328,8 +331,8 @@ public class Level {
             		if (Math.abs(ghost.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
             			ghost.damage(player.getDamage());
             		}
-            	}else if(player.isHand) {
-    	            if (Math.abs(ghost.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive) {
+            	}else if(player.isMelee) {
+    	            if (Math.abs(ghost.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
     	               ghost.damage(player.getDamage());
     	            }
                 }
@@ -344,8 +347,8 @@ public class Level {
             		if (Math.abs(lamp.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
             			lamp.damage(player.getDamage());
             		}
-            	}else if(player.isHand) {
-    	            if (Math.abs(lamp.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive) {
+            	}else if(player.isMelee) {
+    	            if (Math.abs(lamp.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
     	               AudioUtil.playAudio(punchSolidNoise, 0);
     	               lamp.damage(player.getDamage());
     	            }
@@ -361,8 +364,8 @@ public class Level {
             		if (Math.abs(pillar.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
             			pillar.damage(player.getDamage());
             		}
-            	}else if(player.isHand) {
-    	            if (Math.abs(pillar.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < HAND_RANGE && player.isAlive) {
+            	}else if(player.isMelee) {
+    	            if (Math.abs(pillar.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
     	               AudioUtil.playAudio(punchSolidNoise, 0);
     	               pillar.damage(player.getDamage());
     	            }
@@ -370,7 +373,7 @@ public class Level {
             }
             
             for (Hanged hanged : hangeds) {
-                if(player.isHand == true) {
+                if(player.isMelee == true) {
     	           if (Math.abs(hanged.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive) {
     	                AudioUtil.playAudio(punchNoise, 0);
     	           }
@@ -378,7 +381,7 @@ public class Level {
             }
             
             for (Table table : tables) {
-                if(player.isHand == true) {
+                if(player.isMelee == true) {
     	           if (Math.abs(table.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive) {
     	                AudioUtil.playAudio(punchSolidNoise, 0);
     	           }
@@ -386,7 +389,7 @@ public class Level {
             }
             
             for (Clock clock : clocks) {
-                if(player.isHand == true) {
+                if(player.isMelee == true) {
     	           if (Math.abs(clock.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive) {
     	                AudioUtil.playAudio(punchSolidNoise, 0);
     	           }
@@ -394,7 +397,7 @@ public class Level {
             }
             
             for (Furnace furnace : furnaces) {
-                if(player.isHand == true) {
+                if(player.isMelee == true) {
     	           if (Math.abs(furnace.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive) {
     	                AudioUtil.playAudio(punchSolidNoise, 0);
     	           }
@@ -448,8 +451,8 @@ public class Level {
         	deadNazi.update();
         }
         
-        for (DeadMan deadMan : deadMan) {
-        	deadMan.update();
+        for (DeadJew deadJew : deadJews) {
+        	deadJew.update();
         }
         
         for (Food food : foods) {
@@ -601,8 +604,7 @@ public class Level {
      * Renders everything in the level.
      */
     public void render() {
-        Auschwitz.updateShader(transform.getTransformation(), transform.getPerspectiveTransformation(), material);
-        geometry.draw();
+    	meshRenderer.render();
 
         for (Door door : doors) {
             door.render();
@@ -660,8 +662,8 @@ public class Level {
         	deadNazi.render();
         }
         
-        for (DeadMan deadMan : deadMan) {
-        	deadMan.render();
+        for (DeadJew deadJew : deadJews) {
+        	deadJew.render();
         }
         
         for (Pipe pipe : pipes) {
@@ -1010,7 +1012,6 @@ public class Level {
                     if ((level.getPixel(i, j) & 0xFFFFFF) == 0) // If it's a black (wall) pixel
                     {
                         collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, blockSize.mul(new Vector2f(i, j)), blockSize));
-                        
                     }
                 }
             }
@@ -1043,8 +1044,8 @@ public class Level {
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, bone.getTransform().getPosition().getXZ(), bone.getSize()));
             }
             
-            for (DeadMan deadMan : deadMan) {
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, deadMan.getTransform().getPosition().getXZ(), deadMan.getSize()));
+            for (DeadJew deadJew : deadJews) {
+                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, deadJew.getTransform().getPosition().getXZ(), deadJew.getSize()));
             }
             
             for (Tree tree : trees) {
@@ -1196,79 +1197,54 @@ public class Level {
                 }
             }
 
-            if(player.isBulletBased == true) {
+            if((player.isBulletBased && player.getBullets()!=0)||(player.isShellBased && player.getShells()!=0)) {
 	            if (monsterIntersect != null && (nearestIntersect == null
-	                    || nearestIntersect.sub(lineStart).length() > monsterIntersect.sub(lineStart).length()) && player.getBullets()!=0) {
+	                    || nearestIntersect.sub(lineStart).length() > monsterIntersect.sub(lineStart).length())) {
 	                nearestMonster.damage(player.getDamage());
 	            }
 	            
 	            if (dogIntersect != null && (nearestIntersect == null
-	                    || nearestIntersect.sub(lineStart).length() > dogIntersect.sub(lineStart).length()) && player.getBullets()!=0) {
+	                    || nearestIntersect.sub(lineStart).length() > dogIntersect.sub(lineStart).length())) {
 	            	nearestDog.damage(player.getDamage());
 	            }
 	            
 	            if (ssSoldierIntersect != null && (nearestIntersect == null
-	                    || nearestIntersect.sub(lineStart).length() > ssSoldierIntersect.sub(lineStart).length()) && player.getBullets()!=0) {
+	                    || nearestIntersect.sub(lineStart).length() > ssSoldierIntersect.sub(lineStart).length())) {
 	            	nearestSsSoldier.damage(player.getDamage());
 	            }
 	            if (naziSergeantsIntersect != null && (nearestIntersect == null
-	                    || nearestIntersect.sub(lineStart).length() > naziSergeantsIntersect.sub(lineStart).length()) && player.getBullets()!=0) {
+	                    || nearestIntersect.sub(lineStart).length() > naziSergeantsIntersect.sub(lineStart).length())) {
 	            	nearestNaziSargent.damage(player.getDamage());
 	            }
 	            
 	            if (ghostIntersect != null && (nearestIntersect == null
-	                    || nearestIntersect.sub(lineStart).length() > ghostIntersect.sub(lineStart).length()) && player.getBullets()!=0) {
+	                    || nearestIntersect.sub(lineStart).length() > ghostIntersect.sub(lineStart).length())) {
 	            	nearestghost.damage(player.getDamage());
 	            }
         	}
-            if(player.isShellBased == true) {
+            if(player.isMelee && player.isAlive) {
         		if (monsterIntersect != null && (nearestIntersect == null
-	                    || nearestIntersect.sub(lineStart).length() > monsterIntersect.sub(lineStart).length()) && player.getShells()!=0) {
+	                    || /*nearestIntersect.sub(lineStart).length() >*/ monsterIntersect.sub(lineStart).length() < MELEE_RANGE)) {
 	                nearestMonster.damage(player.getDamage());
 	            }
 	            
 	            if (dogIntersect != null && (nearestIntersect == null
-	                    || nearestIntersect.sub(lineStart).length() > dogIntersect.sub(lineStart).length()) && player.getShells()!=0) {
+	                    || /*nearestIntersect.sub(lineStart).length() >*/ dogIntersect.sub(lineStart).length() < MELEE_RANGE)) {
 	            	nearestDog.damage(player.getDamage());
 	            }
 	            
 	            if (ssSoldierIntersect != null && (nearestIntersect == null
-	                    || nearestIntersect.sub(lineStart).length() > ssSoldierIntersect.sub(lineStart).length()) && player.getShells()!=0) {
-	            	nearestSsSoldier.damage(player.getDamage());
-	            }
-	            if (naziSergeantsIntersect != null && (nearestIntersect == null
-	                    || nearestIntersect.sub(lineStart).length() > naziSergeantsIntersect.sub(lineStart).length()) && player.getShells()!=0) {
-	            	nearestNaziSargent.damage(player.getDamage());
-	            }
-	            
-	            if (ghostIntersect != null && (nearestIntersect == null
-	                    || nearestIntersect.sub(lineStart).length() > ghostIntersect.sub(lineStart).length()) && player.getShells()!=0) {
-	            	nearestghost.damage(player.getDamage());
-	            }
-        	}
-            if(player.isHand == true) {
-        		if (monsterIntersect != null && (nearestIntersect == null
-	                    || /*nearestIntersect.sub(lineStart).length() >*/ monsterIntersect.sub(lineStart).length() < HAND_RANGE)  && player.isAlive == true ) {
-	                nearestMonster.damage(player.getDamage());
-	            }
-	            
-	            if (dogIntersect != null && (nearestIntersect == null
-	                    || /*nearestIntersect.sub(lineStart).length() >*/ dogIntersect.sub(lineStart).length() < HAND_RANGE) && player.isAlive == true) {
-	            	nearestDog.damage(player.getDamage());
-	            }
-	            
-	            if (ssSoldierIntersect != null && (nearestIntersect == null
-	                    || /*nearestIntersect.sub(lineStart).length() >*/ ssSoldierIntersect.sub(lineStart).length() < HAND_RANGE) && player.isAlive == true) {
+	                    || /*nearestIntersect.sub(lineStart).length() >*/ ssSoldierIntersect.sub(lineStart).length() < MELEE_RANGE)) {
 	            	nearestSsSoldier.damage(player.getDamage());
 	            }
 	            
 	            if (naziSergeantsIntersect != null && (nearestIntersect == null
-	                    || /*nearestIntersect.sub(lineStart).length() >*/ naziSergeantsIntersect.sub(lineStart).length() < HAND_RANGE) && player.isAlive == true) {
+	                    || /*nearestIntersect.sub(lineStart).length() >*/ naziSergeantsIntersect.sub(lineStart).length() < MELEE_RANGE)) {
 	            	nearestNaziSargent.damage(player.getDamage());
 	            }
 	            
 	            if (ghostIntersect != null && (nearestIntersect == null
-	                    || /*nearestIntersect.sub(lineStart).length() >*/ ghostIntersect.sub(lineStart).length() < HAND_RANGE) && player.isAlive == true) {
+	                    || /*nearestIntersect.sub(lineStart).length() >*/ ghostIntersect.sub(lineStart).length() < MELEE_RANGE)) {
 	            	nearestghost.damage(player.getDamage());
 	            }
         	}
@@ -1330,7 +1306,7 @@ public class Level {
                         }
 
                         if (yDoor) {
-                            doorTransform.setPosition(i, 0,0.1f+j + SPOT_LENGTH / 2);
+                            doorTransform.setPosition(i, 0,j + SPOT_LENGTH / 2);
                             doors.add(new Door(doorTransform, material, doorTransform.getPosition().add(new Vector3f(-0.9f, 0, 0))));
                         } else if (xDoor) {
                             doorTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
@@ -1353,7 +1329,7 @@ public class Level {
                             wallTransform.setPosition(i, 0, j);
                             secretWalls.add(new SecretWall(wallTransform, material, wallTransform.getPosition().add(new Vector3f(-0.9f, 0, 0))));
                         } else if (xSecretWall) {
-                            wallTransform.setPosition((i+ (SPOT_LENGTH / 2)*2)-0.01f, 0, j);
+                            wallTransform.setPosition((i+ (SPOT_LENGTH / 2)*2), 0, j);
                             wallTransform.setRotation(0, 90, 0);
                             secretWalls.add(new SecretWall(wallTransform, material, wallTransform.getPosition().add(new Vector3f(0, 0, -0.9f))));
                         }
@@ -1367,7 +1343,7 @@ public class Level {
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 100) {
                         trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.25f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 50) {
-                    	flares.add(new Lantern(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.70f, (j + 0.5f) * SPOT_LENGTH))));
+                    	flares.add(new Lantern(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, LEVEL_HEIGHT * 0.70f, (j + 0.5f) * SPOT_LENGTH))));
                         lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 51) {
                     	lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
@@ -1378,7 +1354,7 @@ public class Level {
                         deadNazi.add(new DeadNazi(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         bullets.add(new Bullet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 70) {
-                        deadMan.add(new DeadMan(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                        deadJews.add(new DeadJew(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.05f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 80) {
                         foods.add(new Food(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 90) {
@@ -1546,147 +1522,149 @@ public class Level {
         vertices.toArray(vertArray);
         indices.toArray(intArray);
         geometry.addVertices(vertArray, Util.toIntArray(intArray), true);
+        meshRenderer = new MeshRenderer(geometry, transform, material);
         PhongShader.setFogDensity(0.07f);
         PhongShader.setFogGradient(1.5f);
         PhongShader.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
         PhongShader.setAmbientLight(new Vector3f(1f,1f,1f));
    	 	PhongShader.setDirectionalLight(new DirectionalLight(
-   	 			new BaseLight(new Vector3f(1,1,1), 1f), new Vector3f(1,PLAYER_HEIGHT,1)));
+   	 			new BaseLight(new Vector3f(1,1,1), 1f), new Vector3f(level.getWidth()/2,10,level.getHeight()/2)));
     }
-    
-    /**
-     * Returns all the secret walls in the array-list.
-     * @return Secret walls.
-     */
-    public ArrayList<SecretWall> getSecretWalls() {
-        return secretWalls;
-    }
-
-    /**
-     * Returns all the Nazi soldiers in the array-list.
-     * @return Nazi Soldiers.
-     */
-    public ArrayList<NaziSoldier> getNaziSoldiers() {
-        return naziSoldiers;
-    }
-    
-    /**
-     * Returns all the Dogs in the array-list.
-     * @return Dogs.
-     */
-    public ArrayList<Dog> getDogs() {
-        return dogs;
-    }
-    
-    /**
-     * Returns all the SS soldiers in the array-list.
-     * @return SS soldiers.
-     */
-    public ArrayList<SsSoldier> getSsSoldiers() {
-        return ssSoldiers;
-    }
-    
-    /**
-     * Returns all the Nazi sergeants in the array-list.
-     * @return Nazi sergeants.
-     */
-    public ArrayList<NaziSergeant> getNaziSergeants() {
-        return naziSeargeants;
-    }
-
-    /**
-     * Get access to the main player object in game.
-     * @return Player.
-     */
-    public static Player getPlayer() {
-        return player;
-    }
-        /**
-         * Removes the medical kits when the player grabs it.
-         * @param medkit Medical kit.
-         */
-        public static void removeMedkit(Medkit medkit) {
-            removeMedkitList.add(medkit);
-        }
-        
-        /**
-         * Removes the food when the player grabs it.
-         * @param food Food.
-         */
-        public static void removeFood(Food food) {
-            removeFoodList.add(food);
-        }
-        
-        /**
-         * Removes the bullet packs when the player grabs it.
-         * @param bullet Bullet pack.
-         */
-        public static void removeBullets(Bullet bullet) {
-            removeBulletList.add(bullet);
-        }
-        
-        /**
-         * Removes the bags when the player grabs it.
-         * @param bag Bag.
-         */
-        public static void removeBags(Bag bag) {
-            removeBagList.add(bag);
-        }
-        
-        /**
-         * Removes the shotguns when the player grabs it.
-         * @param shotgun Shotgun.
-         */
-        public static void removeShotgun(Shotgun shotgun) {
-            removeShotgunList.add(shotgun);
-        }
-        
-        /**
-         * Removes the machine-guns when the player grabs it.
-         * @param machineGun Machine-Gun.
-         */
-        public static void removeMachineGun(Machinegun machineGun) {
-            removeMachineGunList.add(machineGun);
-        }
-        
-        /**
-         * Removes the ghost when disappears.
-         * @param ghost Ghost.
-         */
-        public static void removeGhost(Ghost ghost) {
-            removeGhostList.add(ghost);
-        }
-        
-        /**
-         * Removes the armor when disappears.
-         * @param armor Armor.
-         */
-        public static void removeArmor(Armor armor) {
-            removeArmorList.add(armor);
-        }
-        
-        /**
-         * Removes the super shotguns when the player grabs it.
-         * @param sShotgun Super shotgun.
-         */
-        public static void removeSuperShotgun(SuperShotgun sShotgun) {
-            removeSuperShotgunList.add(sShotgun);
-        }
-        
-        /**
-         * Removes the helmet when disappears.
-         * @param helmet Helmet.
-         */
-        public static void removeHelmet(Helmet helmet) {
-            removeHelmets.add(helmet);
-        }
-        
-        /**
-         * Removes the barrel when disappears.
-         * @param barrel Barrels.
-         */
-        public static void removeBarrel(Barrel barrel) {
-            removeBarrels.add(barrel);
-        }
 	
+	/**
+	 * Returns all the secret walls in the array-list.
+	 * @return Secret walls.
+	 */
+	public ArrayList<SecretWall> getSecretWalls() {
+	    return secretWalls;
+	}
+	
+	/**
+	 * Returns all the Nazi soldiers in the array-list.
+	 * @return Nazi Soldiers.
+	 */
+	public ArrayList<NaziSoldier> getNaziSoldiers() {
+	    return naziSoldiers;
+	}
+
+	/**
+	 * Returns all the Dogs in the array-list.
+	 * @return Dogs.
+	 */
+	public ArrayList<Dog> getDogs() {
+	    return dogs;
+	}
+	
+	/**
+	 * Returns all the SS soldiers in the array-list.
+	 * @return SS soldiers.
+	 */
+	public ArrayList<SsSoldier> getSsSoldiers() {
+	    return ssSoldiers;
+	}
+	
+	/**
+	 * Returns all the Nazi sergeants in the array-list.
+	 * @return Nazi sergeants.
+	 */
+	public ArrayList<NaziSergeant> getNaziSergeants() {
+	    return naziSeargeants;
+	}
+	
+	/**
+	 * Get access to the main player object in game.
+	 * @return Player.
+	 */
+	public static Player getPlayer() {
+	    return player;
+	}
+	
+	/**
+	  * Removes the medical kits when the player grabs it.
+	  * @param medkit Medical kit.
+	  */
+	public static void removeMedkit(Medkit medkit) {
+	    removeMedkitList.add(medkit);
+	}
+	    
+	/**
+	 * Removes the food when the player grabs it.
+	 * @param food Food.
+	 */
+	public static void removeFood(Food food) {
+	    removeFoodList.add(food);
+	}
+	    
+	/**
+	 * Removes the bullet packs when the player grabs it.
+	 * @param bullet Bullet pack.
+	 */
+	public static void removeBullets(Bullet bullet) {
+	    removeBulletList.add(bullet);
+	}
+	    
+	/**
+	 * Removes the bags when the player grabs it.
+	 * @param bag Bag.
+	 */
+	public static void removeBags(Bag bag) {
+		removeBagList.add(bag);
+	}
+	    
+	/**
+	 * Removes the shotguns when the player grabs it.
+	 * @param shotgun Shotgun.
+	 */
+	public static void removeShotgun(Shotgun shotgun) {
+		removeShotgunList.add(shotgun);
+	}
+	    
+	/**
+	 * Removes the machine-guns when the player grabs it.
+	 * @param machineGun Machine-Gun.
+	 */
+	public static void removeMachineGun(Machinegun machineGun) {
+	    removeMachineGunList.add(machineGun);
+	}
+	
+	/**
+	 * Removes the ghost when disappears.
+	 * @param ghost Ghost.
+	 */
+	public static void removeGhost(Ghost ghost) {
+	    removeGhostList.add(ghost);
+	}
+	
+	/**
+	 * Removes the armor when disappears.
+	 * @param armor Armor.
+	 */
+	public static void removeArmor(Armor armor) {
+	    removeArmorList.add(armor);
+	}
+	
+	/**
+	 * Removes the super shotguns when the player grabs it.
+	 * @param sShotgun Super shotgun.
+	 */
+	public static void removeSuperShotgun(SuperShotgun sShotgun) {
+	    removeSuperShotgunList.add(sShotgun);
+	}
+	
+	/**
+	 * Removes the helmet when disappears.
+	 * @param helmet Helmet.
+	 */
+	public static void removeHelmet(Helmet helmet) {
+	    removeHelmets.add(helmet);
+	}
+	
+	/**
+	 * Removes the barrel when disappears.
+	 * @param barrel Barrels.
+	 */
+	public static void removeBarrel(Barrel barrel) {
+	    removeBarrels.add(barrel);
+	}
+
 }

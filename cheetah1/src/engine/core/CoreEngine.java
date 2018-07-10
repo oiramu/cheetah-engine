@@ -31,6 +31,7 @@ public class CoreEngine {
 	private double frameTime;
 	private boolean fullscreen;
 	private boolean isRunning;
+	private String title;
 	private Game game;
 	
 	private static CoreEngine engine;
@@ -54,9 +55,10 @@ public class CoreEngine {
 	 * @param title of the window.
 	 * @param fullscreen If its windowed or full-screen.
 	 */
-	public void createWindow(String title, int aliasing, boolean fullscreen) {
+	public void createWindow(String title, boolean fullscreen) {
 		this.fullscreen = fullscreen;
-		Window.createMenuWindow(width, height, aliasing, title, this.fullscreen);
+		this.title = title;
+		Window.createMenuWindow(width, height, this.title, this.fullscreen);
 	}
 	
 	/**
@@ -103,13 +105,13 @@ public class CoreEngine {
 		@SuppressWarnings("unused")
 		int frames = 0;
         long frameCounter = 0;
+        
+        RenderUtil.initGraphics();
 
         game.init();
 
         double lastTime = Time.getTime();
         double unprocessedTime = 0;
-        
-        RenderUtil.initGraphics();
 
         while (isRunning) {
 
@@ -177,7 +179,6 @@ public class CoreEngine {
 		while(!Window.isCloseRequested()) {
 			Window.updateMenu();
 			Window.renderMenu();
-			//Update Window
 		}
 		cleanUp();
 	}

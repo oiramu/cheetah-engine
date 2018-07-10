@@ -1,7 +1,7 @@
 #Options ML Code
-Image background=res/textures/Menu/background.jpg 0 0 1920 1080
+Background background=res/textures/Menu/background.jpg 0 0
 Image imgLogo=res/textures/Menu/logo.png 50 300 400 96
-Image imgBackground=res/textures/Menu/shadow.png 0 0 500 1080
+ImgBackground imgBackground=res/textures/Menu/shadow.png 0 0 500
 
 #Credit
 Button returnBtn=Back:20 420 460 37

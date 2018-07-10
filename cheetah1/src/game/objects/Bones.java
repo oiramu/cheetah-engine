@@ -21,8 +21,8 @@ import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.MeshRenderer;
 import engine.rendering.Vertex;
-import game.Auschwitz;
 
 /**
  *
@@ -34,6 +34,7 @@ public class Bones {
     
     private static Mesh mesh;
     private static Material material;
+    private MeshRenderer meshRenderer;
     private float sizeX;
     
     private static final String RES_LOC = "bones/MEDIA";
@@ -75,6 +76,7 @@ public class Bones {
         }
 
         this.transform = transform;
+        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
     }
 
     /**
@@ -102,8 +104,7 @@ public class Bones {
      * Method that renders the object's mesh.
      */
     public void render() {
-        Auschwitz.updateShader(transform.getTransformation(), transform.getPerspectiveTransformation(), material);
-        mesh.draw();
+    	meshRenderer.render();
     }
 
     /**

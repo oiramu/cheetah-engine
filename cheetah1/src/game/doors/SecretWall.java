@@ -25,8 +25,8 @@ import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.MeshRenderer;
 import engine.rendering.Vertex;
-import game.Auschwitz;
 import game.Level;
 
 /**
@@ -39,7 +39,7 @@ public class SecretWall {
 	
 	private static final float HEIGHT = Level.LEVEL_HEIGHT;
 	private static final float LENGTH = Level.SPOT_LENGTH;
-	private static final float WIDTH = 0.125f;
+	private static final float WIDTH = 0.1f;
 	private static final int START = 0;
 	
 	public static float xLower;
@@ -51,10 +51,11 @@ public class SecretWall {
 
     private static final Clip openNoise = ResourceLoader.loadAudio(RES_LOC + "MEDIA");
 
-    private static Mesh door;
+    private static Mesh mesh;
 
     private Material material;
     private Transform transform;
+    private MeshRenderer meshRenderer;
     private Vector3f closedPos;
     private Vector3f openPos;
 
@@ -75,14 +76,15 @@ public class SecretWall {
         this.openPos = openPosition;
         this.closedPos = transform.getPosition();
         this.material = material;
+        this.meshRenderer = new MeshRenderer(mesh, this.transform, this.material);
 
         opening = false;
         open = false;
         startTime = 0;
         openTime = 0;
 
-        if (door == null) {
-            door = new Mesh();
+        if (mesh == null) {
+            mesh = new Mesh();
 
             Vertex[] doorVerts = new Vertex[]{	new Vertex(new Vector3f(START, START, START), new Vector2f(xHigher, yHigher)),
 												new Vertex(new Vector3f(START, HEIGHT, START), new Vector2f(xHigher, yLower)),
@@ -113,8 +115,10 @@ public class SecretWall {
             								12, 13, 14,
             								12, 14, 15};
 
-            door.addVertices(doorVerts, doorIndices, true);
+            mesh.addVertices(doorVerts, doorIndices, true);
         }
+        
+        this.meshRenderer = new MeshRenderer(mesh, this.transform, this.material);
     }
 
     /**
@@ -156,8 +160,7 @@ public class SecretWall {
      * Renders the secret wall.
      */
     public void render() {
-        Auschwitz.updateShader(transform.getTransformation(), transform.getPerspectiveTransformation(), material);
-        door.draw();
+        meshRenderer.render();
     }
 
     /**

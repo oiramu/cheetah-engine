@@ -135,6 +135,22 @@ public class MenuModel extends GUIComponent {
 						    		menuObject.addChild(new WidgetImage(treatment[0], Integer.parseInt(treatment[1]), Integer.parseInt(treatment[2]), Integer.parseInt(treatment[3]), Integer.parseInt(treatment[4]))
 						    				, temporaryName);
 						    		break;
+						    	case "Background":
+						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='
+						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
+						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
+						    			
+						    		menuObject.addChild(new WidgetImage(treatment[0], Integer.parseInt(treatment[1]), Integer.parseInt(treatment[2]))
+						    				, temporaryName);
+						    		break;
+						    	case "ImgBackground":
+						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='
+						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
+						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
+						    			
+						    		menuObject.addChild(new WidgetImage(treatment[0], Integer.parseInt(treatment[1]), Integer.parseInt(treatment[2]), Integer.parseInt(treatment[3]))
+						    				, temporaryName);
+						    		break;
 						    	case "Text":
 						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='
 						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space

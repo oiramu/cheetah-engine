@@ -19,6 +19,8 @@ import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
+import engine.rendering.Window;
+
 /**
 *
 * @author Carlos Rodriguez
@@ -49,6 +51,46 @@ public class WidgetImage extends WidgetModel {
 		
 		position = new Vector2f(x, y);
 		size = new Vector2f(w, h);
+	}
+	
+	/**
+	 * Constructor of a widget image.
+	 * @param imgPath Image's path.
+	 * @param x position.
+	 * @param y position.
+	 * @param w Width.
+	 */
+	public WidgetImage(String imgPath, int x, int y, int w) {
+		componentType = "ImgBackground";
+		try {
+			texture = new Image(imgPath);
+		} catch (SlickException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		position = new Vector2f(x, y);
+		size = new Vector2f(w, Window.getHeight());
+	}
+	
+	/**
+	 * Constructor of a widget image.
+	 * @param imgPath Image's path.
+	 * @param x position.
+	 * @param y position.
+	 * @param w Width.
+	 */
+	public WidgetImage(String imgPath, int x, int y) {
+		componentType = "Background";
+		try {
+			texture = new Image(imgPath);
+		} catch (SlickException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		position = new Vector2f(x, y);
+		size = new Vector2f(Window.getWidth(), Window.getHeight());
 	}
 	
 	/**

@@ -29,6 +29,7 @@ import engine.core.Vector3f;
 import engine.physics.PhysicsUtil;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.MeshRenderer;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
 import game.Auschwitz;
@@ -69,6 +70,7 @@ public class Dog {
 
     private Transform transform;
     private Material material;
+    private MeshRenderer meshRenderer;
 
     private int state;
     private boolean canAttack;
@@ -131,6 +133,7 @@ public class Dog {
 
         this.transform = transform;
         this.material = new Material(animation.get(0));
+        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
         this.state = 0;
         this.canAttack = true;
         this.canLook = true;
@@ -354,8 +357,7 @@ public class Dog {
         Vector3f prevPosition = transform.getPosition();
         transform.setPosition(new Vector3f(transform.getPosition().getX() + offsetX, transform.getPosition().getY() + offsetY, transform.getPosition().getZ()));
 
-        Auschwitz.updateShader(transform.getTransformation(), transform.getPerspectiveTransformation(), material);
-        mesh.draw();
+        meshRenderer.render();
 
         transform.setPosition(prevPosition);
     }

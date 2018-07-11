@@ -18,20 +18,61 @@ package engine.rendering;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
+import engine.core.GameComponent;
+import engine.core.Transform;
 import engine.core.Vector3f;
 
 /**
 *
 * @author Carlos Rodriguez
-* @version 1.0
+* @version 1.1
 * @since 2017
 */
-public class RenderUtil {
+public class RenderingEngine {
+	
+	/**
+	 * Constructor for the rendering engine.
+	 */
+	public RenderingEngine() {
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+        glFrontFace(GL_CW);
+        glCullFace(GL_BACK);
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_DEPTH_TEST);
+
+        glEnable(GL_TEXTURE_2D);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        
+        glEnable(GL_DEPTH_CLAMP);
+        
+        Transform.setProjection(70, Window.getWidth(), Window.getHeight(), 0.01f, 1000f);
+        
+        System.out.println("==============================");
+        System.out.println("||CHEETAH ENGINE; BUILD v1.0||");
+        System.out.println("==============================");
+        System.out.println("Compiliation specs: ");
+        System.out.println("-OS name: " + System.getProperty("os.name"));
+        System.out.println("-OS version: " + System.getProperty("os.version"));
+        System.out.println("-LWJGL version: " + org.lwjgl.Sys.getVersion());
+        System.out.println("-OpenGL version: " + glGetString(GL_VERSION));
+        System.out.println("\n");
+	}
+	
+	/**
+     * Renders everything every on screen.
+     */
+    public void render(GameComponent component) {
+    	clearScreen();
+        component.render(PhongShader.getInstance());
+    }
 
 	/**
 	 * Cleans everything on the openGL screen.
 	 */
-    public static void clearScreen() {
+    private void clearScreen() {
         //TODO: Stencil Buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
@@ -51,7 +92,8 @@ public class RenderUtil {
     /**
      * Bind the textures to openGL.
      */
-    public static void unbindTextures() {
+    @SuppressWarnings("unused")
+	private static void unbindTextures() {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
@@ -61,36 +103,6 @@ public class RenderUtil {
      */
     public static void setClearColor(Vector3f color) {
         glClearColor(color.getX(), color.getY(), color.getZ(), 1.0f);
-    }
-
-    /**
-     * Sets all of the rendering systems to work as it should.
-     */
-    public static void initGraphics() {
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
-        glFrontFace(GL_CW);
-        glCullFace(GL_BACK);
-        glEnable(GL_CULL_FACE);
-        glEnable(GL_DEPTH_TEST);
-
-        glEnable(GL_TEXTURE_2D);
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        
-        glEnable(GL_DEPTH_CLAMP);
-        
-        System.out.println("==============================");
-        System.out.println("||CHEETAH ENGINE; BUILD v1.0||");
-        System.out.println("==============================");
-        System.out.println("Compiliation specs: ");
-        System.out.println("-OS name: " + System.getProperty("os.name"));
-        System.out.println("-OS version: " + System.getProperty("os.version"));
-        System.out.println("-LWJGL version: " + org.lwjgl.Sys.getVersion());
-        System.out.println("-OpenGL version: " + glGetString(GL_VERSION));
-        System.out.println("\n");
-
     }
 
 }

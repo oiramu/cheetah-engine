@@ -26,6 +26,7 @@ import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
 import engine.rendering.MeshRenderer;
+import engine.rendering.Shader;
 import engine.rendering.Vertex;
 import game.Level;
 
@@ -178,9 +179,10 @@ public class Door {
 
     /**
      * Renders the door.
+     * @param shader to render
      */
-    public void render() {
-        meshRenderer.render();
+    public void render(Shader shader) {
+        meshRenderer.render(shader);
     }
 
     /**

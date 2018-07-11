@@ -21,6 +21,7 @@ import java.util.Random;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
+import engine.core.GameComponent;
 import engine.core.Input;
 import engine.core.ResourceLoader;
 import engine.core.Time;
@@ -36,6 +37,7 @@ import engine.rendering.Material;
 import engine.rendering.Mesh;
 import engine.rendering.MeshRenderer;
 import engine.rendering.PhongShader;
+import engine.rendering.Shader;
 import engine.rendering.Vertex;
 import game.doors.Door;
 import game.doors.SecretWall;
@@ -76,7 +78,7 @@ import game.powerUp.SuperShotgun;
  * @version 1.5
  * @since 2017
  */
-public class Level {
+public class Level implements GameComponent {
 
 	//Constants
     public static final float SPOT_WIDTH = 1;
@@ -602,16 +604,17 @@ public class Level {
 
     /**
      * Renders everything in the level.
+     * @param shader to render
      */
-    public void render() {
-    	meshRenderer.render();
+    public void render(Shader shader) {
+    	meshRenderer.render(shader);
 
         for (Door door : doors) {
-            door.render();
+            door.render(shader);
         }
         
         for (SecretWall secretWall : secretWalls) {
-        	secretWall.render();
+        	secretWall.render(shader);
         }
         
         if (secretWalls.size() > 0) {
@@ -635,126 +638,126 @@ public class Level {
         }
 
         for (NaziSoldier monster : naziSoldiers) {
-            monster.render();
+            monster.render(shader);
         }
 
         for (Medkit medkit : medkits) {
-            medkit.render();
+            medkit.render(shader);
         }
 
         for (Tree tree : trees) {
-            tree.render();
+            tree.render(shader);
         }
         
         for (Lantern flare : flares) {
-            flare.render();
+            flare.render(shader);
         }
         
         for (LightBeam light : lightPoints) {
-        	light.render();
+        	light.render(shader);
         }
         
         for (Bones bone : bones) {
-        	bone.render();
+        	bone.render(shader);
         }
         
         for (DeadNazi deadNazi : deadNazi) {
-        	deadNazi.render();
+        	deadNazi.render(shader);
         }
         
         for (DeadJew deadJew : deadJews) {
-        	deadJew.render();
+        	deadJew.render(shader);
         }
         
         for (Pipe pipe : pipes) {
-        	pipe.render();
+        	pipe.render(shader);
         }
         
         for (Pendule pendule : pendules) {
-        	pendule.render();
+        	pendule.render(shader);
         }
         
         for (Lamp lamp : lamps) {
-        	lamp.render();
+        	lamp.render(shader);
         }
         
         for (Hanged hanged : hangeds) {
-        	hanged.render();
+        	hanged.render(shader);
         }
         
         for (Pillar pillar : pillars) {
-        	pillar.render();
+        	pillar.render(shader);
         }
         
         for (Clock clock : clocks) {
-        	clock.render();
+        	clock.render(shader);
         }
         
         for (Food food : foods) {
-        	food.render();
+        	food.render(shader);
         }
         
         for (Bullet bullet : bullets) {
-        	bullet.render();
+        	bullet.render(shader);
         }
         
         for (Bag bag : bags) {
-        	bag.render();
+        	bag.render(shader);
         }
         
         for (Shotgun shotgun : shotguns) {
-        	shotgun.render();
+        	shotgun.render(shader);
         }
         
         for (Machinegun machinegun : machineguns) {
-        	machinegun.render();
+        	machinegun.render(shader);
         }
         
         for (Table table : tables) {
-        	table.render();
+        	table.render(shader);
         }
         
         for (Dog dog : dogs) {
-        	dog.render();
+        	dog.render(shader);
         }
         
         for (SsSoldier ssSoldier : ssSoldiers) {
-        	ssSoldier.render();
+        	ssSoldier.render(shader);
         }
         
         for (NaziSergeant naziSergeants : naziSeargeants) {
-        	naziSergeants.render();
+        	naziSergeants.render(shader);
         }
         
         for (Ghost ghost : ghosts) {
-        	ghost.render();
+        	ghost.render(shader);
         }
         
         for (Armor armor : armors) {
-        	armor.render();
+        	armor.render(shader);
         }
         
         for (Helmet helmet : helmets) {
-            helmet.render();
+            helmet.render(shader);
         }
         
         for (Furnace furnace : furnaces) {
-        	furnace.render();
+        	furnace.render(shader);
         }
         
         for (Kitchen kitchen : kitchens) {
-            kitchen.render();
+            kitchen.render(shader);
         }
         
         for (SuperShotgun superShotgun : superShotguns) {
-        	superShotgun.render();
+        	superShotgun.render(shader);
         }
         
         for (Barrel barrel : barrels) {
-            barrel.render();
+            barrel.render(shader);
         }
 
-        player.render();
+        player.render(shader);
     }
     
     /**

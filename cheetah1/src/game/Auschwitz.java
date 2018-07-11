@@ -33,24 +33,23 @@ import game.enemies.*;
  */
 public class Auschwitz implements Game {
 	
+	private static ArrayList<Sequence> playlist = new ArrayList<Sequence>();
     private static final int EPISODE_1 = 1;
     private static final int EPISODE_2 = 2;
     private static final int EPISODE_3 = 2;
-    public static Level level;
+    
+    private static boolean isRunning;
 
+    public static Level level;
     public static int levelNum;
     public static int startingLevel;
-    private static ArrayList<Sequence> playlist = new ArrayList<Sequence>();
     public static int track;
     public static int currentEpisode;
-    private static boolean isRunning;
 
     /**
      * The constructor method of the compiling game.
      */
     public void init() {
-        Transform.setProjection(70, Window.getWidth(), Window.getHeight(), 0.01f, 1000f);
-
         for (int i = 0; i < 13; i++) {
         	playlist.add(ResourceLoader.loadMidi("THEME" + i));
 		}
@@ -99,9 +98,9 @@ public class Auschwitz implements Game {
     /**
      * Renders everything every on screen.
      */
-    public void render() {
+    public void render(RenderingEngine engine) {
         if (isRunning) {
-            level.render();
+        	engine.render(level);
         }
     }
 

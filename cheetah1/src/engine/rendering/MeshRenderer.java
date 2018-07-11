@@ -28,7 +28,6 @@ public class MeshRenderer {
 	private Mesh mesh;
 	private Transform transform;
 	private Material material;
-	private Shader shader = PhongShader.getInstance();
 	
 	/**
 	 * Renderer of a mesh with single material to render.
@@ -56,15 +55,15 @@ public class MeshRenderer {
 	/**
 	 * Render method of the mesh.
 	 */
-	public void render() {
-		render(material);
+	public void render(Shader shader) {
+		render(material, shader);
 	}
 	
 	/**
 	 * Render method of the mesh.
 	 * @param material to render.
 	 */
-	public void render(Material material) {
+	public void render(Material material, Shader shader) {
 		
 		shader.bind();
         shader.updateUniforms(transform.getTransformation(), transform.getPerspectiveTransformation(), material);

@@ -30,6 +30,7 @@ import engine.physics.PhysicsUtil;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
 import engine.rendering.MeshRenderer;
+import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
 import game.Auschwitz;
@@ -388,13 +389,14 @@ public class SsSoldier {
     }
 
     /**
-     * Method that renders the player's mesh.
+     * Method that renders the enemy's mesh.
+     * @param shader to render
      */
-    public void render() {
+    public void render(Shader shader) {
         Vector3f prevPosition = transform.getPosition();
         transform.setPosition(new Vector3f(transform.getPosition().getX() + offsetX, transform.getPosition().getY() + offsetY, transform.getPosition().getZ()));
 
-        meshRenderer.render();
+        meshRenderer.render(shader);
 
         transform.setPosition(prevPosition);
     }

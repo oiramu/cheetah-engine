@@ -15,6 +15,8 @@
  */
 package engine.core;
 
+import engine.rendering.RenderingEngine;
+
 /**
 *
 * @author Carlos Rodriguez
@@ -22,10 +24,10 @@ package engine.core;
 * @since 2018
 */
 public interface Game {
-
+	
 	public void init();
 	public void input();
 	public void update();
-	public void render();
+	public void render(RenderingEngine engine);
 
 }

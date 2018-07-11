@@ -111,11 +111,7 @@ public class PhongShader extends Shader {
      * @param material Material of the object.
      */
     public void updateUniforms(Matrix4f worldMatrix, Matrix4f projectedMatrix, Material material) {
-        if (material.getTexture() != null) {
-            material.getTexture().bind();
-        } else {
-            RenderUtil.unbindTextures();
-        }
+        material.getTexture().bind();
 
         setUniform("transform", worldMatrix);
         setUniform("transformProjected", projectedMatrix);
@@ -186,7 +182,7 @@ public class PhongShader extends Shader {
 	 */
 	public static void setFogColor(Vector3f fogColor) {
 		PhongShader.fogColor = fogColor;
-		RenderUtil.setClearColor(fogColor);
+		RenderingEngine.setClearColor(fogColor);
 	}
 
 	/**

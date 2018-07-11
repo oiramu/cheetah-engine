@@ -15,7 +15,7 @@
  */
 package engine.core;
 
-import engine.rendering.RenderUtil;
+import engine.rendering.RenderingEngine;
 import engine.rendering.Window;
 
 /**
@@ -33,6 +33,7 @@ public class CoreEngine {
 	private boolean isRunning;
 	private String title;
 	private Game game;
+	private RenderingEngine renderingEngine;
 	
 	private static CoreEngine engine;
 	
@@ -105,9 +106,9 @@ public class CoreEngine {
 		@SuppressWarnings("unused")
 		int frames = 0;
         long frameCounter = 0;
-        
-        RenderUtil.initGraphics();
 
+        this.renderingEngine = new RenderingEngine();
+        
         game.init();
 
         double lastTime = Time.getTime();
@@ -166,8 +167,7 @@ public class CoreEngine {
      * Method that renders everything to render.
      */
     private void render() {
-        RenderUtil.clearScreen();
-        game.render();
+        game.render(renderingEngine);
         
         Window.render();
     }

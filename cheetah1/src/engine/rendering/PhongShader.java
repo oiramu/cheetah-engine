@@ -23,7 +23,7 @@ import engine.core.Vector3f;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
 public class PhongShader extends Shader {

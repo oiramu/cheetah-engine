@@ -30,6 +30,15 @@ import engine.core.Vector3f;
 */
 public class RenderingEngine {
 	
+	private Camera mainCamera;
+	private Vector3f ambientLight;
+	private DirectionalLight directionalLight;
+	private DirectionalLight directionalLight2;
+	private PointLight pointLight;
+	private SpotLight spotLight;
+
+	private PointLight[] pointLightList;
+	
 	/**
 	 * Constructor for the rendering engine.
 	 */
@@ -50,6 +59,37 @@ public class RenderingEngine {
         
         Transform.setProjection(70, Window.getWidth(), Window.getHeight(), 0.01f, 1000f);
         
+        ambientLight = new Vector3f(0.5f, 0.5f, 0.5f);
+		directionalLight = new DirectionalLight(new BaseLight(new Vector3f(0,0,1), 0.4f), new Vector3f(1,1,1));
+		directionalLight2 = new DirectionalLight(new BaseLight(new Vector3f(1,0,0), 0.4f), new Vector3f(-1,1,-1));
+        
+		int lightFieldWidth = 5;
+		int lightFieldDepth = 5;
+
+		float lightFieldStartX = 0;
+		float lightFieldStartY = 0;
+		float lightFieldStepX = 7;
+		float lightFieldStepY = 7;
+
+		pointLightList = new PointLight[lightFieldWidth * lightFieldDepth];
+
+		for(int i = 0; i < lightFieldWidth; i++)
+		{
+			for(int j = 0; j < lightFieldDepth; j++)
+			{
+				pointLightList[i * lightFieldWidth + j] = new PointLight(new BaseLight(new Vector3f(0,1,0), 0.4f),
+						new Attenuation(0,0,1),
+						new Vector3f(lightFieldStartX + lightFieldStepX * i,0,lightFieldStartY + lightFieldStepY * j), 100);
+			}
+		}
+
+		pointLight = pointLightList[0];//new PointLight(new BaseLight(new Vector3f(0,1,0), 0.4f), new Attenuation(0,0,1), new Vector3f(5,0,5), 100);
+
+		spotLight = new SpotLight(new PointLight(new BaseLight(new Vector3f(0,1,1), 0.4f),
+				new Attenuation(0,0,0.1f),
+				new Vector3f(lightFieldStartX,0,lightFieldStartY), 100),
+				new Vector3f(1,0,0), 0.7f);
+		
         System.out.println("==============================");
         System.out.println("||CHEETAH ENGINE; BUILD v1.0||");
         System.out.println("==============================");
@@ -61,12 +101,52 @@ public class RenderingEngine {
         System.out.println("\n");
 	}
 	
+	public Vector3f getAmbientLight()
+	{
+		return ambientLight;
+	}
+
+	public DirectionalLight getDirectionalLight()
+	{
+		return directionalLight;
+	}
+
+	public PointLight getPointLight()
+	{
+		return pointLight;
+	}
+
+	public SpotLight getSpotLight()
+	{
+		return spotLight;
+	}
+	
 	/**
      * Renders everything every on screen.
      */
     public void render(GameComponent component) {
     	clearScreen();
-        component.render(PhongShader.getInstance());
+    	Shader forwardAmbient = ForwardAmbient.getInstance();
+		Shader forwardPoint = ForwardPoint.getInstance();
+		Shader forwardSpot = ForwardSpot.getInstance();
+		Shader forwardDirectional = ForwardDirectional.getInstance();
+		forwardAmbient.setRenderingEngine(this);
+		forwardDirectional.setRenderingEngine(this);
+		forwardPoint.setRenderingEngine(this);
+		forwardSpot.setRenderingEngine(this);
+        component.render(forwardAmbient);
+        glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE);
+		glDepthMask(false);
+		glDepthFunc(GL_EQUAL);
+		for(int i = 0; i < pointLightList.length; i++) {
+			pointLight = pointLightList[i];
+			component.render(forwardPoint);
+		}
+		component.render(forwardSpot);
+		glDepthFunc(GL_LESS);
+		glDepthMask(true);
+		glDisable(GL_BLEND);
     }
 
 	/**
@@ -104,5 +184,22 @@ public class RenderingEngine {
     public static void setClearColor(Vector3f color) {
         glClearColor(color.getX(), color.getY(), color.getZ(), 1.0f);
     }
+    
+    /**
+     * Returns the main camera in game.
+     * @return camera.
+     */
+    public Camera getMainCamera() {
+		return mainCamera;
+	}
+
+    /**
+     * Sets the main camera of all the game to the rendering
+     * engine.
+     * @param mainCamera of the game.
+     */
+	public void setMainCamera(Camera mainCamera) {
+		this.mainCamera = mainCamera;
+	}
 
 }

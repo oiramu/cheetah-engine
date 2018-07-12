@@ -607,6 +607,7 @@ public class Level implements GameComponent {
      * @param shader to render
      */
     public void render(Shader shader) {
+    	shader.getRenderingEngine().setMainCamera(player.getCamera());
     	meshRenderer.render(shader);
 
         for (Door door : doors) {
@@ -1526,12 +1527,12 @@ public class Level implements GameComponent {
         indices.toArray(intArray);
         geometry.addVertices(vertArray, Util.toIntArray(intArray), true);
         meshRenderer = new MeshRenderer(geometry, transform, material);
-        PhongShader.setFogDensity(0.07f);
-        PhongShader.setFogGradient(1.5f);
-        PhongShader.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
-        PhongShader.setAmbientLight(new Vector3f(1f,1f,1f));
-   	 	PhongShader.setDirectionalLight(new DirectionalLight(
-   	 			new BaseLight(new Vector3f(1,1,1), 1f), new Vector3f(level.getWidth()/2,10,level.getHeight()/2)));
+        //PhongShader.setFogDensity(0.07f);
+        //PhongShader.setFogGradient(1.5f);
+        //PhongShader.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
+        //PhongShader.setAmbientLight(new Vector3f(1f,1f,1f));
+   	 	//PhongShader.setDirectionalLight(new DirectionalLight(
+   	 	//		new BaseLight(new Vector3f(1,1,1), 1f), new Vector3f(level.getWidth()/2,10,level.getHeight()/2)));
     }
 	
 	/**

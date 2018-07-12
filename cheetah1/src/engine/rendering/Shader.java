@@ -33,6 +33,7 @@ import engine.core.Vector3f;
 public class Shader {
 
     private int program;
+    private RenderingEngine renderingEngine;
     private HashMap<String, Integer> uniforms;
 
     /**
@@ -204,5 +205,21 @@ public class Shader {
     public void setUniform(String uniformName, Matrix4f value) {
         glUniformMatrix4(uniforms.get(uniformName), true, Util.createFlippedBuffer(value));
     }
+    
+    /**
+     * Sets the rendering engine of the shader.
+     * @param renderingEngine for shader.
+     */
+    public void setRenderingEngine(RenderingEngine renderingEngine) {
+		this.renderingEngine = renderingEngine;
+	}
+
+    /**
+     * Returns the rendering engine of the shader.
+     * @return rendering engine.
+     */
+	public RenderingEngine getRenderingEngine() {
+		return renderingEngine;
+	}
 
 }

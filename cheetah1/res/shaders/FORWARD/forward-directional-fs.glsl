@@ -57,5 +57,6 @@ vec4 calcDirectionalLight(DirectionalLight directionalLight, vec3 normal)
 
 void main()
 {
+	if(texture2D(diffuse, texCoord0.xy).a < 0.5) {discard;}
     gl_FragColor = texture2D(diffuse, texCoord0.xy) * calcDirectionalLight(directionalLight, normalize(normal0));
 }

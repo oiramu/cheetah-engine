@@ -1,23 +1,49 @@
-package com.base.engine.rendering;
+/*
+ * Copyright 2018 Carlos Rodriguez.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package engine.rendering;
 
-import com.base.engine.core.Matrix4f;
-import com.base.engine.core.Transform;
+import engine.core.Matrix4f;
+import engine.core.ResourceLoader;
 
-public class ForwardSpot extends Shader
-{
+/**
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2018
+ */
+public class ForwardSpot extends Shader {
+	
 	private static final ForwardSpot instance = new ForwardSpot();
+	
+	private final String RESOURCE = "FORWARD/";
 
-	public static ForwardSpot getInstance()
-	{
-		return instance;
-	}
+	/**
+     * Instances the shader to be used.
+     * @return Shader.
+     */
+	public static ForwardSpot getInstance() {return instance;}
 
-	private ForwardSpot()
-	{
+	/**
+     * Constructor of the basic shader with all his uniforms.
+     */
+	private ForwardSpot() {
 		super();
 
-		addVertexShaderFromFile("forward-spot.vs");
-		addFragmentShaderFromFile("forward-spot.fs");
+		addVertexShader(ResourceLoader.loadShader(RESOURCE+"forward-spot-vs"));
+        addFragmentShader(ResourceLoader.loadShader(RESOURCE+"forward-spot-fs"));
 
 		setAttribLocation("position", 0);
 		setAttribLocation("texCoord", 1);
@@ -43,10 +69,13 @@ public class ForwardSpot extends Shader
 		addUniform("spotLight.cutoff");
 	}
 
-	public void updateUniforms(Transform transform, Material material)
-	{
-		Matrix4f worldMatrix = transform.getTransformation();
-		Matrix4f projectedMatrix = getRenderingEngine().getMainCamera().getViewProjection().mul(worldMatrix);
+	/**
+     * Updates all the uniforms of the shading program.
+     * @param worldMatrix World matrix data.
+     * @param projectedMatrix Projection matrix data.
+     * @param material Material of the object.
+     */
+	public void updateUniforms(Matrix4f worldMatrix, Matrix4f projectedMatrix, Material material) {
 		material.getTexture().bind();
 
 		setUniform("model", worldMatrix);
@@ -59,14 +88,22 @@ public class ForwardSpot extends Shader
 		setUniform("spotLight", getRenderingEngine().getSpotLight());
 	}
 
-	public void setUniform(String uniformName, BaseLight baseLight)
-	{
+	/**
+	 * Sets a new uniform of color by name and the intensity by name.
+	 * @param uniformName Name in baseLight.
+	 * @param baseLight of the uniformName.
+	 */
+	public void setUniform(String uniformName, BaseLight baseLight) {
 		setUniform(uniformName + ".color", baseLight.getColor());
 		setUniformf(uniformName + ".intensity", baseLight.getIntensity());
 	}
 
-	public void setUniform(String uniformName, PointLight pointLight)
-	{
+	/**
+	 * Sets a new uniform of base by name and the intensity by direction.
+	 * @param uniformName Name in directionalLight.
+	 * @param directionalLight of the uniformName.
+	 */
+	public void setUniform(String uniformName, PointLight pointLight) {
 		setUniform(uniformName + ".base", pointLight.getBaseLight());
 		setUniformf(uniformName + ".atten.constant", pointLight.getAtten().getConstant());
 		setUniformf(uniformName + ".atten.linear", pointLight.getAtten().getLinear());
@@ -75,8 +112,12 @@ public class ForwardSpot extends Shader
 		setUniformf(uniformName + ".range", pointLight.getRange());
 	}
 
-	public void setUniform(String uniformName, SpotLight spotLight)
-	{
+	/**
+	 * Sets a new uniform of base by name and the spotLight constructor.
+	 * @param uniformName Name in pointLight.
+	 * @param spotLight's constructor.
+	 */
+	public void setUniform(String uniformName, SpotLight spotLight) {
 		setUniform(uniformName + ".pointLight", spotLight.getPointLight());
 		setUniform(uniformName + ".direction", spotLight.getDirection());
 		setUniformf(uniformName + ".cutoff", spotLight.getCutoff());

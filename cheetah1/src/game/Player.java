@@ -760,7 +760,7 @@ public class Player {
         	//PhongShader.setSpotLights(new SpotLight[] {sLight1});
         //}
         
-        PhongShader.setSpotLights(new SpotLight[] {sLight1});
+        //PhongShader.setSpotLights(new SpotLight[] {sLight1});
         sLight1.getPointLight().setPosition(getCamera().getPos());
         sLight1.setDirection(getCamera().getForward());
         
@@ -819,7 +819,7 @@ public class Player {
 		        	pLight1 = new PointLight(new BaseLight(new Vector3f(0.5f,0.3f,0.1f), 1.6f), 
 		            		new Attenuation(0,0,1), new Vector3f(-2,0,3f), gunLightBeam);
 		        	pLight1.setPosition(getCamera().getPos());
-		        	PhongShader.setPointLight(new PointLight[] {pLight1});
+		        	//PhongShader.setPointLight(new PointLight[] {pLight1});
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial1, shader);
 		        } else if ((double) time < gunTime2) {
@@ -847,7 +847,7 @@ public class Player {
 		        	pLight1 = new PointLight(new BaseLight(new Vector3f(0.45f,0.35f,0.1f), 1.6f), 
 		            		new Attenuation(0,0,1), new Vector3f(-2,0,3f), gunLightBeam);
 		        	pLight1.setPosition(getCamera().getPos());
-		        	PhongShader.setPointLight(new PointLight[] {pLight1});
+		        	//PhongShader.setPointLight(new PointLight[] {pLight1});
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial1, shader);
 		        } else if ((double) time < gunTime2) {

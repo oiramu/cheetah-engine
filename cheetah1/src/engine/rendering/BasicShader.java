@@ -26,6 +26,8 @@ import engine.core.ResourceLoader;
  */
 public class BasicShader extends Shader {
 
+	private final String RESOURCE = "BASIC/";
+	
     private static final BasicShader instance = new BasicShader();
 
     /**
@@ -40,8 +42,8 @@ public class BasicShader extends Shader {
     private BasicShader() {
         super();
 
-        addVertexShader(ResourceLoader.loadShader("basicVertex"));
-        addFragmentShader(ResourceLoader.loadShader("basicFragment"));
+        addVertexShader(ResourceLoader.loadShader(RESOURCE+"basicVertex"));
+        addFragmentShader(ResourceLoader.loadShader(RESOURCE+"basicFragment"));
         compileShader();
 
         addUniform("transform");

@@ -41,6 +41,8 @@ public class PhongShader extends Shader {
     		new BaseLight(new Vector3f(0,0,0), 0), new Vector3f(0,0,0));
     private static PointLight[] pointLights = new PointLight[] {};
 	private static SpotLight[] spotLights = new SpotLight[] {};
+	
+	private final String RESOURCE = "PHONG/";
 
     /**
      * Instances the shader to be used.
@@ -54,8 +56,8 @@ public class PhongShader extends Shader {
     private PhongShader() {
         super();
 
-        addVertexShader(ResourceLoader.loadShader("phongVertex120"));
-        addFragmentShader(ResourceLoader.loadShader("phongFragment120"));
+        addVertexShader(ResourceLoader.loadShader(RESOURCE+"phongVertex120"));
+        addFragmentShader(ResourceLoader.loadShader(RESOURCE+"phongFragment120"));
 
         setAttribLocation("position", 0);
         setAttribLocation("texCoord", 1);

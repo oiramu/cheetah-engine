@@ -1530,7 +1530,7 @@ public class Level implements GameComponent {
         RenderingEngine.fogDensity = 0.07f;
         RenderingEngine.fogGradient = 1.5f;
         RenderingEngine.fogColor = new Vector3f(0.5f,0.5f,0.5f);
-        RenderingEngine.ambientLight = new Vector3f(0.8f,0.8f,0.8f);
+        RenderingEngine.ambientLight = new Vector3f(0.75f,0.75f,0.75f);
         RenderingEngine.directionalLights.add(new DirectionalLight(
    	 			new BaseLight(new Vector3f(1,1,1), 1f), new Vector3f(level.getWidth()/2,10,level.getHeight()/2)));
     }

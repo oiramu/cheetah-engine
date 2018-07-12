@@ -826,8 +826,8 @@ public class Player {
 			        hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
 		        	RenderingEngine.pointLights.remove(pLight1);
-		        	RenderingEngine.pointLights.clear();
 		        } else {
+		        	RenderingEngine.pointLights.clear();
 		            hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunMaterial, shader);
 	            	isReloading = false;
@@ -857,8 +857,8 @@ public class Player {
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
 			        AudioUtil.playAudio(gunReload, 0);
 			        RenderingEngine.pointLights.remove(pLight1);
-			        RenderingEngine.pointLights.clear();
 		        } else if ((double) time < gunTime3) {
+		        	RenderingEngine.pointLights.clear();
 		        	hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial3, shader);
 			        AudioUtil.playAudio(gunClipp, 0);

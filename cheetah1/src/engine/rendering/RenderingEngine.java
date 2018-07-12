@@ -76,6 +76,9 @@ public class RenderingEngine {
         printCompilationStuff();
 	}
 	
+	/**
+	 * Prints the compilation configuration.
+	 */
 	private void printCompilationStuff() {
 		System.out.println("==============================");
         System.out.println("||CHEETAH ENGINE; BUILD v1.0||");

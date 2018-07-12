@@ -36,7 +36,7 @@ import engine.rendering.DirectionalLight;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
 import engine.rendering.MeshRenderer;
-import engine.rendering.PhongShader;
+import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Vertex;
 import game.doors.Door;
@@ -1527,12 +1527,12 @@ public class Level implements GameComponent {
         indices.toArray(intArray);
         geometry.addVertices(vertArray, Util.toIntArray(intArray), true);
         meshRenderer = new MeshRenderer(geometry, transform, material);
-        //PhongShader.setFogDensity(0.07f);
-        //PhongShader.setFogGradient(1.5f);
-        //PhongShader.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
-        //PhongShader.setAmbientLight(new Vector3f(1f,1f,1f));
-   	 	//PhongShader.setDirectionalLight(new DirectionalLight(
-   	 	//		new BaseLight(new Vector3f(1,1,1), 1f), new Vector3f(level.getWidth()/2,10,level.getHeight()/2)));
+        RenderingEngine.fogDensity = 0.07f;
+        RenderingEngine.fogGradient = 1.5f;
+        RenderingEngine.fogColor = new Vector3f(0.5f,0.5f,0.5f);
+        RenderingEngine.ambientLight = new Vector3f(0.8f,0.8f,0.8f);
+        RenderingEngine.directionalLights.add(new DirectionalLight(
+   	 			new BaseLight(new Vector3f(1,1,1), 1f), new Vector3f(level.getWidth()/2,10,level.getHeight()/2)));
     }
 	
 	/**

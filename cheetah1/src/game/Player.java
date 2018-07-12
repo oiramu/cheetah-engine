@@ -35,8 +35,8 @@ import engine.rendering.Camera;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
 import engine.rendering.MeshRenderer;
-import engine.rendering.PhongShader;
 import engine.rendering.PointLight;
+import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.SpotLight;
 import engine.rendering.Texture;
@@ -330,6 +330,7 @@ public class Player {
     	if(sLight1 == null) {
     		sLight1 = new SpotLight(new PointLight(new BaseLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f), 
         	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), 30), new Vector3f(1,1,1), 0.7f);
+    		RenderingEngine.spotLights.add(sLight1);
     	}
     	
         if (gunMesh == null) {
@@ -760,7 +761,6 @@ public class Player {
         	//PhongShader.setSpotLights(new SpotLight[] {sLight1});
         //}
         
-        //PhongShader.setSpotLights(new SpotLight[] {sLight1});
         sLight1.getPointLight().setPosition(getCamera().getPos());
         sLight1.setDirection(getCamera().getForward());
         
@@ -819,13 +819,14 @@ public class Player {
 		        	pLight1 = new PointLight(new BaseLight(new Vector3f(0.5f,0.3f,0.1f), 1.6f), 
 		            		new Attenuation(0,0,1), new Vector3f(-2,0,3f), gunLightBeam);
 		        	pLight1.setPosition(getCamera().getPos());
-		        	//PhongShader.setPointLight(new PointLight[] {pLight1});
+		        	RenderingEngine.pointLights.add(pLight1);
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial1, shader);
 		        } else if ((double) time < gunTime2) {
 			        hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
-		            pLight1.setPosition(new Vector3f(1000,1000,1000));
+		        	RenderingEngine.pointLights.remove(pLight1);
+		        	RenderingEngine.pointLights.clear();
 		        } else {
 		            hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunMaterial, shader);
@@ -835,7 +836,8 @@ public class Player {
 				hudRenderer.render(crossHairMaterial, shader);
 	        	gunRenderer.render(gunMaterial, shader);
             	isReloading = false;
-            	pLight1.setPosition(new Vector3f(1000,1000,1000));
+            	RenderingEngine.pointLights.remove(pLight1);
+            	RenderingEngine.pointLights.clear();
 			}
 		}
 		if(isShellBased) {
@@ -847,14 +849,15 @@ public class Player {
 		        	pLight1 = new PointLight(new BaseLight(new Vector3f(0.45f,0.35f,0.1f), 1.6f), 
 		            		new Attenuation(0,0,1), new Vector3f(-2,0,3f), gunLightBeam);
 		        	pLight1.setPosition(getCamera().getPos());
-		        	//PhongShader.setPointLight(new PointLight[] {pLight1});
+		        	RenderingEngine.pointLights.add(pLight1);
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial1, shader);
 		        } else if ((double) time < gunTime2) {
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
 			        AudioUtil.playAudio(gunReload, 0);
-			        pLight1.setPosition(new Vector3f(1000,1000,1000));
+			        RenderingEngine.pointLights.remove(pLight1);
+			        RenderingEngine.pointLights.clear();
 		        } else if ((double) time < gunTime3) {
 		        	hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial3, shader);
@@ -871,7 +874,8 @@ public class Player {
 				hudRenderer.render(crossHairMaterial, shader);
 	        	gunRenderer.render(gunMaterial, shader);
 	            isReloading = false;
-	            pLight1.setPosition(new Vector3f(1000,1000,1000));
+	            RenderingEngine.pointLights.remove(pLight1);
+	            RenderingEngine.pointLights.clear();
 			}
 		}
         

@@ -50,7 +50,13 @@ public class ForwardAmbient extends Shader {
 
 		compileShader();
 
+		addUniform("fogDensity");
+        addUniform("fogGradient");
+        addUniform("fogColor");
+		
+        addUniform("transform");
 		addUniform("MVP");
+		addUniform("eyePos");
 		addUniform("ambientIntensity");
 	}
 
@@ -60,10 +66,17 @@ public class ForwardAmbient extends Shader {
      * @param projectedMatrix Projection matrix data.
      * @param material Material of the object.
      */
+	@SuppressWarnings("static-access")
 	public void updateUniforms(Matrix4f worldMatrix, Matrix4f projectedMatrix, Material material) {
 		material.getTexture().bind();
 
+		setUniformf("fogDensity", getRenderingEngine().fogDensity);
+        setUniformf("fogGradient", getRenderingEngine().fogGradient);
+        setUniform("fogColor", getRenderingEngine().fogColor);
+        
+        setUniform("transform", worldMatrix);
 		setUniform("MVP", projectedMatrix);
+		setUniform("eyePos", getRenderingEngine().getMainCamera().getPos());
 		setUniform("ambientIntensity", getRenderingEngine().getAmbientLight());
 	}
 }

@@ -40,7 +40,7 @@ public class PointLight {
 	public PointLight(BaseLight baseLight, Attenuation atten, Vector3f position, float range) {
 		this.baseLight = baseLight;
 		this.atten = atten;
-		this.position = position;
+		this.position = position;		
 		this.range = range;
 	}
 	

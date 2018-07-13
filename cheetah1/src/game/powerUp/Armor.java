@@ -30,11 +30,11 @@ import engine.rendering.Vertex;
 import game.Level;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2018
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2018
+ */
 public class Armor {
 
     private static final float PICKUP_THRESHHOLD = 0.75f;

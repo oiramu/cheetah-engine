@@ -63,8 +63,7 @@ public class MeshRenderer {
 	 * Render method of the mesh.
 	 * @param material to render.
 	 */
-	public void render(Material material, Shader shader) {
-		
+	public void render(Material material, Shader shader) {		
 		shader.bind();
         shader.updateUniforms(transform.getTransformation(), transform.getPerspectiveTransformation(), material);
         mesh.draw();

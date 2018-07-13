@@ -30,12 +30,14 @@ import engine.core.Util;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.physics.PhysicsUtil;
+import engine.rendering.Attenuation;
 import engine.rendering.BaseLight;
 import engine.rendering.Bitmap;
 import engine.rendering.DirectionalLight;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
 import engine.rendering.MeshRenderer;
+import engine.rendering.PointLight;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Vertex;
@@ -78,7 +80,7 @@ import game.powerUp.SuperShotgun;
  * @version 1.5
  * @since 2017
  */
-public class Level implements GameComponent {
+public class Level extends GameComponent {
 
 	//Constants
     public static final float SPOT_WIDTH = 1;
@@ -1348,7 +1350,9 @@ public class Level implements GameComponent {
                         trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.25f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 50) {
                     	flares.add(new Lantern(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, LEVEL_HEIGHT * 0.70f, (j + 0.5f) * SPOT_LENGTH))));
-                        lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
+                        //RenderingEngine.addPointLight(new PointLight(new BaseLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f), 
+		            		//new Attenuation(0,0,1), new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH), 8));
+                    	lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 51) {
                     	lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
                     	lamps.add(new Lamp(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.35f, (j + 0.5f) * SPOT_LENGTH))));
@@ -1370,8 +1374,9 @@ public class Level implements GameComponent {
                     	tables.add(new Table(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 121) {
                     	furnaces.add(new Furnace(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    	//lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((level.getPixel(i, j) & 0x0000FF) == 122) {
+                    	RenderingEngine.addPointLight(new PointLight(new BaseLight(new Vector3f(0.45f,0.35f,0.1f), 0.8f), 
+                    			new Attenuation(0,0,1), new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH), 6));
+                	} else if ((level.getPixel(i, j) & 0x0000FF) == 122) {
                     	kitchens.add(new Kitchen(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         foods.add(new Food(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 123) {
@@ -1529,9 +1534,9 @@ public class Level implements GameComponent {
         meshRenderer = new MeshRenderer(geometry, transform, material);
         RenderingEngine.fogDensity = 0.07f;
         RenderingEngine.fogGradient = 1.5f;
-        RenderingEngine.fogColor = new Vector3f(0.5f,0.5f,0.5f);
-        RenderingEngine.ambientLight = new Vector3f(0.75f,0.75f,0.75f);
-        RenderingEngine.directionalLights.add(new DirectionalLight(
+        RenderingEngine.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
+        RenderingEngine.ambientLight = new Vector3f(0.8f,0.8f,0.8f);
+        RenderingEngine.setDirectionalLight(new DirectionalLight(
    	 			new BaseLight(new Vector3f(1,1,1), 1f), new Vector3f(level.getWidth()/2,10,level.getHeight()/2)));
     }
 	

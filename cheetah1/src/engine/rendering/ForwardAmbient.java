@@ -72,7 +72,7 @@ public class ForwardAmbient extends Shader {
 
 		setUniformf("fogDensity", getRenderingEngine().fogDensity);
         setUniformf("fogGradient", getRenderingEngine().fogGradient);
-        setUniform("fogColor", getRenderingEngine().fogColor);
+        setUniform("fogColor", getRenderingEngine().getFogColor());
         
         setUniform("transform", worldMatrix);
 		setUniform("MVP", projectedMatrix);

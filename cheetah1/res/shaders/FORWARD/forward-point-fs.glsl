@@ -81,6 +81,5 @@ vec4 calcPointLight(PointLight pointLight, vec3 normal)
 
 void main()
 {
-	if(texture2D(diffuse, texCoord0.xy).a < 0.5) {discard;}
     gl_FragColor = texture2D(diffuse, texCoord0.xy) * calcPointLight(pointLight, normalize(normal0));
 }

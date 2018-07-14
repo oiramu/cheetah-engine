@@ -140,18 +140,4 @@ public class Util {
         return result;
     }
     
-    /**
-     * Gets the square-root of x floating point number.
-     * @param x number.
-     * @return x's square-root
-     */
-    public static float sqrt(float x) {
-	    float xhalf = 0.5f * x;
-	    int i = Float.floatToIntBits(x);	//Magia negra binaria
-	    i = 0x5f3759df - (i >> 1);			//WTF??
-	    x = Float.intBitsToFloat(i);
-	    x *= (1.5f - xhalf * x * x);
-	    return x;
-	}
-    
 }

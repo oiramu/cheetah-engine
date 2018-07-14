@@ -97,8 +97,12 @@ public class RenderingEngine {
 				directionalLight = direction;
 				component.render(forwardDirectional);
 			}
-			for(PointLight point : pointLights) {
+			/*for(PointLight point : pointLights) { //Working on this!
 				pointLight = point;
+				component.render(forwardPoint);
+			}*/
+			for(int i = 0; i < pointLights.size(); i++) {
+				pointLight = pointLights.get(i);
 				component.render(forwardPoint);
 			}
 			for(SpotLight spot : spotLights) {

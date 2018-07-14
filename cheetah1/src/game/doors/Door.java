@@ -38,7 +38,7 @@ import game.Level;
  */
 public class Door {
 	
-	private static final float HEIGHT = Level.LEVEL_HEIGHT;
+	private static final float HEIGHT = 1.0f;
 	private static final float LENGTH = Level.SPOT_LENGTH;
 	private static final float WIDTH = 0.1f;
 	private static final int START = 0;

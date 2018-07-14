@@ -330,7 +330,7 @@ public class Player {
     	if(sLight1 == null) {
     		sLight1 = new SpotLight(new PointLight(new BaseLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f), 
         	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), 30), new Vector3f(1,1,1), 0.7f);
-    		RenderingEngine.addSpotLight(sLight1);
+    		//RenderingEngine.addSpotLight(sLight1);
     	}
     	
         if (gunMesh == null) {
@@ -658,11 +658,15 @@ public class Player {
 	        }
 
 	        if(isOn) {
-				if (Input.getKeyDown(Input.KEY_F))
-	            	isOn = false;
+				if (Input.getKeyDown(Input.KEY_F)) {
+					RenderingEngine.deleteSpotLight(sLight1);
+					isOn = false;
+				}
             } else {
-            	if (Input.getKeyDown(Input.KEY_F))
+            	if (Input.getKeyDown(Input.KEY_F)) {
+            		RenderingEngine.addSpotLight(sLight1);
 	            	isOn = true;
+            	}
             }
 	
 	        movementVector = zeroVector;
@@ -757,10 +761,6 @@ public class Player {
         gunTransform.setRotation(0, angle + 90, 0);
         hudTransform.setRotation(0, angle + 90, 0);
         
-        //if(isOn) {
-        	//PhongShader.setSpotLights(new SpotLight[] {sLight1});
-        //}
-        
         sLight1.getPointLight().setPosition(getCamera().getPos());
         sLight1.setDirection(getCamera().getForward());
         
@@ -781,22 +781,19 @@ public class Player {
     	double gunTime3 = gunTime2 + gunFireAnimationTime;
     	double gunTime4 = gunTime3 + gunFireAnimationTime;
         
-        if((double)time < healthTime + 0.5f) {
+        if((double)time < healthTime + 0.5f)
         	hudRenderer.render(healthMaterial, shader);
-        } else {
+        else
         	hudRenderer.render(healthMaterial, shader);
-        }
         
-        if((double)time < ammoTime + 0.5f) {
+        if((double)time < ammoTime + 0.5f)
         	hudRenderer.render(ammoMaterial, shader);
-        } else {
+        else
         	hudRenderer.render(ammoMaterial, shader);
-        } 
         
         if(isAlive) {
-	        if((double)time < painTime + 0.5f) {
+	        if((double)time < painTime + 0.5f)
 	        	hudRenderer.render(painMaterial, shader);
-	        }
         } else {
         	hudRenderer.render(new Material(ResourceLoader.loadTexture("hud/DEATH")), shader);
         }
@@ -821,12 +818,12 @@ public class Player {
 		        	RenderingEngine.addPointLight(pLight);
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial1, shader);
-		        	
 		        } else if ((double) time < gunTime2) {
 			        hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
-		        	RenderingEngine.deletePointLight(pLight);
+		        	RenderingEngine.removePointLight(pLight);
 		        } else {
+		        	RenderingEngine.clearPointLight();
 		            hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunMaterial, shader);
 	            	isReloading = false;
@@ -834,8 +831,8 @@ public class Player {
 			} else {
 				hudRenderer.render(crossHairMaterial, shader);
 	        	gunRenderer.render(gunMaterial, shader);
-            	isReloading = false;
             	RenderingEngine.deletePointLight(pLight);
+            	isReloading = false;
 			}
 		}
 		if(isShellBased) {
@@ -853,8 +850,9 @@ public class Player {
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
 			        AudioUtil.playAudio(gunReload, 0);
-			        RenderingEngine.deletePointLight(pLight);
+			        RenderingEngine.removePointLight(pLight);
 		        } else if ((double) time < gunTime3) {
+		        	RenderingEngine.clearPointLight();
 		        	hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial3, shader);
 			        AudioUtil.playAudio(gunClipp, 0);
@@ -869,8 +867,8 @@ public class Player {
 			} else {
 				hudRenderer.render(crossHairMaterial, shader);
 	        	gunRenderer.render(gunMaterial, shader);
-	            isReloading = false;
 	            RenderingEngine.deletePointLight(pLight);
+	            isReloading = false;
 			}
 		}
         

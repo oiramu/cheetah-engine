@@ -79,7 +79,6 @@ public class RenderingEngine {
     public void render(GameComponent component) {
     	try {
 	    	clearScreen();
-	    	clearLightLists();
 	    	Shader forwardAmbient = ForwardAmbient.getInstance();
 			Shader forwardPoint = ForwardPoint.getInstance();
 			Shader forwardSpot = ForwardSpot.getInstance();
@@ -125,15 +124,6 @@ public class RenderingEngine {
         //TODO: Stencil Buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
-    
-    /**
-	 * Cleans everything on lights.
-	 */
-    private void clearLightLists() {
-    	directionalLights.clear();
-    	pointLights.clear();
-    	spotLights.clear();
-    }
 
     /**
      * Sets textures to openGL.
@@ -169,10 +159,22 @@ public class RenderingEngine {
 	public static void addDirectionalLight(DirectionalLight light) {directionalLights.add(light);}
 	
 	/**
-	 * Removes a directional light in the rendering engine.
+	 * Removes a new directional light to the rendering engine.
+	 * @param light to remove.
+	 */
+	public static void removeDirectionalLight(DirectionalLight light) {directionalLights.remove(light);}
+	
+	/**
+	 * Clears a new directional light to the rendering engine.
+	 * @param light to clear.
+	 */
+	public static void clearDirectionalLight() {directionalLights.clear();}
+	
+	/**
+	 * Deletes a directional light in the rendering engine.
 	 * @param light to delete.
 	 */
-	public static void deleteDirectionalLight(DirectionalLight light) {directionalLights.remove(light); directionalLights.clear();}
+	public static void deleteDirectionalLight(DirectionalLight light) {removeDirectionalLight(light); clearDirectionalLight();}
 	
 	/**
 	 * Adds a new point of light to the rendering engine.
@@ -182,9 +184,20 @@ public class RenderingEngine {
 	
 	/**
 	 * Removes a point of light in the rendering engine.
+	 * @param light to remove.
+	 */
+	public static void removePointLight(PointLight light) {pointLights.remove(light);}
+	
+	/**
+	 * Clears a point of light in the rendering engine.
+	 */
+	public static void clearPointLight() {pointLights.clear();}
+	
+	/**
+	 * Deletes a point of light in the rendering engine.
 	 * @param light to delete.
 	 */
-	public static void deletePointLight(PointLight light) {pointLights.remove(light); pointLights.clear();}
+	public static void deletePointLight(PointLight light) {removePointLight(light); clearPointLight();}
 	
 	/**
 	 * Adds a new spot of light to the rendering engine.
@@ -193,10 +206,21 @@ public class RenderingEngine {
 	public static void addSpotLight(SpotLight light) {spotLights.add(light);}
 	
 	/**
-	 * Removes a spot of light in the rendering engine.
+	 * Removes a new spot of light to the rendering engine.
+	 * @param light to remove.
+	 */
+	public static void removeSpotLight(SpotLight light) {spotLights.remove(light);}
+	
+	/**
+	 * Clears a new spot of light to the rendering engine.
+	 */
+	public static void clearSpotLight() {spotLights.clear();}
+	
+	/**
+	 * Deletes a spot of light in the rendering engine.
 	 * @param light to delete.
 	 */
-	public static void deleteSpotLight(SpotLight light) {spotLights.remove(light); spotLights.clear();}
+	public static void deleteSpotLight(SpotLight light) {removeSpotLight(light); clearSpotLight();}
 	
 	/**
 	 * Returns the color of the fog.

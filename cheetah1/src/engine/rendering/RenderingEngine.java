@@ -96,7 +96,8 @@ public class RenderingEngine {
 				directionalLight = direction;
 				component.render(forwardDirectional);
 			}
-			/*for(PointLight point : pointLights) { //Working on this!
+			/*
+			for(PointLight point : pointLights) { //Working on this!
 				pointLight = point;
 				component.render(forwardPoint);
 			}*/
@@ -120,7 +121,7 @@ public class RenderingEngine {
     /**
 	 * Cleans everything light related.
 	 */
-    public static void clearLights() {
+    public void clearLights() {
         clearDirectionalLight();
         clearPointLight();
         clearSpotLight();

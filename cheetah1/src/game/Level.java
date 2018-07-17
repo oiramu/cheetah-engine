@@ -30,14 +30,12 @@ import engine.core.Util;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.physics.PhysicsUtil;
-import engine.rendering.Attenuation;
 import engine.rendering.BaseLight;
 import engine.rendering.Bitmap;
 import engine.rendering.DirectionalLight;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
 import engine.rendering.MeshRenderer;
-import engine.rendering.PointLight;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Vertex;
@@ -180,7 +178,6 @@ public class Level extends GameComponent {
      */
     public Level(Bitmap bitmap, Material material) {	
         //Remove list
-    	RenderingEngine.clearDirectionalLight();
         Level.removeMedkitList = new ArrayList<Medkit>();
         Level.removeFoodList = new ArrayList<Food>();
         Level.removeBulletList = new ArrayList<Bullet>();
@@ -1372,9 +1369,7 @@ public class Level extends GameComponent {
                         trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.25f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 50) {
                     	flares.add(new Lantern(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, LEVEL_HEIGHT * 0.70f, (j + 0.5f) * SPOT_LENGTH))));
-                        //RenderingEngine.addPointLight(new PointLight(new BaseLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f), 
-		            		//new Attenuation(0,0,1), new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH), 8));
-                    	lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
+                    	//lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 51) {
                     	lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
                     	lamps.add(new Lamp(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.35f, (j + 0.5f) * SPOT_LENGTH))));
@@ -1396,8 +1391,6 @@ public class Level extends GameComponent {
                     	tables.add(new Table(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 121) {
                     	furnaces.add(new Furnace(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    	RenderingEngine.addPointLight(new PointLight(new BaseLight(new Vector3f(0.45f,0.35f,0.1f), 0.8f), 
-                    			new Attenuation(0,0,1), new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH), 6));
                 	} else if ((level.getPixel(i, j) & 0x0000FF) == 122) {
                     	kitchens.add(new Kitchen(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         foods.add(new Food(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
@@ -1420,7 +1413,7 @@ public class Level extends GameComponent {
                         armors.add(new Armor(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.1f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 155) {
                         helmets.add(new Helmet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.1f, (j + 0.5f) * SPOT_LENGTH))));
-                        barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.2f, (j + 0.5f) * SPOT_LENGTH))));
+                        //barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.2f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 160) {
                         barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.2f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) < 128 && (level.getPixel(i, j) & 0x0000FF) > 96) {

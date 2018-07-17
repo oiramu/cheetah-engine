@@ -34,6 +34,7 @@ import game.enemies.*;
 public class Auschwitz implements Game {
 	
 	private static ArrayList<Sequence> playlist = new ArrayList<Sequence>();
+	private static RenderingEngine engine;
     private static final int EPISODE_1 = 1;
     private static final int EPISODE_2 = 2;
     private static final int EPISODE_3 = 2;
@@ -98,8 +99,11 @@ public class Auschwitz implements Game {
     /**
      * Renders everything every on screen.
      */
-    public void render(RenderingEngine engine) {
+    @SuppressWarnings("static-access")
+	public void render(RenderingEngine engine) {
+    	this.engine = engine;
         if (isRunning) {
+        	//engine.clearLights();
         	engine.render(level);
         }
     }
@@ -184,7 +188,7 @@ public class Auschwitz implements Game {
             } else {
             	currentEpisode = EPISODE_1;
             }
-            
+
             levelNum += offset;
             level = new Level(ResourceLoader.loadBitmap("level" + levelNum).flipX(), 
             		new Material(ResourceLoader.loadTexture("mapTexture" + currentEpisode), new Vector3f(1,1,1)));
@@ -229,7 +233,8 @@ public class Auschwitz implements Game {
             System.out.println("Level " + levelNum + " floor " + levelNum + sector);
             System.out.println("=============================");
 
-            if (displayMonsters) {    
+            if (displayMonsters) {  
+            	engine.clearLights();
             	System.out.println("Killed " + deadMonsters + "/" + totalMonsters + " baddies: " +
             	((float) deadMonsters / (float) totalMonsters) * 100f + "%");        	
             	System.out.println("Secrets " + secrets + "/" + totalSecrets + " secrets: " +
@@ -249,7 +254,8 @@ public class Auschwitz implements Game {
             		level.getPlayer().gotChaingun();
             	}
             }
-        } catch (Exception ex) {
+        } catch (RuntimeException ex) {
+        	ex.printStackTrace();
             isRunning = false;
             System.out.println("GAME OVER!");
             AudioUtil.stopMidi();

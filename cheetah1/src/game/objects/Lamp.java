@@ -25,9 +25,13 @@ import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
+import engine.rendering.Attenuation;
+import engine.rendering.BaseLight;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
 import engine.rendering.MeshRenderer;
+import engine.rendering.PointLight;
+import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -50,6 +54,7 @@ public class Lamp {
     private static Mesh mesh;
     private Material material;
     private MeshRenderer meshRenderer;
+    private PointLight light;
     
     private float sizeX;
     private double health;
@@ -104,7 +109,11 @@ public class Lamp {
         this.material = new Material(animation.get(0), new Vector3f(1,1,1));
         this.state = STATE_IDLE;
         this.transform = transform;
-        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
+        this.light = new PointLight(new BaseLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f), 
+        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.1f, 
+        				getTransform().getPosition().getZ()), 6);
+        RenderingEngine.addPointLight(light);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         this.dead = false;
         this.health = 20;
     }
@@ -155,6 +164,7 @@ public class Lamp {
         }
         
         if (state == STATE_DEAD) {
+        	RenderingEngine.removePointLight(light);
             dead = true;
             material.setTexture(animation.get(4));
         }

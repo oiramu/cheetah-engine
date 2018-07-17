@@ -122,15 +122,13 @@ public class Barrel {
             mesh.addVertices(verts, indices, true);
         }
         
-        if(light == null) {
-        	light = new PointLight(new BaseLight(new Vector3f(0.45f,0.35f,0.1f), 1.6f), 
-            		new Attenuation(1,0,1), transform.getPosition(), 8);
-        }
-        
         this.material = new Material(animation.get(0), new Vector3f(1,1,1));
         this.state = STATE_IDLE;
         this.transform = transform;
-        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
+        this.light = new PointLight(new BaseLight(new Vector3f(0.9f,0.7f,0.2f), 0.8f), 
+        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0, 
+        				getTransform().getPosition().getZ()), 8);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         this.dead = false;
         this.health = 200;
         this.damage = 0;
@@ -218,7 +216,8 @@ public class Barrel {
         }
         
         if (state == STATE_DEAD) {
-        	RenderingEngine.deletePointLight(light);
+        	RenderingEngine.removePointLight(light);
+        	boom = false;
         	Level.removeBarrel(this);
         }
 

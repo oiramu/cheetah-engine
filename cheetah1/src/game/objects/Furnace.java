@@ -22,9 +22,13 @@ import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
+import engine.rendering.Attenuation;
+import engine.rendering.BaseLight;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
 import engine.rendering.MeshRenderer;
+import engine.rendering.PointLight;
+import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -45,6 +49,7 @@ public class Furnace {
     private static Mesh mesh;
     private Material material;
     private MeshRenderer meshRenderer;
+    private PointLight light;
     
     private float sizeX;
     
@@ -93,7 +98,11 @@ public class Furnace {
         this.material = new Material(animation.get(0));
         this.state = STATE_IDLE;
         this.transform = transform;
-        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
+        this.light = new PointLight(new BaseLight(new Vector3f(0.45f,0.35f,0.1f), 0.8f), 
+        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0, 
+        				getTransform().getPosition().getZ()), 6);
+        RenderingEngine.addPointLight(light);
     }
 
     /**

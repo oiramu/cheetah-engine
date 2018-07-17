@@ -35,6 +35,7 @@ import engine.rendering.MeshRenderer;
 import engine.rendering.PointLight;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
+import engine.rendering.SpotLight;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
 import game.Auschwitz;
@@ -80,7 +81,7 @@ public class NaziSoldier {
     private Transform transform;
     private Material material;
     private MeshRenderer meshRenderer;
-    private PointLight nPLight;
+    private SpotLight light;
 
     private int state;
     private boolean canAttack;
@@ -147,6 +148,12 @@ public class NaziSoldier {
 
             mesh.addVertices(verts, indices, true);
         }
+        
+        if(light == null) {
+        	light = new SpotLight(new PointLight(new BaseLight(new Vector3f(0.4f,0.3f,0.175f), 0.8f), 
+        	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), 8), new Vector3f(1,1,1), 0.7f);
+        }
+        
 
         this.transform = transform;
         this.material = new Material(animation.get(0));
@@ -182,6 +189,9 @@ public class NaziSoldier {
         float distance = playerDistance.length();
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
+        
+        light.getPointLight().setPosition(transform.getPosition());
+        light.setDirection(orientation);
 
         if (orientation.getX() > 0) {
             angle = 180 + angle;
@@ -308,9 +318,8 @@ public class NaziSoldier {
                             	state = STATE_DONE;
                             } else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
-                            	nPLight = new PointLight(new BaseLight(new Vector3f(0.5f,0.3f,0.1f), 1.6f), 
-            		            		new Attenuation(1,0,1), new Vector3f(lineStart.getX(), lineStart.getY(),1), 8);
-            		        	RenderingEngine.addPointLight(nPLight);
+                         
+            		        	RenderingEngine.addSpotLight(light);
                             	if(player.getArmorb() == false) {
                             		player.addHealth((int) -damage);
                             	}else {
@@ -323,7 +332,7 @@ public class NaziSoldier {
                         AudioUtil.playAudio(shootNoise, distance);
                     }
                     material.setTexture(animation.get(6));
-                    RenderingEngine.deletePointLight(nPLight);
+                    RenderingEngine.deleteSpotLight(light);
                 } else {
                     canAttack = true;
                     material.setTexture(animation.get(6));
@@ -412,7 +421,6 @@ public class NaziSoldier {
     public void render(Shader shader) {
         Vector3f prevPosition = transform.getPosition();
         transform.setPosition(new Vector3f(transform.getPosition().getX() + offsetX, transform.getPosition().getY() + offsetY, transform.getPosition().getZ()));
-
         meshRenderer.render(shader);
 
         transform.setPosition(prevPosition);

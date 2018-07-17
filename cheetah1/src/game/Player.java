@@ -151,7 +151,7 @@ public class Player {
     private Vector3f movementVector;
     
     private PointLight pLight;
-    private SpotLight sLight1;
+    private SpotLight sLight;
     
     private double gunFireTime;
     private double healthTime;
@@ -327,10 +327,9 @@ public class Player {
     	    		new Attenuation(0,0,0), new Vector3f(0,0,0), 0);
     	}
     	
-    	if(sLight1 == null) {
-    		sLight1 = new SpotLight(new PointLight(new BaseLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f), 
+    	if(sLight == null) {
+    		sLight = new SpotLight(new PointLight(new BaseLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f), 
         	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), 30), new Vector3f(1,1,1), 0.7f);
-    		//RenderingEngine.addSpotLight(sLight1);
     	}
     	
         if (gunMesh == null) {
@@ -659,12 +658,12 @@ public class Player {
 
 	        if(isOn) {
 				if (Input.getKeyDown(Input.KEY_F)) {
-					RenderingEngine.deleteSpotLight(sLight1);
+					RenderingEngine.deleteSpotLight(sLight);
 					isOn = false;
 				}
             } else {
             	if (Input.getKeyDown(Input.KEY_F)) {
-            		RenderingEngine.addSpotLight(sLight1);
+            		RenderingEngine.addSpotLight(sLight);
 	            	isOn = true;
             	}
             }
@@ -761,8 +760,8 @@ public class Player {
         gunTransform.setRotation(0, angle + 90, 0);
         hudTransform.setRotation(0, angle + 90, 0);
         
-        sLight1.getPointLight().setPosition(getCamera().getPos());
-        sLight1.setDirection(getCamera().getForward());
+        sLight.getPointLight().setPosition(getCamera().getPos());
+        sLight.setDirection(getCamera().getForward());
         
         healthMaterial = new Material(healthMaterials.get(getHealth()));
         if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;

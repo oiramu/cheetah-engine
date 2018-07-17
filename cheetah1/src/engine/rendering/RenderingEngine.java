@@ -116,6 +116,15 @@ public class RenderingEngine {
     		System.exit(0);
     	}
     }
+    
+    /**
+	 * Cleans everything light related.
+	 */
+    public static void clearLights() {
+        clearDirectionalLight();
+        clearPointLight();
+        clearSpotLight();
+    }
 
 	/**
 	 * Cleans everything on the openGL screen.

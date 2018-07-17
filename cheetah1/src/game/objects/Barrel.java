@@ -25,9 +25,13 @@ import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
+import engine.rendering.Attenuation;
+import engine.rendering.BaseLight;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
 import engine.rendering.MeshRenderer;
+import engine.rendering.PointLight;
+import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -53,6 +57,7 @@ public class Barrel {
     private static Mesh mesh;
     private Material material;
     private MeshRenderer meshRenderer;
+    private PointLight light;
     
     private float sizeX;
     private double health;
@@ -117,6 +122,11 @@ public class Barrel {
             mesh.addVertices(verts, indices, true);
         }
         
+        if(light == null) {
+        	light = new PointLight(new BaseLight(new Vector3f(0.45f,0.35f,0.1f), 1.6f), 
+            		new Attenuation(1,0,1), transform.getPosition(), 8);
+        }
+        
         this.material = new Material(animation.get(0), new Vector3f(1,1,1));
         this.state = STATE_IDLE;
         this.transform = transform;
@@ -167,6 +177,7 @@ public class Barrel {
         		dead = true;
                 material.setTexture(animation.get(1));
             } else if (timeDecimals <= 0.5f) {
+            	RenderingEngine.addPointLight(light);
                 material.setTexture(animation.get(2));
             } else if (timeDecimals <= 0.75f) {
             	if(distance<1) {
@@ -207,6 +218,7 @@ public class Barrel {
         }
         
         if (state == STATE_DEAD) {
+        	RenderingEngine.deletePointLight(light);
         	Level.removeBarrel(this);
         }
 

@@ -102,6 +102,7 @@ public class Level extends GameComponent {
     private static final Clip misuseNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "OOF");
     private static final Clip punchNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "PLSPNCH6");
     private static final Clip punchSolidNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "PUNCH2");
+    private static final Clip barrelNoise = ResourceLoader.loadAudio("barrel/BARRELZ");
 
     //Remove list
     private static ArrayList<Medkit> removeMedkitList;
@@ -179,6 +180,7 @@ public class Level extends GameComponent {
      */
     public Level(Bitmap bitmap, Material material) {	
         //Remove list
+    	RenderingEngine.clearDirectionalLight();
         Level.removeMedkitList = new ArrayList<Medkit>();
         Level.removeFoodList = new ArrayList<Food>();
         Level.removeBulletList = new ArrayList<Bullet>();
@@ -372,6 +374,25 @@ public class Level extends GameComponent {
     	            if (Math.abs(pillar.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
     	               AudioUtil.playAudio(punchSolidNoise, 0);
     	               pillar.damage(player.getDamage());
+    	            }
+                }
+            }
+            
+            for (Barrel barrel : barrels) {
+            	if(player.isBulletBased) {
+	                if (Math.abs(barrel.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
+	                	barrel.damage(player.getDamage());
+	                	AudioUtil.playAudio(barrelNoise, 0);
+	                }
+            	}else if(player.isShellBased) {
+            		if (Math.abs(barrel.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
+            			barrel.damage(player.getDamage());
+            			AudioUtil.playAudio(barrelNoise, 0);
+            		}
+            	}else if(player.isMelee) {
+    	            if (Math.abs(barrel.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
+    	               barrel.damage(player.getDamage());
+    	               AudioUtil.playAudio(barrelNoise, 0);
     	            }
                 }
             }
@@ -1299,6 +1320,7 @@ public class Level extends GameComponent {
             for (int j = 1; j < level.getHeight() - 1; j++) {
                 if ((level.getPixel(i, j) & 0xFFFFFF) != 0) // If it isn't a black (wall) pixel
                 {
+                	//LEVEL_HEIGHT = level.getPixel(i, j) & 0x0000FF;
                     if ((level.getPixel(i, j) & 0x0000FF) == 16) {
                         Transform doorTransform = new Transform();
 
@@ -1398,7 +1420,7 @@ public class Level extends GameComponent {
                         armors.add(new Armor(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.1f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 155) {
                         helmets.add(new Helmet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.1f, (j + 0.5f) * SPOT_LENGTH))));
-                        //barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.2f, (j + 0.5f) * SPOT_LENGTH))));
+                        barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.2f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 160) {
                         barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.2f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) < 128 && (level.getPixel(i, j) & 0x0000FF) > 96) {

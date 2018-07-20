@@ -15,6 +15,7 @@
  */
 package engine.core;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -31,6 +32,15 @@ import engine.rendering.Vertex;
 */
 public class Util {
 
+	/**
+	 * Creates a buffer for byte data.
+	 * @param size Index size.
+	 * @return A byte buffer.
+	 */
+    public static ByteBuffer createByteBuffer(int size) {
+        return BufferUtils.createByteBuffer(size);
+    }
+	
 	/**
 	 * Creates a buffer for floating point data.
 	 * @param size Index size.

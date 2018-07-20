@@ -15,7 +15,7 @@
  */
 package engine.core;
 
-import engine.rendering.Camera;
+import engine.components.Camera;
 
 /**
  *

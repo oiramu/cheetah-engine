@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package engine.rendering;
+package engine.components;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2018
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2018
+ */
 public class Attenuation {
 	
 	private float constant;

@@ -20,17 +20,16 @@ import java.util.ArrayList;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.ResourceLoader;
+import engine.components.Attenuation;
+import engine.components.BaseLight;
+import engine.components.MeshRenderer;
+import engine.components.PointLight;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
-import engine.rendering.Attenuation;
-import engine.rendering.BaseLight;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
-import engine.rendering.PointLight;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
@@ -65,7 +64,7 @@ public class Barrel {
     
     private static ArrayList<Texture> animation;
     
-    private static final Clip breakNoice = ResourceLoader.loadAudio(RES_LOC_2 + "EXPLOSIO");
+    private static final Clip breakNoice = AudioUtil.loadAudio(RES_LOC_2 + "EXPLOSIO");
 
     private Transform transform;
 
@@ -78,33 +77,31 @@ public class Barrel {
     	if (animation == null) {
             animation = new ArrayList<Texture>();
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "BURBA0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "BEXPC0"));
+            animation.add(new Texture(RES_LOC + "BURBA0"));
+            animation.add(new Texture(RES_LOC + "BEXPC0"));
             
-            animation.add(ResourceLoader.loadTexture(RES_LOC_2 + "BEXPD0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC_2 + "BEXPE0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC_2 + "BEXPF0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC_2 + "BEXPG0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC_2 + "BEXPH0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC_2 + "BEXPI0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC_2 + "BEXPJ0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC_2 + "BEXPK0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC_2 + "BEXPL0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC_2 + "BEXPM0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC_2 + "BEXPN0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC_2 + "BEXPO0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC_2 + "BEXPP0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC_2 + "BEXPQ0"));
+            animation.add(new Texture(RES_LOC_2 + "BEXPD0"));
+            animation.add(new Texture(RES_LOC_2 + "BEXPE0"));
+            animation.add(new Texture(RES_LOC_2 + "BEXPF0"));
+            animation.add(new Texture(RES_LOC_2 + "BEXPG0"));
+            animation.add(new Texture(RES_LOC_2 + "BEXPH0"));
+            animation.add(new Texture(RES_LOC_2 + "BEXPI0"));
+            animation.add(new Texture(RES_LOC_2 + "BEXPJ0"));
+            animation.add(new Texture(RES_LOC_2 + "BEXPK0"));
+            animation.add(new Texture(RES_LOC_2 + "BEXPL0"));
+            animation.add(new Texture(RES_LOC_2 + "BEXPM0"));
+            animation.add(new Texture(RES_LOC_2 + "BEXPN0"));
+            animation.add(new Texture(RES_LOC_2 + "BEXPO0"));
+            animation.add(new Texture(RES_LOC_2 + "BEXPP0"));
+            animation.add(new Texture(RES_LOC_2 + "BEXPQ0"));
         }
     	
         if (mesh == null) {
-            mesh = new Mesh();
-
             float sizeY = 1.2f;
             sizeX = (float) ((double) sizeY / (0.8333333333333333 * 2.0));
 
-            float offsetX = 0.05f;
-            float offsetY = 0.01f;
+            float offsetX = 0.0f;
+            float offsetY = 0.0f;
 
             float texMinX = -offsetX;
             float texMaxX = -1 - offsetX;
@@ -119,7 +116,7 @@ public class Barrel {
             int[] indices = new int[]{0, 1, 2,
                                     0, 2, 3};
 
-            mesh.addVertices(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
         
         this.material = new Material(animation.get(0), new Vector3f(1,1,1));

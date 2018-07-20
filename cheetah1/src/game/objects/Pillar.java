@@ -20,14 +20,13 @@ import java.util.ArrayList;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.ResourceLoader;
+import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -47,7 +46,7 @@ public class Pillar {
 	private int state;
 	private double deathTime;
 	
-	private static final Clip breakNoice = ResourceLoader.loadAudio(RES_LOC + "MEDIA");
+	private static final Clip breakNoice = AudioUtil.loadAudio(RES_LOC + "MEDIA");
     
     private static Mesh mesh;
     private Material material;
@@ -70,24 +69,22 @@ public class Pillar {
     	if (animation == null) {
             animation = new ArrayList<Texture>();
             
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "COLWA0"));
+            animation.add(new Texture(RES_LOC + "COLWA0"));
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "CFALE0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "CFALA0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "CFALB0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "CFALC0"));
+            animation.add(new Texture(RES_LOC + "CFALE0"));
+            animation.add(new Texture(RES_LOC + "CFALA0"));
+            animation.add(new Texture(RES_LOC + "CFALB0"));
+            animation.add(new Texture(RES_LOC + "CFALC0"));
             
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "CFALD0"));
+            animation.add(new Texture(RES_LOC + "CFALD0"));
         }
     	
         if (mesh == null) {
-            mesh = new Mesh();
-
             float sizeY = 1f;
             sizeX = (float) ((double) sizeY / (1f * 2.0));
 
-            float offsetX = 0.00f;
-            float offsetY = 0.00f;
+            float offsetX = 0.0f;
+            float offsetY = 0.0f;
 
             float texMinX = -offsetX;
             float texMaxX = -1 - offsetX;
@@ -102,13 +99,13 @@ public class Pillar {
             int[] indices = new int[]{0, 1, 2,
                                     0, 2, 3};
 
-            mesh.addVertices(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
         
         this.material = new Material(animation.get(0), new Vector3f(1,1,1));
         this.state = STATE_IDLE;
         this.transform = transform;
-        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         this.dead = false;
         this.health = 500;
     }

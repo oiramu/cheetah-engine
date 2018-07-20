@@ -15,8 +15,11 @@
  */
 package engine.rendering;
 
+import engine.components.BaseLight;
+import engine.components.DirectionalLight;
+import engine.components.PointLight;
+import engine.components.SpotLight;
 import engine.core.Matrix4f;
-import engine.core.ResourceLoader;
 import engine.core.Transform;
 import engine.core.Vector3f;
 
@@ -37,12 +40,10 @@ public class PhongShader extends Shader {
     private static final PhongShader instance = new PhongShader();
     private static Vector3f fogColor;
     private static Vector3f ambientLight;
-    private static DirectionalLight directionalLight = new DirectionalLight(
-    		new BaseLight(new Vector3f(0,0,0), 0), new Vector3f(0,0,0));
+    private static DirectionalLight directionalLight = new DirectionalLight(new BaseLight(
+    		new Vector3f(0,0,0), 0), new Vector3f(0,0,0));
     private static PointLight[] pointLights = new PointLight[] {};
 	private static SpotLight[] spotLights = new SpotLight[] {};
-	
-	private final String RESOURCE = "PHONG/";
 
     /**
      * Instances the shader to be used.
@@ -56,8 +57,8 @@ public class PhongShader extends Shader {
     private PhongShader() {
         super();
 
-        addVertexShader(ResourceLoader.loadShader(RESOURCE+"phongVertex120"));
-        addFragmentShader(ResourceLoader.loadShader(RESOURCE+"phongFragment120"));
+        addVertexShaderFromFile(PHONG+"phongVertex120");
+        addFragmentShaderFromFile(PHONG+"phongFragment120");
 
         setAttribLocation("position", 0);
         setAttribLocation("texCoord", 1);

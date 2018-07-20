@@ -17,14 +17,13 @@ package game.objects;
 
 import java.util.ArrayList;
 
-import engine.core.ResourceLoader;
+import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -62,27 +61,25 @@ public class Pendule {
     	if (animation == null) {
             animation = new ArrayList<Texture>();
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SPDFI0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SPDFJ0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SPDFK0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SPDFL0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SPDFM0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SPDFN0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SPDFO0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SPDFP0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SPDFQ0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SPDFR0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SPDFS0"));
+            animation.add(new Texture(RES_LOC + "SPDFI0"));
+            animation.add(new Texture(RES_LOC + "SPDFJ0"));
+            animation.add(new Texture(RES_LOC + "SPDFK0"));
+            animation.add(new Texture(RES_LOC + "SPDFL0"));
+            animation.add(new Texture(RES_LOC + "SPDFM0"));
+            animation.add(new Texture(RES_LOC + "SPDFN0"));
+            animation.add(new Texture(RES_LOC + "SPDFO0"));
+            animation.add(new Texture(RES_LOC + "SPDFP0"));
+            animation.add(new Texture(RES_LOC + "SPDFQ0"));
+            animation.add(new Texture(RES_LOC + "SPDFR0"));
+            animation.add(new Texture(RES_LOC + "SPDFS0"));
         }
     	
         if (mesh == null) {
-            mesh = new Mesh();
-
             float sizeY = 1f;
             sizeX = sizeY;
 
-            float offsetX = 0.05f;
-            float offsetY = 0.01f;
+            float offsetX = 0.0f;
+            float offsetY = 0.0f;
 
             float texMinX = -offsetX;
             float texMaxX = -1 - offsetX;
@@ -97,13 +94,13 @@ public class Pendule {
             int[] indices = new int[]{0, 1, 2,
                                     0, 2, 3};
 
-            mesh.addVertices(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
         
         this.material = new Material(animation.get(5));
         this.state = STATE_IDLE;
         this.transform = transform;
-        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
     }
 
     /**

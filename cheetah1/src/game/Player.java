@@ -23,22 +23,21 @@ import javax.sound.sampled.Clip;
 import org.lwjgl.opengl.Display;
 
 import engine.audio.AudioUtil;
+import engine.components.Attenuation;
+import engine.components.BaseLight;
+import engine.components.Camera;
+import engine.components.MeshRenderer;
+import engine.components.PointLight;
+import engine.components.SpotLight;
 import engine.core.Input;
-import engine.core.ResourceLoader;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
-import engine.rendering.Attenuation;
-import engine.rendering.BaseLight;
-import engine.rendering.Camera;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
-import engine.rendering.PointLight;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
-import engine.rendering.SpotLight;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
 
@@ -127,10 +126,10 @@ public class Player {
     private static Clip gunEmptyNoise;
     private static Clip gunReload;
     private static Clip gunClipp;
-    private static final Clip moveNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "MOVE");
-    private static final Clip missueNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "OOF");
-    private static final Clip painNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "PLPAIN");
-    private static final Clip deathNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "PLDETH");
+    private static final Clip moveNoise = AudioUtil.loadAudio(PLAYER_RES_LOC + "MOVE");
+    private static final Clip missueNoise = AudioUtil.loadAudio(PLAYER_RES_LOC + "OOF");
+    private static final Clip painNoise = AudioUtil.loadAudio(PLAYER_RES_LOC + "PLPAIN");
+    private static final Clip deathNoise = AudioUtil.loadAudio(PLAYER_RES_LOC + "PLDETH");
 
     private Mesh gunMesh;
     private Material gunMaterial;
@@ -194,34 +193,34 @@ public class Player {
     	if(gunsMaterial == null) {
     		gunsMaterial = new ArrayList<Texture>();
     		
-    		gunsMaterial.add(ResourceLoader.loadTexture(HAND_RES_LOC + PISGB0));
-    		gunsMaterial.add(ResourceLoader.loadTexture(PISTOL_RES_LOC + PISGB0));
-    		gunsMaterial.add(ResourceLoader.loadTexture(SHOTGUN_RES_LOC + PISGB0));
-    		gunsMaterial.add(ResourceLoader.loadTexture(MACHINEGUN_RES_LOC + PISGB0));
-    		gunsMaterial.add(ResourceLoader.loadTexture(SUPER_SHOTGUN_RES_LOC + PISGB0));
-    		gunsMaterial.add(ResourceLoader.loadTexture(CHAINGUN_RES_LOC + PISGB0));
+    		gunsMaterial.add(new Texture(HAND_RES_LOC + PISGB0));
+    		gunsMaterial.add(new Texture(PISTOL_RES_LOC + PISGB0));
+    		gunsMaterial.add(new Texture(SHOTGUN_RES_LOC + PISGB0));
+    		gunsMaterial.add(new Texture(MACHINEGUN_RES_LOC + PISGB0));
+    		gunsMaterial.add(new Texture(SUPER_SHOTGUN_RES_LOC + PISGB0));
+    		gunsMaterial.add(new Texture(CHAINGUN_RES_LOC + PISGB0));
     	}
     	
     	if(gunsAnimationMaterial1 == null) {
     		gunsAnimationMaterial1 = new ArrayList<Texture>();
     		
-    		gunsAnimationMaterial1.add(ResourceLoader.loadTexture(HAND_RES_LOC + PISFA0));
-    		gunsAnimationMaterial1.add(ResourceLoader.loadTexture(PISTOL_RES_LOC + PISFA0));
-    		gunsAnimationMaterial1.add(ResourceLoader.loadTexture(SHOTGUN_RES_LOC + PISFA0));
-    		gunsAnimationMaterial1.add(ResourceLoader.loadTexture(MACHINEGUN_RES_LOC + PISFA0));
-    		gunsAnimationMaterial1.add(ResourceLoader.loadTexture(SUPER_SHOTGUN_RES_LOC + PISFA0));
-    		gunsAnimationMaterial1.add(ResourceLoader.loadTexture(CHAINGUN_RES_LOC + PISFA0));
+    		gunsAnimationMaterial1.add(new Texture(HAND_RES_LOC + PISFA0));
+    		gunsAnimationMaterial1.add(new Texture(PISTOL_RES_LOC + PISFA0));
+    		gunsAnimationMaterial1.add(new Texture(SHOTGUN_RES_LOC + PISFA0));
+    		gunsAnimationMaterial1.add(new Texture(MACHINEGUN_RES_LOC + PISFA0));
+    		gunsAnimationMaterial1.add(new Texture(SUPER_SHOTGUN_RES_LOC + PISFA0));
+    		gunsAnimationMaterial1.add(new Texture(CHAINGUN_RES_LOC + PISFA0));
     	}
     	
     	if(gunsAnimationMaterial2 == null) {
     		gunsAnimationMaterial2 = new ArrayList<Texture>();
     		
-    		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(HAND_RES_LOC + PISFC0));
-    		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(PISTOL_RES_LOC + PISFC0));
-    		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(SHOTGUN_RES_LOC + PISFC0));
-    		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(MACHINEGUN_RES_LOC + PISFC0));
-    		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(SUPER_SHOTGUN_RES_LOC + PISFC0));
-    		gunsAnimationMaterial2.add(ResourceLoader.loadTexture(CHAINGUN_RES_LOC + PISFC0));
+    		gunsAnimationMaterial2.add(new Texture(HAND_RES_LOC + PISFC0));
+    		gunsAnimationMaterial2.add(new Texture(PISTOL_RES_LOC + PISFC0));
+    		gunsAnimationMaterial2.add(new Texture(SHOTGUN_RES_LOC + PISFC0));
+    		gunsAnimationMaterial2.add(new Texture(MACHINEGUN_RES_LOC + PISFC0));
+    		gunsAnimationMaterial2.add(new Texture(SUPER_SHOTGUN_RES_LOC + PISFC0));
+    		gunsAnimationMaterial2.add(new Texture(CHAINGUN_RES_LOC + PISFC0));
     	}
     	
     	if(gunsAnimationMaterial3 == null) {
@@ -229,9 +228,9 @@ public class Player {
     		
     		gunsAnimationMaterial3.add(null);
     		gunsAnimationMaterial3.add(null);
-    		gunsAnimationMaterial3.add(ResourceLoader.loadTexture(SHOTGUN_RES_LOC + PISFD0));
+    		gunsAnimationMaterial3.add(new Texture(SHOTGUN_RES_LOC + PISFD0));
     		gunsAnimationMaterial3.add(null);
-    		gunsAnimationMaterial3.add(ResourceLoader.loadTexture(SUPER_SHOTGUN_RES_LOC + PISFD0));
+    		gunsAnimationMaterial3.add(new Texture(SUPER_SHOTGUN_RES_LOC + PISFD0));
     		gunsAnimationMaterial3.add(null);
     	}
     	
@@ -240,48 +239,48 @@ public class Player {
     		
     		gunsAnimationMaterial4.add(null);
     		gunsAnimationMaterial4.add(null);
-    		gunsAnimationMaterial4.add(ResourceLoader.loadTexture(SHOTGUN_RES_LOC + PISFE0));
+    		gunsAnimationMaterial4.add(new Texture(SHOTGUN_RES_LOC + PISFE0));
     		gunsAnimationMaterial4.add(null);
-    		gunsAnimationMaterial4.add(ResourceLoader.loadTexture(SUPER_SHOTGUN_RES_LOC + PISFE0));
+    		gunsAnimationMaterial4.add(new Texture(SUPER_SHOTGUN_RES_LOC + PISFE0));
     		gunsAnimationMaterial4.add(null);
     	}
     	
     	if(healthMaterials == null) {
     		healthMaterials = new ArrayList<Texture>();
     		for (int i = 0; i < 101; i++) {
-    			healthMaterials.add(ResourceLoader.loadTexture("/hud/hud/HP" + i));
+    			healthMaterials.add(new Texture("/hud/hud/HP" + i));
 			}
     	}
     	
     	if(ammoMaterials == null) {
     		ammoMaterials = new ArrayList<Texture>();
     		for (int i = 0; i < 101; i++) {
-    			ammoMaterials.add(ResourceLoader.loadTexture("/hud/hud/AR" + i));
+    			ammoMaterials.add(new Texture("/hud/hud/AR" + i));
 			}
     	}
     	
     	if(crossHairMaterials == null) {
     		crossHairMaterials = new ArrayList<Texture>();
-    		crossHairMaterials.add(ResourceLoader.loadTexture("/hud/CROSS0"));
-    		crossHairMaterials.add(ResourceLoader.loadTexture("/hud/CROSS1"));
-    		crossHairMaterials.add(ResourceLoader.loadTexture("/hud/CROSS2"));
+    		crossHairMaterials.add(new Texture("/hud/CROSS0"));
+    		crossHairMaterials.add(new Texture("/hud/CROSS1"));
+    		crossHairMaterials.add(new Texture("/hud/CROSS2"));
     	}
     	
     	if(crossHairAnimationMaterials == null) {
     		crossHairAnimationMaterials = new ArrayList<Texture>();
-    		crossHairAnimationMaterials.add(ResourceLoader.loadTexture("/hud/CROSS01"));
-    		crossHairAnimationMaterials.add(ResourceLoader.loadTexture("/hud/CROSS11"));
-    		crossHairAnimationMaterials.add(ResourceLoader.loadTexture("/hud/CROSS21"));
+    		crossHairAnimationMaterials.add(new Texture("/hud/CROSS01"));
+    		crossHairAnimationMaterials.add(new Texture("/hud/CROSS11"));
+    		crossHairAnimationMaterials.add(new Texture("/hud/CROSS21"));
     	}
     	
     	if(gunsNoiseSounds == null) {
     		gunsNoiseSounds = new ArrayList<Clip>();
     		
-    		gunsNoiseSounds.add(ResourceLoader.loadAudio(HAND_RES_LOC + GUNSOUND));
-    		gunsNoiseSounds.add(ResourceLoader.loadAudio(PISTOL_RES_LOC + GUNSOUND));
-    		gunsNoiseSounds.add(ResourceLoader.loadAudio(SHOTGUN_RES_LOC + GUNSOUND));
-    		gunsNoiseSounds.add(ResourceLoader.loadAudio(MACHINEGUN_RES_LOC + GUNSOUND));
-    		gunsNoiseSounds.add(ResourceLoader.loadAudio(SUPER_SHOTGUN_RES_LOC + GUNSOUND));
+    		gunsNoiseSounds.add(AudioUtil.loadAudio(HAND_RES_LOC + GUNSOUND));
+    		gunsNoiseSounds.add(AudioUtil.loadAudio(PISTOL_RES_LOC + GUNSOUND));
+    		gunsNoiseSounds.add(AudioUtil.loadAudio(SHOTGUN_RES_LOC + GUNSOUND));
+    		gunsNoiseSounds.add(AudioUtil.loadAudio(MACHINEGUN_RES_LOC + GUNSOUND));
+    		gunsNoiseSounds.add(AudioUtil.loadAudio(SUPER_SHOTGUN_RES_LOC + GUNSOUND));
     	}
     	
     	if(gunsReloadSounds == null) {
@@ -289,9 +288,9 @@ public class Player {
     		
     		gunsReloadSounds.add(null);
     		gunsReloadSounds.add(null);
-    		gunsReloadSounds.add(ResourceLoader.loadAudio(SHOTGUN_RES_LOC + RELOADSOUND));
+    		gunsReloadSounds.add(AudioUtil.loadAudio(SHOTGUN_RES_LOC + RELOADSOUND));
     		gunsReloadSounds.add(null);
-    		gunsReloadSounds.add(ResourceLoader.loadAudio(SUPER_SHOTGUN_RES_LOC + RELOADSOUND));
+    		gunsReloadSounds.add(AudioUtil.loadAudio(SUPER_SHOTGUN_RES_LOC + RELOADSOUND));
     	}
     	
     	if(gunsClippingSounds == null) {
@@ -299,19 +298,19 @@ public class Player {
     		
     		gunsClippingSounds.add(null);
     		gunsClippingSounds.add(null);
-    		gunsClippingSounds.add(ResourceLoader.loadAudio(SHOTGUN_RES_LOC + CLIPSOUND));
+    		gunsClippingSounds.add(AudioUtil.loadAudio(SHOTGUN_RES_LOC + CLIPSOUND));
     		gunsClippingSounds.add(null);
-    		gunsClippingSounds.add(ResourceLoader.loadAudio(SUPER_SHOTGUN_RES_LOC + CLIPSOUND));
+    		gunsClippingSounds.add(AudioUtil.loadAudio(SUPER_SHOTGUN_RES_LOC + CLIPSOUND));
     	}
     	
     	if(gunsEmptyNoiseSounds == null) {
     		gunsEmptyNoiseSounds = new ArrayList<Clip>();
     		
     		gunsEmptyNoiseSounds.add(null);
-    		gunsEmptyNoiseSounds.add(ResourceLoader.loadAudio(PISTOL_RES_LOC + EMPTY));
-    		gunsEmptyNoiseSounds.add(ResourceLoader.loadAudio(SHOTGUN_RES_LOC + EMPTY));
-    		gunsEmptyNoiseSounds.add(ResourceLoader.loadAudio(MACHINEGUN_RES_LOC + EMPTY));
-    		gunsEmptyNoiseSounds.add(ResourceLoader.loadAudio(SUPER_SHOTGUN_RES_LOC + EMPTY));
+    		gunsEmptyNoiseSounds.add(AudioUtil.loadAudio(PISTOL_RES_LOC + EMPTY));
+    		gunsEmptyNoiseSounds.add(AudioUtil.loadAudio(SHOTGUN_RES_LOC + EMPTY));
+    		gunsEmptyNoiseSounds.add(AudioUtil.loadAudio(MACHINEGUN_RES_LOC + EMPTY));
+    		gunsEmptyNoiseSounds.add(AudioUtil.loadAudio(SUPER_SHOTGUN_RES_LOC + EMPTY));
     	}
     	
     	if(weaponState == null) {
@@ -321,13 +320,11 @@ public class Player {
     	if(painMaterials == null) {
     		painMaterials = new ArrayList<Texture>();
     		
-    		painMaterials.add(ResourceLoader.loadTexture("hud/HEALTH0"));
-    		painMaterials.add(ResourceLoader.loadTexture("hud/HEALTH1"));
+    		painMaterials.add(new Texture("hud/HEALTH0"));
+    		painMaterials.add(new Texture("hud/HEALTH1"));
     	}
     	
         if (gunMesh == null) {
-            gunMesh = new Mesh();
-
             float sizeY = GUN_SIZE;
             float sizeX = (float) ((double) sizeY / (0.5f * 2.0));
 
@@ -347,7 +344,7 @@ public class Player {
             int[] indices = new int[]{0, 1, 2,
             						  0, 2, 3};
 
-            gunMesh.addVertices(verts, indices, false);
+            gunMesh = new Mesh(verts, indices, false);
         }
 
         health = MAX_LIFE;
@@ -367,7 +364,7 @@ public class Player {
         }
         
         if(sLight == null && fireBulletLight == null && fireShellLight == null) {
-    		sLight = new SpotLight(new PointLight(new BaseLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f), 
+        	sLight = new SpotLight(new PointLight(new BaseLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f), 
         	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), 30), new Vector3f(1,1,1), 0.7f);
     		fireBulletLight = new PointLight(new BaseLight(new Vector3f(0.5f,0.3f,0.1f), 1.6f), 
             		new Attenuation(1,0,1), getCamera().getPos(), gunLightBeam);
@@ -789,7 +786,7 @@ public class Player {
 	        if((double)time < painTime + 0.5f)
 	        	hudRenderer.render(painMaterial, shader);
         } else {
-        	hudRenderer.render(new Material(ResourceLoader.loadTexture("hud/DEATH")), shader);
+        	hudRenderer.render(new Material(new Texture("hud/DEATH")), shader);
         }
         
 		if(isMelee) {
@@ -814,9 +811,8 @@ public class Player {
 		        } else if ((double) time < gunTime2) {
 			        hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
-		        	fireBulletLight.setPosition(new Vector3f(1000,1000,1000));
-		        	RenderingEngine.removePointLight(fireBulletLight);
 		        } else {
+		        	RenderingEngine.removePointLight(fireBulletLight);
 		            hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunMaterial, shader);
 	            	isReloading = false;
@@ -841,9 +837,8 @@ public class Player {
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
 			        AudioUtil.playAudio(gunReload, 0);
-			        fireShellLight.setPosition(new Vector3f(1000,1000,1000));
-			        RenderingEngine.removePointLight(fireShellLight);
 		        } else if ((double) time < gunTime3) {
+		        	RenderingEngine.removePointLight(fireBulletLight);
 		        	hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial3, shader);
 			        AudioUtil.playAudio(gunClipp, 0);

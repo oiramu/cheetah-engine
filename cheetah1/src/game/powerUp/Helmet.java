@@ -18,14 +18,14 @@ package game.powerUp;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.ResourceLoader;
+import engine.components.MeshRenderer;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
 import engine.rendering.Shader;
+import engine.rendering.Texture;
 import engine.rendering.Vertex;
 import game.Level;
 
@@ -49,7 +49,7 @@ public class Helmet {
 
     private Transform transform;
     
-    public static final Clip pickupNoise = ResourceLoader.loadAudio(RES_LOC);
+    public static final Clip pickupNoise = AudioUtil.loadAudio(RES_LOC);
 
     /**
      * Constructor of the actual power-up.
@@ -57,13 +57,11 @@ public class Helmet {
      */
     public Helmet(Transform transform) {
         if (mesh == null) {
-            mesh = new Mesh();
+            final float sizeY = 0.7096774193548387f / 4.0f;
+            final float sizeX = (float) ((double) sizeY / (1.409090909090909));
 
-            final float sizeY = 0.7096774193548387f / 2;
-            final float sizeX = (float) ((double) sizeY / (1.409090909090909 * 2.0));
-
-            float offsetX = 0.05f;
-            float offsetY = 0.01f;
+            float offsetX = 0.0f;
+            float offsetY = 0.0f;
 
             float texMinX = -offsetX;
             float texMaxX = -1 - offsetX;
@@ -78,11 +76,11 @@ public class Helmet {
             int[] indices = new int[]{0, 1, 2,
             						0, 2, 3};
 
-            mesh.addVertices(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
 
         if (material == null) {
-            material = new Material(ResourceLoader.loadTexture(RES_LOC), new Vector3f(1,1,1));
+            material = new Material(new Texture(RES_LOC), new Vector3f(1,1,1));
         }
 
         this.transform = transform;

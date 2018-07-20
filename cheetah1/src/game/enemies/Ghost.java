@@ -21,7 +21,7 @@ import java.util.Random;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.ResourceLoader;
+import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -29,7 +29,6 @@ import engine.core.Vector3f;
 import engine.physics.PhysicsUtil;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -38,11 +37,11 @@ import game.Level;
 import game.Player;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2018
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2018
+ */
 public class Ghost {
 
 	private static final float MAX_HEALTH = 10f;
@@ -60,10 +59,10 @@ public class Ghost {
     
     private static final String RES_LOC = "ghost/";
 
-    private static final Clip seeNoise = ResourceLoader.loadAudio(RES_LOC + "SSSSIT");
-    private static final Clip shootNoise = ResourceLoader.loadAudio(RES_LOC + "SSHOTGN");
-    private static final Clip hitNoise = ResourceLoader.loadAudio(RES_LOC + "SPOPAIN");
-    private static final Clip deathNoise = ResourceLoader.loadAudio(RES_LOC + "SSSDTH");
+    private static final Clip seeNoise = AudioUtil.loadAudio(RES_LOC + "SSSSIT");
+    private static final Clip shootNoise = AudioUtil.loadAudio(RES_LOC + "SSHOTGN");
+    private static final Clip hitNoise = AudioUtil.loadAudio(RES_LOC + "SPOPAIN");
+    private static final Clip deathNoise = AudioUtil.loadAudio(RES_LOC + "SSSDTH");
 
     private static ArrayList<Texture> animation;
     private static Mesh mesh;
@@ -92,20 +91,18 @@ public class Ghost {
         if (animation == null) {
             animation = new ArrayList<Texture>();
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "GHSTA0"));
-            //animation.add(ResourceLoader.loadTexture(RES_LOC + "GHSTB0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "GHSTC0"));
-            //animation.add(ResourceLoader.loadTexture(RES_LOC + "GHSTD0"));
+            animation.add(new Texture(RES_LOC + "GHSTA0"));
+            //animation.add(new Texture(RES_LOC + "GHSTB0"));
+            animation.add(new Texture(RES_LOC + "GHSTC0"));
+            //animation.add(new Texture(RES_LOC + "GHSTD0"));
             
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "GHSTE0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "GHSTF0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "GHSTG0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "GHSTH0"));
+            animation.add(new Texture(RES_LOC + "GHSTE0"));
+            animation.add(new Texture(RES_LOC + "GHSTF0"));
+            animation.add(new Texture(RES_LOC + "GHSTG0"));
+            animation.add(new Texture(RES_LOC + "GHSTH0"));
         }
 
         if (mesh == null) {
-            mesh = new Mesh();
-
             final float sizeY = 0.75f;
             final float sizeX = 1.0f;
 
@@ -125,12 +122,12 @@ public class Ghost {
             int[] indices = new int[]{0, 1, 2,
                                       0, 2, 3};
 
-            mesh.addVertices(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
 
         this.transform = transform;
         this.material = new Material(animation.get(0));
-        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         this.state = 0;
         this.canAttack = true;
         this.canLook = true;

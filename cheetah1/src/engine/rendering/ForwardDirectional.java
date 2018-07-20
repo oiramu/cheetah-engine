@@ -15,8 +15,9 @@
  */
 package engine.rendering;
 
+import engine.components.BaseLight;
+import engine.components.DirectionalLight;
 import engine.core.Matrix4f;
-import engine.core.ResourceLoader;
 
 /**
  *
@@ -27,8 +28,6 @@ import engine.core.ResourceLoader;
 public class ForwardDirectional extends Shader {
 	
 	private static final ForwardDirectional instance = new ForwardDirectional();
-	
-	private final String RESOURCE = "FORWARD/";
 
 	/**
      * Instances the shader to be used.
@@ -42,8 +41,8 @@ public class ForwardDirectional extends Shader {
 	private ForwardDirectional() {
 		super();
 
-		addVertexShader(ResourceLoader.loadShader(RESOURCE+"forward-directional-vs"));
-        addFragmentShader(ResourceLoader.loadShader(RESOURCE+"forward-directional-fs"));
+		addVertexShaderFromFile(FORWARD+"forward-directional-vs");
+        addFragmentShaderFromFile(FORWARD+"forward-directional-fs");
 
 		setAttribLocation("position", 0);
 		setAttribLocation("texCoord", 1);

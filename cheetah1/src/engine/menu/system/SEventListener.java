@@ -16,7 +16,6 @@
 package engine.menu.system;
 
 import engine.core.CoreEngine;
-import engine.core.ResourceLoader;
 import engine.menu.MenuModel;
 import engine.rendering.Window;
 import game.Auschwitz;
@@ -68,13 +67,13 @@ public class SEventListener {
 				CoreEngine.getEngine().start();
 				break;
 			case 6:
-				ResourceLoader.mipMapSamples = 4;
+				//ResourceLoader.mipMapSamples = 4;
 				break;
 			case 7:
-				ResourceLoader.mipMapSamples = 1;
+				//ResourceLoader.mipMapSamples = 1;
 				break;
 			case 8:
-				ResourceLoader.mipMapSamples = -4;
+				//ResourceLoader.mipMapSamples = -4;
 				break;
 		}
 	}

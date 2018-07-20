@@ -18,14 +18,13 @@ package game.doors;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.ResourceLoader;
+import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
 import engine.rendering.Shader;
 import engine.rendering.Vertex;
 import game.Level;
@@ -45,8 +44,8 @@ public class Door {
 	
 	private static final String RES_LOC = "door/";
 
-    private static final Clip openNoise = ResourceLoader.loadAudio(RES_LOC + "MEDIA0");
-    private static final Clip closeNoise = ResourceLoader.loadAudio(RES_LOC + "MEDIA1");
+    private static final Clip openNoise = AudioUtil.loadAudio(RES_LOC + "MEDIA0");
+    private static final Clip closeNoise = AudioUtil.loadAudio(RES_LOC + "MEDIA1");
 
     private static Mesh door;
 
@@ -86,8 +85,6 @@ public class Door {
         startCloseTime = 0;
 
         if (door == null) {
-            door = new Mesh();
-
             Vertex[] doorVerts = new Vertex[]{	new Vertex(new Vector3f(START, START, START), new Vector2f(0.5f, 1)),
 												new Vertex(new Vector3f(START, HEIGHT, START), new Vector2f(0.5f, 0.75f)),
 												new Vertex(new Vector3f(LENGTH, HEIGHT, START), new Vector2f(0.75f, 0.75f)),
@@ -117,10 +114,10 @@ public class Door {
             								12, 13, 14,
             								12, 14, 15};
 
-            door.addVertices(doorVerts, doorIndices, true);
+            door = new Mesh(doorVerts, doorIndices, true);
         }
         
-        this.meshRenderer = new MeshRenderer(door, this.transform, this.material);
+        this.meshRenderer = new MeshRenderer(door, getTransform(), this.material);
     }
 
     /**

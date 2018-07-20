@@ -20,17 +20,16 @@ import java.util.ArrayList;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.ResourceLoader;
+import engine.components.Attenuation;
+import engine.components.BaseLight;
+import engine.components.MeshRenderer;
+import engine.components.PointLight;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
-import engine.rendering.Attenuation;
-import engine.rendering.BaseLight;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
-import engine.rendering.PointLight;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
@@ -49,7 +48,7 @@ public class Lamp {
 	private static final int STATE_DEAD = 1;
 	private int state;
 	
-	private static final Clip breakNoice = ResourceLoader.loadAudio(RES_LOC + "WINBREA");
+	private static final Clip breakNoice = AudioUtil.loadAudio(RES_LOC + "WINBREA");
     
     private static Mesh mesh;
     private Material material;
@@ -73,22 +72,20 @@ public class Lamp {
     	if (animation == null) {
             animation = new ArrayList<Texture>();
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TLMPA0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TLMPB0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TLMPC0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TLMPD0"));
+            animation.add(new Texture(RES_LOC + "TLMPA0"));
+            animation.add(new Texture(RES_LOC + "TLMPB0"));
+            animation.add(new Texture(RES_LOC + "TLMPC0"));
+            animation.add(new Texture(RES_LOC + "TLMPD0"));
             
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TLMPE0"));
+            animation.add(new Texture(RES_LOC + "TLMPE0"));
         }
     	
         if (mesh == null) {
-            mesh = new Mesh();
-
             float sizeY = 1f;
             sizeX = (float) ((double) sizeY / (3.478260869565217f * 2.0));
 
-            float offsetX = 0.05f;
-            float offsetY = 0.01f;
+            float offsetX = 0.0f;
+            float offsetY = 0.0f;
 
             float texMinX = -offsetX;
             float texMaxX = -1 - offsetX;
@@ -103,7 +100,7 @@ public class Lamp {
             int[] indices = new int[]{0, 1, 2,
                                     0, 2, 3};
 
-            mesh.addVertices(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
         
         this.material = new Material(animation.get(0), new Vector3f(1,1,1));

@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package engine.rendering;
+package engine.components;
 
 import engine.core.Transform;
+import engine.rendering.Material;
+import engine.rendering.Mesh;
+import engine.rendering.Shader;
 
 /**
  *

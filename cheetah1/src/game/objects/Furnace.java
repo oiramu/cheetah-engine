@@ -17,17 +17,16 @@ package game.objects;
 
 import java.util.ArrayList;
 
-import engine.core.ResourceLoader;
+import engine.components.Attenuation;
+import engine.components.BaseLight;
+import engine.components.MeshRenderer;
+import engine.components.PointLight;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
-import engine.rendering.Attenuation;
-import engine.rendering.BaseLight;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
-import engine.rendering.PointLight;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
@@ -66,18 +65,16 @@ public class Furnace {
     	if (animation == null) {
             animation = new ArrayList<Texture>();
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "STOVA0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "STOVB0"));
+            animation.add(new Texture(RES_LOC + "STOVA0"));
+            animation.add(new Texture(RES_LOC + "STOVB0"));
         }
     	
         if (mesh == null) {
-            mesh = new Mesh();
-
-            float sizeY = 1f;
+            float sizeY = 1.0f;
             sizeX = (float) ((double) sizeY / (1f * 2.0));
 
-            float offsetX = 0.00f;
-            float offsetY = 0.00f;
+            float offsetX = 0.0f;
+            float offsetY = 0.0f;
 
             float texMinX = -offsetX;
             float texMaxX = -1 - offsetX;
@@ -92,7 +89,7 @@ public class Furnace {
             int[] indices = new int[]{0, 1, 2,
                                     0, 2, 3};
 
-            mesh.addVertices(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
         
         this.material = new Material(animation.get(0));

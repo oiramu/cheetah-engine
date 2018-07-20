@@ -21,7 +21,7 @@ import java.util.Random;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.ResourceLoader;
+import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -29,7 +29,6 @@ import engine.core.Vector3f;
 import engine.physics.PhysicsUtil;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -38,11 +37,11 @@ import game.Level;
 import game.Player;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class NaziSergeant {
 
     private static final float MAX_HEALTH = 180f;
@@ -61,10 +60,10 @@ public class NaziSergeant {
     
     private static final String RES_LOC = "naziSergeant/";
 
-    private static final Clip seeNoise = ResourceLoader.loadAudio(RES_LOC + "SSSSIT");
-    private static final Clip shootNoise = ResourceLoader.loadAudio(RES_LOC + "SSHOTGN");
-    private static final Clip hitNoise = ResourceLoader.loadAudio(RES_LOC + "SPOPAIN");
-    private static final Clip deathNoise = ResourceLoader.loadAudio(RES_LOC + "SSSDTH");
+    private static final Clip seeNoise = AudioUtil.loadAudio(RES_LOC + "SSSSIT");
+    private static final Clip shootNoise = AudioUtil.loadAudio(RES_LOC + "SSHOTGN");
+    private static final Clip hitNoise = AudioUtil.loadAudio(RES_LOC + "SPOPAIN");
+    private static final Clip deathNoise = AudioUtil.loadAudio(RES_LOC + "SSSDTH");
 
     private static ArrayList<Texture> animation;
     private static Mesh mesh;
@@ -93,25 +92,23 @@ public class NaziSergeant {
         if (animation == null) {
             animation = new ArrayList<Texture>();
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANA0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANB0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANC0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRAND0"));
+            animation.add(new Texture(RES_LOC + "TRANA0"));
+            animation.add(new Texture(RES_LOC + "TRANB0"));
+            animation.add(new Texture(RES_LOC + "TRANC0"));
+            animation.add(new Texture(RES_LOC + "TRAND0"));
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANE0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANF0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANG0"));
+            animation.add(new Texture(RES_LOC + "TRANE0"));
+            animation.add(new Texture(RES_LOC + "TRANF0"));
+            animation.add(new Texture(RES_LOC + "TRANG0"));
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANH0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANH1"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANI0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANJ0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANK0"));
+            animation.add(new Texture(RES_LOC + "TRANH0"));
+            animation.add(new Texture(RES_LOC + "TRANH1"));
+            animation.add(new Texture(RES_LOC + "TRANI0"));
+            animation.add(new Texture(RES_LOC + "TRANJ0"));
+            animation.add(new Texture(RES_LOC + "TRANK0"));
         }
 
         if (mesh == null) {
-            mesh = new Mesh();
-
             final float sizeY = 0.9f;
             final float sizeX = (float) ((double) sizeY / (sizeY * 2.0));
 
@@ -131,12 +128,12 @@ public class NaziSergeant {
             int[] indices = new int[]{0, 1, 2,
                                         0, 2, 3};
 
-            mesh.addVertices(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
 
         this.transform = transform;
         this.material = new Material(animation.get(0));
-        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         this.state = 0;
         this.canAttack = true;
         this.canLook = true;

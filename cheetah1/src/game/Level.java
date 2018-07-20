@@ -21,21 +21,20 @@ import java.util.Random;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.GameComponent;
+import engine.components.BaseLight;
+import engine.components.DirectionalLight;
+import engine.components.GameComponent;
+import engine.components.MeshRenderer;
 import engine.core.Input;
-import engine.core.ResourceLoader;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Util;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.physics.PhysicsUtil;
-import engine.rendering.BaseLight;
 import engine.rendering.Bitmap;
-import engine.rendering.DirectionalLight;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Vertex;
@@ -97,10 +96,10 @@ public class Level extends GameComponent {
     private static final String PLAYER_RES_LOC = "player/";
     
     //Player's sounds
-    private static final Clip misuseNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "OOF");
-    private static final Clip punchNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "PLSPNCH6");
-    private static final Clip punchSolidNoise = ResourceLoader.loadAudio(PLAYER_RES_LOC + "PUNCH2");
-    private static final Clip barrelNoise = ResourceLoader.loadAudio("barrel/BARRELZ");
+    private static final Clip misuseNoise = AudioUtil.loadAudio(PLAYER_RES_LOC + "OOF");
+    private static final Clip punchNoise = AudioUtil.loadAudio(PLAYER_RES_LOC + "PLSPNCH6");
+    private static final Clip punchSolidNoise = AudioUtil.loadAudio(PLAYER_RES_LOC + "PUNCH2");
+    private static final Clip barrelNoise = AudioUtil.loadAudio("barrel/BARRELZ");
 
     //Remove list
     private static ArrayList<Medkit> removeMedkitList;
@@ -229,7 +228,6 @@ public class Level extends GameComponent {
         this.barrels = new ArrayList<Barrel>();
         //Level stuff
         this.level = bitmap;
-        this.geometry = new Mesh();
         this.material = material;
         this.transform = new Transform();
         this.collisionPosStart = new ArrayList<Vector2f>();
@@ -1366,13 +1364,13 @@ public class Level extends GameComponent {
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 192) {
                         medkits.add(new Medkit(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 100) {
-                        trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.25f, (j + 0.5f) * SPOT_LENGTH))));
+                        trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 50) {
-                    	flares.add(new Lantern(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, LEVEL_HEIGHT * 0.70f, (j + 0.5f) * SPOT_LENGTH))));
+                    	flares.add(new Lantern(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, LEVEL_HEIGHT * 0.75f, (j + 0.5f) * SPOT_LENGTH))));
                     	//lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 51) {
-                    	lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
-                    	lamps.add(new Lamp(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.35f, (j + 0.5f) * SPOT_LENGTH))));
+                    	//lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
+                    	lamps.add(new Lamp(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 55) {
                         bones.add(new Bones(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 60) {
@@ -1395,9 +1393,9 @@ public class Level extends GameComponent {
                     	kitchens.add(new Kitchen(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         foods.add(new Food(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 123) {
-                    	clocks.add(new Clock(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.25f, (j + 0.5f) * SPOT_LENGTH))));
+                    	clocks.add(new Clock(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 130) {
-                    	superShotguns.add(new SuperShotgun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
+                    	superShotguns.add(new SuperShotgun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 140) {
                     	naziSeargeants.add(new NaziSergeant(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         shotguns.add(new Shotgun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
@@ -1410,12 +1408,12 @@ public class Level extends GameComponent {
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 153) {
                         pillars.add(new Pillar(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.0000000001f * LEVEL_HEIGHT, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 154) {
-                        armors.add(new Armor(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.1f, (j + 0.5f) * SPOT_LENGTH))));
+                        armors.add(new Armor(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 155) {
-                        helmets.add(new Helmet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.1f, (j + 0.5f) * SPOT_LENGTH))));
-                        //barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.2f, (j + 0.5f) * SPOT_LENGTH))));
+                        helmets.add(new Helmet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                        //barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 160) {
-                        barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.2f, (j + 0.5f) * SPOT_LENGTH))));
+                        barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) < 128 && (level.getPixel(i, j) & 0x0000FF) > 96) {
                         int offset = (level.getPixel(i, j) & 0x0000FF) - 96;
                         exitPoints.add(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0f, (j + 0.5f) * SPOT_LENGTH));
@@ -1545,14 +1543,14 @@ public class Level extends GameComponent {
 
         vertices.toArray(vertArray);
         indices.toArray(intArray);
-        geometry.addVertices(vertArray, Util.toIntArray(intArray), true);
+        geometry = new Mesh(vertArray, Util.toIntArray(intArray), true);
         meshRenderer = new MeshRenderer(geometry, transform, material);
         RenderingEngine.fogDensity = 0.07f;
         RenderingEngine.fogGradient = 1.5f;
         RenderingEngine.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
         RenderingEngine.ambientLight = new Vector3f(0.8f,0.8f,0.8f);
-        RenderingEngine.setDirectionalLight(new DirectionalLight(
-   	 			new BaseLight(new Vector3f(1,1,1), 1f), new Vector3f(level.getWidth()/2,10,level.getHeight()/2)));
+        RenderingEngine.setDirectionalLight(new DirectionalLight(new BaseLight(new Vector3f(1,1,1), 
+        		1f), new Vector3f(level.getWidth()/2,10,level.getHeight()/2)));
     }
 	
 	/**

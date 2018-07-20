@@ -18,14 +18,14 @@ package game.powerUp;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.ResourceLoader;
+import engine.components.MeshRenderer;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
 import engine.rendering.Shader;
+import engine.rendering.Texture;
 import engine.rendering.Vertex;
 import game.Level;
 
@@ -42,7 +42,7 @@ public class Food {
     
     private static final String RES_LOC = "food/MEDIA";
 
-    private static final Clip pickupNoise = ResourceLoader.loadAudio(RES_LOC);
+    private static final Clip pickupNoise = AudioUtil.loadAudio(RES_LOC);
 
     private static Mesh mesh;
     private static Material material;
@@ -56,12 +56,10 @@ public class Food {
      */
     public Food(Transform transform) {
         if (mesh == null) {
-            mesh = new Mesh();
-
             float sizeY = 0.4f;
             float sizeX = (float) ((double) sizeY / (0.67857142857142857142857142857143 * 4.0));
 
-            float offsetX = 0.05f;
+            float offsetX = 0.0f;
             float offsetY = 0.00f;
 
             float texMinX = -offsetX;
@@ -77,11 +75,11 @@ public class Food {
             int[] indices = new int[]{0, 1, 2,
                 0, 2, 3};
 
-            mesh.addVertices(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
 
         if (material == null) {
-            material = new Material(ResourceLoader.loadTexture(RES_LOC), new Vector3f(1,1,1));
+            material = new Material(new Texture(RES_LOC), new Vector3f(1,1,1));
         }
 
         this.transform = transform;

@@ -18,14 +18,13 @@ package game.doors;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.ResourceLoader;
+import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
 import engine.rendering.Shader;
 import engine.rendering.Vertex;
 import game.Level;
@@ -50,7 +49,7 @@ public class SecretWall {
 	
 	private static final String RES_LOC = "secretWall/";
 
-    private static final Clip openNoise = ResourceLoader.loadAudio(RES_LOC + "MEDIA");
+    private static final Clip openNoise = AudioUtil.loadAudio(RES_LOC + "MEDIA");
 
     private static Mesh mesh;
 
@@ -85,8 +84,6 @@ public class SecretWall {
         openTime = 0;
 
         if (mesh == null) {
-            mesh = new Mesh();
-
             Vertex[] doorVerts = new Vertex[]{	new Vertex(new Vector3f(START, START, START), new Vector2f(xHigher, yHigher)),
 												new Vertex(new Vector3f(START, HEIGHT, START), new Vector2f(xHigher, yLower)),
 												new Vertex(new Vector3f(LENGTH, HEIGHT, START), new Vector2f(xLower, yLower)),
@@ -116,10 +113,10 @@ public class SecretWall {
             								12, 13, 14,
             								12, 14, 15};
 
-            mesh.addVertices(doorVerts, doorIndices, true);
+            mesh = new Mesh(doorVerts, doorIndices, true);
         }
         
-        this.meshRenderer = new MeshRenderer(mesh, this.transform, this.material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), this.material);
     }
 
     /**

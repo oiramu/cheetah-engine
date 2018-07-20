@@ -20,7 +20,11 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
 import java.util.ArrayList;
 
-import engine.core.GameComponent;
+import engine.components.Camera;
+import engine.components.DirectionalLight;
+import engine.components.GameComponent;
+import engine.components.PointLight;
+import engine.components.SpotLight;
 import engine.core.Transform;
 import engine.core.Vector3f;
 

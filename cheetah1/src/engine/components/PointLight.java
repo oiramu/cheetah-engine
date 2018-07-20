@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package engine.rendering;
+package engine.components;
 
 import engine.core.Vector3f;
 
@@ -43,7 +43,6 @@ public class PointLight {
 		this.position = position;		
 		this.range = range;
 	}
-	
 	/**
 	 * Returns the base light of the point-light.
 	 * @return Base light

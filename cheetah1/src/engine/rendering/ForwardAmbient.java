@@ -16,7 +16,6 @@
 package engine.rendering;
 
 import engine.core.Matrix4f;
-import engine.core.ResourceLoader;
 
 /**
  *
@@ -27,8 +26,6 @@ import engine.core.ResourceLoader;
 public class ForwardAmbient extends Shader {
 	
 	private static final ForwardAmbient instance = new ForwardAmbient();
-	
-	private final String RESOURCE = "FORWARD/";
 
 	/**
      * Instances the shader to be used.
@@ -42,8 +39,8 @@ public class ForwardAmbient extends Shader {
 	private ForwardAmbient() {
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader(RESOURCE+"forward-ambient-vs"));
-        addFragmentShader(ResourceLoader.loadShader(RESOURCE+"forward-ambient-fs"));
+		addVertexShaderFromFile(FORWARD+"forward-ambient-vs");
+        addFragmentShaderFromFile(FORWARD+"forward-ambient-fs");
 
 		setAttribLocation("position", 0);
 		setAttribLocation("texCoord", 1);

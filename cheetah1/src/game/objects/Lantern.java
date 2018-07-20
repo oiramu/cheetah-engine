@@ -15,18 +15,18 @@
  */
 package game.objects;
 
-import engine.core.ResourceLoader;
+import engine.components.Attenuation;
+import engine.components.BaseLight;
+import engine.components.MeshRenderer;
+import engine.components.PointLight;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
-import engine.rendering.Attenuation;
-import engine.rendering.BaseLight;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
-import engine.rendering.PointLight;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
+import engine.rendering.Texture;
 import engine.rendering.Vertex;
 
 /**
@@ -54,13 +54,11 @@ public class Lantern {
      */
     public Lantern(Transform transform) {
         if (mesh == null) {
-            mesh = new Mesh();
-
             float sizeY = 0.3f;
             sizeX = (float) ((double) sizeY / (1.5f * 2.0));
 
-            float offsetX = 0.05f;
-            float offsetY = 0.01f;
+            float offsetX = 0.0f;
+            float offsetY = 0.0f;
 
             float texMinX = -offsetX;
             float texMaxX = -1 - offsetX;
@@ -75,11 +73,11 @@ public class Lantern {
             int[] indices = new int[]{0, 1, 2,
                                     0, 2, 3};
 
-            mesh.addVertices(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
 
         if (material == null) {
-            material = new Material(ResourceLoader.loadTexture(RES_LOC), new Vector3f(1,1,1));
+            material = new Material(new Texture(RES_LOC), new Vector3f(1,1,1));
         }
 
         this.transform = transform;

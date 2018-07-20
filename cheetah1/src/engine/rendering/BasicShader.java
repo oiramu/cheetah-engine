@@ -16,17 +16,14 @@
 package engine.rendering;
 
 import engine.core.Matrix4f;
-import engine.core.ResourceLoader;
 
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2017
  */
 public class BasicShader extends Shader {
-
-	private final String RESOURCE = "BASIC/";
 	
     private static final BasicShader instance = new BasicShader();
 
@@ -42,8 +39,8 @@ public class BasicShader extends Shader {
     private BasicShader() {
         super();
 
-        addVertexShader(ResourceLoader.loadShader(RESOURCE+"basicVertex"));
-        addFragmentShader(ResourceLoader.loadShader(RESOURCE+"basicFragment"));
+        addVertexShaderFromFile(BASIC+"basicVertex");
+        addFragmentShaderFromFile(BASIC+"basicFragment");
         compileShader();
 
         addUniform("transform");

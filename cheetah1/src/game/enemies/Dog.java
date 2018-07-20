@@ -21,7 +21,7 @@ import java.util.Random;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.ResourceLoader;
+import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -29,7 +29,6 @@ import engine.core.Vector3f;
 import engine.physics.PhysicsUtil;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -60,10 +59,10 @@ public class Dog {
     
     private static final String RES_LOC = "dog/";
 
-    private static final Clip seeNoise = ResourceLoader.loadAudio(RES_LOC + "SSSSIT");
-    private static final Clip shootNoise = ResourceLoader.loadAudio(RES_LOC + "SSHOTGN");
-    private static final Clip hitNoise = ResourceLoader.loadAudio(RES_LOC + "SPOPAIN");
-    private static final Clip deathNoise = ResourceLoader.loadAudio(RES_LOC + "SSSDTH");
+    private static final Clip seeNoise = AudioUtil.loadAudio(RES_LOC + "SSSSIT");
+    private static final Clip shootNoise = AudioUtil.loadAudio(RES_LOC + "SSHOTGN");
+    private static final Clip hitNoise = AudioUtil.loadAudio(RES_LOC + "SPOPAIN");
+    private static final Clip deathNoise = AudioUtil.loadAudio(RES_LOC + "SSSDTH");
 
     private static ArrayList<Texture> animation;
     private static Mesh mesh;
@@ -92,24 +91,22 @@ public class Dog {
         if (animation == null) {
             animation = new ArrayList<Texture>();
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVA1"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVB1"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVC1"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVD1"));
+            animation.add(new Texture(RES_LOC + "SSWVA1"));
+            animation.add(new Texture(RES_LOC + "SSWVB1"));
+            animation.add(new Texture(RES_LOC + "SSWVC1"));
+            animation.add(new Texture(RES_LOC + "SSWVD1"));
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVE0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVF0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVG0"));
+            animation.add(new Texture(RES_LOC + "SSWVE0"));
+            animation.add(new Texture(RES_LOC + "SSWVF0"));
+            animation.add(new Texture(RES_LOC + "SSWVG0"));
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVH0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVI0"));
+            animation.add(new Texture(RES_LOC + "SSWVH0"));
+            animation.add(new Texture(RES_LOC + "SSWVI0"));
             
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVJ0"));
+            animation.add(new Texture(RES_LOC + "SSWVJ0"));
         }
 
         if (mesh == null) {
-            mesh = new Mesh();
-
             final float sizeY = 0.9f;	//Could be 1.0f
             final float sizeX = (float) ((double) sizeY / (sizeY * 2.0));
 
@@ -129,12 +126,12 @@ public class Dog {
             int[] indices = new int[]{0, 1, 2,
                                         0, 2, 3};
 
-            mesh.addVertices(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
 
         this.transform = transform;
         this.material = new Material(animation.get(0));
-        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         this.state = 0;
         this.canAttack = true;
         this.canLook = true;

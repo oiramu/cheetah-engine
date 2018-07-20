@@ -15,6 +15,8 @@
  */
 package engine.rendering;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 
 import javax.sound.midi.Sequence;
@@ -26,9 +28,9 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.newdawn.slick.opengl.PNGDecoder;
 
 import engine.audio.AudioUtil;
-import engine.core.ResourceLoader;
 import engine.menu.DefaultMenu;
 import engine.menu.Menu;
 import engine.menu.Rendering2DUtil;
@@ -43,7 +45,7 @@ import engine.menu.system.SGameTime;
 public class Window {
 	
 	private static Menu menu;
-	private static Sequence song = ResourceLoader.loadMidi("THEME0");
+	private static Sequence song = AudioUtil.loadMidi("THEME0");
 
 	/**
 	 * Method that creates the window with menu for the program.
@@ -54,7 +56,7 @@ public class Window {
 		
 		Display.setTitle(title);
 		Display.setIcon(new ByteBuffer[] {
-				ResourceLoader.loadIcon("/textures/coreDisplay/icon32"),
+				loadIcon("/textures/coreDisplay/icon32"),
 		});
 		try {
 			
@@ -89,6 +91,27 @@ public class Window {
 			dispose();
 		}
 	}
+	
+	/**
+	 * Loads a PNG image file named like that and uses it as the window's icon.
+	 * @param fileName Name of the icon file.
+	 * @return Icon.
+	 */
+    public static ByteBuffer loadIcon(String fileName) {
+        FileInputStream in;
+        ByteBuffer buffer = null;
+        try {
+        	in = new FileInputStream(new File(("./res/" + fileName + ".png")));
+            PNGDecoder decoder = new PNGDecoder(in);
+            buffer = ByteBuffer.allocateDirect(decoder.getWidth()*decoder.getHeight()*4);
+            decoder.decode(buffer, decoder.getWidth()*4, PNGDecoder.RGBA);
+            buffer.flip();
+        }catch (Exception e) {
+        	System.err.println("Error loading " + fileName);
+            e.printStackTrace();
+        }
+        return buffer;
+    }
 	
 	public static void render() {
 		Display.update();

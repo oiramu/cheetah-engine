@@ -15,16 +15,21 @@
  */
 package engine.audio;
 
+import java.io.File;
+
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
 
 /**
  *
  * @author Julio Vergara
- * @version 1.0
+ * @version 1.1
  * @since 2017
  */
 public class AudioUtil {
@@ -89,6 +94,46 @@ public class AudioUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    /**
+	 * Loads a MIDI sequence file named like that.
+	 * @param fileName Name of the sequence file.
+	 * @return Sequence.
+	 */
+    public static Sequence loadMidi(String fileName) {
+        Sequence sequence = null;
+
+        try {
+            sequence = MidiSystem.getSequence(new File("./res/midi/" + fileName + ".mid"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return sequence;
+    }
+
+    /**
+	 * Loads a WAV sequence file named like that.
+	 * @param fileName Name of the clip file.
+	 * @return Clip.
+	 */
+    public static Clip loadAudio(String fileName) {
+        Clip clip = null;
+
+        try {
+            AudioInputStream stream = AudioSystem.getAudioInputStream(new File("./res/audio/" + fileName + ".wav"));
+            clip = (Clip) AudioSystem.getLine(new DataLine.Info(Clip.class, stream.getFormat()));
+            clip.open(stream);
+
+            return clip;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return clip;
     }
 
     /**

@@ -17,14 +17,13 @@ package game.objects;
 
 import java.util.ArrayList;
 
-import engine.core.ResourceLoader;
+import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -60,13 +59,11 @@ public class DeadJew {
      */
     public DeadJew(Transform transform) {
         if (mesh == null) {
-            mesh = new Mesh();
-
             sizeY = 0.3095238095238095f;
             sizeX = (float) ((double) sizeY / (3.230769230769231 / 4));
 
-            float offsetX = 0.05f;
-            float offsetY = 0.01f;
+            float offsetX = 0.0f;
+            float offsetY = 0.0f;
 
             float texMinX = -offsetX;
             float texMaxX = -1 - offsetX;
@@ -81,14 +78,14 @@ public class DeadJew {
             int[] indices = new int[]{0, 1, 2,
                                     0, 2, 3};
 
-            mesh.addVertices(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
         
         if(animation == null) {
         	animation = new ArrayList<Texture>();
         	
-        	animation.add(ResourceLoader.loadTexture(RES_LOC+"CMPGG0"));
-        	animation.add(ResourceLoader.loadTexture(RES_LOC+"CMPGH0"));
+        	animation.add(new Texture(RES_LOC+"CMPGG0"));
+        	animation.add(new Texture(RES_LOC+"CMPGH0"));
         }
 
         if (material == null) {
@@ -96,7 +93,7 @@ public class DeadJew {
         }
         this.state = STATE_1;
         this.transform = transform;
-        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
     }
 
     /**

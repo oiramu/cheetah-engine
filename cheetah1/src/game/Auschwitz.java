@@ -52,7 +52,7 @@ public class Auschwitz implements Game {
      */
     public void init() {
         for (int i = 0; i < 13; i++) {
-        	playlist.add(ResourceLoader.loadMidi("THEME" + i));
+        	playlist.add(AudioUtil.loadMidi("THEME" + i));
 		}
 
         track = startingLevel - 1;
@@ -190,8 +190,8 @@ public class Auschwitz implements Game {
             }
 
             levelNum += offset;
-            level = new Level(ResourceLoader.loadBitmap("level" + levelNum).flipX(), 
-            		new Material(ResourceLoader.loadTexture("mapTexture" + currentEpisode), new Vector3f(1,1,1)));
+            level = new Level(new Bitmap("level" + levelNum).flipX(), 
+            		new Material(new Texture("mapTexture" + currentEpisode), new Vector3f(1,1,1)));
 
             if((levelNum/2) * 2 == levelNum) sector = "B."; else sector = "A.";   
             

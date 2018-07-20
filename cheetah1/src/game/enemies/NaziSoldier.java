@@ -21,21 +21,20 @@ import java.util.Random;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.core.ResourceLoader;
+import engine.components.Attenuation;
+import engine.components.PointLight;
+import engine.components.BaseLight;
+import engine.components.MeshRenderer;
+import engine.components.SpotLight;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.physics.PhysicsUtil;
-import engine.rendering.Attenuation;
-import engine.rendering.BaseLight;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
-import engine.rendering.PointLight;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
-import engine.rendering.SpotLight;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
 import game.Auschwitz;
@@ -44,11 +43,11 @@ import game.Player;
 import game.powerUp.Bullet;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class NaziSoldier {
 
     private static final float MAX_HEALTH = 100f;
@@ -68,10 +67,10 @@ public class NaziSoldier {
     
     private static final String RES_LOC = "naziSoldier/";
 
-    private static final Clip seeNoise = ResourceLoader.loadAudio(RES_LOC + "SSSSIT");
-    private static final Clip shootNoise = ResourceLoader.loadAudio(RES_LOC + "SSHOTGN");
-    private static final Clip hitNoise = ResourceLoader.loadAudio(RES_LOC + "SPOPAIN");
-    private static final Clip deathNoise = ResourceLoader.loadAudio(RES_LOC + "SSSDTH");
+    private static final Clip seeNoise = AudioUtil.loadAudio(RES_LOC + "SSSSIT");
+    private static final Clip shootNoise = AudioUtil.loadAudio(RES_LOC + "SSHOTGN");
+    private static final Clip hitNoise = AudioUtil.loadAudio(RES_LOC + "SPOPAIN");
+    private static final Clip deathNoise = AudioUtil.loadAudio(RES_LOC + "SSSDTH");
 
     private static ArrayList<Texture> animation;
     private static Mesh mesh;
@@ -102,31 +101,29 @@ public class NaziSoldier {
         if (animation == null) {
             animation = new ArrayList<Texture>();
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANA0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANB0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANC0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRAND0"));
+            animation.add(new Texture(RES_LOC + "TRANA0"));
+            animation.add(new Texture(RES_LOC + "TRANB0"));
+            animation.add(new Texture(RES_LOC + "TRANC0"));
+            animation.add(new Texture(RES_LOC + "TRAND0"));
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANE0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANF0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANG0"));
+            animation.add(new Texture(RES_LOC + "TRANE0"));
+            animation.add(new Texture(RES_LOC + "TRANF0"));
+            animation.add(new Texture(RES_LOC + "TRANG0"));
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANH0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANH1"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANI0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANJ0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANK0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANL0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANL0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "TRANL1"));
+            animation.add(new Texture(RES_LOC + "TRANH0"));
+            animation.add(new Texture(RES_LOC + "TRANH1"));
+            animation.add(new Texture(RES_LOC + "TRANI0"));
+            animation.add(new Texture(RES_LOC + "TRANJ0"));
+            animation.add(new Texture(RES_LOC + "TRANK0"));
+            animation.add(new Texture(RES_LOC + "TRANL0"));
+            animation.add(new Texture(RES_LOC + "TRANL0"));
+            animation.add(new Texture(RES_LOC + "TRANL1"));
             
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVN0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "SSWVO0"));
+            animation.add(new Texture(RES_LOC + "SSWVN0"));
+            animation.add(new Texture(RES_LOC + "SSWVO0"));
         }
 
         if (mesh == null) {
-            mesh = new Mesh();
-
             final float sizeY = 0.8f;
             sizeX = (float) ((double) sizeY / (sizeY * 2.0));
 
@@ -146,18 +143,17 @@ public class NaziSoldier {
             int[] indices = new int[]{0, 1, 2,
                                         0, 2, 3};
 
-            mesh.addVertices(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
         
         if(light == null) {
         	light = new SpotLight(new PointLight(new BaseLight(new Vector3f(0.4f,0.3f,0.175f), 0.8f), 
         	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), 8), new Vector3f(1,1,1), 0.7f);
-        }
-        
+        }   
 
         this.transform = transform;
         this.material = new Material(animation.get(0));
-        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         this.state = 0;
         this.canAttack = true;
         this.canLook = true;

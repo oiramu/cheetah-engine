@@ -17,14 +17,13 @@ package game.objects;
 
 import java.util.ArrayList;
 
-import engine.core.ResourceLoader;
+import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -59,19 +58,17 @@ public class LightBeam {
     	if (animation == null) {
             animation = new ArrayList<Texture>();
 
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "MEDIA0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "MEDIA1"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "MEDIA2"));
+            animation.add(new Texture(RES_LOC + "MEDIA0"));
+            animation.add(new Texture(RES_LOC + "MEDIA1"));
+            animation.add(new Texture(RES_LOC + "MEDIA2"));
         }
     	
         if (mesh == null) {
-            mesh = new Mesh();
-
             sizeY = 0.2f;
             sizeX = (float) ((double) sizeY / (0.078125 * 12));
 
-            float offsetX = 0.01f;
-            float offsetY = 0.00f;
+            float offsetX = 0.0f;
+            float offsetY = 0.0f;
 
             float texMinX = -offsetX;
             float texMaxX = -1 - offsetX;
@@ -86,7 +83,7 @@ public class LightBeam {
             int[] indices = new int[]{0, 1, 2,
                                     0, 2, 3};
 
-            mesh.addVertices(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
 
         if (material == null) {
@@ -94,7 +91,7 @@ public class LightBeam {
         }
 
         this.transform = transform;
-        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
     }
 
     /**

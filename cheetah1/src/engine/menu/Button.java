@@ -24,7 +24,6 @@ import org.newdawn.slick.SpriteSheet;
 
 import engine.audio.AudioUtil;
 import engine.core.Input;
-import engine.core.ResourceLoader;
 import engine.menu.system.SEngineUtil;
 import engine.menu.widget.WidgetModel;
 import engine.rendering.Window;
@@ -42,7 +41,7 @@ public class Button extends WidgetModel {
 	private SpriteSheet texture;
 	private String text;
 	
-	private static final Clip clickSound = ResourceLoader.loadAudio("button");
+	private static final Clip clickSound = AudioUtil.loadAudio("button");
 	
 	private boolean hover = false;
 	

@@ -18,6 +18,8 @@ package engine.rendering;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL32.*;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.HashMap;
 
 import engine.core.Matrix4f;
@@ -25,16 +27,19 @@ import engine.core.Util;
 import engine.core.Vector3f;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class Shader {
 
     private int program;
     private RenderingEngine renderingEngine;
     private HashMap<String, Integer> uniforms;
+    public final String BASIC = "BASIC/";
+    public final String PHONG = "PHONG/";
+    public final String FORWARD = "FORWARD/";
 
     /**
      * Constructor of the shader structure with the program
@@ -83,12 +88,39 @@ public class Shader {
 
         uniforms.put(uniform, uniformLocation);
     }
+    
+    /**
+     * Adds a new vertex shader to the shading program
+     * from a file.
+     * @param text Vertex shader's resource path.
+     */
+    public void addVertexShaderFromFile(String text) {
+    	addVertexShader(loadShader(text));
+    }
+
+    /**
+     * Adds a new geometry shader to the shading program
+     * from a file.
+     * @param text Geometry shader's resource path.
+     */
+    public void addGeometryShaderFromFile(String text) {
+    	addGeometryShader(loadShader(text));
+    }
+
+    /**
+     * Adds a new fragment shader to the shading program
+     * from a file.
+     * @param text Fragment shader's resource path.
+     */
+    public void addFragmentShaderFromFile(String text) {
+    	addFragmentShader(loadShader(text));
+    }
 
     /**
      * Adds a new vertex shader to the shading program.
      * @param text Vertex shader's resource path.
      */
-    public void addVertexShader(String text) {
+    private void addVertexShader(String text) {
         addProgram(text, GL_VERTEX_SHADER);
     }
 
@@ -96,7 +128,7 @@ public class Shader {
      * Adds a new geometry shader to the shading program.
      * @param text Geometry shader's resource path.
      */
-    public void addGeometryShader(String text) {
+    private void addGeometryShader(String text) {
         addProgram(text, GL_GEOMETRY_SHADER);
     }
 
@@ -104,7 +136,7 @@ public class Shader {
      * Adds a new fragment shader to the shading program.
      * @param text Fragment shader's resource path.
      */
-    public void addFragmentShader(String text) {
+    private void addFragmentShader(String text) {
         addProgram(text, GL_FRAGMENT_SHADER);
     }
     
@@ -164,6 +196,36 @@ public class Shader {
         }
 
         glAttachShader(program, shader);
+    }
+    
+    /**
+	 * Loads a GLSL shader file named like that.
+	 * @param fileName Name of the shader file.
+	 * @return Shader.
+	 */
+    private static String loadShader(String fileName) {
+        StringBuilder shaderSource = new StringBuilder();
+        BufferedReader shaderReader = null;
+
+        try {
+            shaderReader = new BufferedReader(new FileReader("./res/shaders/" + fileName + ".glsl"));
+            String line;
+            final String INCLUDE_DIRECTIVE = "#include";
+
+            while ((line = shaderReader.readLine()) != null) {
+            	if(line.startsWith(INCLUDE_DIRECTIVE)) {
+            		shaderSource.append(loadShader(line.substring(INCLUDE_DIRECTIVE.length()+2, line.length()-1)));
+            	} else
+            		shaderSource.append(line).append("\n");
+            }
+
+            shaderReader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return shaderSource.toString();
     }
 
     /**

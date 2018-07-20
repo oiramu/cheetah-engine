@@ -15,8 +15,10 @@
  */
 package engine.rendering;
 
+import engine.components.BaseLight;
+import engine.components.PointLight;
+import engine.components.SpotLight;
 import engine.core.Matrix4f;
-import engine.core.ResourceLoader;
 
 /**
  *
@@ -27,8 +29,6 @@ import engine.core.ResourceLoader;
 public class ForwardSpot extends Shader {
 	
 	private static final ForwardSpot instance = new ForwardSpot();
-	
-	private final String RESOURCE = "FORWARD/";
 
 	/**
      * Instances the shader to be used.
@@ -42,8 +42,8 @@ public class ForwardSpot extends Shader {
 	private ForwardSpot() {
 		super();
 
-		addVertexShader(ResourceLoader.loadShader(RESOURCE+"forward-spot-vs"));
-        addFragmentShader(ResourceLoader.loadShader(RESOURCE+"forward-spot-fs"));
+		addVertexShaderFromFile(FORWARD+"forward-spot-vs");
+        addFragmentShaderFromFile(FORWARD+"forward-spot-fs");
 
 		setAttribLocation("position", 0);
 		setAttribLocation("texCoord", 1);

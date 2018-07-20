@@ -15,14 +15,14 @@
  */
 package game.objects;
 
-import engine.core.ResourceLoader;
+import engine.components.MeshRenderer;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
 import engine.rendering.Shader;
+import engine.rendering.Texture;
 import engine.rendering.Vertex;
 
 /**
@@ -50,13 +50,11 @@ public class Kitchen {
     public Kitchen(Transform transform) {
     	
         if (mesh == null) {
-            mesh = new Mesh();
+            float sizeY = 1.0f;
+            sizeX = (float) ((double) sizeY / (1.0f * 2.0));
 
-            float sizeY = 1f;
-            sizeX = (float) ((double) sizeY / (1f * 2.0));
-
-            float offsetX = 0.00f;
-            float offsetY = 0.00f;
+            float offsetX = 0.0f;
+            float offsetY = 0.0f;
 
             float texMinX = -offsetX;
             float texMaxX = -1 - offsetX;
@@ -71,15 +69,15 @@ public class Kitchen {
             int[] indices = new int[]{0, 1, 2,
                                     0, 2, 3};
 
-            mesh.addVertices(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
         
         if (material == null) {
-            material = new Material(ResourceLoader.loadTexture(RES_LOC), new Vector3f(1,1,1));
+            material = new Material(new Texture(RES_LOC), new Vector3f(1,1,1));
         }
         
         this.transform = transform;
-        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
     }
 
     /**

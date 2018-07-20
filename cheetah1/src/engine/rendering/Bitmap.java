@@ -15,10 +15,15 @@
  */
 package engine.rendering;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+
+import javax.imageio.ImageIO;
+
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2017
  */
 public class Bitmap {
@@ -26,6 +31,24 @@ public class Bitmap {
     private final int width;
     private final int height;
     private int[] pixels;
+    
+    /**
+     * Constructor of the bitmap object with a file.
+     * @param fileName of the bitmap.
+     */
+    public Bitmap(String fileName) {
+		try {
+			BufferedImage image = ImageIO.read(new File("./res/bitmaps/" + fileName + ".png"));
+			
+			width = image.getWidth();
+			height = image.getHeight();
+			
+			pixels = new int[width * height];
+			image.getRGB(0, 0, width, height, pixels, 0, width);
+		} catch(Exception ex) {
+			throw new RuntimeException();
+		}
+	}
 
     /**
      * Constructor of the bitmap object.

@@ -18,13 +18,12 @@ package game.objects;
 import java.util.ArrayList;
 import java.util.Random;
 
-import engine.core.ResourceLoader;
+import engine.components.MeshRenderer;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.MeshRenderer;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -60,15 +59,13 @@ public class Hanged {
     	if (animation == null) {
             animation = new ArrayList<Texture>();
 
-            //animation.add(ResourceLoader.loadTexture(RES_LOC + "HUNGA0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "HUNGB0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "HUNGC0"));
-            animation.add(ResourceLoader.loadTexture(RES_LOC + "HUNGD0"));
+            //animation.add(new Texture(RES_LOC + "HUNGA0"));
+            animation.add(new Texture(RES_LOC + "HUNGB0"));
+            animation.add(new Texture(RES_LOC + "HUNGC0"));
+            animation.add(new Texture(RES_LOC + "HUNGD0"));
         }
     	
         if (mesh == null) {
-            mesh = new Mesh();
-
             float sizeY = 1f;
             sizeX = 1.0f;
 
@@ -88,12 +85,12 @@ public class Hanged {
             int[] indices = new int[]{0, 1, 2,
                                     0, 2, 3};
 
-            mesh.addVertices(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
         
         this.material = new Material(animation.get(random = new Random().nextInt(animation.size())), new Vector3f(1,1,1));
         this.transform = transform;
-        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
     }
 
     /**

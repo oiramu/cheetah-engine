@@ -366,9 +366,9 @@ public class Player {
         if(sLight == null && fireBulletLight == null && fireShellLight == null) {
         	sLight = new SpotLight(new PointLight(new BaseLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f), 
         	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), 30), new Vector3f(1,1,1), 0.7f);
-    		fireBulletLight = new PointLight(new BaseLight(new Vector3f(0.5f,0.3f,0.1f), 1.6f), 
+    		fireBulletLight = new PointLight(new BaseLight(new Vector3f(0.5f,0.3f,0.1f).mul(2.0f), 1.6f), 
             		new Attenuation(1,0,1), getCamera().getPos(), gunLightBeam);
-    		fireShellLight = new PointLight(new BaseLight(new Vector3f(0.45f,0.35f,0.1f), 1.6f), 
+    		fireShellLight = new PointLight(new BaseLight(new Vector3f(0.45f,0.35f,0.1f).mul(2.0f), 1.6f), 
             		new Attenuation(1,0,1), getCamera().getPos(), gunLightBeam);
     	}
 
@@ -650,7 +650,7 @@ public class Player {
 
 	        if(isOn) {
 				if (Input.getKeyDown(Input.KEY_F)) {
-					RenderingEngine.deleteSpotLight(sLight);
+					RenderingEngine.removeSpotLight(sLight);
 					isOn = false;
 				}
             } else {
@@ -754,6 +754,8 @@ public class Player {
         
         sLight.getPointLight().setPosition(getCamera().getPos());
         sLight.setDirection(getCamera().getForward());
+        fireBulletLight.setPosition(getCamera().getPos());
+        fireShellLight.setPosition(getCamera().getPos());
         
         healthMaterial = new Material(healthMaterials.get(getHealth()));
         if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
@@ -804,7 +806,6 @@ public class Player {
 			if(bullets != 0) {
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
-		        	fireBulletLight.setPosition(getCamera().getPos());
 		        	RenderingEngine.addPointLight(fireBulletLight);
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial1, shader);
@@ -836,9 +837,9 @@ public class Player {
 		        } else if ((double) time < gunTime2) {
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
+		        	RenderingEngine.removePointLight(fireShellLight);
 			        AudioUtil.playAudio(gunReload, 0);
 		        } else if ((double) time < gunTime3) {
-		        	RenderingEngine.removePointLight(fireBulletLight);
 		        	hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial3, shader);
 			        AudioUtil.playAudio(gunClipp, 0);

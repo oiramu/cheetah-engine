@@ -96,21 +96,16 @@ public class RenderingEngine {
 			glBlendFunc(GL_ONE, GL_ONE);
 			glDepthMask(false);
 			glDepthFunc(GL_EQUAL);
-			for(DirectionalLight direction : directionalLights) {
-				directionalLight = direction;
+			for(int i = 0; i < directionalLights.size(); i++) {
+				directionalLight = directionalLights.get(i);
 				component.render(forwardDirectional);
 			}
-			/*
-			for(PointLight point : pointLights) { //Working on this!
-				pointLight = point;
-				component.render(forwardPoint);
-			}*/
 			for(int i = 0; i < pointLights.size(); i++) {
 				pointLight = pointLights.get(i);
 				component.render(forwardPoint);
 			}
-			for(SpotLight spot : spotLights) {
-				spotLight = spot;
+			for(int i = 0; i < spotLights.size(); i++) {
+				spotLight = spotLights.get(i);
 				component.render(forwardSpot);
 			}
 			glDepthFunc(GL_LESS);

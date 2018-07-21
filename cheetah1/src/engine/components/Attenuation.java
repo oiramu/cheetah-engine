@@ -15,17 +15,15 @@
  */
 package engine.components;
 
+import engine.core.Vector3f;
+
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
-public class Attenuation {
-	
-	private float constant;
-	private float linear;
-	private float exponent;
+public class Attenuation extends Vector3f {
 	
 	/**
 	 * Constructor of the attenuation of the light.
@@ -34,57 +32,25 @@ public class Attenuation {
 	 * @param exponent of attenuation
 	 */
 	public Attenuation(float constant, float linear, float exponent) {
-		this.constant = constant;
-		this.linear = linear;
-		this.exponent = exponent;
+		super(constant, linear, exponent);
 	}
 	
 	/**
 	 * Returns the constant of the attenuation.
 	 * @return Constant
 	 */
-	public float getConstant() {
-		return constant;
-	}
-	
-	/**
-	 * Sets a new constant to the attenuation.
-	 * @param Constant to set
-	 */
-	public void setConstant(float constant) {
-		this.constant = constant;
-	}
+	public float getConstant() { return getX(); }
 	
 	/**
 	 * Returns the linear function of attenuation.
 	 * @return Linear function
 	 */
-	public float getLinear() {
-		return linear;
-	}
-	
-	/**
-	 * Sets a new linear function to the attenuation.
-	 * @param Linear function to set
-	 */
-	public void setLinear(float linear) {
-		this.linear = linear;
-	}
+	public float getLinear() { return getY(); }
 	
 	/**
 	 * Returns the exponent of attenuation.
 	 * @return Exponent
 	 */
-	public float getExponent() {
-		return exponent;
-	}
-	
-	/**
-	 * Sets a new exponent to the attenuation.
-	 * @param Exponent to set
-	 */
-	public void setExponent(float exponent) {
-		this.exponent = exponent;
-	}
+	public float getExponent() { return getZ(); }
 	
 }

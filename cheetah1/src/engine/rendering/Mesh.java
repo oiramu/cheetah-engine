@@ -19,13 +19,13 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import engine.core.Util;
 import engine.core.Vector3f;
+import engine.rendering.meshLoading.IndexedModel;
+import engine.rendering.meshLoading.OBJModel;
 import engine.rendering.resourceManagement.MeshResource;
 
 /**
@@ -113,11 +113,13 @@ public class Mesh {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
+        glEnableVertexAttribArray(3);
 
         glBindBuffer(GL_ARRAY_BUFFER, resource.getVbo());
         glVertexAttribPointer(0, 3, GL_FLOAT, false, Vertex.SIZE * 4, 0);
         glVertexAttribPointer(1, 2, GL_FLOAT, false, Vertex.SIZE * 4, 12);
         glVertexAttribPointer(2, 3, GL_FLOAT, false, Vertex.SIZE * 4, 20);
+        glVertexAttribPointer(3, 3, GL_FLOAT, false, Vertex.SIZE * 4, 32);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, resource.getIbo());
         glDrawElements(GL_TRIANGLES, resource.getSize(), GL_UNSIGNED_INT, 0);
@@ -125,6 +127,7 @@ public class Mesh {
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
+        glDisableVertexAttribArray(3);
     }
     
     /**
@@ -153,69 +156,44 @@ public class Mesh {
 		}
     }
     
+    
     /**
 	 * Loads a OBJ 3D model file named like that.
 	 * @param fileName Name of the 3D model file.
 	 * @return 3D model.
 	 */
     private Mesh loadMesh(String fileName) {
-        String[] splitArray = fileName.split("\\.");
-        String ext = splitArray[splitArray.length - 1];
+    	
+    	String[] splitArray = fileName.split("\\.");
+		String ext = splitArray[splitArray.length - 1];
 
-        if (!ext.equals("obj")) {
-            System.err.println("Error: File format not supported for mesh data: " + ext);
-            new Exception().printStackTrace();
-            System.exit(1);
-        }
+		if(!ext.equals("obj")) {
+			System.err.println("Error: '" + ext + "' file format not supported for mesh data.");
+			new Exception().printStackTrace();
+			System.exit(1);
+		}
 
-        ArrayList<Vertex> vertices = new ArrayList<Vertex>();
-        ArrayList<Integer> indices = new ArrayList<Integer>();
+		OBJModel test = new OBJModel("./res/models/" + fileName + ".obj");
+		IndexedModel model = test.ToIndexedModel();
 
-        BufferedReader meshReader = null;
+		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 
-        try {
-            meshReader = new BufferedReader(new FileReader("./res/models/" + fileName + ".obj"));
-            String line;
+		for(int i = 0; i < model.GetPositions().size(); i++) {
+			vertices.add(new Vertex(model.GetPositions().get(i),
+					model.GetTexCoords().get(i),
+					model.GetNormals().get(i),
+					model.GetTangents().get(i)));
+		}
 
-            while ((line = meshReader.readLine()) != null) {
-                String[] tokens = line.split(" ");
-                tokens = Util.removeEmptyStrings(tokens);
+		Vertex[] vertexData = new Vertex[vertices.size()];
+		vertices.toArray(vertexData);
 
-                if (tokens.length == 0 || tokens[0].equals("#")) {
-                    continue;
-                } else if (tokens[0].equals("v")) {
-                    vertices.add(new Vertex(new Vector3f(Float.valueOf(tokens[1]),
-                            Float.valueOf(tokens[2]),
-                            Float.valueOf(tokens[3]))));
-                } else if (tokens[0].equals("f")) {
-                    indices.add(Integer.parseInt(tokens[1].split("/")[0]) - 1);
-                    indices.add(Integer.parseInt(tokens[2].split("/")[0]) - 1);
-                    indices.add(Integer.parseInt(tokens[3].split("/")[0]) - 1);
+		Integer[] indexData = new Integer[model.GetIndices().size()];
+		model.GetIndices().toArray(indexData);
 
-                    if (tokens.length > 4) {
-                        indices.add(Integer.parseInt(tokens[1].split("/")[0]) - 1);
-                        indices.add(Integer.parseInt(tokens[3].split("/")[0]) - 1);
-                        indices.add(Integer.parseInt(tokens[4].split("/")[0]) - 1);
-                    }
-                }
-            }
-
-            meshReader.close();
-
-            Vertex[] vertexData = new Vertex[vertices.size()];
-            vertices.toArray(vertexData);
-
-            Integer[] indexData = new Integer[indices.size()];
-            indices.toArray(indexData);
-
-            addVertices(vertexData, Util.toIntArray(indexData), true);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        return null;
+		addVertices(vertexData, Util.toIntArray(indexData), false);
+		
+		return this;
     }
 
 }

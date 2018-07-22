@@ -25,7 +25,7 @@ import engine.core.Vector3f;
  */
 public class Material {
 
-	private Texture texture;
+	private Texture diffuse;
     private Vector3f color;
 	private float specularIntensity;
 	private float specularPower;
@@ -39,48 +39,48 @@ public class Material {
 
     /**
      * Constructor of the texture material of a mesh.
-     * @param texture of a mesh.
+     * @param diffuse texture of a mesh.
      */
-    public Material(Texture texture) {
-        this(texture, new Vector3f(1, 1, 1));
+    public Material(Texture diffuse) {
+        this(diffuse, new Vector3f(1, 1, 1));
     }
 
     /**
      * Constructor of the texture and color material of a mesh.
-     * @param texture of a mesh.
+     * @param diffuse texture of a mesh.
      * @param color of a mesh.
      */
-    public Material(Texture texture, Vector3f color) {
-        this(texture, color, 1, 8);
+    public Material(Texture diffuse, Vector3f color) {
+        this(diffuse, color, 1, 8);
     }
     
     /**
      * Constructor of the texture with color material and with
      * the "spectacular"-lighting calculations of the mesh.
-     * @param texture of a mesh.
+     * @param diffuse texture of a mesh.
      * @param color of a mesh.
      * @param specularIntensity of the material.
      * @param specularPower of the material.
      */
-    public Material(Texture texture, Vector3f color, float specularIntensity,
+    public Material(Texture diffuse, Vector3f color, float specularIntensity,
     		float specularPower) {
-        this.texture = texture;
+        this.diffuse = diffuse;
         this.color = color;
         this.specularIntensity = specularIntensity;
         this.specularPower = specularPower;
     }
 
     /**
-     * Returns the texture of the material.
-     * @return Texture.
+     * Returns the diffuse texture of the material.
+     * @return Diffuse texture.
      */
-    public Texture getTexture() {return texture;}
+    public Texture getDiffuse() {return diffuse;}
 
     /**
-     * Sets the texture to the material.
-     * @param texture for the material.
+     * Sets the diffuse texture to the material.
+     * @param diffuse texture for the material.
      */
-    public void setTexture(Texture texture) {this.texture = texture;}
+    public void setDiffuse(Texture diffuse) {this.diffuse = diffuse;}
 
     /**
      * Returns the color of the material.

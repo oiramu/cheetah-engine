@@ -125,9 +125,9 @@ public class Furnace {
         	double timeDecimals = (time - (double) ((int) time));
 
         	if (timeDecimals <= 0.25f) {
-                material.setTexture(animation.get(1));
+                material.setDiffuse(animation.get(1));
             } else {
-                material.setTexture(animation.get(0));
+                material.setDiffuse(animation.get(0));
             }
         }
 

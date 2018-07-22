@@ -203,10 +203,10 @@ public class SsSoldier {
                 double timeDecimals = (time - (double) ((int) time));
 
                 if (timeDecimals >= 0.5) {
-                    material.setTexture(animation.get(1));
+                    material.setDiffuse(animation.get(1));
                     canLook = true;
                 } else {
-                    material.setTexture(animation.get(0));
+                    material.setDiffuse(animation.get(0));
                     if (canLook) {
                         Vector2f lineStart = transform.getPosition().getXZ();
                         Vector2f lineEnd = lineStart.sub(playerDirection.mul(1000.0f));
@@ -260,13 +260,13 @@ public class SsSoldier {
                     timeDecimals *= 1.5f;
 
                     if (timeDecimals <= 0.25f) {
-                        material.setTexture(animation.get(1));
+                        material.setDiffuse(animation.get(1));
                     } else if (timeDecimals <= 0.5f) {
-                        material.setTexture(animation.get(2));
+                        material.setDiffuse(animation.get(2));
                     } else if (timeDecimals <= 0.75f) {
-                        material.setTexture(animation.get(3));
+                        material.setDiffuse(animation.get(3));
                     } else {
-                        material.setTexture(animation.get(4));
+                        material.setDiffuse(animation.get(4));
                     }
                 }
             }
@@ -275,9 +275,9 @@ public class SsSoldier {
                 double timeDecimals = (time - (double) ((int) time));
 
                 if (timeDecimals <= 0.25f) {
-                    material.setTexture(animation.get(5));
+                    material.setDiffuse(animation.get(5));
                 } else if (timeDecimals <= 0.5f) {
-                    material.setTexture(animation.get(6));
+                    material.setDiffuse(animation.get(6));
                 } else if (timeDecimals <= 0.75f) {
                     if (canAttack) {
                         Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
@@ -308,10 +308,10 @@ public class SsSoldier {
                         }
                         AudioUtil.playAudio(shootNoise, distance);
                     }
-                    material.setTexture(animation.get(7));
+                    material.setDiffuse(animation.get(7));
                 } else {
                     canAttack = true;
-                    material.setTexture(animation.get(6));
+                    material.setDiffuse(animation.get(6));
                     state = STATE_CHASE;
                 }
             }
@@ -326,13 +326,13 @@ public class SsSoldier {
             final float time4 = 0.5f;
 
             if (time <= deathTime + 0.2f) {
-                material.setTexture(animation.get(11));
+                material.setDiffuse(animation.get(11));
             } else if (time > deathTime + time1 && time <= deathTime + time2) {
-                material.setTexture(animation.get(12));
+                material.setDiffuse(animation.get(12));
             } else if (time > deathTime + time2 && time <= deathTime + time3) {
-                material.setTexture(animation.get(13));
+                material.setDiffuse(animation.get(13));
             } else if (time > deathTime + time3 && time <= deathTime + time4) {
-                material.setTexture(animation.get(14));
+                material.setDiffuse(animation.get(14));
             } else if (time > deathTime + time4) {
                 state = STATE_PICK_UP;
             }
@@ -345,23 +345,23 @@ public class SsSoldier {
                 AudioUtil.playAudio(pickupNoise, 0);
                 state = STATE_DEAD;
             }
-        	material.setTexture(animation.get(14));
+        	material.setDiffuse(animation.get(14));
             dead = true;            
         }
 
         if (state == STATE_DEAD) {
             dead = true;
-            material.setTexture(animation.get(15));
+            material.setDiffuse(animation.get(15));
         }
         
         if (state == STATE_DONE) {
-        	material.setTexture(animation.get(0));
+        	material.setDiffuse(animation.get(0));
         }
         
         if (state == STATE_HIT) {
         	double timeDecimals = (time - (double) ((int) time));
             if (timeDecimals <= 0.5f) {
-                material.setTexture(animation.get(9));
+                material.setDiffuse(animation.get(9));
             } else {
                 state = STATE_CHASE;
             }

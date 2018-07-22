@@ -15,7 +15,7 @@
  */
 package engine.rendering;
 
-import engine.core.Matrix4f;
+import engine.core.Transform;
 
 /**
  *
@@ -34,46 +34,19 @@ public class ForwardAmbient extends Shader {
 	public static ForwardAmbient getInstance() {return instance;}
 
 	/**
-     * Constructor of the basic shader with all his uniforms.
+     * Constructor of the shader of the ambient-light.
      */
 	private ForwardAmbient() {
-		super();
-		
-		addVertexShaderFromFile(FORWARD+"forward-ambient-vs");
-        addFragmentShaderFromFile(FORWARD+"forward-ambient-fs");
-
-		setAttribLocation("position", 0);
-		setAttribLocation("texCoord", 1);
-
-		compileShader();
-
-		addUniform("fogDensity");
-        addUniform("fogGradient");
-        addUniform("fogColor");
-		
-        addUniform("transform");
-		addUniform("MVP");
-		addUniform("eyePos");
-		addUniform("ambientIntensity");
+		super("forward-ambient");
 	}
 
 	/**
      * Updates all the uniforms of the shading program.
-     * @param worldMatrix World matrix data.
-     * @param projectedMatrix Projection matrix data.
+     * @param transform of the object.
      * @param material Material of the object.
      */
-	@SuppressWarnings("static-access")
-	public void updateUniforms(Matrix4f worldMatrix, Matrix4f projectedMatrix, Material material) {
-		material.getTexture().bind();
-
-		setUniformf("fogDensity", getRenderingEngine().fogDensity);
-        setUniformf("fogGradient", getRenderingEngine().fogGradient);
-        setUniform("fogColor", getRenderingEngine().getFogColor());
-        
-        setUniform("transform", worldMatrix);
-		setUniform("MVP", projectedMatrix);
-		setUniform("eyePos", getRenderingEngine().getMainCamera().getPos());
-		setUniform("ambientIntensity", getRenderingEngine().getAmbientLight());
+	@Override
+	public void updateUniforms(Transform transform, Material material) {
+		super.updateUniforms(transform, material);
 	}
 }

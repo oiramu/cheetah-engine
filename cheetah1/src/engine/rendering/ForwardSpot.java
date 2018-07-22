@@ -15,10 +15,7 @@
  */
 package engine.rendering;
 
-import engine.components.BaseLight;
-import engine.components.PointLight;
-import engine.components.SpotLight;
-import engine.core.Matrix4f;
+import engine.core.Transform;
 
 /**
  *
@@ -37,89 +34,20 @@ public class ForwardSpot extends Shader {
 	public static ForwardSpot getInstance() {return instance;}
 
 	/**
-     * Constructor of the basic shader with all his uniforms.
+     * Constructor of the shader of the spot-light.
      */
 	private ForwardSpot() {
-		super();
-
-		addVertexShaderFromFile(FORWARD+"forward-spot-vs");
-        addFragmentShaderFromFile(FORWARD+"forward-spot-fs");
-
-		setAttribLocation("position", 0);
-		setAttribLocation("texCoord", 1);
-		setAttribLocation("normal", 2);
-
-		compileShader();
-
-		addUniform("model");
-		addUniform("MVP");
-
-		addUniform("specularIntensity");
-		addUniform("specularPower");
-		addUniform("eyePos");
-
-		addUniform("spotLight.pointLight.base.color");
-		addUniform("spotLight.pointLight.base.intensity");
-		addUniform("spotLight.pointLight.atten.constant");
-		addUniform("spotLight.pointLight.atten.linear");
-		addUniform("spotLight.pointLight.atten.exponent");
-		addUniform("spotLight.pointLight.position");
-		addUniform("spotLight.pointLight.range");
-		addUniform("spotLight.direction");
-		addUniform("spotLight.cutoff");
+		super("forward-spot");
 	}
 
 	/**
      * Updates all the uniforms of the shading program.
-     * @param worldMatrix World matrix data.
-     * @param projectedMatrix Projection matrix data.
+     * @param transform of the object.
      * @param material Material of the object.
      */
-	public void updateUniforms(Matrix4f worldMatrix, Matrix4f projectedMatrix, Material material) {
-		material.getTexture().bind();
-
-		setUniform("model", worldMatrix);
-		setUniform("MVP", projectedMatrix);
-
-		setUniformf("specularIntensity", material.getSpecularIntensity());
-		setUniformf("specularPower", material.getSpecularPower());
-
-		setUniform("eyePos", getRenderingEngine().getMainCamera().getPos());
-		setUniformSpotLight("spotLight", (SpotLight) getRenderingEngine().getActiveLight());
+	@Override
+	public void updateUniforms(Transform transform, Material material) {
+		super.updateUniforms(transform, material);
 	}
 
-	/**
-	 * Sets a new uniform of color by name and the intensity by name.
-	 * @param uniformName Name in baseLight.
-	 * @param baseLight of the uniformName.
-	 */
-	public void setUniformBaseLight(String uniformName, BaseLight baseLight) {
-		setUniform(uniformName + ".color", baseLight.getColor());
-		setUniformf(uniformName + ".intensity", baseLight.getIntensity());
-	}
-
-	/**
-	 * Sets a new uniform of base by name and the intensity by direction.
-	 * @param uniformName Name in directionalLight.
-	 * @param directionalLight of the uniformName.
-	 */
-	public void setUniformPointLight(String uniformName, PointLight pointLight) {
-		setUniformBaseLight(uniformName + ".base", pointLight);
-		setUniformf(uniformName + ".atten.constant", pointLight.getAtten().getConstant());
-		setUniformf(uniformName + ".atten.linear", pointLight.getAtten().getLinear());
-		setUniformf(uniformName + ".atten.exponent", pointLight.getAtten().getExponent());
-		setUniform(uniformName + ".position", pointLight.getPosition());
-		setUniformf(uniformName + ".range", pointLight.getRange());
-	}
-
-	/**
-	 * Sets a new uniform of base by name and the spotLight constructor.
-	 * @param uniformName Name in pointLight.
-	 * @param spotLight's constructor.
-	 */
-	public void setUniformSpotLight(String uniformName, SpotLight spotLight) {
-		setUniformPointLight(uniformName + ".pointLight", spotLight);
-		setUniform(uniformName + ".direction", spotLight.getDirection());
-		setUniformf(uniformName + ".cutoff", spotLight.getCutoff());
-	}
 }

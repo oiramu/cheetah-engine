@@ -124,21 +124,21 @@ public class Clock {
             timeDecimals *= 1.75f;
 
         	if (timeDecimals <= 0.25f) {
-                material.setTexture(animation.get(0));
+                material.setDiffuse(animation.get(0));
             } else if (timeDecimals <= 0.5f) {
-                material.setTexture(animation.get(1));
+                material.setDiffuse(animation.get(1));
             } else if (timeDecimals <= 0.75f) {
-                material.setTexture(animation.get(2));
+                material.setDiffuse(animation.get(2));
             } else if (timeDecimals <= 1f) {
-                material.setTexture(animation.get(3));
+                material.setDiffuse(animation.get(3));
             } else if (timeDecimals <= 1.25f) {
-                material.setTexture(animation.get(4));
+                material.setDiffuse(animation.get(4));
             } else if (timeDecimals <= 1.5f) {
-                material.setTexture(animation.get(5));
+                material.setDiffuse(animation.get(5));
             } else if (timeDecimals <= 1.75f) {
-                material.setTexture(animation.get(6));
+                material.setDiffuse(animation.get(6));
             } else {
-                material.setTexture(animation.get(7));
+                material.setDiffuse(animation.get(7));
             }
         }
 

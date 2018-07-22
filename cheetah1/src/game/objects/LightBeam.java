@@ -116,13 +116,13 @@ public class LightBeam {
         timeDecimals *= 1.25f;
 
     	if (timeDecimals <= 1f) {
-            material.setTexture(animation.get(2));
+            material.setDiffuse(animation.get(2));
         } else if(timeDecimals <= 2) {
-        	material.setTexture(animation.get(1));
+        	material.setDiffuse(animation.get(1));
         } else if(timeDecimals <= 3) {
-        	material.setTexture(animation.get(0));
+        	material.setDiffuse(animation.get(0));
         } else if(timeDecimals <= 4) {
-        	material.setTexture(animation.get(1));
+        	material.setDiffuse(animation.get(1));
         }
 
         transform.setRotation(0, angle + 90, 0);

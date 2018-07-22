@@ -188,10 +188,10 @@ public class Dog {
                 double timeDecimals = (time - (double) ((int) time));
 
                 if (timeDecimals >= 0.5) {
-                    material.setTexture(animation.get(1));
+                    material.setDiffuse(animation.get(1));
                     canLook = true;
                 } else {
-                    material.setTexture(animation.get(0));
+                    material.setDiffuse(animation.get(0));
                     if (canLook) {
                         Vector2f lineStart = transform.getPosition().getXZ();
                         Vector2f lineEnd = lineStart.sub(playerDirection.mul(1000.0f));
@@ -247,13 +247,13 @@ public class Dog {
                     timeDecimals *= 1.5f;
 
                     if (timeDecimals <= 0.25f) {
-                        material.setTexture(animation.get(2));
+                        material.setDiffuse(animation.get(2));
                     } else if (timeDecimals <= 0.5f) {
-                        material.setTexture(animation.get(0));
+                        material.setDiffuse(animation.get(0));
                     } else if (timeDecimals <= 0.75f) {
-                        material.setTexture(animation.get(1));
+                        material.setDiffuse(animation.get(1));
                     } else {
-                        material.setTexture(animation.get(3));
+                        material.setDiffuse(animation.get(3));
                     }
                 }
             }
@@ -262,9 +262,9 @@ public class Dog {
                 double timeDecimals = (time - (double) ((int) time));
 
                 if (timeDecimals <= 0.25f) {
-                    material.setTexture(animation.get(4));
+                    material.setDiffuse(animation.get(4));
                 } else if (timeDecimals <= 0.5f) {
-                    material.setTexture(animation.get(5));
+                    material.setDiffuse(animation.get(5));
                 } else if (timeDecimals <= 0.7f) {
                     if (canAttack) {
                         Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
@@ -296,10 +296,10 @@ public class Dog {
                         AudioUtil.playAudio(shootNoise, distance);
                     }
 
-                    material.setTexture(animation.get(6));
+                    material.setDiffuse(animation.get(6));
                 } else {
                     canAttack = true;
-                    material.setTexture(animation.get(5));
+                    material.setDiffuse(animation.get(5));
                     state = STATE_CHASE;
                 }
             }
@@ -313,9 +313,9 @@ public class Dog {
             final float time3 = 0.45f;
 
             if (time <= deathTime + 0.2f) {
-                material.setTexture(animation.get(7));
+                material.setDiffuse(animation.get(7));
             } else if (time > deathTime + time1 && time <= deathTime + time2) {
-                material.setTexture(animation.get(8));
+                material.setDiffuse(animation.get(8));
                 offsetX = -0.1f;
             } else if (time > deathTime + time3) {
                 state = STATE_DEAD;
@@ -324,11 +324,11 @@ public class Dog {
 
         if (state == STATE_DEAD) {
             dead = true;
-            material.setTexture(animation.get(9));
+            material.setDiffuse(animation.get(9));
         }
         
         if (state == STATE_DONE) {
-            material.setTexture(animation.get(2));
+            material.setDiffuse(animation.get(2));
         }
     }
 

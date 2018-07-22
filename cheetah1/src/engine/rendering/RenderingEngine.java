@@ -159,7 +159,7 @@ public class RenderingEngine {
 	 * Returns the color of the fog.
 	 * @return fogColor.
 	 */
-	public static Vector3f getFogColor() {return fogColor;}
+	public Vector3f getFogColor() {return fogColor;}
 
 	/**
 	 * Sets a new color for the fog.
@@ -183,7 +183,7 @@ public class RenderingEngine {
 	 * Returns the actual ambient light.
 	 * @return Ambient light.
 	 */
-	public static Vector3f getAmbientLight() {return ambientLight;}
+	public Vector3f getAmbientLight() {return ambientLight;}
     
     /**
      * Returns the main camera in game.

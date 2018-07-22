@@ -68,7 +68,7 @@ public class MeshRenderer {
 	 */
 	public void render(Material material, Shader shader) {		
 		shader.bind();
-        shader.updateUniforms(transform.getTransformation(), transform.getPerspectiveTransformation(), material);
+        shader.updateUniforms(transform, material);
         mesh.draw();
 	}
 

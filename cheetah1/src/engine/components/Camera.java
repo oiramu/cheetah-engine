@@ -175,4 +175,5 @@ public class Camera {
     public void setUp(Vector3f up) {
         this.up = up;
     }
+    
 }

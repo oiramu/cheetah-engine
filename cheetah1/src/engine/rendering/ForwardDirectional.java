@@ -15,9 +15,7 @@
  */
 package engine.rendering;
 
-import engine.components.BaseLight;
-import engine.components.DirectionalLight;
-import engine.core.Matrix4f;
+import engine.core.Transform;
 
 /**
  *
@@ -36,68 +34,20 @@ public class ForwardDirectional extends Shader {
 	public static ForwardDirectional getInstance() {return instance;}
 
 	/**
-     * Constructor of the basic shader with all his uniforms.
+     * Constructor of the shader of the directional-light.
      */
 	private ForwardDirectional() {
-		super();
-
-		addVertexShaderFromFile(FORWARD+"forward-directional-vs");
-        addFragmentShaderFromFile(FORWARD+"forward-directional-fs");
-
-		setAttribLocation("position", 0);
-		setAttribLocation("texCoord", 1);
-		setAttribLocation("normal", 2);
-
-		compileShader();
-
-		addUniform("model");
-		addUniform("MVP");
-
-		addUniform("specularIntensity");
-		addUniform("specularPower");
-		addUniform("eyePos");
-
-		addUniform("directionalLight.base.color");
-		addUniform("directionalLight.base.intensity");
-		addUniform("directionalLight.direction");
+		super("forward-directional");
 	}
 
 	/**
      * Updates all the uniforms of the shading program.
-     * @param worldMatrix World matrix data.
-     * @param projectedMatrix Projection matrix data.
+     * @param transform of the object.
      * @param material Material of the object.
      */
-	public void updateUniforms(Matrix4f worldMatrix, Matrix4f projectedMatrix, Material material) {
-		material.getTexture().bind();
-
-		setUniform("model", worldMatrix);
-		setUniform("MVP", projectedMatrix);
-
-		setUniformf("specularIntensity", material.getSpecularIntensity());
-		setUniformf("specularPower", material.getSpecularPower());
-
-		setUniform("eyePos", getRenderingEngine().getMainCamera().getPos());
-		setUniformDirectionalLight("directionalLight", (DirectionalLight)getRenderingEngine().getActiveLight());
+	@Override
+	public void updateUniforms(Transform transform, Material material) {
+		super.updateUniforms(transform, material);
 	}
 
-	/**
-	 * Sets a new uniform of color by name and the intensity by name.
-	 * @param uniformName Name in baseLight.
-	 * @param baseLight of the uniformName.
-	 */
-	public void setUniformBaseLight(String uniformName, BaseLight baseLight) {
-		setUniform(uniformName + ".color", baseLight.getColor());
-		setUniformf(uniformName + ".intensity", baseLight.getIntensity());
-	}
-
-	/**
-	 * Sets a new uniform of base by name and the intensity by direction.
-	 * @param uniformName Name in directionalLight.
-	 * @param directionalLight of the uniformName.
-	 */
-	public void setUniformDirectionalLight(String uniformName, DirectionalLight directionalLight) {
-		setUniformBaseLight(uniformName + ".base", directionalLight);
-		setUniform(uniformName + ".direction", directionalLight.getDirection());
-	}
 }

@@ -117,10 +117,10 @@ public class DeadJew {
         double timeDecimals = (time - (double) ((int) time));
 
         if(state == STATE_1) {
-        	material.setTexture(animation.get(0));
+        	material.setDiffuse(animation.get(0));
         	if(distance<1.25f && timeDecimals <= 0.25f) state = STATE_2;
         } else if(state == STATE_2) {
-        	material.setTexture(animation.get(1));
+        	material.setDiffuse(animation.get(1));
         	if(distance>1.25f && timeDecimals <= 0.25f) state = STATE_1;
         } 
     }

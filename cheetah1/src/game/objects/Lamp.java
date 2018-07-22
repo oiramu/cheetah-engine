@@ -145,24 +145,24 @@ public class Lamp {
             timeDecimals *= 1.25f;
 
         	if (timeDecimals <= 0.25f) {
-                material.setTexture(animation.get(0));
+                material.setDiffuse(animation.get(0));
             } else if (timeDecimals <= 0.5f) {
-                material.setTexture(animation.get(1));
+                material.setDiffuse(animation.get(1));
             } else if (timeDecimals <= 0.75f) {
-                material.setTexture(animation.get(2));
+                material.setDiffuse(animation.get(2));
             } else if (timeDecimals <= 1f) {
-                material.setTexture(animation.get(3));
+                material.setDiffuse(animation.get(3));
             } else if (timeDecimals <= 1.25f) {
-                material.setTexture(animation.get(2));
+                material.setDiffuse(animation.get(2));
             } else {
-                material.setTexture(animation.get(1));
+                material.setDiffuse(animation.get(1));
             }
         }
         
         if (state == STATE_DEAD) {
         	RenderingEngine.removeLight(light);
             dead = true;
-            material.setTexture(animation.get(4));
+            material.setDiffuse(animation.get(4));
         }
 
     }

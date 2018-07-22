@@ -16,6 +16,7 @@
 package engine.rendering;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -114,11 +115,12 @@ public class Texture {
 
         return null;
     }
-
+	
     /**
      * Binds the texture for openGL.
      */
-    public void bind() {
+    public void bind(int sampler) {
+    	glActiveTexture(GL_TEXTURE0 + sampler);
         glBindTexture(GL_TEXTURE_2D, resource.getId());
     }
 

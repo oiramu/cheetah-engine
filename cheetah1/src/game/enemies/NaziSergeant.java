@@ -190,10 +190,10 @@ public class NaziSergeant {
                 double timeDecimals = (time - (double) ((int) time));
 
                 if (timeDecimals >= 0.5) {
-                    material.setTexture(animation.get(1));
+                    material.setDiffuse(animation.get(1));
                     canLook = true;
                 } else {
-                    material.setTexture(animation.get(0));
+                    material.setDiffuse(animation.get(0));
                     if (canLook) {
                         Vector2f lineStart = transform.getPosition().getXZ();
                         Vector2f lineEnd = lineStart.sub(playerDirection.mul(1000.0f));
@@ -247,13 +247,13 @@ public class NaziSergeant {
                     timeDecimals *= 1.5f;
 
                     if (timeDecimals <= 0.25f) {
-                        material.setTexture(animation.get(0));
+                        material.setDiffuse(animation.get(0));
                     } else if (timeDecimals <= 0.5f) {
-                        material.setTexture(animation.get(1));
+                        material.setDiffuse(animation.get(1));
                     } else if (timeDecimals <= 0.75f) {
-                        material.setTexture(animation.get(2));
+                        material.setDiffuse(animation.get(2));
                     } else {
-                        material.setTexture(animation.get(3));
+                        material.setDiffuse(animation.get(3));
                     }
                 }
             }
@@ -262,9 +262,9 @@ public class NaziSergeant {
                 double timeDecimals = (time - (double) ((int) time));
 
                 if (timeDecimals <= 0.25f) {
-                    material.setTexture(animation.get(4));
+                    material.setDiffuse(animation.get(4));
                 } else if (timeDecimals <= 0.5f) {
-                    material.setTexture(animation.get(5));
+                    material.setDiffuse(animation.get(5));
                 } else if (timeDecimals <= 0.7f) {
                     if (canAttack) {
                         Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
@@ -295,10 +295,10 @@ public class NaziSergeant {
                         }
                         AudioUtil.playAudio(shootNoise, distance);
                     }
-                    material.setTexture(animation.get(6));
+                    material.setDiffuse(animation.get(6));
                 } else {
                     canAttack = true;
-                    material.setTexture(animation.get(6));
+                    material.setDiffuse(animation.get(6));
                     state = STATE_CHASE;
                 }
             }
@@ -311,9 +311,9 @@ public class NaziSergeant {
             final float time2 = 0.3f;
 
             if (time <= deathTime + 0.2f) {
-                material.setTexture(animation.get(9));
+                material.setDiffuse(animation.get(9));
             } else if (time > deathTime + time1 && time <= deathTime + time2) {
-                material.setTexture(animation.get(10));
+                material.setDiffuse(animation.get(10));
             } else if (time > deathTime + time2) {
                 state = STATE_DEAD;
             }
@@ -321,7 +321,7 @@ public class NaziSergeant {
 
         if (state == STATE_DEAD) {
             dead = true;
-            material.setTexture(animation.get(11));
+            material.setDiffuse(animation.get(11));
         }
         
         if (state == STATE_DONE) {
@@ -330,20 +330,20 @@ public class NaziSergeant {
         	timeDecimals *= 1.5f;
 
             if (timeDecimals <= 0.25f) {
-                material.setTexture(animation.get(0));
+                material.setDiffuse(animation.get(0));
             } else if (timeDecimals <= 0.5f) {
-                material.setTexture(animation.get(1));
+                material.setDiffuse(animation.get(1));
             } else if (timeDecimals <= 0.75f) {
-                material.setTexture(animation.get(2));
+                material.setDiffuse(animation.get(2));
             } else {
-                material.setTexture(animation.get(3));
+                material.setDiffuse(animation.get(3));
             }
         }
         
         if (state == STATE_HIT) {
         	double timeDecimals = (time - (double) ((int) time));
             if (timeDecimals <= 0.5f) {
-                material.setTexture(animation.get(7));
+                material.setDiffuse(animation.get(7));
             } else {
                 state = STATE_CHASE;
             }

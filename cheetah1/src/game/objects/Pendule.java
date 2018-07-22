@@ -128,17 +128,17 @@ public class Pendule {
             timeDecimals *= 4.75f;
 
         	if (timeDecimals <= 0.25f) {
-                material.setTexture(animation.get(5));
+                material.setDiffuse(animation.get(5));
             } else if (timeDecimals <= 0.5f) {
-                material.setTexture(animation.get(4));
+                material.setDiffuse(animation.get(4));
             } else if (timeDecimals <= 0.75f) {
-                material.setTexture(animation.get(3));
+                material.setDiffuse(animation.get(3));
             } else if (timeDecimals <= 1f) {
-                material.setTexture(animation.get(2));
+                material.setDiffuse(animation.get(2));
             } else if (timeDecimals <= 1.25f) {
-                material.setTexture(animation.get(1));
+                material.setDiffuse(animation.get(1));
             } else if (timeDecimals <= 1.5f) {
-                material.setTexture(animation.get(0));
+                material.setDiffuse(animation.get(0));
                 if(distance<1f) {
                 	if(!Level.getPlayer().getArmorb())
                 		Level.getPlayer().addHealth(DAMAGE);
@@ -146,33 +146,33 @@ public class Pendule {
                 		Level.getPlayer().addArmori(DAMAGE);
                 }
             } else if (timeDecimals <= 1.75f) {
-                material.setTexture(animation.get(6));
+                material.setDiffuse(animation.get(6));
             } else if (timeDecimals <= 2f) {
-                material.setTexture(animation.get(7));
+                material.setDiffuse(animation.get(7));
             } else if (timeDecimals <= 2.25f) {
-                material.setTexture(animation.get(8));
+                material.setDiffuse(animation.get(8));
             } else if (timeDecimals <= 2.5f) {
-                material.setTexture(animation.get(9));
+                material.setDiffuse(animation.get(9));
             } else if (timeDecimals <= 2.75f) {
-                material.setTexture(animation.get(10));
+                material.setDiffuse(animation.get(10));
             } else if (timeDecimals <= 3f) {
-                material.setTexture(animation.get(9));
+                material.setDiffuse(animation.get(9));
             } else if (timeDecimals <= 3.25f) {
-                material.setTexture(animation.get(8));
+                material.setDiffuse(animation.get(8));
             } else if (timeDecimals <= 3.5f) {
-                material.setTexture(animation.get(7));
+                material.setDiffuse(animation.get(7));
             } else if (timeDecimals <= 3.75f) {
-                material.setTexture(animation.get(6));
+                material.setDiffuse(animation.get(6));
             } else if (timeDecimals <= 4f) {
-                material.setTexture(animation.get(0));
+                material.setDiffuse(animation.get(0));
             } else if (timeDecimals <= 4.25f) {
-                material.setTexture(animation.get(1));
+                material.setDiffuse(animation.get(1));
             } else if (timeDecimals <= 4.5f) {
-                material.setTexture(animation.get(2));
+                material.setDiffuse(animation.get(2));
             } else if (timeDecimals <= 4.75f) {
-                material.setTexture(animation.get(3));
+                material.setDiffuse(animation.get(3));
             } else {
-                material.setTexture(animation.get(4));
+                material.setDiffuse(animation.get(4));
             }
         }
 

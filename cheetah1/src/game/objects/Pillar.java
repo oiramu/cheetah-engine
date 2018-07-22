@@ -142,7 +142,7 @@ public class Pillar {
             timeDecimals *= 1.25f;
 
         	if (timeDecimals <= 0.25f) {
-                material.setTexture(animation.get(0));
+                material.setDiffuse(animation.get(0));
             }
         }
         
@@ -155,13 +155,13 @@ public class Pillar {
             final float time4 = 0.6f;
 
             if (time <= deathTime + 0.2f) {
-                material.setTexture(animation.get(1));
+                material.setDiffuse(animation.get(1));
             } else if (time > deathTime + time1 && time <= deathTime + time2) {
-                material.setTexture(animation.get(2));
+                material.setDiffuse(animation.get(2));
             } else if (time > deathTime + time2 && time <= deathTime + time3) {
-            	material.setTexture(animation.get(3));
+            	material.setDiffuse(animation.get(3));
             } else if (time > deathTime + time3 && time <= deathTime + time4) {
-            	material.setTexture(animation.get(4));
+            	material.setDiffuse(animation.get(4));
             }else if (time > deathTime + time4) {
                 state = STATE_DEAD;
             }
@@ -169,7 +169,7 @@ public class Pillar {
         
         if (state == STATE_DEAD) {
             dead = true;
-            material.setTexture(animation.get(5));
+            material.setDiffuse(animation.get(5));
         }
 
     }

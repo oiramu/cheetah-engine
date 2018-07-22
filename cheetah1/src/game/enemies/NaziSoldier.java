@@ -22,8 +22,6 @@ import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
 import engine.components.Attenuation;
-import engine.components.PointLight;
-import engine.components.BaseLight;
 import engine.components.MeshRenderer;
 import engine.components.SpotLight;
 import engine.core.Time;
@@ -147,8 +145,8 @@ public class NaziSoldier {
         }
         
         if(light == null) {
-        	light = new SpotLight(new PointLight(new BaseLight(new Vector3f(0.4f,0.3f,0.175f), 0.8f), 
-        	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), 8), new Vector3f(1,1,1), 0.7f);
+        	light = new SpotLight(new Vector3f(0.4f,0.3f,0.175f), 0.8f, 
+        	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
         }   
 
         this.transform = transform;
@@ -186,7 +184,7 @@ public class NaziSoldier {
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
         
-        light.getPointLight().setPosition(transform.getPosition());
+        light.setPosition(transform.getPosition());
         light.setDirection(orientation);
 
         if (orientation.getX() > 0) {
@@ -315,7 +313,7 @@ public class NaziSoldier {
                             } else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
                          
-            		        	RenderingEngine.addSpotLight(light);
+            		        	RenderingEngine.addLight(light);
                             	if(player.getArmorb() == false) {
                             		player.addHealth((int) -damage);
                             	}else {
@@ -328,7 +326,7 @@ public class NaziSoldier {
                         AudioUtil.playAudio(shootNoise, distance);
                     }
                     material.setTexture(animation.get(6));
-                    RenderingEngine.deleteSpotLight(light);
+                    RenderingEngine.removeLight(light);
                 } else {
                     canAttack = true;
                     material.setTexture(animation.get(6));

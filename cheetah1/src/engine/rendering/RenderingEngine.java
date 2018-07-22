@@ -20,31 +20,25 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
 import java.util.ArrayList;
 
+import engine.components.BaseLight;
 import engine.components.Camera;
-import engine.components.DirectionalLight;
 import engine.components.GameComponent;
-import engine.components.PointLight;
-import engine.components.SpotLight;
 import engine.core.Transform;
 import engine.core.Vector3f;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.1
-* @since 2018
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.2
+ * @since 2018
+ */
 public class RenderingEngine {
 	
 	private Camera mainCamera;
-	private PointLight pointLight;
-	private SpotLight spotLight;
-
-	private static DirectionalLight directionalLight;
+	private BaseLight activeLight;
 	public static Vector3f ambientLight;
-	private static ArrayList<DirectionalLight> directionalLights;
-	private static ArrayList<PointLight> pointLights;
-	private static ArrayList<SpotLight> spotLights;
+	
+	private static ArrayList<BaseLight> lights;
 	
 	public static float fogDensity;
 	public static float fogGradient;
@@ -54,9 +48,7 @@ public class RenderingEngine {
 	 * Constructor for the rendering engine.
 	 */
 	public RenderingEngine() {
-		directionalLights = new ArrayList<DirectionalLight>();
-        pointLights = new ArrayList<PointLight>();
-        spotLights = new ArrayList<SpotLight>();
+        lights = new ArrayList<BaseLight>();
         
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -84,29 +76,15 @@ public class RenderingEngine {
     	try {
 	    	clearScreen();
 	    	Shader forwardAmbient = ForwardAmbient.getInstance();
-			Shader forwardPoint = ForwardPoint.getInstance();
-			Shader forwardSpot = ForwardSpot.getInstance();
-			Shader forwardDirectional = ForwardDirectional.getInstance();
-			forwardAmbient.setRenderingEngine(this);
-			forwardDirectional.setRenderingEngine(this);
-			forwardPoint.setRenderingEngine(this);
-			forwardSpot.setRenderingEngine(this);
+			forwardAmbient.setRenderingEngine(this);;
 	        component.render(forwardAmbient);
 	        glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE);
 			glDepthMask(false);
 			glDepthFunc(GL_EQUAL);
-			for(int i = 0; i < directionalLights.size(); i++) {
-				directionalLight = directionalLights.get(i);
-				component.render(forwardDirectional);
-			}
-			for(int i = 0; i < pointLights.size(); i++) {
-				pointLight = pointLights.get(i);
-				component.render(forwardPoint);
-			}
-			for(int i = 0; i < spotLights.size(); i++) {
-				spotLight = spotLights.get(i);
-				component.render(forwardSpot);
+			for(int i = 0; i < lights.size(); i++) {
+				activeLight = lights.get(i);
+				component.render(activeLight.getShader(this));
 			}
 			glDepthFunc(GL_LESS);
 			glDepthMask(true);
@@ -121,9 +99,7 @@ public class RenderingEngine {
 	 * Cleans everything light related.
 	 */
     public void clearLights() {
-        clearDirectionalLight();
-        clearPointLight();
-        clearSpotLight();
+        lights.clear();
     }
 
 	/**
@@ -165,71 +141,19 @@ public class RenderingEngine {
 	 * Adds a new directional light to the rendering engine.
 	 * @param light to add.
 	 */
-	public static void addDirectionalLight(DirectionalLight light) {directionalLights.add(light);}
+	public static void addLight(BaseLight light) {lights.add(light);}
 	
 	/**
 	 * Removes a new directional light to the rendering engine.
 	 * @param light to remove.
 	 */
-	public static void removeDirectionalLight(DirectionalLight light) {directionalLights.remove(light);}
+	public static void removeLight(BaseLight light) {lights.remove(light);}
 	
 	/**
-	 * Clears a new directional light to the rendering engine.
-	 * @param light to clear.
+	 * Returns the light that is been used.
+	 * @return Active light.
 	 */
-	public static void clearDirectionalLight() {directionalLights.clear();}
-	
-	/**
-	 * Deletes a directional light in the rendering engine.
-	 * @param light to delete.
-	 */
-	public static void deleteDirectionalLight(DirectionalLight light) {removeDirectionalLight(light); clearDirectionalLight();}
-	
-	/**
-	 * Adds a new point of light to the rendering engine.
-	 * @param light to add.
-	 */
-	public static void addPointLight(PointLight light) {pointLights.add(light);}
-	
-	/**
-	 * Removes a point of light in the rendering engine.
-	 * @param light to remove.
-	 */
-	public static void removePointLight(PointLight light) {pointLights.remove(light);}
-	
-	/**
-	 * Clears a point of light in the rendering engine.
-	 */
-	public static void clearPointLight() {pointLights.clear();}
-	
-	/**
-	 * Deletes a point of light in the rendering engine.
-	 * @param light to delete.
-	 */
-	public static void deletePointLight(PointLight light) {removePointLight(light); clearPointLight();}
-	
-	/**
-	 * Adds a new spot of light to the rendering engine.
-	 * @param light to add.
-	 */
-	public static void addSpotLight(SpotLight light) {spotLights.add(light);}
-	
-	/**
-	 * Removes a new spot of light to the rendering engine.
-	 * @param light to remove.
-	 */
-	public static void removeSpotLight(SpotLight light) {spotLights.remove(light);}
-	
-	/**
-	 * Clears a new spot of light to the rendering engine.
-	 */
-	public static void clearSpotLight() {spotLights.clear();}
-	
-	/**
-	 * Deletes a spot of light in the rendering engine.
-	 * @param light to delete.
-	 */
-	public static void deleteSpotLight(SpotLight light) {removeSpotLight(light); clearSpotLight();}
+	public BaseLight getActiveLight() {return activeLight;}
 	
 	/**
 	 * Returns the color of the fog.
@@ -259,31 +183,7 @@ public class RenderingEngine {
 	 * Returns the actual ambient light.
 	 * @return Ambient light.
 	 */
-	public Vector3f getAmbientLight() {return ambientLight;}
-	
-	/**
-	 * Sets a directional light to the rendering engine.
-	 * @param light to add.
-	 */
-	public static void setDirectionalLight(DirectionalLight light) {directionalLight = light;}
-
-	/**
-	 * Returns the actual directional light.
-	 * @return Directional light.
-	 */
-	public DirectionalLight getDirectionalLight() {return directionalLight;}
-
-	/**
-	 * Returns the actual point of light.
-	 * @return Point of light.
-	 */
-	public PointLight getPointLight() {return pointLight;}
-
-	/**
-	 * Returns the actual spot of light.
-	 * @return Spot of light.
-	 */
-	public SpotLight getSpotLight() {return spotLight;}
+	public static Vector3f getAmbientLight() {return ambientLight;}
     
     /**
      * Returns the main camera in game.

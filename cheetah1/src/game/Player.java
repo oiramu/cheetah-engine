@@ -24,7 +24,6 @@ import org.lwjgl.opengl.Display;
 
 import engine.audio.AudioUtil;
 import engine.components.Attenuation;
-import engine.components.BaseLight;
 import engine.components.Camera;
 import engine.components.MeshRenderer;
 import engine.components.PointLight;
@@ -162,7 +161,6 @@ public class Player {
     private int armori;
     private int bullets;
     private int shells;
-    private int gunLightBeam;
     private boolean armorb;
     private boolean shotgun;
     private boolean machinegun;
@@ -364,12 +362,12 @@ public class Player {
         }
         
         if(sLight == null && fireBulletLight == null && fireShellLight == null) {
-        	sLight = new SpotLight(new PointLight(new BaseLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f), 
-        	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), 30), new Vector3f(1,1,1), 0.7f);
-    		fireBulletLight = new PointLight(new BaseLight(new Vector3f(0.5f,0.3f,0.1f).mul(2.0f), 1.6f), 
-            		new Attenuation(1,0,1), getCamera().getPos(), gunLightBeam);
-    		fireShellLight = new PointLight(new BaseLight(new Vector3f(0.45f,0.35f,0.1f).mul(2.0f), 1.6f), 
-            		new Attenuation(1,0,1), getCamera().getPos(), gunLightBeam);
+        	sLight = new SpotLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f, 
+        	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
+    		fireBulletLight = new PointLight(new Vector3f(0.5f,0.3f,0.1f).mul(4.0f), 1.6f, 
+            		new Attenuation(1,0,1), getCamera().getPos());
+    		fireShellLight = new PointLight(new Vector3f(0.45f,0.35f,0.1f).mul(4.0f), 1.6f, 
+            		new Attenuation(1,0,1), getCamera().getPos());
     	}
 
         gunFireTime = 0;
@@ -400,7 +398,6 @@ public class Player {
         damageRange = 0.1f;
         gunFireAnimationTime = 0.1f;
         moveSpeed = 6f;
-        gunLightBeam = 0;
         isMelee = true;    
         isBulletBased = false;
         isShellBased = false;
@@ -425,7 +422,6 @@ public class Player {
         damageMin = 20f;
         damageRange = 30f;
         moveSpeed = 5f;
-        gunLightBeam = 10;
         isMelee = false;
         isBulletBased = true;
         isShellBased = false;
@@ -454,7 +450,6 @@ public class Player {
         damageMin = 60f;
         damageRange = 60f;
         moveSpeed = 4f;
-        gunLightBeam = 20;
         isMelee = false;
         isBulletBased = false;
         isShellBased = true;
@@ -479,7 +474,6 @@ public class Player {
         damageMin = 20f;
         damageRange = 60f;
         moveSpeed = 4.5f;
-        gunLightBeam = 15;
         isMelee = false;
         isBulletBased = true;
         isShellBased = false;
@@ -508,7 +502,6 @@ public class Player {
         damageMin = 100f;
         damageRange = 60f;
         moveSpeed = 4f;
-        gunLightBeam = 40;
         isMelee = false;
         isBulletBased = false;
         isShellBased = true;
@@ -533,7 +526,6 @@ public class Player {
         damageMin = 20f;
         damageRange = 120f;
         moveSpeed = 4.5f;
-        gunLightBeam = 30;
         isMelee = false;
         isBulletBased = true;
         isShellBased = false;
@@ -650,12 +642,12 @@ public class Player {
 
 	        if(isOn) {
 				if (Input.getKeyDown(Input.KEY_F)) {
-					RenderingEngine.removeSpotLight(sLight);
+					RenderingEngine.removeLight(sLight);
 					isOn = false;
 				}
             } else {
             	if (Input.getKeyDown(Input.KEY_F)) {
-            		RenderingEngine.addSpotLight(sLight);
+            		RenderingEngine.addLight(sLight);
 	            	isOn = true;
             	}
             }
@@ -752,7 +744,7 @@ public class Player {
         gunTransform.setRotation(0, angle + 90, 0);
         hudTransform.setRotation(0, angle + 90, 0);
         
-        sLight.getPointLight().setPosition(getCamera().getPos());
+        sLight.setPosition(getCamera().getPos());
         sLight.setDirection(getCamera().getForward());
         fireBulletLight.setPosition(getCamera().getPos());
         fireShellLight.setPosition(getCamera().getPos());
@@ -806,14 +798,14 @@ public class Player {
 			if(bullets != 0) {
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
-		        	RenderingEngine.addPointLight(fireBulletLight);
+		        	RenderingEngine.addLight(fireBulletLight);
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial1, shader);
 		        } else if ((double) time < gunTime2) {
 			        hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
 		        } else {
-		        	RenderingEngine.removePointLight(fireBulletLight);
+		        	RenderingEngine.removeLight(fireBulletLight);
 		            hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunMaterial, shader);
 	            	isReloading = false;
@@ -830,14 +822,13 @@ public class Player {
 			if(shells != i) {
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
-		        	fireShellLight.setPosition(getCamera().getPos());
-		        	RenderingEngine.addPointLight(fireShellLight);
+		        	RenderingEngine.addLight(fireShellLight);
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial1, shader);
 		        } else if ((double) time < gunTime2) {
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
-		        	RenderingEngine.removePointLight(fireShellLight);
+		        	RenderingEngine.removeLight(fireShellLight);
 			        AudioUtil.playAudio(gunReload, 0);
 		        } else if ((double) time < gunTime3) {
 		        	hudRenderer.render(crossHairMaterial, shader);

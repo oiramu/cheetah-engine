@@ -16,6 +16,7 @@
 package engine.components;
 
 import engine.core.Vector3f;
+import engine.rendering.ForwardDirectional;
 
 /**
  *
@@ -23,50 +24,32 @@ import engine.core.Vector3f;
  * @version 1.1
  * @since 2018
  */
-public class DirectionalLight {
+public class DirectionalLight extends BaseLight {
 	
-	private BaseLight base;
 	private Vector3f direction;
 	
 	/**
 	 * Constructor of the directional light.
-	 * @param base Light-point.
+	 * @param color of the light.
+	 * @param intensity of the light.
 	 * @param direction for the light-point.
 	 */
-	public DirectionalLight(BaseLight base, Vector3f direction) {
-		this.base = base;
+	public DirectionalLight(Vector3f color, float intensity, Vector3f direction) {
+		super(color, intensity);
 		this.direction = direction.normalized();
-	}
-
-	/**
-	 * Returns the light-point of the directional light.
-	 * @return Light-point.
-	 */
-	public BaseLight getBase() {
-		return base;
-	}
-
-	/**
-	 * Sets a new light-point for the directional light.
-	 * @param base New light-point.
-	 */
-	public void setBase(BaseLight base) {
-		this.base = base;
+		setShader(ForwardDirectional.getInstance());
 	}
 
 	/**
 	 * Returns the direction the directional light.
 	 * @return Direction the directional light.
 	 */
-	public Vector3f getDirection() {
-		return direction;
-	}
+	public Vector3f getDirection() {return direction;}
 
 	/**
 	 * Sets a new direction for the directional light.
 	 * @param direction
 	 */
-	public void setDirection(Vector3f direction) {
-		this.direction = direction.normalized();
-	}
+	public void setDirection(Vector3f direction) {this.direction = direction.normalized();}
+	
 }

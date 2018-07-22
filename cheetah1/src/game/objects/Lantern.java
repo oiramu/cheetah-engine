@@ -16,7 +16,6 @@
 package game.objects;
 
 import engine.components.Attenuation;
-import engine.components.BaseLight;
 import engine.components.MeshRenderer;
 import engine.components.PointLight;
 import engine.core.Transform;
@@ -81,10 +80,10 @@ public class Lantern {
         }
 
         this.transform = transform;
-        this.light = new PointLight(new BaseLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f), 
+        this.light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
         		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.25f, 
-        				getTransform().getPosition().getZ()), 8);
-        RenderingEngine.addPointLight(light);
+        				getTransform().getPosition().getZ()));
+        RenderingEngine.addLight(light);
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
     }
 

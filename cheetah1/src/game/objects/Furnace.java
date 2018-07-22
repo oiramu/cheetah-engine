@@ -18,7 +18,6 @@ package game.objects;
 import java.util.ArrayList;
 
 import engine.components.Attenuation;
-import engine.components.BaseLight;
 import engine.components.MeshRenderer;
 import engine.components.PointLight;
 import engine.core.Time;
@@ -96,10 +95,10 @@ public class Furnace {
         this.state = STATE_IDLE;
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
-        this.light = new PointLight(new BaseLight(new Vector3f(0.45f,0.35f,0.1f), 0.8f), 
+        this.light = new PointLight(new Vector3f(0.45f,0.35f,0.1f), 0.8f, 
         		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0, 
-        				getTransform().getPosition().getZ()), 6);
-        RenderingEngine.addPointLight(light);
+        				getTransform().getPosition().getZ()));
+        RenderingEngine.addLight(light);
     }
 
     /**

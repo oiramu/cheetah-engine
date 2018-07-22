@@ -78,7 +78,7 @@ public class ForwardDirectional extends Shader {
 		setUniformf("specularPower", material.getSpecularPower());
 
 		setUniform("eyePos", getRenderingEngine().getMainCamera().getPos());
-		setUniform("directionalLight", getRenderingEngine().getDirectionalLight());
+		setUniformDirectionalLight("directionalLight", (DirectionalLight)getRenderingEngine().getActiveLight());
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class ForwardDirectional extends Shader {
 	 * @param uniformName Name in baseLight.
 	 * @param baseLight of the uniformName.
 	 */
-	public void setUniform(String uniformName, BaseLight baseLight) {
+	public void setUniformBaseLight(String uniformName, BaseLight baseLight) {
 		setUniform(uniformName + ".color", baseLight.getColor());
 		setUniformf(uniformName + ".intensity", baseLight.getIntensity());
 	}
@@ -96,8 +96,8 @@ public class ForwardDirectional extends Shader {
 	 * @param uniformName Name in directionalLight.
 	 * @param directionalLight of the uniformName.
 	 */
-	public void setUniform(String uniformName, DirectionalLight directionalLight) {
-		setUniform(uniformName + ".base", directionalLight.getBase());
+	public void setUniformDirectionalLight(String uniformName, DirectionalLight directionalLight) {
+		setUniformBaseLight(uniformName + ".base", directionalLight);
 		setUniform(uniformName + ".direction", directionalLight.getDirection());
 	}
 }

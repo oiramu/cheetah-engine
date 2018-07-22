@@ -21,7 +21,6 @@ import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
 import engine.components.Attenuation;
-import engine.components.BaseLight;
 import engine.components.MeshRenderer;
 import engine.components.PointLight;
 import engine.core.Time;
@@ -106,10 +105,10 @@ public class Lamp {
         this.material = new Material(animation.get(0), new Vector3f(1,1,1));
         this.state = STATE_IDLE;
         this.transform = transform;
-        this.light = new PointLight(new BaseLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f), 
+        this.light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
         		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.1f, 
-        				getTransform().getPosition().getZ()), 6);
-        RenderingEngine.addPointLight(light);
+        				getTransform().getPosition().getZ()));
+        RenderingEngine.addLight(light);
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         this.dead = false;
         this.health = 20;
@@ -161,7 +160,7 @@ public class Lamp {
         }
         
         if (state == STATE_DEAD) {
-        	RenderingEngine.removePointLight(light);
+        	RenderingEngine.removeLight(light);
             dead = true;
             material.setTexture(animation.get(4));
         }

@@ -16,16 +16,16 @@
 package engine.components;
 
 import engine.core.Vector3f;
+import engine.rendering.ForwardSpot;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2018
-*/
-public class SpotLight {
-	
-	private PointLight pointLight;
+ *
+ * @author Carlos Rodriguez
+ * @version 1.1
+ * @since 2018
+ */
+public class SpotLight extends PointLight {
+
 	private Vector3f direction;
 	private float cutoff;
 	
@@ -35,35 +35,18 @@ public class SpotLight {
 	 * @param direction of the spotLight
 	 * @param cutoff of the spotLight
 	 */
-	public SpotLight(PointLight pointLight, Vector3f direction, float cutoff) {
-		this.pointLight = pointLight;
+	public SpotLight(Vector3f color, float intensity, Attenuation atten, Vector3f position, Vector3f direction, float cutoff) {
+		super(color, intensity, atten, position);
 		this.direction = direction.normalized();
 		this.cutoff = cutoff;
-	}
-	
-	/**
-	 * Returns the pointLight of the spot of light.
-	 * @return PointLight
-	 */
-	public PointLight getPointLight() {
-		return pointLight;
-	}
-	
-	/**
-	 * Sets a new pointLight to the spot of light.
-	 * @param pointLight to set
-	 */
-	public void setPointLight(PointLight pointLight) {
-		this.pointLight = pointLight;
+		setShader(ForwardSpot.getInstance());
 	}
 	
 	/**
 	 * Returns the direction of the spot of light.
 	 * @return Direction
 	 */
-	public Vector3f getDirection() {
-		return direction;
-	}
+	public Vector3f getDirection() {return direction;}
 	
 	/**
 	 * Sets a new direction to the spot of light.
@@ -77,9 +60,7 @@ public class SpotLight {
 	 * Returns the cut-off of the spot of light.
 	 * @return Cut-off
 	 */
-	public float getCutoff() {
-		return cutoff;
-	}
+	public float getCutoff() {return cutoff;}
 	
 	/**
 	 * Sets a new cut-off to the spot of light.

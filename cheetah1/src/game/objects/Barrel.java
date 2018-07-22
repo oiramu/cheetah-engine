@@ -21,7 +21,6 @@ import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
 import engine.components.Attenuation;
-import engine.components.BaseLight;
 import engine.components.MeshRenderer;
 import engine.components.PointLight;
 import engine.core.Time;
@@ -122,9 +121,9 @@ public class Barrel {
         this.material = new Material(animation.get(0), new Vector3f(1,1,1));
         this.state = STATE_IDLE;
         this.transform = transform;
-        this.light = new PointLight(new BaseLight(new Vector3f(0.9f,0.7f,0.2f), 0.8f), 
+        this.light = new PointLight(new Vector3f(0.9f,0.7f,0.2f), 0.8f, 
         		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0, 
-        				getTransform().getPosition().getZ()), 8);
+        				getTransform().getPosition().getZ()));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         this.dead = false;
         this.health = 200;
@@ -172,7 +171,7 @@ public class Barrel {
         		dead = true;
                 material.setTexture(animation.get(1));
             } else if (timeDecimals <= 0.5f) {
-            	RenderingEngine.addPointLight(light);
+            	RenderingEngine.addLight(light);
                 material.setTexture(animation.get(2));
             } else if (timeDecimals <= 0.75f) {
             	if(distance<1) {
@@ -213,7 +212,7 @@ public class Barrel {
         }
         
         if (state == STATE_DEAD) {
-        	RenderingEngine.removePointLight(light);
+        	RenderingEngine.removeLight(light);
         	boom = false;
         	Level.removeBarrel(this);
         }

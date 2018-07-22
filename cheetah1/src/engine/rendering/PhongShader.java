@@ -40,8 +40,8 @@ public class PhongShader extends Shader {
     private static final PhongShader instance = new PhongShader();
     private static Vector3f fogColor;
     private static Vector3f ambientLight;
-    private static DirectionalLight directionalLight = new DirectionalLight(new BaseLight(
-    		new Vector3f(0,0,0), 0), new Vector3f(0,0,0));
+    private static BaseLight directionalLight = new DirectionalLight(
+    		new Vector3f(0,0,0), 0, new Vector3f(0,0,0));
     private static PointLight[] pointLights = new PointLight[] {};
 	private static SpotLight[] spotLights = new SpotLight[] {};
 
@@ -125,13 +125,13 @@ public class PhongShader extends Shader {
         setUniform("fogColor", fogColor);
         
         setUniform("ambientLight", ambientLight);
-        setUniform("directionalLight", directionalLight);
+        setUniformDirectionalLight("directionalLight", (DirectionalLight)directionalLight);
         
         for(int i = 0; i < pointLights.length; i++)
-			setUniform("pointLights[" + i + "]", pointLights[i]);
+        	setUniformPointLight("pointLights[" + i + "]", (PointLight)pointLights[i]);
 		
 		for(int i = 0; i < spotLights.length; i++)
-			setUniform("spotLights[" + i + "]", spotLights[i]);
+			setUniformSpotLight("spotLights[" + i + "]", (SpotLight)spotLights[i]);
         
         setUniformf("specularIntensity", material.getSpecularIntensity());
         setUniformf("specularPower", material.getSpecularPower());
@@ -245,7 +245,7 @@ public class PhongShader extends Shader {
 	 * @param uniformName Name in baseLight.
 	 * @param baseLight of the uniformName.
 	 */
-	public void setUniform(String uniformName, BaseLight baseLight) {
+	public void setUniformBaseLight(String uniformName, BaseLight baseLight) {
 		setUniform(uniformName + ".color", baseLight.getColor());
 		setUniformf(uniformName + ".intensity", baseLight.getIntensity());
 	}
@@ -255,8 +255,8 @@ public class PhongShader extends Shader {
 	 * @param uniformName Name in directionalLight.
 	 * @param directionalLight of the uniformName.
 	 */
-	public void setUniform(String uniformName, DirectionalLight directionalLight) {
-		setUniform(uniformName + ".base", directionalLight.getBase());
+	public void setUniformDirectionalLight(String uniformName, DirectionalLight directionalLight) {
+		setUniformBaseLight(uniformName + ".base", directionalLight);
 		setUniform(uniformName + ".direction", directionalLight.getDirection());
 	}
 	
@@ -265,8 +265,8 @@ public class PhongShader extends Shader {
 	 * @param uniformName Name in pointLight.
 	 * @param pointLight's constructor.
 	 */
-	public void setUniform(String uniformName, PointLight pointLight) {
-		setUniform(uniformName + ".base", pointLight.getBaseLight());
+	public void setUniformPointLight(String uniformName, PointLight pointLight) {
+		setUniformBaseLight(uniformName + ".base", pointLight);
 		setUniformf(uniformName + ".atten.constant", pointLight.getAtten().getConstant());
 		setUniformf(uniformName + ".atten.linear", pointLight.getAtten().getLinear());
 		setUniformf(uniformName + ".atten.exponent", pointLight.getAtten().getExponent());
@@ -279,8 +279,8 @@ public class PhongShader extends Shader {
 	 * @param uniformName Name in pointLight.
 	 * @param spotLight's constructor.
 	 */
-	public void setUniform(String uniformName, SpotLight spotLight) {
-		setUniform(uniformName + ".pointLight", spotLight.getPointLight());
+	public void setUniformSpotLight(String uniformName, SpotLight spotLight) {
+		setUniformPointLight(uniformName + ".pointLight", spotLight);
 		setUniform(uniformName + ".direction", spotLight.getDirection());
 		setUniformf(uniformName + ".cutoff", spotLight.getCutoff());
 	}

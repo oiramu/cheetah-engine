@@ -21,7 +21,6 @@ import java.util.Random;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.components.BaseLight;
 import engine.components.DirectionalLight;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
@@ -1549,8 +1548,8 @@ public class Level extends GameComponent {
         RenderingEngine.fogGradient = 1.5f;
         RenderingEngine.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
         RenderingEngine.ambientLight = new Vector3f(0.8f,0.8f,0.8f);
-        RenderingEngine.setDirectionalLight(new DirectionalLight(new BaseLight(new Vector3f(1,1,1), 
-        		1f), new Vector3f(level.getWidth()/2,10,level.getHeight()/2)));
+        RenderingEngine.addLight(new DirectionalLight(new Vector3f(1,1,1), 
+        		1f, new Vector3f(level.getWidth()/2,10,level.getHeight()/2)));
     }
 	
 	/**

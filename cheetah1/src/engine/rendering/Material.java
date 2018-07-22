@@ -18,17 +18,24 @@ package engine.rendering;
 import engine.core.Vector3f;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.1
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.1
+ * @since 2017
+ */
 public class Material {
 
-    private Texture texture;
+	private Texture texture;
     private Vector3f color;
 	private float specularIntensity;
 	private float specularPower;
+	
+	/**
+     * Constructor of the texture material of a mesh.
+     */
+    public Material() {
+        this(new Texture("null"), new Vector3f(1, 1, 1));
+    }
 
     /**
      * Constructor of the texture material of a mesh.
@@ -44,7 +51,7 @@ public class Material {
      * @param color of a mesh.
      */
     public Material(Texture texture, Vector3f color) {
-        this(texture, color, 2, 32);
+        this(texture, color, 1, 8);
     }
     
     /**
@@ -67,63 +74,48 @@ public class Material {
      * Returns the texture of the material.
      * @return Texture.
      */
-    public Texture getTexture() {
-        return texture;
-    }
+    public Texture getTexture() {return texture;}
 
     /**
      * Sets the texture to the material.
      * @param texture for the material.
      */
-    public void setTexture(Texture texture) {
-        this.texture = texture;
-    }
+    public void setTexture(Texture texture) {this.texture = texture;}
 
     /**
      * Returns the color of the material.
      * @return Color.
      */
-    public Vector3f getColor() {
-        return color;
-    }
+    public Vector3f getColor() {return color;}
 
     /**
      * Sets the color to the material.
      * @param color for the material.
      */
-    public void setColor(Vector3f color) {
-        this.color = color;
-    }
+    public void setColor(Vector3f color) {this.color = color;}
 	
     /**
      * Returns the spectacular intensity of the material.
      * @return Spectacular intensity.
      */
-	public float getSpecularIntensity() {
-		return specularIntensity;
-	}
+	public float getSpecularIntensity() {return specularIntensity;}
 
 	/**
      * Sets the spectacular intensity of the material.
      * @param specularIntensity Intensity.
      */
-	public void setSpecularIntensity(float specularIntensity) {
-		this.specularIntensity = specularIntensity;
-	}
+	public void setSpecularIntensity(float specularIntensity) {this.specularIntensity = specularIntensity;}
 
 	/**
      * Returns the spectacular power of the material.
      * @return Spectacular power.
      */
-	public float getSpecularPower() {
-		return specularPower;
-	}
+	public float getSpecularPower() {return specularPower;}
 
 	/**
      * Sets the spectacular power of the material.
      * @param specularPower Power.
      */
-	public void setSpecularPower(float specularPower) {
-		this.specularPower = specularPower;
-	}
+	public void setSpecularPower(float specularPower) {this.specularPower = specularPower;}
+	
 }

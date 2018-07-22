@@ -46,6 +46,12 @@ public class Vector3f {
     public float length() {
         return (float) Math.sqrt(m_x * m_x + m_y * m_y + m_z * m_z);
     }
+    
+    /**
+     * Gets the maximum between two numbers.
+     * @return The maximum number.
+     */
+    public float max() { return Math.max(m_x, Math.max(m_y, m_z)); }
 
     /**
      * Dot vector.

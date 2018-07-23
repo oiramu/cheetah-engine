@@ -16,7 +16,7 @@
 package engine.components;
 
 import engine.core.Vector3f;
-import engine.rendering.ForwardSpot;
+import engine.rendering.Shader;
 
 /**
  *
@@ -35,11 +35,12 @@ public class SpotLight extends PointLight {
 	 * @param direction of the spotLight
 	 * @param cutoff of the spotLight
 	 */
-	public SpotLight(Vector3f color, float intensity, Attenuation atten, Vector3f position, Vector3f direction, float cutoff) {
+	public SpotLight(Vector3f color, float intensity, Attenuation atten, Vector3f position,
+			Vector3f direction, float cutoff) {
 		super(color, intensity, atten, position);
 		this.direction = direction.normalized();
 		this.cutoff = cutoff;
-		setShader(ForwardSpot.getInstance());
+		setShader(new Shader("forward-spot"));
 	}
 	
 	/**

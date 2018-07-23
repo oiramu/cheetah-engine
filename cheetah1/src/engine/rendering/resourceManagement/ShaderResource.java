@@ -18,6 +18,9 @@ package engine.rendering.resourceManagement;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.glCreateProgram;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  *
  * @author Carlos Rodriguez
@@ -28,6 +31,9 @@ public class ShaderResource {
 
 	private int program;
     private int refCount;
+    private HashMap<String, Integer>		uniforms;
+    private ArrayList<String> 				uniformNames;
+    private ArrayList<String> 				uniformTypes;
     
     /**
      * Constructor for the texture manager.
@@ -35,6 +41,9 @@ public class ShaderResource {
     public ShaderResource() {
         this.program = glCreateProgram();
         this.refCount = 1;
+        uniforms = new HashMap<String, Integer>();
+        uniformNames = new ArrayList<String>();
+        uniformTypes = new ArrayList<String>();
         if (program == 0) {
             System.err.println("Shader creation failed: Could not find valid memory location in constructor");
             System.exit(1);
@@ -45,9 +54,7 @@ public class ShaderResource {
      * Cleans everything in the GPU and RAM.
      */
     @Override
-    protected void finalize() {
-    	glDeleteBuffers(program);
-    }
+    protected void finalize() {glDeleteBuffers(program);}
     
     /**
      * Add a point in the reference counter.
@@ -60,9 +67,27 @@ public class ShaderResource {
     public boolean removeReference() {refCount--; return refCount == 0;}
 
 	/**
-	 * Gets the id of the texture in object.
-	 * @return returns the id.
+	 * Gets the program of the texture in object.
+	 * @return returns the program.
 	 */
-	public int getId() {return program;}
+	public int getProgram() {return program;}
+
+	/**
+	 * Returns the uniform's Hash-Map.
+	 * @return the uniforms Hash-Map.
+	 */
+	public HashMap<String, Integer> getUniforms() {return uniforms;}
+
+	/**
+	 * Returns the uniform names' Array-List.
+	 * @return the uniformNames Array-List.
+	 */
+	public ArrayList<String> getUniformNames() {return uniformNames;}
+
+	/**
+	 * Returns the uniform types' Array-List.
+	 * @return the uniformTypes Array-List.
+	 */
+	public ArrayList<String> getUniformTypes() {return uniformTypes;}
 
 }

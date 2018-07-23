@@ -16,7 +16,7 @@
 package engine.components;
 
 import engine.core.Vector3f;
-import engine.rendering.ForwardPoint;
+import engine.rendering.Shader;
 
 /**
  *
@@ -49,7 +49,7 @@ public class PointLight extends BaseLight {
 		float c = atten.getExponent() - COLOR_DEPTH * getIntensity() * getColor().max();
 		
 		this.range = (float) (-b + Math.sqrt(b * b - 4 * a * c))/(2 * a);
-		setShader(ForwardPoint.getInstance());
+		setShader(new Shader("forward-point"));
 	}
 	
 	/**

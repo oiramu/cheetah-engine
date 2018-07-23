@@ -37,6 +37,7 @@ public class RenderingEngine {
 	private Camera mainCamera;
 	private BaseLight activeLight;
 	public static Vector3f ambientLight;
+	private Shader forwardAmbient;
 	
 	private static ArrayList<BaseLight> lights;
 	
@@ -49,6 +50,7 @@ public class RenderingEngine {
 	 */
 	public RenderingEngine() {
         lights = new ArrayList<BaseLight>();
+        forwardAmbient = new Shader("forward-ambient");
         
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -75,7 +77,6 @@ public class RenderingEngine {
     public void render(GameComponent component) {
     	try {
 	    	clearScreen();
-	    	Shader forwardAmbient = ForwardAmbient.getInstance();
 			forwardAmbient.setRenderingEngine(this);;
 	        component.render(forwardAmbient);
 	        glEnable(GL_BLEND);

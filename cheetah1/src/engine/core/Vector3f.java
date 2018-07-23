@@ -101,7 +101,7 @@ public class Vector3f {
         float rW = cosHalfAngle;
 
         Quaternion rotation = new Quaternion(rX, rY, rZ, rW);
-        Quaternion conjugate = rotation.conjugate();
+        Quaternion conjugate = rotation.conjugated();
 
         Quaternion w = rotation.mul(this).mul(conjugate);
 

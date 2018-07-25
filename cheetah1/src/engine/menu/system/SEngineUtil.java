@@ -23,11 +23,11 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class SEngineUtil {	
 	
 	public static boolean g_collisionBox = false;
@@ -116,15 +116,12 @@ public class SEngineUtil {
 	 * Returns the font that is been used.
 	 * @return Font.
 	 */
-	public AngelCodeFont getFont() {
-		return font;
-	}
+	public AngelCodeFont getFont() {return font;}
 	
 	/**
 	 * Returns the bold font that is been used.
 	 * @return Bold font.
 	 */
-	public AngelCodeFont getBoldFont() {
-		return boldFont;
-	}
+	public AngelCodeFont getBoldFont() {return boldFont;}
+	
 }

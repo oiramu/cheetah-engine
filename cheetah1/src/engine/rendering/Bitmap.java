@@ -28,9 +28,9 @@ import javax.imageio.ImageIO;
  */
 public class Bitmap {
 
-    private final int width;
-    private final int height;
-    private int[] pixels;
+    private final int 	width;
+    private final int 	height;
+    private int[] 		pixels;
     
     /**
      * Constructor of the bitmap object with a file.
@@ -112,25 +112,19 @@ public class Bitmap {
      * Returns the width of the bitmap.
      * @return Width.
      */
-    public int getWidth() {
-        return width;
-    }
+    public int getWidth() {return width;}
 
     /**
      * Returns the height of the bitmap.
      * @return Height.
      */
-    public int getHeight() {
-        return height;
-    }
+    public int getHeight() {return height;}
 
     /**
      * Returns all the pixel color data to an integer array.
      * @return Pixel.
      */
-    public int[] getPixels() {
-        return pixels;
-    }
+    public int[] getPixels() {return pixels;}
     
     /**
      * Return the specific pixels in the bitmap.
@@ -138,9 +132,7 @@ public class Bitmap {
      * @param y Pixel coordinates.
      * @return Pixel.
      */
-    public int getPixel(int x, int y) {
-        return pixels[x + y * width];
-    }
+    public int getPixel(int x, int y) {return pixels[x + y * width];}
 
     /**
      * Sets the pixel color in a specific space.
@@ -148,7 +140,6 @@ public class Bitmap {
      * @param y Pixel coordinates.
      * @param value of the color.
      */
-    public void setPixel(int x, int y, int value) {
-        pixels[x + y * width] = value;
-    }
+    public void setPixel(int x, int y, int value) {pixels[x + y * width] = value;}
+    
 }

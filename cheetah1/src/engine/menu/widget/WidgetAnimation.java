@@ -21,11 +21,11 @@ import org.newdawn.slick.Graphics;
 import engine.menu.CoolDown;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class WidgetAnimation extends WidgetModel {
 	
 	/*
@@ -83,7 +83,6 @@ public class WidgetAnimation extends WidgetModel {
 	}
 
 	@Override
-	public void draw() {
-		device.translate(transPos.x, transPos.y);
-	}
+	public void draw() {device.translate(transPos.x, transPos.y);}
+	
 }

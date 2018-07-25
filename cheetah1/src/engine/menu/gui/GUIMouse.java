@@ -23,11 +23,11 @@ import org.newdawn.slick.SlickException;
 import engine.rendering.Window;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class GUIMouse {
 	
 	private Image mouseTexture;
@@ -69,8 +69,6 @@ public class GUIMouse {
 	/**
 	 * Draws the texture respectably.
 	 */
-	public void draw2D() {
-		mouseTexture.draw(mousePos.x, mousePos.y);
-	}
+	public void draw2D() {mouseTexture.draw(mousePos.x, mousePos.y);}
 
 }

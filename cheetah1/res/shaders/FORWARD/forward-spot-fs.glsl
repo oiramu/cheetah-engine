@@ -9,5 +9,6 @@ uniform sampler2D R_diffuse;
 uniform SpotLight R_spotLight;
 
 void main() {
-    gl_FragColor = texture2D(R_diffuse, texCoord0.xy) * CalcSpotLight(R_spotLight, normalize(normal0), worldPos0);
+	if(R_spotLight.pointLight.base.intensity > 0)
+    	gl_FragColor = texture2D(R_diffuse, texCoord0.xy) * CalcSpotLight(R_spotLight, normalize(normal0), worldPos0);
 }

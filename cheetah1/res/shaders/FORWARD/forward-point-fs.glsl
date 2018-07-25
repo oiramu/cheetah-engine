@@ -9,5 +9,6 @@ uniform sampler2D R_diffuse;
 uniform PointLight R_pointLight;
 
 void main() {
-    gl_FragColor = texture2D(R_diffuse, texCoord0.xy) * CalcPointLight(R_pointLight, normalize(normal0), worldPos0);
+	if(R_pointLight.base.intensity > 0)
+    	gl_FragColor = texture2D(R_diffuse, texCoord0.xy) * CalcPointLight(R_pointLight, normalize(normal0), worldPos0);
 }

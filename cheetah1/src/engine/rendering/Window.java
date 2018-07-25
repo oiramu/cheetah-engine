@@ -33,7 +33,7 @@ import org.newdawn.slick.opengl.PNGDecoder;
 import engine.audio.AudioUtil;
 import engine.menu.DefaultMenu;
 import engine.menu.Menu;
-import engine.menu.Rendering2DUtil;
+import engine.menu.Rendering2DEngine;
 import engine.menu.system.SGameTime;
 
 /**
@@ -143,9 +143,9 @@ public class Window {
 	 * Renders all the "2D" related stuff like the menus.
 	 */
 	public static void renderMenu() {
-		Rendering2DUtil.restore();	
+		Rendering2DEngine.restore();	
 		//2D
-		Rendering2DUtil.context2D();
+		Rendering2DEngine.context2D();
 		menu.draw2D();
 	}
 	

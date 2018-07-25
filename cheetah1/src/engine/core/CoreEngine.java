@@ -19,23 +19,22 @@ import engine.rendering.RenderingEngine;
 import engine.rendering.Window;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.4
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.4
+ * @since 2017
+ */
 public class CoreEngine {
 	
-	private int width;
-	private int height;
-	private double frameTime;
-	private boolean fullscreen;
-	private boolean isRunning;
-	private String title;
-	private Game game;
-	private RenderingEngine renderingEngine;
-	
-	private static CoreEngine engine;
+	private int 				width;
+	private int 				height;
+	private double 				frameTime;
+	private boolean 			fullscreen;
+	private boolean 			isRunning;
+	private String 				title;
+	private Game 				game;
+	private RenderingEngine 	renderingEngine;
+	private static CoreEngine 	engine;
 	
 	/**
 	 * Constructor for the engine display.
@@ -187,23 +186,17 @@ public class CoreEngine {
 	 * Returns the main game.
 	 * @return Game
 	 */
-	public Game getGame() {
-		return game;
-	}
+	public Game getGame() {return game;}
 	
 	/**
 	 * Returns the main engine instance.
 	 * @return Engine instance
 	 */
-	public static CoreEngine getEngine() {
-		return engine;
-	}
+	public static CoreEngine getEngine() {return engine;}
 	
 	/**
      * Method that cleans everything in the program's window.
      */
-    private void cleanUp() {
-        Window.dispose();
-    }
+    private void cleanUp() {Window.dispose();}
 
 }

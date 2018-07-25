@@ -18,11 +18,11 @@ package engine.menu.system;
 import engine.core.Time;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class SGameTime {
 	
 	/**
@@ -55,15 +55,12 @@ public class SGameTime {
 	 * Returns the total time of gaming.
 	 * @return total time.
 	 */
-	public double getTotalGameTime() {
-		return totalGameTime;
-	}
+	public double getTotalGameTime() {return totalGameTime;}
 	
 	/**
 	 * Returns the total time of elapsed.
 	 * @return total elapsed time.
 	 */
-	public double getElapsedGameTime() {
-		return elapsedGameTime;
-	}
+	public double getElapsedGameTime() {return elapsedGameTime;}
+	
 }

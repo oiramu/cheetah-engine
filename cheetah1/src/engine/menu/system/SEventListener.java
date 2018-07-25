@@ -21,11 +21,11 @@ import engine.rendering.Window;
 import game.Auschwitz;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class SEventListener {
 	
 	private static final int EPISODE_1 = 1;

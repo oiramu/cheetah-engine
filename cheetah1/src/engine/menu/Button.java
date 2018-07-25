@@ -29,11 +29,11 @@ import engine.menu.widget.WidgetModel;
 import engine.rendering.Window;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class Button extends WidgetModel {
 
 	private Vector2f size;
@@ -125,31 +125,24 @@ public class Button extends WidgetModel {
 	 * Adds a event to be click-able in the menu. 
 	 * @param event to be click-able.
 	 */
-	public void addEvent(MenuEvent event) {
-		buttonEvent = event;
-	}
+	public void addEvent(MenuEvent event) {buttonEvent = event;}
 	
 	/**
 	 * Returns the texture of the button.
 	 * @return Texture of the button.
 	 */
-	public SpriteSheet getTexture() {
-		return texture;
-	}
+	public SpriteSheet getTexture() {return texture;}
 	
 	/**
 	 * Sets a texture for the button.
 	 * @param texture for the button.
 	 */
-	public void setTexture(SpriteSheet texture) {
-		this.texture = texture;
-	}
+	public void setTexture(SpriteSheet texture) {this.texture = texture;}
 	
 	/**
 	 * Check if hover or not when need it.
 	 * @param hover State.
 	 */
-	public void setHover(boolean hover) {
-		this.hover = hover;
-	}
+	public void setHover(boolean hover) {this.hover = hover;}
+	
 }

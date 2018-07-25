@@ -18,11 +18,11 @@ package engine.physics;
 import engine.core.Vector2f;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class PhysicsUtil {
 
 	/**

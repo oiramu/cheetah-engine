@@ -18,11 +18,11 @@ package engine.menu;
 import engine.menu.system.SEventListener;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class MenuEvent {
 	
 	/*

@@ -22,11 +22,11 @@ import org.newdawn.slick.SlickException;
 import engine.rendering.Window;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class WidgetImage extends WidgetModel {
 	
 	private Image texture;
@@ -96,8 +96,7 @@ public class WidgetImage extends WidgetModel {
 	/**
 	 * Deletes the texture when need it.
 	 */
-	public void delete() 
-	{ 
+	public void delete() { 
 		try {
 			texture.destroy();
 		} catch (SlickException e) {

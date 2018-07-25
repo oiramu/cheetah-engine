@@ -18,11 +18,11 @@ package engine.menu;
 import engine.menu.system.SGameTime;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class CoolDown {
 	
 	private float timerInstance;
@@ -30,9 +30,7 @@ public class CoolDown {
 	/**
 	 * Time cooler constructor.
 	 */
-	public CoolDown() {
-		timerInstance = 0.0f;
-	}
+	public CoolDown() {timerInstance = 0.0f;}
 	
 	/**
 	 * Cools down the time counter.

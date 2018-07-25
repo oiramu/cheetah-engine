@@ -11,8 +11,7 @@ varying vec3 worldPos0;
 uniform mat4 T_world;
 uniform mat4 T_MVP;
 
-void main()
-{
+void main() {
     gl_Position = T_MVP * vec4(position, 1.0);
     texCoord0 = texCoord;
     normal0 = (T_world * vec4(normal, 0.0)).xyz;

@@ -21,11 +21,11 @@ import java.util.List;
 import engine.menu.widget.WidgetModel;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class MenuObject {
 
 	private List<WidgetModel> children = new ArrayList<WidgetModel>();

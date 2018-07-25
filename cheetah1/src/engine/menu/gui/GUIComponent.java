@@ -16,11 +16,11 @@
 package engine.menu.gui;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public abstract class GUIComponent {
 	
 	protected String componentName;
@@ -38,31 +38,24 @@ public abstract class GUIComponent {
 	 * Returns the component name.
 	 * @return Component name.
 	 */
-	public String getComponentName() {
-		return componentName;
-	}
+	public String getComponentName() {return componentName;}
 	
 	/**
 	 * Sets the component name.
 	 * @param name Component name.
 	 */
-	public void setComponentName(String name) {
-		componentName = name;
-	}
+	public void setComponentName(String name) {componentName = name;}
 	
 	/**
 	 * Returns the component type.
 	 * @return Component type.
 	 */
-	public String getComponentType() {
-		return componentType;
-	}
+	public String getComponentType() {return componentType;}
 	
 	/**
 	 * Sets the component type.
 	 * @param name Component type.
 	 */
-	public void setComponentType(String name) {
-		componentType = name;
-	}
+	public void setComponentType(String name) {componentType = name;}
+	
 }

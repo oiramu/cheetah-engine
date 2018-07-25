@@ -20,12 +20,12 @@ import org.lwjgl.opengl.GL11;
 import engine.rendering.Window;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
-public class Rendering2DUtil {
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
+public class Rendering2DEngine {
 	
 	/**
 	 * Add the openGL context to the menu.

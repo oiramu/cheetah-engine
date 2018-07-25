@@ -16,11 +16,11 @@
 package engine.menu;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class Menu {
 	
 	protected MenuModel menu;
@@ -28,9 +28,7 @@ public class Menu {
 	/**
 	 * Constructor for a menu node.
 	 */
-	public Menu() {
-		menu = null;
-	}
+	public Menu() {menu = null;}
 	
 	//Empty methods, different for each game
 	public void initialization() {}
@@ -42,15 +40,12 @@ public class Menu {
 	 * Returns of a simple menu.
 	 * @return Menu.
 	 */
-	public MenuModel getMenu() {
-		return menu;
-	}
+	public MenuModel getMenu() {return menu;}
 
 	/**
 	 * Sets a new menu node.
 	 * @param menu Menu.
 	 */
-	public void setMenu(MenuModel menu) {
-		this.menu = menu;
-	}
+	public void setMenu(MenuModel menu) {this.menu = menu;}
+	
 }

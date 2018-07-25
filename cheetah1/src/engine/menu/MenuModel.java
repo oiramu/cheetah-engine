@@ -32,11 +32,11 @@ import engine.menu.widget.WidgetModel;
 import engine.menu.widget.WidgetText;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class MenuModel extends GUIComponent {
 
 	private MenuObject menuObject = new MenuObject();

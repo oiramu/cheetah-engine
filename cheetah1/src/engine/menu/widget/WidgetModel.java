@@ -18,11 +18,11 @@ package engine.menu.widget;
 import org.lwjgl.util.vector.Vector2f;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public abstract class WidgetModel {
 
 	protected String componentName;
@@ -40,39 +40,30 @@ public abstract class WidgetModel {
 	 * Returns the position in a vector.
 	 * @return Position.
 	 */
-	public Vector2f getPosition() {
-		return position;
-	}
+	public Vector2f getPosition() {return position;}
 	
 	/**
 	 * Sets the position of a vector in the main vector.
 	 * @param position Position coordinates.
 	 */
-	public void setPosition(Vector2f position) {
-		this.position = position;
-	}
+	public void setPosition(Vector2f position) {this.position = position;}
 	
 	/**
 	 * Returns the component's type.
 	 * @return Component's type.
 	 */
-	public String getComponentType() {
-		return componentType;
-	}
+	public String getComponentType() {return componentType;}
 	
 	/**
 	 * Returns the component's name.
 	 * @return Component's name.
 	 */
-	public String getComponentName() {
-		return componentName;
-	}
+	public String getComponentName() {return componentName;}
 	
 	/**
 	 * Sets the component's name in a string.
 	 * @param name Component's name.
 	 */
-	public void setComponentName(String name) {
-		componentName = name;
-	}
+	public void setComponentName(String name) {componentName = name;}
+	
 }

@@ -140,21 +140,16 @@ public class AudioUtil {
      * Checks if the program is playing a MIDI sequence.
      * @return Sequencer state.
      */
-    public static boolean isPlayingMidi() {
-        return sequencer.isRunning();
-    }
+    public static boolean isPlayingMidi() {return sequencer.isRunning();}
     
     /**
      * Run the MIDI system.
      */
-    public static void runMidi() {
-        sequencer.start();
-    }
+    public static void runMidi() {sequencer.start();}
     
     /**
      * Stop the MIDI system.
      */
-    public static void stopMidi() {
-        sequencer.stop();
-    }
+    public static void stopMidi() {sequencer.stop();}
+    
 }

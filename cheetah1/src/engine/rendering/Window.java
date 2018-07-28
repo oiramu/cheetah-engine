@@ -44,8 +44,8 @@ import engine.menu.system.SGameTime;
 */
 public class Window {
 	
-	private static Menu menu;
-	private static Sequence song = AudioUtil.loadMidi("THEME0");
+	private static Menu 			m_menu;
+	private final static Sequence 	THEME = AudioUtil.loadMidi("THEME0");
 
 	/**
 	 * Method that creates the window with menu for the program.
@@ -82,8 +82,8 @@ public class Window {
 			//Hide mouse
 			Cursor emptyCursor = new Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null);
 			Mouse.setNativeCursor(emptyCursor);
-			AudioUtil.playMidi(song);
-			menu = new DefaultMenu();
+			AudioUtil.playMidi(THEME);
+			m_menu = new DefaultMenu();
 			
 			//SEngineUtil.getInstance().setInputType(InputType.MOUSE); //Default input type
 		} catch(LWJGLException e) {
@@ -113,9 +113,7 @@ public class Window {
         return buffer;
     }
 	
-	public static void render() {
-		Display.update();
-	}
+	public static void render() {Display.update();}
 	
 	/**
 	 * Updates everything related for the window like the inputs or objects
@@ -136,7 +134,7 @@ public class Window {
 		*/
 		//Update objects
 		render();
-		menu.update();
+		m_menu.update();
 	}
 	
 	/**
@@ -146,16 +144,14 @@ public class Window {
 		Rendering2DEngine.restore();	
 		//2D
 		Rendering2DEngine.context2D();
-		menu.draw2D();
+		m_menu.draw2D();
 	}
 	
 	/**
 	 * Gets the menu that is showing.
 	 * @return
 	 */
-	public static Menu getMenu() {
-		return menu;
-	}
+	public static Menu getMenu() {return m_menu;}
 	
 	/**
      * Removes everything when the program closes
@@ -171,32 +167,24 @@ public class Window {
      * Gets if the window closes.
      * @return window's state.
      */
-    public static boolean isCloseRequested() {
-        return Display.isCloseRequested();
-    }
+    public static boolean isCloseRequested() {return Display.isCloseRequested();}
 
     /**
      * Returns the window width.
      * @return Width.
      */
-    public static int getWidth() {
-        return Display.getDisplayMode().getWidth();
-    }
+    public static int getWidth() {return Display.getDisplayMode().getWidth();}
 
     /**
      * Returns the window height.
      * @return Height.
      */
-    public static int getHeight() {
-        return Display.getDisplayMode().getHeight();
-    }
+    public static int getHeight() {return Display.getDisplayMode().getHeight();}
 
     /**
      * Returns the window title.
      * @return Title.
      */
-    public static String getTitle() {
-        return Display.getTitle();
-    }
+    public static String getTitle() {return Display.getTitle();}
 
 }

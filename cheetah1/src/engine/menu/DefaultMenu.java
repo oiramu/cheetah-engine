@@ -25,33 +25,33 @@ import engine.menu.gui.GUIMouse;
  */
 public class DefaultMenu extends Menu {
 
-	private GUIMouse mouse;
+	private GUIMouse m_mouse;
 
 	/**
 	 * Default menu constructor.
 	 */
 	public DefaultMenu() {
-		menu = new MenuModel("res/menu/menu.txt");
-		mouse = new GUIMouse();
+		m_menu = new MenuModel("res/menu/menu.txt");
+		m_mouse = new GUIMouse();
 	}
 	
 	/**
 	 * Updates the menu and mouse rendering every frame.
 	 */
 	public void update() {
-		mouse.update();
+		m_mouse.update();
 		
-		if(menu != null)
-			menu.update();
+		if(m_menu != null)
+			m_menu.update();
 	}
 	
 	/**
 	 * Draws the menu and mouse on screen.
 	 */
 	public void draw2D() {
-		if(menu != null)
-			menu.draw2D();
+		if(m_menu != null)
+			m_menu.draw2D();
 		
-		mouse.draw2D();
+		m_mouse.draw2D();
 	}
 }

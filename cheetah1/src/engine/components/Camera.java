@@ -27,16 +27,14 @@ public class Camera {
 
     public static final Vector3f yAxis = new Vector3f(0, 1, 0);
 
-    private Vector3f pos;
-    private Vector3f forward;
-    private Vector3f up;
+    private Vector3f m_pos;
+    private Vector3f m_forward;
+    private Vector3f m_up;
 
     /**
      * Camera empty constructor.
      */
-    public Camera() {
-        this(new Vector3f(0, 0, 0));
-    }
+    public Camera() {this(new Vector3f(0, 0, 0));}
 
     /**
      * Camera constructor on a 3D space.
@@ -53,9 +51,9 @@ public class Camera {
      * @param up direction.
      */
     public Camera(Vector3f pos, Vector3f forward, Vector3f up) {
-        this.pos = pos;
-        this.forward = forward.normalized();
-        this.up = up.normalized();
+        this.m_pos = pos;
+        this.m_forward = forward.normalized();
+        this.m_up = up.normalized();
     }
 
     /**
@@ -84,20 +82,18 @@ public class Camera {
      * @param dir Direction.
      * @param amt Velocity amount.
      */
-    public void move(Vector3f dir, float amt) {
-        pos = pos.add(dir.mul(amt));
-    }
+    public void move(Vector3f dir, float amt) {m_pos = m_pos.add(dir.mul(amt));}
 
     /**
      * Rotates the camera in the Y axis.
      * @param angle of rotation.
      */
     public void rotateY(float angle) {
-        Vector3f Haxis = yAxis.cross(forward).normalized();
+        Vector3f Haxis = yAxis.cross(m_forward).normalized();
 
-        forward = forward.rotate(angle, yAxis).normalized();
+        m_forward = m_forward.rotate(angle, yAxis).normalized();
 
-        up = forward.cross(Haxis).normalized();
+        m_up = m_forward.cross(Haxis).normalized();
     }
 
     /**
@@ -105,75 +101,59 @@ public class Camera {
      * @param angle of rotation.
      */
     public void rotateX(float angle) {
-        Vector3f Haxis = yAxis.cross(forward).normalized();
+        Vector3f Haxis = yAxis.cross(m_forward).normalized();
 
-        forward = forward.rotate(angle, Haxis).normalized();
+        m_forward = m_forward.rotate(angle, Haxis).normalized();
 
-        up = forward.cross(Haxis).normalized();
+        m_up = m_forward.cross(Haxis).normalized();
     }
 
     /**
      * Returns the left side coordinates of the camera.
      * @return Left coordinates.
      */
-    public Vector3f getLeft() {
-        return forward.cross(up).normalized();
-    }
+    public Vector3f getLeft() {return m_forward.cross(m_up).normalized();}
 
     /**
      * Returns the right side coordinates of the camera.
      * @return Right coordinates.
      */
-    public Vector3f getRight() {
-        return up.cross(forward).normalized();
-    }
+    public Vector3f getRight() {return m_up.cross(m_forward).normalized();}
 
     /**
      * Returns the camera's actual position.
      * @return Position Coordinates.
      */
-    public Vector3f getPos() {
-        return pos;
-    }
+    public Vector3f getPos() {return m_pos;}
 
     /**
      * Sets the camera to a new position.
      * @param pos New position Coordinates.
      */
-    public void setPos(Vector3f pos) {
-        this.pos = pos;
-    }
+    public void setPos(Vector3f pos) {this.m_pos = pos;}
 
     /**
-     * Obtiene la posicion z de la camara.
-     * @return eje z
+     * Returns the forward vector of the actual camera.
+     * @return forward vector.
      */
-    public Vector3f getForward() {
-        return forward;
-    }
+    public Vector3f getForward() {return m_forward;}
 
     /**
      * Returns the forward side coordinates of the camera.
      * @return Forward coordinates.
      */
-    public void setForward(Vector3f forward) {
-        this.forward = forward;
-    }
+    public void setForward(Vector3f forward) {this.m_forward = forward;}
 
     /**
      * Returns the up side coordinates of the camera.
      * @return Up coordinates.
      */
-    public Vector3f getUp() {
-        return up;
-    }
+    public Vector3f getUp() {return m_up;}
 
     /**
      * Returns the up side coordinates of the camera.
      * @return Up coordinates.
      */
-    public void setUp(Vector3f up) {
-        this.up = up;
-    }
+    public void setUp(Vector3f up) {this.m_up = up;}
     
 }

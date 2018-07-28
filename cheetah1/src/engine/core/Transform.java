@@ -25,33 +25,31 @@ import engine.components.Camera;
  */
 public class Transform {
 
-    private static Camera camera;
+    private static Camera 	m_camera;
 
-    private static float zNear;
-    private static float zFar;
-    private static float width;
-    private static float height;
-    private static float fov;
+    private static float 	m_zNear;
+    private static float 	m_zFar;
+    private static float 	m_width;
+    private static float 	m_height;
+    private static float 	m_fov;
 
-    private Vector3f position;
-    private Vector3f rotation;
-    private Vector3f scale;
+    private Vector3f 		m_position;
+    private Vector3f 		m_rotation;
+    private Vector3f 		m_scale;
 
     /**
      * Basic constructor for a transform.
      */
-    public Transform() {
-        this(new Vector3f(0, 0, 0));
-    }
+    public Transform() {this(new Vector3f(0, 0, 0));}
 
     /**
      * The main transform constructor of an object in a 3D space.
      * @param position of the object.
      */
     public Transform(Vector3f position) {
-        this.position = position;
-        this.rotation = new Vector3f(0, 0, 0);
-        this.scale = new Vector3f(1, 1, 1);
+        this.m_position = position;
+        this.m_rotation = new Vector3f(0, 0, 0);
+        this.m_scale = new Vector3f(1, 1, 1);
     }
     
     /**
@@ -60,9 +58,9 @@ public class Transform {
      * @return Transformation.
      */
     public Matrix4f getTransformation() {
-        Matrix4f translationMatrix = new Matrix4f().initTranslation(position.getX(), position.getY(), position.getZ());
-        Matrix4f rotationMatrix = new Matrix4f().initRotation(rotation.getX(), rotation.getY(), rotation.getZ());
-        Matrix4f scaleMatrix = new Matrix4f().initScale(scale.getX(), scale.getY(), scale.getZ());
+        Matrix4f translationMatrix = new Matrix4f().initTranslation(m_position.getX(), m_position.getY(), m_position.getZ());
+        Matrix4f rotationMatrix = new Matrix4f().initRotation(m_rotation.getX(), m_rotation.getY(), m_rotation.getZ());
+        Matrix4f scaleMatrix = new Matrix4f().initScale(m_scale.getX(), m_scale.getY(), m_scale.getZ());
 
         return translationMatrix.mul(rotationMatrix.mul(scaleMatrix));
     }
@@ -88,7 +86,7 @@ public class Transform {
      * @return Orthographic matrix.
      */
     public static Matrix4f getOrthographicMatrix() {
-        return new Matrix4f().initOrthographicProjection(-width / 2, width / 2, -height / 2, height / 2, zNear, zFar);
+        return new Matrix4f().initOrthographicProjection(-m_width / 2, m_width / 2, -m_height / 2, m_height / 2, m_zNear, m_zFar);
     }
 
     /**
@@ -96,8 +94,8 @@ public class Transform {
      * @return Orthographic camera matrix.
      */
     public static Matrix4f getOrthographicCameraMatrix() {
-        Matrix4f cameraRotation = new Matrix4f().initCamera(camera.getForward(), camera.getUp());
-        Matrix4f cameraTranslation = new Matrix4f().initTranslation(-camera.getPos().getX(), -camera.getPos().getY(), -camera.getPos().getZ());
+        Matrix4f cameraRotation = new Matrix4f().initCamera(m_camera.getForward(), m_camera.getUp());
+        Matrix4f cameraTranslation = new Matrix4f().initTranslation(-m_camera.getPos().getX(), -m_camera.getPos().getY(), -m_camera.getPos().getZ());
 
         return getOrthographicMatrix().mul(cameraRotation.mul(cameraTranslation));
     }
@@ -107,8 +105,8 @@ public class Transform {
      * @return Perspective camera matrix.
      */
     public static Matrix4f getPerspectiveCameraMatrix() {
-        Matrix4f cameraRotation = new Matrix4f().initCamera(camera.getForward(), camera.getUp());
-        Matrix4f cameraTranslation = new Matrix4f().initTranslation(-camera.getPos().getX(), -camera.getPos().getY(), -camera.getPos().getZ());
+        Matrix4f cameraRotation = new Matrix4f().initCamera(m_camera.getForward(), m_camera.getUp());
+        Matrix4f cameraTranslation = new Matrix4f().initTranslation(-m_camera.getPos().getX(), -m_camera.getPos().getY(), -m_camera.getPos().getZ());
 
         return getPerspectiveMatrix().mul(cameraRotation.mul(cameraTranslation));
     }
@@ -118,16 +116,14 @@ public class Transform {
      * @return Perspective matrix.
      */
     public static Matrix4f getPerspectiveMatrix() {
-        return new Matrix4f().initPerspectiveProjection(fov, width, height, zNear, zFar);
+        return new Matrix4f().initPerspectiveProjection(m_fov, m_width, m_height, m_zNear, m_zFar);
     }
 
     /**
      * Returns the 3D position of the transform.
      * @return 3D position of the transform.
      */
-    public Vector3f getPosition() {
-        return position;
-    }
+    public Vector3f getPosition() {return m_position;}
 
     /**
      * Builds a fully 3D camera projection and takes all the perspective
@@ -139,20 +135,18 @@ public class Transform {
      * @param Z_FAR The maximum point to render.
      */
     public static void setProjection(final float FOV, float width, float height, final float Z_NEAR, final float Z_FAR) {
-        Transform.fov = FOV;
-        Transform.width = width;
-        Transform.height = height;
-        Transform.zNear = Z_NEAR;
-        Transform.zFar = Z_FAR;
+        Transform.m_fov = FOV;
+        Transform.m_width = width;
+        Transform.m_height = height;
+        Transform.m_zNear = Z_NEAR;
+        Transform.m_zFar = Z_FAR;
     }
 
     /**
      * Sets a new 3D position for the transform into a vector.
      * @param position in a 3D space.
      */
-    public void setPosition(Vector3f position) {
-        this.position = position;
-    }
+    public void setPosition(Vector3f position) {this.m_position = position;}
 
     /**
      * Sets a new 3D position for the transform into a vector but
@@ -161,25 +155,19 @@ public class Transform {
      * @param y axis.
      * @param z axis.
      */
-    public void setPosition(float x, float y, float z) {
-        this.position = new Vector3f(x, y, z);
-    }
+    public void setPosition(float x, float y, float z) {this.m_position = new Vector3f(x, y, z);}
 
     /**
      * Returns the 3D rotation of the transform.
      * @return 3D rotation of the transform.
      */
-    public Vector3f getRotation() {
-        return rotation;
-    }
+    public Vector3f getRotation() {return m_rotation;}
     
     /**
      * Sets a new 3D rotation for the transform into a vector.
      * @param rotation to set.
      */
-    public void setRotation(Vector3f rotation) {
-        this.rotation = rotation;
-    }
+    public void setRotation(Vector3f rotation) {this.m_rotation = rotation;}
 
     /**
      * Sets a new 3D rotation for the transform into a vector but
@@ -188,25 +176,19 @@ public class Transform {
      * @param y axis.
      * @param z axis.
      */
-    public void setRotation(float x, float y, float z) {
-        this.rotation = new Vector3f(x, y, z);
-    }
+    public void setRotation(float x, float y, float z) {this.m_rotation = new Vector3f(x, y, z);}
 
     /**
-     * Obtiene el tama�o.
-     * @return tama�o
+     * Gets the scale of the transform
+     * @return scale.
      */
-    public Vector3f getScale() {
-        return scale;
-    }
+    public Vector3f getScale() {return m_scale;}
 
     /**
      * Sets a new scale for the transform into a vector.
      * @param scale vector data.
      */
-    public void setScale(Vector3f scale) {
-        this.scale = scale;
-    }
+    public void setScale(Vector3f scale) {this.m_scale = scale;}
 
     /**
      * Sets a new scale for the transform into a vector but
@@ -215,31 +197,24 @@ public class Transform {
      * @param y axis.
      * @param z axis.
      */
-    public void setScale(float x, float y, float z) {
-        this.scale = new Vector3f(x, y, z);
-    }
+    public void setScale(float x, float y, float z) {this.m_scale = new Vector3f(x, y, z);}
 
     /**
      * Sets a linear scaling for the transform.
      * @param amt Amount.
      */
-    public void setScale(float amt) {
-        setScale(amt, amt, amt);
-    }
+    public void setScale(float amt) {setScale(amt, amt, amt);}
 
     /**
      * Returns the main camera.
      * @return Camera.
      */
-    public static Camera getCamera() {
-        return camera;
-    }
+    public static Camera getCamera() {return m_camera;}
 
     /**
      * Sets a new camera for the transform.
      * @param camera for the transform.
      */
-    public static void setCamera(Camera camera) {
-        Transform.camera = camera;
-    }
+    public static void setCamera(Camera camera) {Transform.m_camera = camera;}
+    
 }

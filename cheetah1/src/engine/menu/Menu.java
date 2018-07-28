@@ -23,12 +23,12 @@ package engine.menu;
  */
 public class Menu {
 	
-	protected MenuModel menu;
+	protected MenuModel m_menu;
 	
 	/**
 	 * Constructor for a menu node.
 	 */
-	public Menu() {menu = null;}
+	public Menu() {m_menu = null;}
 	
 	//Empty methods, different for each game
 	public void initialization() {}
@@ -40,12 +40,12 @@ public class Menu {
 	 * Returns of a simple menu.
 	 * @return Menu.
 	 */
-	public MenuModel getMenu() {return menu;}
+	public MenuModel getMenu() {return m_menu;}
 
 	/**
 	 * Sets a new menu node.
 	 * @param menu Menu.
 	 */
-	public void setMenu(MenuModel menu) {this.menu = menu;}
+	public void setMenu(MenuModel menu) {this.m_menu = menu;}
 	
 }

@@ -34,9 +34,9 @@ import javax.sound.sampled.FloatControl;
  */
 public class AudioUtil {
 
-    private static Sequencer sequencer;
-    private static final float AUDIO_VOLUME = -5.0f;
-    private static final float DECAY_FACTOR = 0.12f;
+    private static Sequencer 	m_sequencer;
+    private static final float 	AUDIO_VOLUME = -5.0f;
+    private static final float 	DECAY_FACTOR = 0.12f;
 
     /**
      * Plays an audio clip in a 3D space.
@@ -71,26 +71,26 @@ public class AudioUtil {
      */
     public static void playMidi(Sequence midi) {
         try {
-            if (sequencer == null) {
-                sequencer = MidiSystem.getSequencer();
+            if (m_sequencer == null) {
+                m_sequencer = MidiSystem.getSequencer();
             }
-            if (sequencer.isOpen()) {
-                sequencer.stop();
-                sequencer.setTickPosition(0);
+            if (m_sequencer.isOpen()) {
+                m_sequencer.stop();
+                m_sequencer.setTickPosition(0);
             }
 
             if (midi == null) {
-                sequencer.stop();
-                sequencer.close();
+                m_sequencer.stop();
+                m_sequencer.close();
                 return;
             }
 
-            sequencer.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
+            m_sequencer.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
             //sequencer.setLoopCount(0);
-            sequencer.setSequence(midi);
-            sequencer.open();
+            m_sequencer.setSequence(midi);
+            m_sequencer.open();
 
-            sequencer.start();
+            m_sequencer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -140,16 +140,16 @@ public class AudioUtil {
      * Checks if the program is playing a MIDI sequence.
      * @return Sequencer state.
      */
-    public static boolean isPlayingMidi() {return sequencer.isRunning();}
+    public static boolean isPlayingMidi() {return m_sequencer.isRunning();}
     
     /**
      * Run the MIDI system.
      */
-    public static void runMidi() {sequencer.start();}
+    public static void runMidi() {m_sequencer.start();}
     
     /**
      * Stop the MIDI system.
      */
-    public static void stopMidi() {sequencer.stop();}
+    public static void stopMidi() {m_sequencer.stop();}
     
 }

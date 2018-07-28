@@ -39,21 +39,21 @@ import engine.menu.widget.WidgetText;
  */
 public class MenuModel extends GUIComponent {
 
-	private MenuObject menuObject = new MenuObject();
-	private List<Button> buttonPointer = new ArrayList<Button>();
+	private MenuObject 		menuObject = new MenuObject();
+	private List<Button> 	buttonPointer = new ArrayList<Button>();
 	
-	private Graphics m2DRender;
+	private Graphics 	m_m2DRender;
 	
 	//real time designer 
-	String filePath;
+	String 				m_filePath;
 	
 	/**
 	 * Menu model constructor.
 	 * @param filePath of the menu.
 	 */
 	public MenuModel(String filePath) {
-		this.filePath = filePath;
-		m2DRender = new Graphics();
+		this.m_filePath = filePath;
+		m_m2DRender = new Graphics();
 		load(filePath);
 		
 		if(buttonPointer.size() > 0)
@@ -76,7 +76,7 @@ public class MenuModel extends GUIComponent {
 		// Reload menu
 		if(Input.getKeyDown(Input.KEY_R)) {
 			this.delete();
-			load(filePath);
+			load(m_filePath);
 		}
 		
 		//Update Objects
@@ -90,11 +90,11 @@ public class MenuModel extends GUIComponent {
 	 */
 	public void draw2D() {
 		//m_2DRender.scale(0.5f, 0.5f);
-		m2DRender.pushTransform();
+		m_m2DRender.pushTransform();
 		for(int i=0; i < menuObject.getChildNumber(); i++) {
 			menuObject.getChildren(i).draw(); //Render Objects
 		}
-		m2DRender.popTransform();
+		m_m2DRender.popTransform();
 	}
 	
 	/**
@@ -178,7 +178,7 @@ public class MenuModel extends GUIComponent {
 						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
 						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
 						    		
-						    		menuObject.addChild(new WidgetAnimation(m2DRender, Integer.parseInt(treatment[0]), treatment[1], Integer.parseInt(treatment[2]), Float.parseFloat(treatment[3]))
+						    		menuObject.addChild(new WidgetAnimation(m_m2DRender, Integer.parseInt(treatment[0]), treatment[1], Integer.parseInt(treatment[2]), Float.parseFloat(treatment[3]))
 						    				, temporaryName);
 						    		break;
 						    	default: //I suppose exists

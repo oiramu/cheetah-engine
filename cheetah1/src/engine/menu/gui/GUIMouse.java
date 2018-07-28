@@ -30,17 +30,17 @@ import engine.rendering.Window;
  */
 public class GUIMouse {
 	
-	private Image mouseTexture;
-	private Vector2f mousePos;
+	private Image 		m_mouseTexture;
+	private Vector2f 	m_mousePos;
 	
 	/**
 	 * Constructor for the mouse cursor.
 	 */
 	public GUIMouse() {
 		Mouse.setCursorPosition(Window.getWidth()/2, Window.getHeight()/2);
-		mousePos = new Vector2f(Window.getWidth()/2, Window.getHeight()/2);
+		m_mousePos = new Vector2f(Window.getWidth()/2, Window.getHeight()/2);
 		try {
-			mouseTexture = new Image("res/textures/coreDisplay/mouse.png");
+			m_mouseTexture = new Image("res/textures/coreDisplay/mouse.png");
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -52,7 +52,7 @@ public class GUIMouse {
 	 */
 	public void delete() {
 		try {
-			mouseTexture.destroy();
+			m_mouseTexture.destroy();
 		} catch (SlickException e) {
 				e.printStackTrace();
 		}
@@ -62,13 +62,13 @@ public class GUIMouse {
 	 * Updates the mouse cursor rendering every single frame.
 	 */
 	public void update() {
-		mousePos.x = Mouse.getX();
-		mousePos.y = -Mouse.getY()+Window.getHeight(); //Change landmark position, bottom-left -> top-left
+		m_mousePos.x = Mouse.getX();
+		m_mousePos.y = -Mouse.getY()+Window.getHeight(); //Change landmark position, bottom-left -> top-left
 	}
 	
 	/**
 	 * Draws the texture respectably.
 	 */
-	public void draw2D() {mouseTexture.draw(mousePos.x, mousePos.y);}
+	public void draw2D() {m_mouseTexture.draw(m_mousePos.x, m_mousePos.y);}
 
 }

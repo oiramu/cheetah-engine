@@ -29,38 +29,40 @@ public class SGameTime {
 	 * Constructors of the gameTime.
 	 */
 	private SGameTime() {
-		start = 0.0f;
-		totalGameTime = 0.0f;
-		elapsedGameTime = 0.0f;
+		m_start = 0.0f;
+		m_totalGameTime = 0.0f;
+		m_elapsedGameTime = 0.0f;
 	}
 	
 	private static SGameTime INSTANCE = new SGameTime();
 	public static SGameTime getInstance()
 	{	return INSTANCE;	}
 	
-	private double start, totalGameTime, elapsedGameTime;
+	private double m_start;
+	private double m_totalGameTime;
+	private double m_elapsedGameTime;
 
 	/**
 	 * Updates the time while the program is running.
 	 */
 	public void update() {
 		double time = Time.getTime() / 1.0;
-		elapsedGameTime = (time - start) / 1.0;
+		m_elapsedGameTime = (time - m_start) / 1.0;
 		
-		start = time;
-		totalGameTime += elapsedGameTime;
+		m_start = time;
+		m_totalGameTime += m_elapsedGameTime;
 	}
 	
 	/**
 	 * Returns the total time of gaming.
 	 * @return total time.
 	 */
-	public double getTotalGameTime() {return totalGameTime;}
+	public double getTotalGameTime() {return m_totalGameTime;}
 	
 	/**
 	 * Returns the total time of elapsed.
 	 * @return total elapsed time.
 	 */
-	public double getElapsedGameTime() {return elapsedGameTime;}
+	public double getElapsedGameTime() {return m_elapsedGameTime;}
 	
 }

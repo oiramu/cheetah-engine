@@ -36,23 +36,23 @@ import engine.rendering.resourceManagement.TextureResource;
  */
 public class Texture {
 
-	private static HashMap<String, TextureResource> loadedTextures = new HashMap<String, TextureResource>();
-	private String fileName;
-    private TextureResource resource;
+	private static HashMap<String, TextureResource> m_loadedTextures = new HashMap<String, TextureResource>();
+	private String 									m_fileName;
+    private TextureResource 						m_resource;
     
     /**
      * Texture's constructor with a file.
      * @param fileName of the texture.
      */
     public Texture(String fileName) {
-    	this.fileName = fileName;
-    	TextureResource oldResource = loadedTextures.get(fileName);
+    	this.m_fileName = fileName;
+    	TextureResource oldResource = m_loadedTextures.get(fileName);
     	if(oldResource != null) {
-    		resource = oldResource;
-    		resource.addReferece();
+    		m_resource = oldResource;
+    		m_resource.addReferece();
     	} else {
-    		resource = loadTexture(fileName);
-    		loadedTextures.put(fileName, resource);
+    		m_resource = loadTexture(fileName);
+    		m_loadedTextures.put(fileName, m_resource);
     	}
     }
     
@@ -61,8 +61,8 @@ public class Texture {
      */
     @Override
     protected void finalize() {
-    	if(resource.removeReference() && !fileName.isEmpty())
-    		loadedTextures.remove(fileName);
+    	if(m_resource.removeReference() && !m_fileName.isEmpty())
+    		m_loadedTextures.remove(m_fileName);
     }
     
     /**
@@ -121,14 +121,13 @@ public class Texture {
      */
     public void bind(int sampler) {
     	glActiveTexture(GL_TEXTURE0 + sampler);
-        glBindTexture(GL_TEXTURE_2D, resource.getId());
+        glBindTexture(GL_TEXTURE_2D, m_resource.getId());
     }
 
     /**
      * Returns the texture index.
      * @return Index.
      */
-    public int getID() {
-        return resource.getId();
-    }
+    public int getID() {return m_resource.getId();}
+    
 }

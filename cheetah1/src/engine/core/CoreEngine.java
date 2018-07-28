@@ -26,15 +26,15 @@ import engine.rendering.Window;
  */
 public class CoreEngine {
 	
-	private int 				width;
-	private int 				height;
-	private double 				frameTime;
-	private boolean 			fullscreen;
-	private boolean 			isRunning;
-	private String 				title;
-	private Game 				game;
-	private RenderingEngine 	renderingEngine;
-	private static CoreEngine 	engine;
+	private int 				m_width;
+	private int 				m_height;
+	private double 				m_frameTime;
+	private boolean 			m_fullscreen;
+	private boolean 			m_isRunning;
+	private String 				m_title;
+	private Game 				m_game;
+	private RenderingEngine 	m_renderingEngine;
+	private static CoreEngine 	m_engine;
 	
 	/**
 	 * Constructor for the engine display.
@@ -43,11 +43,11 @@ public class CoreEngine {
 	 * @param framerate of the display.
 	 */
 	public CoreEngine(int width, int height, double framerate, Game game) {
-		this.width = width;
-		this.height = height;
-		this.frameTime = 1.0/framerate;
-		this.game = game;
-		engine = this;
+		this.m_width = width;
+		this.m_height = height;
+		this.m_frameTime = 1.0/framerate;
+		this.m_game = game;
+		m_engine = this;
 	}
 	
 	/**
@@ -56,17 +56,17 @@ public class CoreEngine {
 	 * @param fullscreen If its windowed or full-screen.
 	 */
 	public void createWindow(String title, boolean fullscreen) {
-		this.fullscreen = fullscreen;
-		this.title = title;
-		Window.createMenuWindow(width, height, this.title, this.fullscreen);
+		this.m_fullscreen = fullscreen;
+		this.m_title = title;
+		Window.createMenuWindow(m_width, m_height, this.m_title, this.m_fullscreen);
 	}
 	
 	/**
      * Constructor for the core of the game to compile.
      */
     public CoreEngine init() {
-        isRunning = false;
-        return engine;
+        m_isRunning = false;
+        return m_engine;
     }
 
     /**
@@ -74,7 +74,7 @@ public class CoreEngine {
      */
     public void start() {
 
-        if (isRunning) {
+        if (m_isRunning) {
             return;
         }
         
@@ -86,11 +86,11 @@ public class CoreEngine {
      */
     public void stop() {
 
-        if (!isRunning) {
+        if (!m_isRunning) {
             return;
         }
 
-        isRunning = false;
+        m_isRunning = false;
     }
 
     /**
@@ -100,20 +100,20 @@ public class CoreEngine {
      */
     private void runGame() {
     	
-    	isRunning = true;
+    	m_isRunning = true;
 
 		@SuppressWarnings("unused")
 		int frames = 0;
         long frameCounter = 0;
 
-        this.renderingEngine = new RenderingEngine();
+        this.m_renderingEngine = new RenderingEngine();
         
-        game.init();
+        m_game.init();
 
         double lastTime = Time.getTime();
         double unprocessedTime = 0;
 
-        while (isRunning) {
+        while (m_isRunning) {
 
             boolean render = false;
 
@@ -124,22 +124,22 @@ public class CoreEngine {
             unprocessedTime += passedTime;
             frameCounter += passedTime;
 
-            while (unprocessedTime > frameTime) {
+            while (unprocessedTime > m_frameTime) {
 
                 render = true;
 
-                unprocessedTime -= frameTime;
+                unprocessedTime -= m_frameTime;
 
                 if (Window.isCloseRequested()) {
                     stop();
                 }
 
-                Time.setDelta(frameTime);
+                Time.setDelta(m_frameTime);
 
-                game.input();
+                m_game.input();
                 Input.update();
                 
-                game.update();
+                m_game.update();
 
                 if (frameCounter >= 1.0) {
                     //System.out.println(frames);
@@ -166,7 +166,7 @@ public class CoreEngine {
      * Method that renders everything to render.
      */
     private void render() {
-        game.render(renderingEngine);
+        m_game.render(m_renderingEngine);
         
         Window.render();
     }
@@ -186,13 +186,13 @@ public class CoreEngine {
 	 * Returns the main game.
 	 * @return Game
 	 */
-	public Game getGame() {return game;}
+	public Game getGame() {return m_game;}
 	
 	/**
 	 * Returns the main engine instance.
 	 * @return Engine instance
 	 */
-	public static CoreEngine getEngine() {return engine;}
+	public static CoreEngine getEngine() {return m_engine;}
 	
 	/**
      * Method that cleans everything in the program's window.

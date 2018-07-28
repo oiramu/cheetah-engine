@@ -41,10 +41,10 @@ import engine.rendering.resourceManagement.ShaderResource;
  */
 public class Shader {
 
-	private HashMap<String, ShaderResource> loadedShaders = new HashMap<String, ShaderResource>();
-    private RenderingEngine 				renderingEngine;
-    private ShaderResource					resource;
-    private String							fileName;
+	private HashMap<String, ShaderResource> m_loadedShaders = new HashMap<String, ShaderResource>();
+    private RenderingEngine 				m_renderingEngine;
+    private ShaderResource					m_resource;
+    private String							m_fileName;
     public final String 					BASIC = "BASIC/";
     public final String 					PHONG = "PHONG/";
     public final String 					FORWARD = "FORWARD/";
@@ -54,13 +54,13 @@ public class Shader {
      * and all of he's uniforms.
      */
     public Shader(String fileName) {
-    	this.fileName = fileName;
-    	ShaderResource oldResource = loadedShaders.get(fileName);
+    	this.m_fileName = fileName;
+    	ShaderResource oldResource = m_loadedShaders.get(fileName);
     	if(oldResource != null) {
-    		resource = oldResource;
-    		resource.addReferece();
+    		m_resource = oldResource;
+    		m_resource.addReferece();
     	} else {
-    		resource = new ShaderResource();
+    		m_resource = new ShaderResource();
             
             String vertexShaderText = loadShader(FORWARD + fileName + "-vs");
     		String fragmentShaderText = loadShader(FORWARD + fileName + "-fs");
@@ -82,15 +82,15 @@ public class Shader {
      */
     @Override
     protected void finalize() {
-    	if(resource.removeReference() && !fileName.isEmpty())
-    		loadedShaders.remove(fileName);
+    	if(m_resource.removeReference() && !m_fileName.isEmpty())
+    		m_loadedShaders.remove(m_fileName);
     }
 
     /**
      * Binds the GLSL program(s) to compile.
      */
     public void bind() {
-        glUseProgram(resource.getProgram());
+        glUseProgram(m_resource.getProgram());
     }
 
     /**
@@ -102,9 +102,9 @@ public class Shader {
 	public void updateUniforms(Transform transform, Material material) {
     	Matrix4f worldMatrix = transform.getTransformation();
 		Matrix4f MVPMatrix = transform.getPerspectiveTransformation();
-    	for(int i = 0; i < resource.getUniformNames().size(); i++) {
-    		String uniformName = resource.getUniformNames().get(i);
-    		String uniformType = resource.getUniformTypes().get(i);
+    	for(int i = 0; i < m_resource.getUniformNames().size(); i++) {
+    		String uniformName = m_resource.getUniformNames().get(i);
+    		String uniformType = m_resource.getUniformTypes().get(i);
     		
     		if(uniformName.startsWith("T_")) {
     			if(uniformName.equals("T_MVP")) 
@@ -117,7 +117,7 @@ public class Shader {
     			if(uniformType.equals("sampler2D")) {
     				if(uniformName.equals("R_diffuse")) {
 	    				material.getDiffuse().bind(0);
-	    				setUniformi(uniformName, 0);;
+	    				setUniformi(uniformName, 0);
     				}
     			}else if(uniformType.equals("vec3")) {
 	    			if(uniformName.equals("R_eyePos")) 
@@ -128,9 +128,9 @@ public class Shader {
 	    				setUniform("R_fogColor", getRenderingEngine().getFogColor());
     			}else if(uniformType.equals("float")) {
 	    			if(uniformName.equals("R_fogDensity"))
-	    				setUniformf("R_fogDensity", getRenderingEngine().fogDensity);
+	    				setUniformf("R_fogDensity", getRenderingEngine().m_fogDensity);
 	    			else if(uniformName.equals("R_fogGradient"))
-	    				setUniformf("R_fogGradient", getRenderingEngine().fogGradient);
+	    				setUniformf("R_fogGradient", getRenderingEngine().m_fogGradient);
     			}else if(uniformType.equals("DirectionalLight")) {
 	    			if(uniformName.equals("R_directionalLight"))
 	    				setUniformDirectionalLight("R_directionalLight", (DirectionalLight)getRenderingEngine().getActiveLight());
@@ -272,8 +272,8 @@ public class Shader {
 			String uniformName = uniformLine.substring(whiteSpacePos + 1, uniformLine.length()).trim();
 			String uniformType = uniformLine.substring(0, whiteSpacePos).trim();
 			
-			resource.getUniformNames().add(uniformName);
-			resource.getUniformTypes().add(uniformType);
+			m_resource.getUniformNames().add(uniformName);
+			m_resource.getUniformTypes().add(uniformType);
 			addUniform(uniformName, uniformType, structs);
 
 			uniformStartLocation = shaderText.indexOf(UNIFORM_KEYWORD, uniformStartLocation + UNIFORM_KEYWORD.length());
@@ -300,7 +300,7 @@ public class Shader {
 
 		if(!addThis)
 			return;
-		int uniformLocation = glGetUniformLocation(resource.getProgram(), uniformName);
+		int uniformLocation = glGetUniformLocation(m_resource.getProgram(), uniformName);
 
         if (uniformLocation == 0xFFFFFFFF) {
             System.err.println("Error: Could not find uniform: " + uniformName);
@@ -308,7 +308,7 @@ public class Shader {
             System.exit(1);
         }
 
-        resource.getUniforms().put(uniformName, uniformLocation);
+        m_resource.getUniforms().put(uniformName, uniformLocation);
 	}
 
     /**
@@ -344,7 +344,7 @@ public class Shader {
      * @param location of the uniform.
      */
     private void setAttribLocation(String attributeName, int location) {
-    	glBindAttribLocation(resource.getProgram(), location, attributeName);
+    	glBindAttribLocation(m_resource.getProgram(), location, attributeName);
     }
 
     /**
@@ -353,17 +353,17 @@ public class Shader {
      */
     @SuppressWarnings("deprecation")
 	private void compileShader() {
-        glLinkProgram(resource.getProgram());
+        glLinkProgram(m_resource.getProgram());
 
-        if (glGetProgram(resource.getProgram(), GL_LINK_STATUS) == 0) {
-            System.err.println(glGetProgramInfoLog(resource.getProgram(), 1024));
+        if (glGetProgram(m_resource.getProgram(), GL_LINK_STATUS) == 0) {
+            System.err.println(glGetProgramInfoLog(m_resource.getProgram(), 1024));
             System.exit(1);
         }
 
-        glValidateProgram(resource.getProgram());
+        glValidateProgram(m_resource.getProgram());
 
-        if (glGetProgram(resource.getProgram(), GL_VALIDATE_STATUS) == 0) {
-            System.err.println(glGetProgramInfoLog(resource.getProgram(), 1024));
+        if (glGetProgram(m_resource.getProgram(), GL_VALIDATE_STATUS) == 0) {
+            System.err.println(glGetProgramInfoLog(m_resource.getProgram(), 1024));
             System.exit(1);
         }
     }
@@ -391,7 +391,7 @@ public class Shader {
             System.exit(1);
         }
 
-        glAttachShader(resource.getProgram(), shader);
+        glAttachShader(m_resource.getProgram(), shader);
     }
     
     /**
@@ -431,7 +431,7 @@ public class Shader {
      * @param value Integer value of the uniform.
      */
     public void setUniformi(String uniformName, int value) {
-        glUniform1i(resource.getUniforms().get(uniformName), value);
+        glUniform1i(m_resource.getUniforms().get(uniformName), value);
     }
 
     /**
@@ -441,7 +441,7 @@ public class Shader {
      * @param value Float value of the uniform.
      */
     public void setUniformf(String uniformName, float value) {
-        glUniform1f(resource.getUniforms().get(uniformName), value);
+        glUniform1f(m_resource.getUniforms().get(uniformName), value);
     }
 
     /**
@@ -451,7 +451,7 @@ public class Shader {
      * @param value Vector values of the uniform.
      */
     public void setUniform(String uniformName, Vector3f value) {
-        glUniform3f(resource.getUniforms().get(uniformName), value.getX(), value.getY(), value.getZ());
+        glUniform3f(m_resource.getUniforms().get(uniformName), value.getX(), value.getY(), value.getZ());
     }
 
     /**
@@ -461,7 +461,7 @@ public class Shader {
      * @param value Matrix values of the uniform.
      */
     public void setUniform(String uniformName, Matrix4f value) {
-        glUniformMatrix4(resource.getUniforms().get(uniformName), true, Util.createFlippedBuffer(value));
+        glUniformMatrix4(m_resource.getUniforms().get(uniformName), true, Util.createFlippedBuffer(value));
     }
     
     /**
@@ -513,12 +513,12 @@ public class Shader {
      * Sets the rendering engine of the shader.
      * @param renderingEngine for shader.
      */
-    public void setRenderingEngine(RenderingEngine renderingEngine) {this.renderingEngine = renderingEngine;}
+    public void setRenderingEngine(RenderingEngine renderingEngine) {this.m_renderingEngine = renderingEngine;}
 
     /**
      * Returns the rendering engine of the shader.
      * @return rendering engine.
      */
-	public RenderingEngine getRenderingEngine() {return renderingEngine;}
+	public RenderingEngine getRenderingEngine() {return m_renderingEngine;}
 
 }

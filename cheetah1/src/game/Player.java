@@ -41,11 +41,11 @@ import engine.rendering.Texture;
 import engine.rendering.Vertex;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.5
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.5
+ * @since 2017
+ */
 public class Player {
 
     private static final float GUN_SIZE = 0.1f; 

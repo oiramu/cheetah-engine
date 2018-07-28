@@ -25,9 +25,9 @@ import org.lwjgl.util.vector.Vector2f;
  */
 public abstract class WidgetModel {
 
-	protected String componentName;
-	protected String componentType;
-	protected Vector2f position;
+	protected String 	m_componentName;
+	protected String 	m_componentType;
+	protected Vector2f 	m_position;
 	
 	/*Deletes...*/
 	public abstract void delete();
@@ -40,30 +40,30 @@ public abstract class WidgetModel {
 	 * Returns the position in a vector.
 	 * @return Position.
 	 */
-	public Vector2f getPosition() {return position;}
+	public Vector2f getPosition() {return m_position;}
 	
 	/**
 	 * Sets the position of a vector in the main vector.
 	 * @param position Position coordinates.
 	 */
-	public void setPosition(Vector2f position) {this.position = position;}
+	public void setPosition(Vector2f position) {this.m_position = position;}
 	
 	/**
 	 * Returns the component's type.
 	 * @return Component's type.
 	 */
-	public String getComponentType() {return componentType;}
+	public String getComponentType() {return m_componentType;}
 	
 	/**
 	 * Returns the component's name.
 	 * @return Component's name.
 	 */
-	public String getComponentName() {return componentName;}
+	public String getComponentName() {return m_componentName;}
 	
 	/**
 	 * Sets the component's name in a string.
 	 * @param name Component's name.
 	 */
-	public void setComponentName(String name) {componentName = name;}
+	public void setComponentName(String name) {m_componentName = name;}
 	
 }

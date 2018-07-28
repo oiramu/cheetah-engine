@@ -36,23 +36,23 @@ import engine.rendering.resourceManagement.MeshResource;
  */
 public class Mesh {
 
-	private static HashMap<String, MeshResource> loadedModels = new HashMap<String, MeshResource>();
-	private String fileName;
-	private MeshResource resource;
+	private static HashMap<String, MeshResource> m_loadedModels = new HashMap<String, MeshResource>();
+	private String 			m_fileName;
+	private MeshResource 	m_resource;
 
     /**
      * Constructor of a mesh loaded from file.
      * @param fileName of the mesh.
      */
     public Mesh(String fileName) {
-    	this.fileName = fileName;
-    	MeshResource oldResource = loadedModels.get(fileName);
+    	this.m_fileName = fileName;
+    	MeshResource oldResource = m_loadedModels.get(fileName);
     	if(oldResource != null) {
-    		resource = oldResource;
-    		resource.addReferece();
+    		m_resource = oldResource;
+    		m_resource.addReferece();
     	} else {
 	    	loadMesh(fileName);
-	    	loadedModels.put(fileName, resource);
+	    	m_loadedModels.put(fileName, m_resource);
     	}
     }
     
@@ -61,9 +61,7 @@ public class Mesh {
      * @param vertices of the mesh.
      * @param indices of the mesh.
      */
-    public Mesh(Vertex[] vertices, int[] indices) {
-        this(vertices, indices, false);
-    }
+    public Mesh(Vertex[] vertices, int[] indices) {this(vertices, indices, false);}
     
     /**
      * Constructor of the game obect's mesh.
@@ -73,7 +71,7 @@ public class Mesh {
      * or not.
      */
     public Mesh(Vertex[] vertices, int[] indices, boolean calcNormals) {
-    	fileName = "";
+    	m_fileName = "";
         addVertices(vertices, indices, calcNormals);
     }
     
@@ -82,8 +80,8 @@ public class Mesh {
      */
     @Override
     protected void finalize() {
-    	if(resource.removeReference() && !fileName.isEmpty())
-    		loadedModels.remove(fileName);
+    	if(m_resource.removeReference() && !m_fileName.isEmpty())
+    		m_loadedModels.remove(m_fileName);
     }
 
 	/**
@@ -97,12 +95,12 @@ public class Mesh {
         if(calcNormals) {
         	calcNormals(vertices, indices);
         }
-        resource = new MeshResource(indices.length);
+        m_resource = new MeshResource(indices.length);
 
-        glBindBuffer(GL_ARRAY_BUFFER, resource.getVbo());
+        glBindBuffer(GL_ARRAY_BUFFER, m_resource.getVbo());
         glBufferData(GL_ARRAY_BUFFER, Util.createFlippedBuffer(vertices), GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, resource.getIbo());
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_resource.getIbo());
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, Util.createFlippedBuffer(indices), GL_STATIC_DRAW);
     }
 
@@ -115,14 +113,14 @@ public class Mesh {
         glEnableVertexAttribArray(2);
         glEnableVertexAttribArray(3);
 
-        glBindBuffer(GL_ARRAY_BUFFER, resource.getVbo());
+        glBindBuffer(GL_ARRAY_BUFFER, m_resource.getVbo());
         glVertexAttribPointer(0, 3, GL_FLOAT, false, Vertex.SIZE * 4, 0);
         glVertexAttribPointer(1, 2, GL_FLOAT, false, Vertex.SIZE * 4, 12);
         glVertexAttribPointer(2, 3, GL_FLOAT, false, Vertex.SIZE * 4, 20);
         glVertexAttribPointer(3, 3, GL_FLOAT, false, Vertex.SIZE * 4, 32);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, resource.getIbo());
-        glDrawElements(GL_TRIANGLES, resource.getSize(), GL_UNSIGNED_INT, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_resource.getIbo());
+        glDrawElements(GL_TRIANGLES, m_resource.getSize(), GL_UNSIGNED_INT, 0);
 
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);

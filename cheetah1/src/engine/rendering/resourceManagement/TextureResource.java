@@ -26,39 +26,37 @@ import static org.lwjgl.opengl.GL15.*;
  */
 public class TextureResource {
 
-	private int id;
-    private int refCount;
+	private int m_id;
+    private int m_refCount;
     
     /**
      * Constructor for the texture manager.
      */
     public TextureResource() {
-        this.id = glGenTextures();
-        this.refCount = 1;
+        this.m_id = glGenTextures();
+        this.m_refCount = 1;
     }
     
     /**
      * Cleans everything in the GPU and RAM.
      */
     @Override
-    protected void finalize() {
-    	glDeleteBuffers(id);
-    }
+    protected void finalize() {glDeleteBuffers(m_id);}
     
     /**
      * Add a point in the reference counter.
      */
-    public void addReferece() {refCount++;}
+    public void addReferece() {m_refCount++;}
     
     /**
      * Removes a point in the reference counter.
      */
-    public boolean removeReference() {refCount--; return refCount == 0;}
+    public boolean removeReference() {m_refCount--; return m_refCount == 0;}
 
 	/**
 	 * Gets the id of the texture in object.
 	 * @return returns the id.
 	 */
-	public int getId() {return id;}
+	public int getId() {return m_id;}
 
 }

@@ -39,16 +39,16 @@ public class SEngineUtil {
 	public static SEngineUtil getInstance()
 	{	return INSTANCE;	}
 	
-	private AngelCodeFont font;
-	private AngelCodeFont boldFont;
+	private AngelCodeFont m_font;
+	private AngelCodeFont m_boldFont;
 	
 	/**
 	 * Constructor of the Menu tools.
 	 */
 	private SEngineUtil() {
 		try {
-			font = new AngelCodeFont("res/textures/fonts/font.fnt", new Image("res/textures/fonts/font.png")); 
-			boldFont = new AngelCodeFont("res/textures/fonts/fontBold.fnt", new Image("res/textures/fonts/fontBold.png")); 
+			m_font = new AngelCodeFont("res/textures/fonts/font.fnt", new Image("res/textures/fonts/font.png")); 
+			m_boldFont = new AngelCodeFont("res/textures/fonts/fontBold.fnt", new Image("res/textures/fonts/fontBold.png")); 
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -116,12 +116,12 @@ public class SEngineUtil {
 	 * Returns the font that is been used.
 	 * @return Font.
 	 */
-	public AngelCodeFont getFont() {return font;}
+	public AngelCodeFont getFont() {return m_font;}
 	
 	/**
 	 * Returns the bold font that is been used.
 	 * @return Bold font.
 	 */
-	public AngelCodeFont getBoldFont() {return boldFont;}
+	public AngelCodeFont getBoldFont() {return m_boldFont;}
 	
 }

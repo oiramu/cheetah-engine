@@ -32,8 +32,8 @@ public class MenuEvent {
 	 * 		- "2" = load Menu (1 parameter)
 	 * 		- "3" = load World (1 parameter)
 	 */
-	private int actionId = 0;
-	private String parameter = null;
+	private int 	m_actionId = 0;
+	private String 	m_parameter = null;
 	
 	/**
 	 * Constructor for the events of the menu.
@@ -42,28 +42,28 @@ public class MenuEvent {
 	public MenuEvent(String eventName) {
 		switch(eventName) {
 			case "exit":
-				actionId = 1;
+				m_actionId = 1;
 				break;
 			case "loadEpisode1":
-				actionId = 3;
+				m_actionId = 3;
 				break;
 			case "loadEpisode2":
-				actionId = 4;
+				m_actionId = 4;
 				break;
 			case "loadEpisode3":
-				actionId = 5;
+				m_actionId = 5;
 				break;
 			case "highDetailBtn":
-				actionId = 6;
+				m_actionId = 6;
 				break;
 			case "mediumDetailBtn":
-				actionId = 7;
+				m_actionId = 7;
 				break;
 			case "lowDetailBtn":
-				actionId = 8;
+				m_actionId = 8;
 				break;
 			default:
-				actionId = 0;
+				m_actionId = 0;
 				break;
 		}
 	}
@@ -74,16 +74,16 @@ public class MenuEvent {
 	 * @param parameter for events whit it.
 	 */
 	public MenuEvent(String eventName, String parameter) {
-		this.parameter = parameter;
+		this.m_parameter = parameter;
 		switch(eventName) {
 			case "exit":
-				actionId = 1;
+				m_actionId = 1;
 				break;
 			case "loadMenu":
-				actionId = 2;
+				m_actionId = 2;
 				break;
 			default:
-				actionId = 0;
+				m_actionId = 0;
 				break;
 		}
 	}
@@ -92,9 +92,9 @@ public class MenuEvent {
 	 * Updates the index and parameter.
 	 */
 	public void update() {
-		if(parameter == null)
-			SEventListener.getInstance().addEvent(actionId);
+		if(m_parameter == null)
+			SEventListener.getInstance().addEvent(m_actionId);
 		else 
-			SEventListener.getInstance().addEvent(actionId, parameter);
+			SEventListener.getInstance().addEvent(m_actionId, m_parameter);
 	}
 }

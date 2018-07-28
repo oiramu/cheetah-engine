@@ -34,23 +34,23 @@ import engine.core.Vector3f;
  */
 public class RenderingEngine {
 	
-	private Camera mainCamera;
-	private BaseLight activeLight;
-	public static Vector3f ambientLight;
-	private Shader forwardAmbient;
+	private Camera 						m_mainCamera;
+	private BaseLight 					m_activeLight;
+	public static Vector3f 				m_ambientLight;
+	private Shader 						m_forwardAmbient;
 	
-	private static ArrayList<BaseLight> lights;
+	private static ArrayList<BaseLight> m_lights;
 	
-	public static float fogDensity;
-	public static float fogGradient;
-    private static Vector3f fogColor;
+	public static float 				m_fogDensity;
+	public static float 				m_fogGradient;
+    private static Vector3f 			m_fogColor;
 	
 	/**
 	 * Constructor for the rendering engine.
 	 */
 	public RenderingEngine() {
-        lights = new ArrayList<BaseLight>();
-        forwardAmbient = new Shader("forward-ambient");
+        m_lights = new ArrayList<BaseLight>();
+        m_forwardAmbient = new Shader("forward-ambient");
         
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -76,16 +76,16 @@ public class RenderingEngine {
      */
     public void render(GameComponent component) {
     	try {
-	    	clearScreen();
-			forwardAmbient.setRenderingEngine(this);;
-	        component.render(forwardAmbient);
+    		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+			m_forwardAmbient.setRenderingEngine(this);;
+	        component.render(m_forwardAmbient);
 	        glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE);
 			glDepthMask(false);
 			glDepthFunc(GL_EQUAL);
-			for(int i = 0; i < lights.size(); i++) {
-				activeLight = lights.get(i);
-				component.render(activeLight.getShader(this));
+			for(int i = 0; i < m_lights.size(); i++) {
+				m_activeLight = m_lights.get(i);
+				component.render(m_activeLight.getShader(this));
 			}
 			glDepthFunc(GL_LESS);
 			glDepthMask(true);
@@ -100,15 +100,7 @@ public class RenderingEngine {
 	 * Cleans everything light related.
 	 */
     public void clearLights() {
-        lights.clear();
-    }
-
-	/**
-	 * Cleans everything on the openGL screen.
-	 */
-    private void clearScreen() {
-        //TODO: Stencil Buffer
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        m_lights.clear();
     }
 
     /**
@@ -142,31 +134,31 @@ public class RenderingEngine {
 	 * Adds a new directional light to the rendering engine.
 	 * @param light to add.
 	 */
-	public static void addLight(BaseLight light) {lights.add(light);}
+	public static void addLight(BaseLight light) {m_lights.add(light);}
 	
 	/**
 	 * Removes a new directional light to the rendering engine.
 	 * @param light to remove.
 	 */
-	public static void removeLight(BaseLight light) {lights.remove(light);}
+	public static void removeLight(BaseLight light) {m_lights.remove(light);}
 	
 	/**
 	 * Returns the light that is been used.
 	 * @return Active light.
 	 */
-	public BaseLight getActiveLight() {return activeLight;}
+	public BaseLight getActiveLight() {return m_activeLight;}
 	
 	/**
 	 * Returns the color of the fog.
 	 * @return fogColor.
 	 */
-	public Vector3f getFogColor() {return fogColor;}
+	public Vector3f getFogColor() {return m_fogColor;}
 
 	/**
 	 * Sets a new color for the fog.
 	 * @param color of the fog.
 	 */
-	public static void setFogColor(Vector3f color) {fogColor = color; setClearColor(color);}
+	public static void setFogColor(Vector3f color) {m_fogColor = color; setClearColor(color);}
 
     /**
      * Bind the textures to openGL.
@@ -184,19 +176,19 @@ public class RenderingEngine {
 	 * Returns the actual ambient light.
 	 * @return Ambient light.
 	 */
-	public Vector3f getAmbientLight() {return ambientLight;}
+	public Vector3f getAmbientLight() {return m_ambientLight;}
     
     /**
      * Returns the main camera in game.
      * @return camera.
      */
-    public Camera getMainCamera() {return mainCamera;}
+    public Camera getMainCamera() {return m_mainCamera;}
 
     /**
      * Sets the main camera of all the game to the rendering
      * engine.
      * @param mainCamera of the game.
      */
-	public void setMainCamera(Camera mainCamera) {this.mainCamera = mainCamera;}
+	public void setMainCamera(Camera mainCamera) {this.m_mainCamera = mainCamera;}
 
 }

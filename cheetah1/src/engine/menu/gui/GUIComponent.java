@@ -23,8 +23,8 @@ package engine.menu.gui;
  */
 public abstract class GUIComponent {
 	
-	protected String componentName;
-	protected String componentType;
+	protected String m_componentName;
+	protected String m_componentType;
 	
 	//Not implemented method.
 	public abstract void delete();
@@ -38,24 +38,24 @@ public abstract class GUIComponent {
 	 * Returns the component name.
 	 * @return Component name.
 	 */
-	public String getComponentName() {return componentName;}
+	public String getComponentName() {return m_componentName;}
 	
 	/**
 	 * Sets the component name.
 	 * @param name Component name.
 	 */
-	public void setComponentName(String name) {componentName = name;}
+	public void setComponentName(String name) {m_componentName = name;}
 	
 	/**
 	 * Returns the component type.
 	 * @return Component type.
 	 */
-	public String getComponentType() {return componentType;}
+	public String getComponentType() {return m_componentType;}
 	
 	/**
 	 * Sets the component type.
 	 * @param name Component type.
 	 */
-	public void setComponentType(String name) {componentType = name;}
+	public void setComponentType(String name) {m_componentType = name;}
 	
 }

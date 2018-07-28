@@ -29,8 +29,8 @@ import engine.rendering.Window;
  */
 public class WidgetImage extends WidgetModel {
 	
-	private Image texture;
-	private Vector2f size;
+	private Image 		m_texture;
+	private Vector2f 	m_size;
 	
 	/**
 	 * Constructor of a widget image.
@@ -41,16 +41,16 @@ public class WidgetImage extends WidgetModel {
 	 * @param h Height.
 	 */
 	public WidgetImage(String imgPath, int x, int y, int w, int h) {
-		componentType = "Image";
+		m_componentType = "Image";
 		try {
-			texture = new Image(imgPath);
+			m_texture = new Image(imgPath);
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		position = new Vector2f(x, y);
-		size = new Vector2f(w, h);
+		m_position = new Vector2f(x, y);
+		m_size = new Vector2f(w, h);
 	}
 	
 	/**
@@ -61,16 +61,16 @@ public class WidgetImage extends WidgetModel {
 	 * @param w Width.
 	 */
 	public WidgetImage(String imgPath, int x, int y, int w) {
-		componentType = "ImgBackground";
+		m_componentType = "ImgBackground";
 		try {
-			texture = new Image(imgPath);
+			m_texture = new Image(imgPath);
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		position = new Vector2f(x, y);
-		size = new Vector2f(w, Window.getHeight());
+		m_position = new Vector2f(x, y);
+		m_size = new Vector2f(w, Window.getHeight());
 	}
 	
 	/**
@@ -81,16 +81,16 @@ public class WidgetImage extends WidgetModel {
 	 * @param w Width.
 	 */
 	public WidgetImage(String imgPath, int x, int y) {
-		componentType = "Background";
+		m_componentType = "Background";
 		try {
-			texture = new Image(imgPath);
+			m_texture = new Image(imgPath);
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		position = new Vector2f(x, y);
-		size = new Vector2f(Window.getWidth(), Window.getHeight());
+		m_position = new Vector2f(x, y);
+		m_size = new Vector2f(Window.getWidth(), Window.getHeight());
 	}
 	
 	/**
@@ -98,7 +98,7 @@ public class WidgetImage extends WidgetModel {
 	 */
 	public void delete() { 
 		try {
-			texture.destroy();
+			m_texture.destroy();
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -114,7 +114,7 @@ public class WidgetImage extends WidgetModel {
 	 * Draws it to screen.
 	 */
 	public void draw() {
-		texture.draw(position.x, position.y, size.x, size.y);
+		m_texture.draw(m_position.x, m_position.y, m_size.x, m_size.y);
 	}
 
 }

@@ -27,8 +27,8 @@ import engine.menu.system.SEngineUtil;
 */
 public class WidgetText extends WidgetModel {
 	
-	private String text;
-	private boolean bold;
+	private String 	m_text;
+	private boolean m_bold;
 	
 	/**
 	 * Widget text constructor.
@@ -37,9 +37,9 @@ public class WidgetText extends WidgetModel {
 	 * @param y position.
 	 */
 	public WidgetText(String text, int x, int y) {
-		componentType = "Text";
-		this.text = text;
-		position = new Vector2f(x, y);
+		m_componentType = "Text";
+		this.m_text = text;
+		m_position = new Vector2f(x, y);
 	}
 	
 	/**
@@ -51,7 +51,7 @@ public class WidgetText extends WidgetModel {
 	 */
 	public WidgetText(String text, int x, int y, boolean bold) {
 		this(text, x, y);
-		this.bold = bold;
+		this.m_bold = bold;
 	}
 
 	/**
@@ -70,9 +70,9 @@ public class WidgetText extends WidgetModel {
 	 * Draws the text and bold text.
 	 */
 	public void draw() {
-		if(bold)
-			SEngineUtil.getInstance().getBoldFont().drawString(position.x, position.y, text);
+		if(m_bold)
+			SEngineUtil.getInstance().getBoldFont().drawString(m_position.x, m_position.y, m_text);
 		else
-			SEngineUtil.getInstance().getFont().drawString(position.x, position.y, text);
+			SEngineUtil.getInstance().getFont().drawString(m_position.x, m_position.y, m_text);
 	}
 }

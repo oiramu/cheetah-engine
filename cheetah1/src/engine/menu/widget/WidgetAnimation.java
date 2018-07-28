@@ -32,13 +32,14 @@ public class WidgetAnimation extends WidgetModel {
 	 * List of type:
 	 * 		- "0" = translate
 	 */
-	private int maxPos, speed;
-	private float time;
-	private String axis;
-	private Graphics device;
-	private CoolDown coolDown;
+	private int 		m_maxPos; 
+	private int 		m_speed;
+	private float 		m_time;
+	private String 		m_axis;
+	private Graphics 	m_device;
+	private CoolDown 	m_coolDown;
 	
-	private Vector2f transPos;
+	private Vector2f 	m_transPos;
 	
 	/**
 	 * Constructor for the animated widget.
@@ -49,14 +50,14 @@ public class WidgetAnimation extends WidgetModel {
 	 * @param time of animation.
 	 */
 	public WidgetAnimation(Graphics device, int speed, String axis, int max, float time) {
-		this.device = device;
-		this.speed = speed;
-		this.axis = axis;
-		this.maxPos = max;
-		this.time = time;
+		this.m_device = device;
+		this.m_speed = speed;
+		this.m_axis = axis;
+		this.m_maxPos = max;
+		this.m_time = time;
 		
-		this.coolDown = new CoolDown();
-		this.transPos = new Vector2f();
+		this.m_coolDown = new CoolDown();
+		this.m_transPos = new Vector2f();
 	}
 
 	/**
@@ -70,19 +71,19 @@ public class WidgetAnimation extends WidgetModel {
 	 * Updates the animation rendering every single frame.
 	 */
 	public void update() {
-		if(coolDown.coolDownTime(time)) { //CoolDown
-			if(axis.equals("x")) {
-				if(transPos.x < maxPos)
-					transPos.x += speed;
+		if(m_coolDown.coolDownTime(m_time)) { //CoolDown
+			if(m_axis.equals("x")) {
+				if(m_transPos.x < m_maxPos)
+					m_transPos.x += m_speed;
 			}
-			else if(axis.equals("y")) {
-				if(transPos.y < maxPos || transPos.y > maxPos)
-					transPos.y += speed;
+			else if(m_axis.equals("y")) {
+				if(m_transPos.y < m_maxPos || m_transPos.y > m_maxPos)
+					m_transPos.y += m_speed;
 			}
 		}
 	}
 
 	@Override
-	public void draw() {device.translate(transPos.x, transPos.y);}
+	public void draw() {m_device.translate(m_transPos.x, m_transPos.y);}
 	
 }

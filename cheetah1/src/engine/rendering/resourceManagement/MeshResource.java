@@ -25,19 +25,19 @@ import static org.lwjgl.opengl.GL15.*;
  */
 public class MeshResource {
 
-	private int vbo;
-    private int ibo;
-    private int size;
-    private int refCount;
+	private int m_vbo;
+    private int m_ibo;
+    private int m_size;
+    private int m_refCount;
     
     /**
      * Constructor for the mesh manager.
      */
     public MeshResource(int size) {
-    	vbo = glGenBuffers();
-        ibo = glGenBuffers();
-        this.size = size;
-        this.refCount = 1;
+    	m_vbo = glGenBuffers();
+        m_ibo = glGenBuffers();
+        this.m_size = size;
+        this.m_refCount = 1;
     }
     
     /**
@@ -45,36 +45,36 @@ public class MeshResource {
      */
     @Override
     protected void finalize() {
-    	glDeleteBuffers(vbo);
-    	glDeleteBuffers(ibo);
+    	glDeleteBuffers(m_vbo);
+    	glDeleteBuffers(m_ibo);
     }
     
     /**
      * Add a point in the reference counter.
      */
-    public void addReferece() {refCount++;}
+    public void addReferece() {m_refCount++;}
     
     /**
      * Removes a point in the reference counter.
      */
-    public boolean removeReference() {refCount--; return refCount == 0;}
+    public boolean removeReference() {m_refCount--; return m_refCount == 0;}
 
 	/**
 	 * Gets the vertex buffer object.
 	 * @return returns the vbo.
 	 */
-	public int getVbo() {return vbo;}
+	public int getVbo() {return m_vbo;}
 
 	/**
 	 * Gets the index buffer object.
 	 * @return returns the ibo.
 	 */
-	public int getIbo() {return ibo;}
+	public int getIbo() {return m_ibo;}
 	
 	/**
 	 * Gets the size of the mesh.
 	 * @return returns the size.
 	 */
-	public int getSize() {return size;}
+	public int getSize() {return m_size;}
 
 }

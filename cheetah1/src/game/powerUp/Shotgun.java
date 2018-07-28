@@ -58,7 +58,7 @@ public class Shotgun {
     public Shotgun(Transform transform) {
         if (mesh == null) {
             float sizeY = 0.15f;
-            float sizeX = (float) ((double) sizeY / (0.2295081967213115 * 4.0));
+            float sizeX = (float) ((double) sizeY / (0.2295081967213115 * 4.0f));
 
             float offsetX = 0.05f;
             float offsetY = 0.01f;

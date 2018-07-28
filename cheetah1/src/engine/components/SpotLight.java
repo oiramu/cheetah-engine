@@ -26,8 +26,8 @@ import engine.rendering.Shader;
  */
 public class SpotLight extends PointLight {
 
-	private Vector3f direction;
-	private float cutoff;
+	private Vector3f 	m_direction;
+	private float 		m_cutoff;
 	
 	/**
 	 * Constructor of the spot of light.
@@ -38,8 +38,8 @@ public class SpotLight extends PointLight {
 	public SpotLight(Vector3f color, float intensity, Attenuation atten, Vector3f position,
 			Vector3f direction, float cutoff) {
 		super(color, intensity, atten, position);
-		this.direction = direction.normalized();
-		this.cutoff = cutoff;
+		this.m_direction = direction.normalized();
+		this.m_cutoff = cutoff;
 		setShader(new Shader("forward-spot"));
 	}
 	
@@ -47,28 +47,28 @@ public class SpotLight extends PointLight {
 	 * Returns the direction of the spot of light.
 	 * @return Direction
 	 */
-	public Vector3f getDirection() {return direction;}
+	public Vector3f getDirection() {return m_direction;}
 	
 	/**
 	 * Sets a new direction to the spot of light.
 	 * @param Direction to set
 	 */
 	public void setDirection(Vector3f direction) {
-		this.direction = direction.normalized();
+		this.m_direction = direction.normalized();
 	}
 	
 	/**
 	 * Returns the cut-off of the spot of light.
 	 * @return Cut-off
 	 */
-	public float getCutoff() {return cutoff;}
+	public float getCutoff() {return m_cutoff;}
 	
 	/**
 	 * Sets a new cut-off to the spot of light.
 	 * @param Cut-off to set
 	 */
 	public void setCutoff(float cutoff) {
-		this.cutoff = cutoff;
+		this.m_cutoff = cutoff;
 	}
 	
 }

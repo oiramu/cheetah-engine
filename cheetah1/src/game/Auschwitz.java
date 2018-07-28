@@ -33,47 +33,46 @@ import game.enemies.*;
  */
 public class Auschwitz implements Game {
 	
-	private static ArrayList<Sequence> playlist = new ArrayList<Sequence>();
+	private static ArrayList<Sequence> m_playlist = new ArrayList<Sequence>();
     private static final int EPISODE_1 = 1;
     private static final int EPISODE_2 = 2;
     private static final int EPISODE_3 = 2;
     
-    private static boolean isRunning;
+    private static boolean 	m_isRunning;
 
-    public static Level level;
-    public static int levelNum;
-    public static int startingLevel;
-    public static int track;
-    public static int currentEpisode;
+    public static Level 	m_level;
+    public static int 		m_levelNum;
+    public static int 		m_startingLevel;
+    public static int 		m_track;
+    public static int		m_currentEpisode;
 
     /**
      * The constructor method of the compiling game.
      */
     public void init() {
-        for (int i = 0; i < 13; i++) {
-        	playlist.add(AudioUtil.loadMidi("THEME" + i));
-		}
+        for (int i = 0; i < 13; i++)
+        	m_playlist.add(AudioUtil.loadMidi("THEME" + i));
 
-        track = startingLevel - 1;
-        levelNum = startingLevel - 1;
+        m_track = m_startingLevel - 1;
+        m_levelNum = m_startingLevel - 1;
         loadLevel(1);
 
-        isRunning = true;
+        m_isRunning = true;
     }
     
     /**
      * Sets the starting level depending of what level you want to start;
-     * @param level
+     * @param level to set.
      */
     public static void setStartingLevel(int level) {
-    	startingLevel = level;
+    	m_startingLevel = level;
     }
 
     /**
      * Checks all the inputs.
      */
     public void input() {
-        level.input();
+        m_level.input();
 
         /**
         if (Input.getKey(Input.KEY_1)) {
@@ -90,8 +89,8 @@ public class Auschwitz implements Game {
      * Updates everything renderer every single frame.
      */
     public void update() {
-        if (isRunning) {
-            level.update();
+        if (m_isRunning) {
+            m_level.update();
         }
     }
 
@@ -99,9 +98,9 @@ public class Auschwitz implements Game {
      * Renders everything every on screen.
      */
 	public void render(RenderingEngine engine) {
-        if (isRunning) {
-        	//engine.clearLights();
-        	engine.render(level);
+        if (m_isRunning) {
+        	engine.clearLights();
+        	engine.render(m_level);
         }
     }
 
@@ -129,37 +128,37 @@ public class Auschwitz implements Game {
             String weaponStateTemp = "";
             String sector;
 
-            if (level != null) {
-                totalMonsters = level.getNaziSoldiers().size() + level.getSsSoldiers().size()
-                		+ level.getDogs().size() + + level.getNaziSergeants().size();
+            if (m_level != null) {
+                totalMonsters = m_level.getNaziSoldiers().size() + m_level.getSsSoldiers().size()
+                		+ m_level.getDogs().size() + + m_level.getNaziSergeants().size();
                 
-                totalSecrets = level.getSecretWalls().size();
+                totalSecrets = m_level.getSecretWalls().size();
                 
-                for (SecretWall secret : level.getSecretWalls()) {
+                for (SecretWall secret : m_level.getSecretWalls()) {
                     if (secret.opens()) {
                     	secrets++;
                     }
                 }
 
-                for (NaziSoldier monster : level.getNaziSoldiers()) {
+                for (NaziSoldier monster : m_level.getNaziSoldiers()) {
                     if (!monster.isAlive()) {
                         deadMonsters++;
                     }
                 }
                 
-                for (SsSoldier ssSoldier : level.getSsSoldiers()) {
+                for (SsSoldier ssSoldier : m_level.getSsSoldiers()) {
                     if (!ssSoldier.isAlive()) {
                         deadMonsters++;
                     }
                 }
                 
-                for (Dog dog : level.getDogs()) {
+                for (Dog dog : m_level.getDogs()) {
                     if (!dog.isAlive()) {
                         deadMonsters++;
                     }
                 }
                 
-                for (NaziSergeant naziSargent : level.getNaziSergeants()) {
+                for (NaziSergeant naziSargent : m_level.getNaziSergeants()) {
                     if (!naziSargent.isAlive()) {
                         deadMonsters++;
                     }
@@ -167,67 +166,67 @@ public class Auschwitz implements Game {
 
                 displayMonsters = true;
                 
-                armoriTemp = level.getPlayer().getArmori();
-                bulletTemp = level.getPlayer().getBullets();
-                shellTemp = level.getPlayer().getShells();
-                shotgunTemp = level.getPlayer().getShotgun();
-                machinegunTemp = level.getPlayer().getMachinegun();
-                superShotgunTemp = level.getPlayer().getSuperShotgun();
-                chaingunTemp = level.getPlayer().getChaingun();
-                weaponStateTemp = level.getPlayer().getWeaponState();
-                mouseLocktemp = level.getPlayer().mouseLocked;
+                armoriTemp = m_level.getPlayer().getArmori();
+                bulletTemp = m_level.getPlayer().getBullets();
+                shellTemp = m_level.getPlayer().getShells();
+                shotgunTemp = m_level.getPlayer().getShotgun();
+                machinegunTemp = m_level.getPlayer().getMachinegun();
+                superShotgunTemp = m_level.getPlayer().getSuperShotgun();
+                chaingunTemp = m_level.getPlayer().getChaingun();
+                weaponStateTemp = m_level.getPlayer().getWeaponState();
+                mouseLocktemp = m_level.getPlayer().mouseLocked;
             }
 
-            if(levelNum > 9) {
-            	currentEpisode = EPISODE_2;
-            } else if(levelNum > 19) {
-            	currentEpisode = EPISODE_3;
+            if(m_levelNum > 9) {
+            	m_currentEpisode = EPISODE_2;
+            } else if(m_levelNum > 19) {
+            	m_currentEpisode = EPISODE_3;
             } else {
-            	currentEpisode = EPISODE_1;
+            	m_currentEpisode = EPISODE_1;
             }
 
-            levelNum += offset;
-            level = new Level(new Bitmap("level" + levelNum).flipX(), 
-            		new Material(new Texture("mapTexture" + currentEpisode), new Vector3f(1,1,1)));
+            m_levelNum += offset;
+            m_level = new Level(new Bitmap("level" + m_levelNum).flipX(), 
+            		new Material(new Texture("mapTexture" + m_currentEpisode), new Vector3f(1,1,1)));
 
-            if((levelNum/2) * 2 == levelNum) sector = "B."; else sector = "A.";   
+            if((m_levelNum/2) * 2 == m_levelNum) sector = "B."; else sector = "A.";   
             
-            if(level.getPlayer().getArmori() == 0) {
+            if(m_level.getPlayer().getArmori() == 0) {
             	if(armoriTemp == 0) {
-            		level.getPlayer().addArmori(0);
+            		m_level.getPlayer().addArmori(0);
             	}
-            	level.getPlayer().addArmori(armoriTemp);
+            	m_level.getPlayer().addArmori(armoriTemp);
             }
-            if(level.getPlayer().getBullets() == 0) {
+            if(m_level.getPlayer().getBullets() == 0) {
             	if(bulletTemp == 0) {
-            		level.getPlayer().addBullets(20);
+            		m_level.getPlayer().addBullets(20);
             	}
-            	level.getPlayer().addBullets(bulletTemp);
+            	m_level.getPlayer().addBullets(bulletTemp);
             }
-            if(level.getPlayer().getShells() == 0) {
+            if(m_level.getPlayer().getShells() == 0) {
             	if(shellTemp == 0) {
-            		level.getPlayer().addShells(20);
+            		m_level.getPlayer().addShells(20);
             	}
-            	level.getPlayer().addShells(shellTemp);
+            	m_level.getPlayer().addShells(shellTemp);
             }
-            level.getPlayer().setShotgun(shotgunTemp);
-            level.getPlayer().setMachinegun(machinegunTemp);
-            level.getPlayer().setSuperShotgun(superShotgunTemp);
-            level.getPlayer().setChaingun(chaingunTemp);
-            level.getPlayer().setArmorb(armorbTemp);
-            level.getPlayer().setWeaponState(weaponStateTemp);
-            level.getPlayer().mouseLocked = mouseLocktemp;
+            m_level.getPlayer().setShotgun(shotgunTemp);
+            m_level.getPlayer().setMachinegun(machinegunTemp);
+            m_level.getPlayer().setSuperShotgun(superShotgunTemp);
+            m_level.getPlayer().setChaingun(chaingunTemp);
+            m_level.getPlayer().setArmorb(armorbTemp);
+            m_level.getPlayer().setWeaponState(weaponStateTemp);
+            m_level.getPlayer().mouseLocked = mouseLocktemp;
             
-            track += offset;
+            m_track += offset;
 
-            AudioUtil.playMidi(playlist.get(track));
+            AudioUtil.playMidi(m_playlist.get(m_track));
 
-            while (track >= playlist.size()) {
-                track -= playlist.size();
+            while (m_track >= m_playlist.size()) {
+                m_track -= m_playlist.size();
             }
 
             System.out.println("=============================");
-            System.out.println("Level " + levelNum + " floor " + levelNum + sector);
+            System.out.println("Level " + m_levelNum + " floor " + m_levelNum + sector);
             System.out.println("=============================");
 
             if (displayMonsters) {  
@@ -236,23 +235,23 @@ public class Auschwitz implements Game {
             	System.out.println("Secrets " + secrets + "/" + totalSecrets + " secrets: " +
                     	((float) secrets / (float) totalSecrets) * 100f + "%");
             	
-            	if(level.getPlayer().getWeaponState() == level.getPlayer().HAND){
-            		level.getPlayer().gotHand();
-            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().PISTOL) {
-            		level.getPlayer().gotPistol();
-            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().MACHINEGUN && machinegunTemp == true) {
-            		level.getPlayer().gotMachinegun();
-            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().SHOTGUN && shotgunTemp == true) {
-            		level.getPlayer().gotShotgun();
-            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().SUPER_SHOTGUN && superShotgunTemp == true) {
-            		level.getPlayer().gotSShotgun();
-            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().CHAINGUN && chaingunTemp == true) {
-            		level.getPlayer().gotChaingun();
+            	if(m_level.getPlayer().getWeaponState() == m_level.getPlayer().HAND){
+            		m_level.getPlayer().gotHand();
+            	}else if(m_level.getPlayer().getWeaponState() == m_level.getPlayer().PISTOL) {
+            		m_level.getPlayer().gotPistol();
+            	}else if(m_level.getPlayer().getWeaponState() == m_level.getPlayer().MACHINEGUN && machinegunTemp == true) {
+            		m_level.getPlayer().gotMachinegun();
+            	}else if(m_level.getPlayer().getWeaponState() == m_level.getPlayer().SHOTGUN && shotgunTemp == true) {
+            		m_level.getPlayer().gotShotgun();
+            	}else if(m_level.getPlayer().getWeaponState() == m_level.getPlayer().SUPER_SHOTGUN && superShotgunTemp == true) {
+            		m_level.getPlayer().gotSShotgun();
+            	}else if(m_level.getPlayer().getWeaponState() == m_level.getPlayer().CHAINGUN && chaingunTemp == true) {
+            		m_level.getPlayer().gotChaingun();
             	}
             }
         } catch (RuntimeException ex) {
         	ex.printStackTrace();
-            isRunning = false;
+            m_isRunning = false;
             System.out.println("GAME OVER!");
             AudioUtil.stopMidi();
         }
@@ -264,7 +263,7 @@ public class Auschwitz implements Game {
      * @return Level.
      */
     public static Level getLevel() {
-        return level;
+        return m_level;
     }
 
     /**
@@ -272,6 +271,6 @@ public class Auschwitz implements Game {
      * @param value True or false.
      */
     public static void setIsRunning(boolean value) {
-        isRunning = value;
+        m_isRunning = value;
     }
 }

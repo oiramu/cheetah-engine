@@ -36,14 +36,14 @@ import engine.rendering.Window;
  */
 public class Button extends WidgetModel {
 
-	private Vector2f size;
-	private MenuEvent buttonEvent = null;
-	private SpriteSheet texture;
-	private String text;
+	private Vector2f 		m_size;
+	private MenuEvent 		m_buttonEvent = null;
+	private SpriteSheet 	m_texture;
+	private String 			m_text;
 	
-	private static final Clip clickSound = AudioUtil.loadAudio("button");
+	private static final Clip CLICK_SOUND = AudioUtil.loadAudio("button");
 	
-	private boolean hover = false;
+	private boolean 		g_hover = false;
 	
 	/**
 	 * Menu's button constructor.
@@ -55,13 +55,13 @@ public class Button extends WidgetModel {
 	 * @param h height.
 	 */
 	public Button(String texturePath, String text, int x, int y, int w, int h) {
-		componentType = "Button";
+		m_componentType = "Button";
 		try {
-			this.text = text;
-			texture = new SpriteSheet(texturePath, 466, 37);
+			this.m_text = text;
+			m_texture = new SpriteSheet(texturePath, 466, 37);
 			
-			position = new Vector2f(x, y);
-			size = new Vector2f(w, h);
+			m_position = new Vector2f(x, y);
+			m_size = new Vector2f(w, h);
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -73,7 +73,7 @@ public class Button extends WidgetModel {
 	 */
 	public void delete() {
 		try {
-			texture.destroy();
+			m_texture.destroy();
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -84,13 +84,13 @@ public class Button extends WidgetModel {
 	 * Updates the button rendering every frame per second.
 	 */
 	public void update() {
-		if(buttonEvent != null) {
-			if(Mouse.getX() > position.x && Mouse.getX() < position.x+ size.x && (-Mouse.getY()+Window.getHeight()) > position.y && (-Mouse.getY()+Window.getHeight()) < position.y + size.y) {
-				hover = true;
+		if(m_buttonEvent != null) {
+			if(Mouse.getX() > m_position.x && Mouse.getX() < m_position.x+ m_size.x && (-Mouse.getY()+Window.getHeight()) > m_position.y && (-Mouse.getY()+Window.getHeight()) < m_position.y + m_size.y) {
+				g_hover = true;
 			}else {
-				hover = false;
+				g_hover = false;
 			}
-			if(hover && Input.getMouseDown(0)) //mouse left button
+			if(g_hover && Input.getMouseDown(0)) //mouse left button
 				callEvent();
 		}
 	}
@@ -100,14 +100,14 @@ public class Button extends WidgetModel {
 	 */
 	public void draw() {
 		//Button Texture
-		if(hover) {
-			texture.getSprite(0, 1).draw(position.x, position.y, size.x, size.y);
+		if(g_hover) {
+			m_texture.getSprite(0, 1).draw(m_position.x, m_position.y, m_size.x, m_size.y);
 			//Text
-			SEngineUtil.getInstance().getFont().drawString(position.x + 24, position.y, text);
+			SEngineUtil.getInstance().getFont().drawString(m_position.x + 24, m_position.y, m_text);
 		} else {
-			texture.getSprite(0, 0).draw(position.x, position.y, size.x, size.y);
+			m_texture.getSprite(0, 0).draw(m_position.x, m_position.y, m_size.x, m_size.y);
 			//Text
-			SEngineUtil.getInstance().getFont().drawString(position.x + 24, position.y, text);
+			SEngineUtil.getInstance().getFont().drawString(m_position.x + 24, m_position.y, m_text);
 		}
 	}
 	
@@ -115,9 +115,9 @@ public class Button extends WidgetModel {
 	 * Calls a new event when it has been clicked.
 	 */
 	public void callEvent() {
-		if(buttonEvent != null) {
-			buttonEvent.update();
-			AudioUtil.playAudio(clickSound, 0);
+		if(m_buttonEvent != null) {
+			m_buttonEvent.update();
+			AudioUtil.playAudio(CLICK_SOUND, 0);
 		}
 	}
 	
@@ -125,24 +125,24 @@ public class Button extends WidgetModel {
 	 * Adds a event to be click-able in the menu. 
 	 * @param event to be click-able.
 	 */
-	public void addEvent(MenuEvent event) {buttonEvent = event;}
+	public void addEvent(MenuEvent event) {m_buttonEvent = event;}
 	
 	/**
 	 * Returns the texture of the button.
 	 * @return Texture of the button.
 	 */
-	public SpriteSheet getTexture() {return texture;}
+	public SpriteSheet getTexture() {return m_texture;}
 	
 	/**
 	 * Sets a texture for the button.
 	 * @param texture for the button.
 	 */
-	public void setTexture(SpriteSheet texture) {this.texture = texture;}
+	public void setTexture(SpriteSheet texture) {this.m_texture = texture;}
 	
 	/**
 	 * Check if hover or not when need it.
 	 * @param hover State.
 	 */
-	public void setHover(boolean hover) {this.hover = hover;}
+	public void setHover(boolean hover) {this.g_hover = hover;}
 	
 }

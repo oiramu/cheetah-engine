@@ -28,9 +28,9 @@ public class PointLight extends BaseLight {
 	
 	private static final int COLOR_DEPTH = 256;
 
-	private Attenuation atten;
-	private Vector3f position;
-	private float range;
+	private Attenuation m_attenuation;
+	private Vector3f 	m_position;
+	private float 		m_range;
 	
 	/**
 	 * Point of light object instance.
@@ -41,14 +41,14 @@ public class PointLight extends BaseLight {
 	 */
 	public PointLight(Vector3f color, float intensity, Attenuation atten, Vector3f position) {
 		super(color, intensity);
-		this.atten = atten;
-		this.position = position;
+		this.m_attenuation = atten;
+		this.m_position = position;
 		
 		float a = atten.getConstant();
 		float b = atten.getLinear();
 		float c = atten.getExponent() - COLOR_DEPTH * getIntensity() * getColor().max();
 		
-		this.range = (float) (-b + Math.sqrt(b * b - 4 * a * c))/(2 * a);
+		this.m_range = (float) (-b + Math.sqrt(b * b - 4 * a * c))/(2 * a);
 		setShader(new Shader("forward-point"));
 	}
 	
@@ -56,36 +56,36 @@ public class PointLight extends BaseLight {
 	 * Returns the attenuation of the point-light.
 	 * @return Attenuation
 	 */
-	public Attenuation getAtten() { return atten;}
+	public Attenuation getAtten() { return m_attenuation;}
 	
 	/**
 	 * Sets a new attenuation to the point-light.
 	 * @param Attenuation to set
 	 */
-	public void setAtten(Attenuation atten) {this.atten = atten;}
+	public void setAtten(Attenuation atten) {this.m_attenuation = atten;}
 	
 	/**
 	 * Returns the position of the point-light.
 	 * @return Position
 	 */
-	public Vector3f getPosition() {return position;}
+	public Vector3f getPosition() {return m_position;}
 	
 	/**
 	 * Sets a new position to the point-light.
 	 * @param Position to set
 	 */
-	public void setPosition(Vector3f position) {this.position = position;}
+	public void setPosition(Vector3f position) {this.m_position = position;}
 
 	/**
 	 * Returns the range of the point-light.
 	 * @return Range
 	 */
-	public float getRange() {return range;}
+	public float getRange() {return m_range;}
 	
 	/**
 	 * Sets a new range to the point-light.
 	 * @param Range to set
 	 */
-	public void setRange(float range) {this.range = range;}
+	public void setRange(float range) {this.m_range = range;}
 	
 }

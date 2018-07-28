@@ -247,7 +247,7 @@ public class Level extends GameComponent {
 		if (!player.isAlive) {
 	        if(Input.getKeyDown(Input.KEY_E) || Input.getKeyDown(Input.KEY_SPACE)) {
 	    		if (timeDecimals <= 5.0f) {
-		            Auschwitz.loadLevel(Auschwitz.levelNum-Auschwitz.levelNum);
+		            Auschwitz.loadLevel(Auschwitz.m_levelNum-Auschwitz.m_levelNum);
 		            player.gotPistol();
 	    		}
 	        }
@@ -1544,10 +1544,10 @@ public class Level extends GameComponent {
         indices.toArray(intArray);
         geometry = new Mesh(vertArray, Util.toIntArray(intArray), true);
         meshRenderer = new MeshRenderer(geometry, transform, material);
-        RenderingEngine.fogDensity = 0.07f;
-        RenderingEngine.fogGradient = 1.5f;
+        RenderingEngine.m_fogDensity = 0.07f;
+        RenderingEngine.m_fogGradient = 1.5f;
         RenderingEngine.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
-        RenderingEngine.ambientLight = new Vector3f(0.8f,0.8f,0.8f);
+        RenderingEngine.m_ambientLight = new Vector3f(0.8f,0.8f,0.8f);
         RenderingEngine.addLight(new DirectionalLight(new Vector3f(1,1,1), 
         		1f, new Vector3f(level.getWidth()/2,10,level.getHeight()/2)));
     }

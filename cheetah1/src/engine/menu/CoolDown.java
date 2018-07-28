@@ -25,12 +25,12 @@ import engine.menu.system.SGameTime;
  */
 public class CoolDown {
 	
-	private float timerInstance;
+	private float m_timerInstance;
 	
 	/**
 	 * Time cooler constructor.
 	 */
-	public CoolDown() {timerInstance = 0.0f;}
+	public CoolDown() {m_timerInstance = 0.0f;}
 	
 	/**
 	 * Cools down the time counter.
@@ -38,14 +38,12 @@ public class CoolDown {
 	 * @return time at 0 or else the same time.
 	 */
 	public boolean coolDownTime(float time) {
-		timerInstance += SGameTime.getInstance().getElapsedGameTime();
+		m_timerInstance += SGameTime.getInstance().getElapsedGameTime();
 
-		if (timerInstance >= time)
-		{
-			timerInstance = 0.0f;
+		if (m_timerInstance >= time) {
+			m_timerInstance = 0.0f;
 			return true;
-		}
-		else
+		} else
 			return false;
 	}
 }

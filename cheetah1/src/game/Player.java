@@ -131,6 +131,7 @@ public class Player {
     private static final Clip deathNoise = AudioUtil.loadAudio(PLAYER_RES_LOC + "PLDETH");
 
     private Mesh gunMesh;
+    private Mesh hudMesh;
     private Material gunMaterial;
     private Material gunAnimationMaterial1;
     private Material gunAnimationMaterial2;
@@ -342,7 +343,8 @@ public class Player {
             int[] indices = new int[]{0, 1, 2,
             						  0, 2, 3};
 
-            gunMesh = new Mesh(verts, indices, false);
+            hudMesh = new Mesh(verts, indices);
+            gunMesh = new Mesh(verts, indices, true);
         }
 
         health = MAX_LIFE;
@@ -358,7 +360,7 @@ public class Player {
         
         if(gunRenderer == null && hudRenderer == null) {
         	gunRenderer = new MeshRenderer(gunMesh, gunTransform);
-        	hudRenderer = new MeshRenderer(gunMesh, hudTransform);
+        	hudRenderer = new MeshRenderer(hudMesh, hudTransform);
         }
         
         if(sLight == null && fireBulletLight == null && fireShellLight == null) {

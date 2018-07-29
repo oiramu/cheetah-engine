@@ -41,6 +41,7 @@ public class Auschwitz implements Game {
     private static boolean 	m_isRunning;
 
     public static Level 	m_level;
+    public static Material	m_material;
     public static int 		m_levelNum;
     public static int 		m_startingLevel;
     public static int 		m_track;
@@ -108,7 +109,7 @@ public class Auschwitz implements Game {
      * Load the level and also charges the next level when the last end.
      * @param offset count of level offset by offset.
      */
-	@SuppressWarnings("static-access")
+	@SuppressWarnings({ "static-access", "unused" })
 	public static void loadLevel(int offset) {
         try {
         	int secrets = 0;
@@ -185,29 +186,29 @@ public class Auschwitz implements Game {
             	m_currentEpisode = EPISODE_1;
 
             m_levelNum += offset;
-            m_level = new Level(new Bitmap("level" + m_levelNum).flipX(), 
-            		new Material(new Texture("mapTexture" + m_currentEpisode), 1,8, 
-            				new Texture("mapTextureNormal" + m_currentEpisode), 
-            				new Texture("mapTextureBump" + m_currentEpisode), 0.0003f, -0.5f));
+            Material material1 = new Material(new Texture("mapTexture" + m_currentEpisode), 1, 8, 
+    				new Texture("mapTextureNormal" + m_currentEpisode), 
+    				new Texture("mapTextureBump" + m_currentEpisode), 0.0003f, -0.5f);
+        	Material material2 = new Material(new Texture("mapTexture" + m_currentEpisode));
+            m_material = material1;
+            
+            m_level = new Level(new Bitmap("level" + m_levelNum).flipX(), m_material);
 
             if((m_levelNum/2) * 2 == m_levelNum) sector = "B."; else sector = "A.";   
             
             if(m_level.getPlayer().getArmori() == 0) {
-            	if(armoriTemp == 0) {
+            	if(armoriTemp == 0)
             		m_level.getPlayer().addArmori(0);
-            	}
             	m_level.getPlayer().addArmori(armoriTemp);
             }
             if(m_level.getPlayer().getBullets() == 0) {
-            	if(bulletTemp == 0) {
+            	if(bulletTemp == 0)
             		m_level.getPlayer().addBullets(20);
-            	}
             	m_level.getPlayer().addBullets(bulletTemp);
             }
             if(m_level.getPlayer().getShells() == 0) {
-            	if(shellTemp == 0) {
+            	if(shellTemp == 0)
             		m_level.getPlayer().addShells(20);
-            	}
             	m_level.getPlayer().addShells(shellTemp);
             }
             m_level.getPlayer().setShotgun(shotgunTemp);

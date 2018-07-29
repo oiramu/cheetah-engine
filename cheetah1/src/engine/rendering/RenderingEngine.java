@@ -41,8 +41,8 @@ public class RenderingEngine {
 	
 	private static ArrayList<BaseLight> m_lights;
 	
-	public static float 				m_fogDensity;
-	public static float 				m_fogGradient;
+	private static float 				m_fogDensity;
+	private static float 				m_fogGradient;
     private static Vector3f 			m_fogColor;
 	
 	/**
@@ -161,6 +161,30 @@ public class RenderingEngine {
 	public static void setFogColor(Vector3f color) {m_fogColor = color; setClearColor(color);}
 
     /**
+     * Returns the density of the fog.
+	 * @return fogDensity.
+	 */
+	public static float getFogDensity() {return m_fogDensity;}
+
+	/**
+	 * Sets a density to the actual fog.
+	 * @param fogDensity to set.
+	 */
+	public static void setFogDensity(float fogDensity) {m_fogDensity = fogDensity;}
+
+	/**
+	 * Returns the gradient of the fog.
+	 * @return fogGradient.
+	 */
+	public static float getFogGradient() {return m_fogGradient;}
+
+	/**
+	 * Sets a new gradient for the fog.
+	 * @param fogGradient to set.
+	 */
+	public static void setFogGradient(float fogGradient) {m_fogGradient = fogGradient;}
+
+	/**
      * Bind the textures to openGL.
      */
     @SuppressWarnings("unused")

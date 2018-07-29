@@ -1542,10 +1542,10 @@ public class Level extends GameComponent {
 
         vertices.toArray(vertArray);
         indices.toArray(intArray);
-        geometry = new Mesh(vertArray, Util.toIntArray(intArray), true);
+        geometry = new Mesh(vertArray, Util.toIntArray(intArray), true, true);
         meshRenderer = new MeshRenderer(geometry, transform, material);
-        RenderingEngine.m_fogDensity = 0.07f;
-        RenderingEngine.m_fogGradient = 1.5f;
+        RenderingEngine.setFogDensity(0.07f);
+        RenderingEngine.setFogGradient(1.5f);
         RenderingEngine.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
         RenderingEngine.m_ambientLight = new Vector3f(0.8f,0.8f,0.8f);
         RenderingEngine.addLight(new DirectionalLight(new Vector3f(1,1,1), 

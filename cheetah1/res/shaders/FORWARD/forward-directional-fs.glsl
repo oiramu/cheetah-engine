@@ -1,13 +1,11 @@
 #version 120
-#include "FORWARD/h_lighting"
+#include "FORWARD/h_lighting-fs"
 
-varying vec2 texCoord0;
-varying vec3 normal0;
-varying vec3 worldPos0;
-
-uniform sampler2D R_diffuse;
 uniform DirectionalLight R_directionalLight;
 
-void main() {
-    gl_FragColor = texture2D(R_diffuse, texCoord0.xy) * CalcDirectionalLight(R_directionalLight, normalize(normal0), worldPos0);
+vec4 CalcLightingEffect(vec3 normal, vec3 worldPos) {
+	if(R_directionalLight.base.intensity > 0)
+		return CalcDirectionalLight(R_directionalLight, normal, worldPos);
 }
+
+#include "FORWARD/h_lightingMain-fs"

@@ -108,9 +108,9 @@ public class Shader {
     		
     		if(uniformName.startsWith("T_")) {
     			if(uniformName.equals("T_MVP")) 
-    				setUniform("T_MVP", MVPMatrix);
-    			else if(uniformName.equals("T_world"))
-    				setUniform("T_world", worldMatrix);
+    				setUniform(uniformName, MVPMatrix);
+    			else if(uniformName.equals("T_model"))
+    				setUniform(uniformName, worldMatrix);
     			else
     				throw new IllegalArgumentException(uniformName + " is not a valid component of Transform.");
     		} else if(uniformName.startsWith("R_")) {
@@ -118,35 +118,45 @@ public class Shader {
     				if(uniformName.equals("R_diffuse")) {
 	    				material.getDiffuse().bind(0);
 	    				setUniformi(uniformName, 0);
+    				}else if(uniformName.equals("R_normalMap")) {
+	    				material.getNormalMap().bind(1);
+	    				setUniformi(uniformName, 1);
+    				}else if(uniformName.equals("R_dispMap")) {
+	    				material.getDispMap().bind(2);
+	    				setUniformi(uniformName, 2);
     				}
     			}else if(uniformType.equals("vec3")) {
 	    			if(uniformName.equals("R_eyePos")) 
-	    				setUniform("R_eyePos", getRenderingEngine().getMainCamera().getPos());
+	    				setUniform(uniformName, getRenderingEngine().getMainCamera().getPos());
 	    			else if(uniformName.equals("R_ambient"))
-	    				setUniform("R_ambient", getRenderingEngine().getAmbientLight());
+	    				setUniform(uniformName, getRenderingEngine().getAmbientLight());
 	    			else if(uniformName.equals("R_fogColor"))
-	    				setUniform("R_fogColor", getRenderingEngine().getFogColor());
+	    				setUniform(uniformName, getRenderingEngine().getFogColor());
     			}else if(uniformType.equals("float")) {
 	    			if(uniformName.equals("R_fogDensity"))
-	    				setUniformf("R_fogDensity", getRenderingEngine().m_fogDensity);
+	    				setUniformf(uniformName, getRenderingEngine().getFogDensity());
 	    			else if(uniformName.equals("R_fogGradient"))
-	    				setUniformf("R_fogGradient", getRenderingEngine().m_fogGradient);
+	    				setUniformf(uniformName, getRenderingEngine().getFogGradient());
     			}else if(uniformType.equals("DirectionalLight")) {
 	    			if(uniformName.equals("R_directionalLight"))
-	    				setUniformDirectionalLight("R_directionalLight", (DirectionalLight)getRenderingEngine().getActiveLight());
+	    				setUniformDirectionalLight(uniformName, (DirectionalLight)getRenderingEngine().getActiveLight());
     			}else if(uniformType.equals("PointLight")) {
     				if(uniformName.equals("R_pointLight"))
-    					setUniformPointLight("R_pointLight", (PointLight)getRenderingEngine().getActiveLight());
+    					setUniformPointLight(uniformName, (PointLight)getRenderingEngine().getActiveLight());
     			}else if(uniformType.equals("SpotLight")){
     				if(uniformName.equals("R_spotLight"))
-    					setUniformSpotLight("R_spotLight", (SpotLight)getRenderingEngine().getActiveLight());
+    					setUniformSpotLight(uniformName, (SpotLight)getRenderingEngine().getActiveLight());
     			}else
     				throw new IllegalArgumentException(uniformName + " is not a valid component of Rendering Engine.");
     		}else if(uniformName.startsWith("M_")) {
     			if(uniformName.equals("M_specularIntensity")) 
-    				setUniformf("M_specularIntensity", material.getSpecularIntensity());
+    				setUniformf(uniformName, material.getSpecularIntensity());
     			else if(uniformName.equals("M_specularPower"))
-    				setUniformf("M_specularPower", material.getSpecularPower());
+    				setUniformf(uniformName, material.getSpecularPower());
+    			else if(uniformName.equals("M_dispMapScale"))
+    				setUniformf(uniformName, material.getDispMapScale());
+    			else if(uniformName.equals("M_dispMapBias"))
+    				setUniformf(uniformName, material.getDispMapBias());
     			else
     				throw new IllegalArgumentException(uniformName + " is not a valid component of Material.");
     		}

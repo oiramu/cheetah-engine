@@ -32,7 +32,7 @@ public class Material {
 	private float 		m_specularIntensity;
 	private float 		m_specularPower;
 	private float 		m_dispMapScale;
-	private float 		m_dispMapOffset;
+	private float 		m_dispMapBias;
 	
 	/**
      * Constructor of the texture material of a mesh.
@@ -63,7 +63,7 @@ public class Material {
     public Material(Texture diffuse, Vector3f color, float specularIntensity,
     		float specularPower) {
         this(diffuse, color, specularIntensity, specularPower, new Texture("default_normal"), 
-        		new Texture("default_disp"), 0.03f, -0.5f);
+        		new Texture("default_disp"), 0, 0);//0.03f, -0.5f
     }
     
     /**
@@ -108,7 +108,7 @@ public class Material {
         this.m_dispMap = dispMap;
         float baseBias = dispMapScale/2.0f;
         this.m_dispMapScale = dispMapScale;
-        this.m_dispMapOffset = -baseBias + baseBias * dispMapOffset;
+        this.m_dispMapBias = -baseBias + baseBias * dispMapOffset;
     }
 
     /**
@@ -163,7 +163,7 @@ public class Material {
 	 * Returns the normal map of the material.
 	 * @return the normalMap.
 	 */
-	public Texture getNnormalMap() {return m_normalMap;}
+	public Texture getNormalMap() {return m_normalMap;}
 
 	/**
 	 * Sets the normal map for the material.
@@ -175,7 +175,7 @@ public class Material {
 	 * Returns the displacement map of the material.
 	 * @return the dispMap.
 	 */
-	public Texture geDispMap() {return m_dispMap;}
+	public Texture getDispMap() {return m_dispMap;}
 
 	/**
 	 * Sets the displacement map for the material.
@@ -199,12 +199,15 @@ public class Material {
 	 * Returns the displacement map's offset of the material.
 	 * @return the dispMapOffset.
 	 */
-	public float getDispMapOffset() {return m_dispMapOffset;}
+	public float getDispMapBias() {return m_dispMapBias;}
 
 	/**
 	 * Sets the displacement map's offset for the material.
 	 * @param dispMapOffset to set
 	 */
-	public void setDispMapOffset(float dispMapOffset) {this.m_dispMapOffset = dispMapOffset;}
+	public void setDispMapBias(float dispMapOffset) {
+		float baseBias = getDispMapScale()/2.0f;
+		this.m_dispMapBias = -baseBias + baseBias * dispMapOffset;
+	}
 	
 }

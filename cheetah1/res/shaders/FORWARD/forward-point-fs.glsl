@@ -1,14 +1,11 @@
 #version 120
-#include "FORWARD/h_lighting"
+#include "FORWARD/h_lighting-fs"
 
-varying vec2 texCoord0;
-varying vec3 normal0;
-varying vec3 worldPos0;
-
-uniform sampler2D R_diffuse;
 uniform PointLight R_pointLight;
 
-void main() {
+vec4 CalcLightingEffect(vec3 normal, vec3 worldPos) {
 	if(R_pointLight.base.intensity > 0)
-    	gl_FragColor = texture2D(R_diffuse, texCoord0.xy) * CalcPointLight(R_pointLight, normalize(normal0), worldPos0);
+		return CalcPointLight(R_pointLight, normal, worldPos);
 }
+
+#include "FORWARD/h_lightingMain-fs"

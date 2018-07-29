@@ -99,7 +99,7 @@ public class Auschwitz implements Game {
      */
 	public void render(RenderingEngine engine) {
         if (m_isRunning) {
-        	engine.clearLights();
+        	//engine.clearLights();
         	engine.render(m_level);
         }
     }
@@ -177,17 +177,18 @@ public class Auschwitz implements Game {
                 mouseLocktemp = m_level.getPlayer().mouseLocked;
             }
 
-            if(m_levelNum > 9) {
+            if(m_levelNum > 9)
             	m_currentEpisode = EPISODE_2;
-            } else if(m_levelNum > 19) {
+            else if(m_levelNum > 19)
             	m_currentEpisode = EPISODE_3;
-            } else {
+            else
             	m_currentEpisode = EPISODE_1;
-            }
 
             m_levelNum += offset;
             m_level = new Level(new Bitmap("level" + m_levelNum).flipX(), 
-            		new Material(new Texture("mapTexture" + m_currentEpisode), new Vector3f(1,1,1)));
+            		new Material(new Texture("mapTexture" + m_currentEpisode), 1,8, 
+            				new Texture("mapTextureNormal" + m_currentEpisode), 
+            				new Texture("mapTextureBump" + m_currentEpisode), 0.0003f, -0.5f));
 
             if((m_levelNum/2) * 2 == m_levelNum) sector = "B."; else sector = "A.";   
             

@@ -366,9 +366,9 @@ public class Player {
         if(sLight == null && fireBulletLight == null && fireShellLight == null) {
         	sLight = new SpotLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f, 
         	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
-    		fireBulletLight = new PointLight(new Vector3f(0.5f,0.3f,0.1f).mul(4.0f), 1.6f, 
+    		fireBulletLight = new PointLight(new Vector3f(0.5f,0.3f,0.1f), 1.6f, 
             		new Attenuation(1,0,1), getCamera().getPos());
-    		fireShellLight = new PointLight(new Vector3f(0.45f,0.35f,0.1f).mul(4.0f), 1.6f, 
+    		fireShellLight = new PointLight(new Vector3f(0.45f,0.35f,0.1f), 1.6f, 
             		new Attenuation(1,0,1), getCamera().getPos());
     	}
 

@@ -1536,13 +1536,11 @@ public class Level extends GameComponent {
                 }
             }
         }
-
         Vertex[] vertArray = new Vertex[vertices.size()];
         Integer[] intArray = new Integer[indices.size()];
-
         vertices.toArray(vertArray);
         indices.toArray(intArray);
-        geometry = new Mesh(vertArray, Util.toIntArray(intArray), true, true);
+        geometry = new Mesh(vertArray, Util.toIntArray(intArray), true);
         meshRenderer = new MeshRenderer(geometry, transform, material);
         RenderingEngine.setFogDensity(0.07f);
         RenderingEngine.setFogGradient(1.5f);

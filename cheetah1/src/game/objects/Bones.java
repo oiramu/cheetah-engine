@@ -100,28 +100,21 @@ public class Bones {
     }
 
     /**
-     * Method that renders the object's mesh.
+     * Method that renders the object's mesh to screen.
      * @param shader to render
      */
-    public void render(Shader shader) {
-    	meshRenderer.render(shader);
-    }
-
+    public void render(Shader shader) {meshRenderer.render(shader);}
+    
     /**
-	 * Gets the object's actual transformation.
-	 * @return the object's transform data.
-	 */
-    public Transform getTransform() {
-        return transform;
-    }
-	
-    /**
-     * Returns the object's size depending on the object's own width,
-     * all of this in a Vector2f.
-     * @return vector with the size.
+     * Gets the transform of the object in projection.
+     * @return transform.
      */
-    public Vector2f getSize() {
-        return new Vector2f(sizeX, sizeX);
-    }
+	public Transform getTransform() {return transform;}
+	
+	/**
+	 * Gets the size of the object in the 3D space and saves it on a vector.
+	 * @return the vector size.
+	 */
+    public Vector2f getSize() {return new Vector2f(sizeX, sizeX);}
     
 }

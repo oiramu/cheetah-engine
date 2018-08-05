@@ -99,11 +99,9 @@ public class DeadNazi {
     }
 
     /**
-     * Method that renders the object's mesh.
+     * Method that renders the object's mesh to screen.
      * @param shader to render
      */
-    public void render(Shader shader) {
-        meshRenderer.render(shader);
-    }
+    public void render(Shader shader) {meshRenderer.render(shader);}
     
 }

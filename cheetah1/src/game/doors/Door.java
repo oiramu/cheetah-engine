@@ -178,25 +178,19 @@ public class Door {
      * Renders the door.
      * @param shader to render
      */
-    public void render(Shader shader) {
-        meshRenderer.render(shader);
-    }
+    public void render(Shader shader) {meshRenderer.render(shader);}
 
     /**
      * Checks if the door is open or not.
      * @return Door state.
      */
-    public boolean isOpen() {
-        return open;
-    }
+    public boolean isOpen() {return open;}
 
     /**
      * Returns the transform of the door.
      * @return Transform.
      */
-    public Transform getTransform() {
-        return transform;
-    }
+    public Transform getTransform() {return transform;}
 
     /**
      * Returns the size of the door in the level.

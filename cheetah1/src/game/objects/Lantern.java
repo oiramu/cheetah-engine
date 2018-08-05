@@ -36,25 +36,25 @@ import engine.rendering.Vertex;
  */
 public class Lantern {
     
-    private static Mesh mesh;
-    private Material material;
-    private MeshRenderer meshRenderer;
-    private PointLight light;
+    private static Mesh 	m_mesh;
+    private Material 		m_material;
+    private MeshRenderer 	m_meshRenderer;
+    private PointLight 		m_light;
     
-    private float sizeX;
+    private float 			m_sizeX;
     
     private static final String RES_LOC = "lantern/MEDIA";
 
-    private Transform transform;
+    private Transform 		m_transform;
 
     /**
      * Constructor of the actual object.
      * @param transform the transform of the object in a 3D space.
      */
     public Lantern(Transform transform) {
-        if (mesh == null) {
+        if (m_mesh == null) {
             float sizeY = 0.3f;
-            sizeX = (float) ((double) sizeY / (1.5f * 2.0));
+            m_sizeX = (float) ((double) sizeY / (1.5f * 2.0));
 
             float offsetX = 0.0f;
             float offsetY = 0.0f;
@@ -64,34 +64,34 @@ public class Lantern {
             float texMinY = -offsetY;
             float texMaxY = 1 - offsetY;
 
-            Vertex[] verts = new Vertex[]{new Vertex(new Vector3f(-sizeX, 0, 0), new Vector2f(texMaxX, texMaxY)),
-                new Vertex(new Vector3f(-sizeX, sizeY, 0), new Vector2f(texMaxX, texMinY)),
-                new Vertex(new Vector3f(sizeX, sizeY, 0), new Vector2f(texMinX, texMinY)),
-                new Vertex(new Vector3f(sizeX, 0, 0), new Vector2f(texMinX, texMaxY))};
+            Vertex[] verts = new Vertex[]{new Vertex(new Vector3f(-m_sizeX, 0, 0), new Vector2f(texMaxX, texMaxY)),
+                new Vertex(new Vector3f(-m_sizeX, sizeY, 0), new Vector2f(texMaxX, texMinY)),
+                new Vertex(new Vector3f(m_sizeX, sizeY, 0), new Vector2f(texMinX, texMinY)),
+                new Vertex(new Vector3f(m_sizeX, 0, 0), new Vector2f(texMinX, texMaxY))};
 
             int[] indices = new int[]{0, 1, 2,
                                     0, 2, 3};
 
-            mesh = new Mesh(verts, indices, true);
+            m_mesh = new Mesh(verts, indices, true);
         }
 
-        if (material == null) {
-            material = new Material(new Texture(RES_LOC), new Vector3f(1,1,1));
+        if (m_material == null) {
+            m_material = new Material(new Texture(RES_LOC), new Vector3f(1,1,1));
         }
 
-        this.transform = transform;
-        this.light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
+        this.m_transform = transform;
+        this.m_light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
         		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.25f, 
         				getTransform().getPosition().getZ()));
-        RenderingEngine.addLight(light);
-        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
+        RenderingEngine.addLight(m_light);
+        this.m_meshRenderer = new MeshRenderer(m_mesh, getTransform(), m_material);
     }
 
     /**
      * Method that updates the object's data.
      */
     public void update() {
-        Vector3f playerDistance = transform.getPosition().sub(Transform.getCamera().getPos());
+        Vector3f playerDistance = m_transform.getPosition().sub(Transform.getCamera().getPos());
 
         Vector3f orientation = playerDistance.normalized();
         @SuppressWarnings("unused")
@@ -102,31 +102,25 @@ public class Lantern {
         if (orientation.getX() > 0) {
             angle = 180 + angle;
         }
-        transform.setRotation(0, angle + 90, 0);
+        m_transform.setRotation(0, angle + 90, 0);
        }
 
     /**
      * Method that renders the object's mesh to screen.
      * @param shader to render
      */
-    public void render(Shader shader) {
-        meshRenderer.render(shader);
-    }
-
+    public void render(Shader shader) {m_meshRenderer.render(shader);}
+    
     /**
      * Gets the transform of the object in projection.
      * @return transform.
      */
-	public Transform getTransform() {
-		return transform;
-	}
-
+	public Transform getTransform() {return m_transform;}
+	
 	/**
 	 * Gets the size of the object in the 3D space and saves it on a vector.
 	 * @return the vector size.
 	 */
-	public Vector2f getSize() {
-		return new Vector2f(sizeX, sizeX);
-	}
+    public Vector2f getSize() {return new Vector2f(m_sizeX, m_sizeX);}
     
 }

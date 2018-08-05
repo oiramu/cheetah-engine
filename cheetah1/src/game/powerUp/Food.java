@@ -30,32 +30,29 @@ import engine.rendering.Vertex;
 import game.Level;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.2
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.2
+ * @since 2017
+ */
 public class Food {
 
     private static final float PICKUP_THRESHHOLD = 0.75f;
     private static final int HEAL_AMOUNT = 25;
-    
     private static final String RES_LOC = "food/MEDIA";
+    private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
 
-    private static final Clip pickupNoise = AudioUtil.loadAudio(RES_LOC);
-
-    private static Mesh mesh;
-    private static Material material;
-    private MeshRenderer meshRenderer;
-
-    private Transform transform;
+    private static Mesh 	m_mesh;
+    private static Material m_material;
+    private MeshRenderer 	m_meshRenderer;
+    private Transform 		m_transform;
 
     /**
      * Constructor of the actual power-up.
      * @param transform the transform of the data.
      */
     public Food(Transform transform) {
-        if (mesh == null) {
+        if (m_mesh == null) {
             float sizeY = 0.4f;
             float sizeX = (float) ((double) sizeY / (0.67857142857142857142857142857143 * 4.0));
 
@@ -75,22 +72,22 @@ public class Food {
             int[] indices = new int[]{0, 1, 2,
                 0, 2, 3};
 
-            mesh = new Mesh(verts, indices, true);
+            m_mesh = new Mesh(verts, indices, true);
         }
 
-        if (material == null) {
-            material = new Material(new Texture(RES_LOC), new Vector3f(1,1,1));
+        if (m_material == null) {
+            m_material = new Material(new Texture(RES_LOC));
         }
 
-        this.transform = transform;
-        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
+        this.m_transform = transform;
+        this.m_meshRenderer = new MeshRenderer(m_mesh, this.m_transform, m_material);
     }
 
     /**
      * Updates the power-up every single frame.
      */
     public void update() {
-        Vector3f playerDistance = transform.getPosition().sub(Transform.getCamera().getPos());
+        Vector3f playerDistance = m_transform.getPosition().sub(Transform.getCamera().getPos());
 
         Vector3f orientation = playerDistance.normalized();
         float distance = playerDistance.length();
@@ -101,13 +98,13 @@ public class Food {
             angle = 180 + angle;
         }
 
-        transform.setRotation(0, angle + 90, 0);
-        transform.setScale(1.7f, 0.5f, 1);
+        m_transform.setRotation(0, angle + 90, 0);
+        m_transform.setScale(1.7f, 0.5f, 1);
 
         if (distance < PICKUP_THRESHHOLD && Level.getPlayer().getHealth() < 100) {
             Level.getPlayer().addHealth(HEAL_AMOUNT);
             Level.removeFood(this);
-            AudioUtil.playAudio(pickupNoise, 0);
+            AudioUtil.playAudio(PICKUP_NOISE, 0);
         }
     }
 
@@ -115,7 +112,6 @@ public class Food {
      * Method that renders the power-up's mesh.
      * @param shader to render
      */
-    public void render(Shader shader) {
-        meshRenderer.render(shader);
-    }
+    public void render(Shader shader) {m_meshRenderer.render(shader);}
+    
 }

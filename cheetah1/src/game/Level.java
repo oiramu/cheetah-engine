@@ -1545,7 +1545,7 @@ public class Level extends GameComponent {
         RenderingEngine.setFogDensity(0.07f);
         RenderingEngine.setFogGradient(1.5f);
         RenderingEngine.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
-        RenderingEngine.m_ambientLight = new Vector3f(0.8f,0.8f,0.8f);
+        RenderingEngine.m_ambientLight = new Vector3f(0.75f,0.75f,0.75f);
         RenderingEngine.addLight(new DirectionalLight(new Vector3f(1,1,1), 
         		1f, new Vector3f(level.getWidth()/2,10,level.getHeight()/2)));
     }
@@ -1554,136 +1554,102 @@ public class Level extends GameComponent {
 	 * Returns all the secret walls in the array-list.
 	 * @return Secret walls.
 	 */
-	public ArrayList<SecretWall> getSecretWalls() {
-	    return secretWalls;
-	}
+	public ArrayList<SecretWall> getSecretWalls() {return secretWalls;}
 	
 	/**
 	 * Returns all the Nazi soldiers in the array-list.
 	 * @return Nazi Soldiers.
 	 */
-	public ArrayList<NaziSoldier> getNaziSoldiers() {
-	    return naziSoldiers;
-	}
+	public ArrayList<NaziSoldier> getNaziSoldiers() {return naziSoldiers;}
 
 	/**
 	 * Returns all the Dogs in the array-list.
 	 * @return Dogs.
 	 */
-	public ArrayList<Dog> getDogs() {
-	    return dogs;
-	}
+	public ArrayList<Dog> getDogs() {return dogs;}
 	
 	/**
 	 * Returns all the SS soldiers in the array-list.
 	 * @return SS soldiers.
 	 */
-	public ArrayList<SsSoldier> getSsSoldiers() {
-	    return ssSoldiers;
-	}
+	public ArrayList<SsSoldier> getSsSoldiers() {return ssSoldiers;}
 	
 	/**
 	 * Returns all the Nazi sergeants in the array-list.
 	 * @return Nazi sergeants.
 	 */
-	public ArrayList<NaziSergeant> getNaziSergeants() {
-	    return naziSeargeants;
-	}
+	public ArrayList<NaziSergeant> getNaziSergeants() {return naziSeargeants;}
 	
 	/**
 	 * Get access to the main player object in game.
 	 * @return Player.
 	 */
-	public static Player getPlayer() {
-	    return player;
-	}
+	public static Player getPlayer() {return player;}
 	
 	/**
 	  * Removes the medical kits when the player grabs it.
 	  * @param medkit Medical kit.
 	  */
-	public static void removeMedkit(Medkit medkit) {
-	    removeMedkitList.add(medkit);
-	}
+	public static void removeMedkit(Medkit medkit) {removeMedkitList.add(medkit);}
 	    
 	/**
 	 * Removes the food when the player grabs it.
 	 * @param food Food.
 	 */
-	public static void removeFood(Food food) {
-	    removeFoodList.add(food);
-	}
+	public static void removeFood(Food food) {removeFoodList.add(food);}
 	    
 	/**
 	 * Removes the bullet packs when the player grabs it.
 	 * @param bullet Bullet pack.
 	 */
-	public static void removeBullets(Bullet bullet) {
-	    removeBulletList.add(bullet);
-	}
+	public static void removeBullets(Bullet bullet) {removeBulletList.add(bullet);}
 	    
 	/**
 	 * Removes the bags when the player grabs it.
 	 * @param bag Bag.
 	 */
-	public static void removeBags(Bag bag) {
-		removeBagList.add(bag);
-	}
+	public static void removeBags(Bag bag) {removeBagList.add(bag);}
 	    
 	/**
 	 * Removes the shotguns when the player grabs it.
 	 * @param shotgun Shotgun.
 	 */
-	public static void removeShotgun(Shotgun shotgun) {
-		removeShotgunList.add(shotgun);
-	}
+	public static void removeShotgun(Shotgun shotgun) {removeShotgunList.add(shotgun);}
 	    
 	/**
 	 * Removes the machine-guns when the player grabs it.
 	 * @param machineGun Machine-Gun.
 	 */
-	public static void removeMachineGun(Machinegun machineGun) {
-	    removeMachineGunList.add(machineGun);
-	}
+	public static void removeMachineGun(Machinegun machineGun) {removeMachineGunList.add(machineGun);}
 	
 	/**
 	 * Removes the ghost when disappears.
 	 * @param ghost Ghost.
 	 */
-	public static void removeGhost(Ghost ghost) {
-	    removeGhostList.add(ghost);
-	}
+	public static void removeGhost(Ghost ghost) {removeGhostList.add(ghost);}
 	
 	/**
 	 * Removes the armor when disappears.
 	 * @param armor Armor.
 	 */
-	public static void removeArmor(Armor armor) {
-	    removeArmorList.add(armor);
-	}
+	public static void removeArmor(Armor armor) {removeArmorList.add(armor);}
 	
 	/**
 	 * Removes the super shotguns when the player grabs it.
 	 * @param sShotgun Super shotgun.
 	 */
-	public static void removeSuperShotgun(SuperShotgun sShotgun) {
-	    removeSuperShotgunList.add(sShotgun);
-	}
+	public static void removeSuperShotgun(SuperShotgun sShotgun) {removeSuperShotgunList.add(sShotgun);}
 	
 	/**
 	 * Removes the helmet when disappears.
 	 * @param helmet Helmet.
 	 */
-	public static void removeHelmet(Helmet helmet) {
-	    removeHelmets.add(helmet);
-	}
+	public static void removeHelmet(Helmet helmet) {removeHelmets.add(helmet);}
 	
 	/**
 	 * Removes the barrel when disappears.
 	 * @param barrel Barrels.
 	 */
-	public static void removeBarrel(Barrel barrel) {
-	    removeBarrels.add(barrel);
-	}
+	public static void removeBarrel(Barrel barrel) {removeBarrels.add(barrel);}
 
 }

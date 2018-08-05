@@ -888,9 +888,7 @@ public class Player {
 	 * Gets the player's actual bullets.
 	 * @return player's bullets.
 	 */
-	public int getBullets() {
-		return bullets;
-	}
+	public int getBullets() {return bullets;}
     
     /**
      * Method that sets an amount of bullets if player get some, or lose some.
@@ -915,9 +913,7 @@ public class Player {
 	 * Gets the player's actual shells.
 	 * @return player's shells.
 	 */
-	public int getShells() {
-		return shells;
-	}
+	public int getShells() {return shells;}
 
 	/**
      * Method that sets an amount of shells if player get some, or lose some.
@@ -953,9 +949,7 @@ public class Player {
      * Method that returns if the player have or not a shotgun on 
      * he's bag.
      */
-    public boolean getShotgun() {
-        return shotgun;
-    }
+    public boolean getShotgun() {return shotgun;}
     
     /**
      * Method that assigns the machine-gun to the player object.
@@ -972,9 +966,7 @@ public class Player {
      * Method that returns if the player have or not a machine-gun 
      * on he's bag.
      */
-    public boolean getMachinegun() {
-        return machinegun;
-    }
+    public boolean getMachinegun() {return machinegun;}
     
     /**
      * Method that assigns the super shotgun to the player object.
@@ -991,17 +983,13 @@ public class Player {
      * Method that returns if the player have or not a super shotgun 
      * on he's bag.
      */
-    public boolean getSuperShotgun() {
-        return sShotgun;
-    }
+    public boolean getSuperShotgun() {return sShotgun;}
     
     /**
      * Method that returns if the player have or not a chain-gun
      * on he's bag.
      */
-    public boolean getChaingun() {
-        return chaingun;
-    }
+    public boolean getChaingun() {return chaingun;}
     
     /**
      * Method that assigns the chain-gun to the player object.
@@ -1018,68 +1006,52 @@ public class Player {
      * Method that assigns the armor to the player object.
      * @param amt amount.
      */
-    public void setArmorb(boolean amt) {
-        armorb = amt;
-    }
+    public void setArmorb(boolean amt) {armorb = amt;}
     
     /**
      * Method that returns if the player have or not an armor
      * on he's bag.
      */
-    public boolean getArmorb() {
-        return armorb;
-    }
+    public boolean getArmorb() {return armorb;}
 
     /**
      * Returns the in game camera.
      * @return the camera to player.
      */
-    public Camera getCamera() {
-        return playerCamera;
-    }
+    public Camera getCamera() {return playerCamera;}
 
     /**
      * Set the camera to the player and takes it as the only camera
      * in all the "world".
      * @param playerCamera the camera in game.
      */
-    public void setCamera(Camera playerCamera) {
-        this.playerCamera = playerCamera;
-    }
+    public void setCamera(Camera playerCamera) {this.playerCamera = playerCamera;}
 
     /**
      * Returns the player's size depending on the player's own width,
      * all of this in a Vector2f.
      * @return vector with the size.
      */
-    public Vector2f getSize() {
-        return new Vector2f(PLAYER_WIDTH, PLAYER_WIDTH);
-    }
+    public Vector2f getSize() {return new Vector2f(PLAYER_WIDTH, PLAYER_WIDTH);}
 
     /**
      * Returns all the damage that the player could do, depending of the
      * weapon.
      * @return the possible damage.
      */
-    public int getDamage() {
-        return (int) (damageMin + rand.nextFloat() * damageRange);
-    }
+    public int getDamage() {return (int) (damageMin + rand.nextFloat() * damageRange);}
 
     /**
      * Gets the player's actual health.
      * @return player's health.
      */
-    public int getHealth() {
-        return health;
-    }
+    public int getHealth() {return health;}
 	
 	/**
 	 * Gets the player's actual armor.
 	 * @return player's armor.
 	 */
-	public int getArmori() {
-		return armori;
-	}
+	public int getArmori() {return armori;}
 
 	/**
      * Method that sets an amount of armor if player get some, or lose some.
@@ -1087,16 +1059,13 @@ public class Player {
      */
 	public void addArmori(int amt) {
 		armori += amt;
-
-        if (armori > 100) {
+		if (armori > 100)
         	armori = 100;
-        }
         
         if (armori <= 0) {
         	armori = 0;
         	armorb = false;
-        }
-        
+        }  
         System.out.println("Armor: "+ armori + "/"+100+".");
 	}
 
@@ -1104,24 +1073,18 @@ public class Player {
 	 * Gets the player's maximum number of life that can have.
 	 * @return the maximum number of life.
 	 */
-	public int getMaxLife() {
-		return MAX_LIFE;
-	}
+	public int getMaxLife() {return MAX_LIFE;}
 	
 	/**
 	 * Gets the player's weapon that currently is using.
 	 * @return the weapon that player is using.
 	 */
-	public String getWeaponState() {
-		return weaponState;
-	}
+	public String getWeaponState() {return weaponState;}
 	
 	/**
 	 * Sets the player's weapon that currently is using.
 	 * @param amt the weapon that player is using.
 	 */
-	public void setWeaponState(String amt) {
-		this.weaponState = amt;
-	}
+	public void setWeaponState(String state) {this.weaponState = state;}
 
 }

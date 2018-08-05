@@ -65,9 +65,7 @@ public class Auschwitz implements Game {
      * Sets the starting level depending of what level you want to start;
      * @param level to set.
      */
-    public static void setStartingLevel(int level) {
-    	m_startingLevel = level;
-    }
+    public static void setStartingLevel(int level) {m_startingLevel = level;}
 
     /**
      * Checks all the inputs.
@@ -266,15 +264,12 @@ public class Auschwitz implements Game {
      * Gets the actual level.
      * @return Level.
      */
-    public static Level getLevel() {
-        return m_level;
-    }
+    public static Level getLevel() {return m_level;}
 
     /**
      * Allow to stop the game rendering without stop all the program.
      * @param value True or false.
      */
-    public static void setIsRunning(boolean value) {
-        m_isRunning = value;
-    }
+    public static void setIsRunning(boolean value) {m_isRunning = value;}
+
 }

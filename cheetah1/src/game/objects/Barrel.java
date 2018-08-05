@@ -223,32 +223,24 @@ public class Barrel {
      * Method that renders the object's mesh to screen.
      * @param shader to render
      */
-    public void render(Shader shader) {
-        meshRenderer.render(shader);
-    }
+    public void render(Shader shader) {meshRenderer.render(shader);}
     
     /**
      * Gets the transform of the object in projection.
      * @return transform.
      */
-	public Transform getTransform() {
-		return transform;
-	}
+	public Transform getTransform() {return transform;}
 	
 	/**
 	 * Gets the size of the object in the 3D space and saves it on a vector.
 	 * @return the vector size.
 	 */
-    public Vector2f getSize() {
-        return new Vector2f(sizeX, sizeX);
-    }
+    public Vector2f getSize() {return new Vector2f(sizeX, sizeX);}
     
     /**
      * Method that calculates the damage.
      * @param amt amount.
      */
-    public void damage(int amt) {
-        health -= amt;
-    }
+    public void damage(int amt) {health -= amt;}
     
 }

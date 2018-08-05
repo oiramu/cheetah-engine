@@ -30,32 +30,29 @@ import engine.rendering.Vertex;
 import game.Level;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.2
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.2
+ * @since 2017
+ */
 public class Bullet {
 
     public static final float PICKUP_THRESHHOLD = 0.75f;
     public static final int AMOUNT = 7;
-    
     public static final String RES_LOC = "bullet/MEDIA";
+    public static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
 
-    public static final Clip pickupNoise = AudioUtil.loadAudio(RES_LOC);
-
-    private static Mesh mesh;
-    private static Material material;
-    private MeshRenderer meshRenderer;
-
-    private Transform transform;
+    private static Mesh 	m_mesh;
+    private static Material m_material;
+    private MeshRenderer 	m_meshRenderer;
+    private Transform 		m_transform;
 
     /**
      * Constructor of the actual power-up.
      * @param transform the transform of the data.
      */
     public Bullet(Transform transform) {
-        if (mesh == null) {
+        if (m_mesh == null) {
         	float sizeY = 0.2f;
             float sizeX = (float) ((double) sizeY / (1.666666666666667f * 2.0));
 
@@ -75,22 +72,22 @@ public class Bullet {
             int[] indices = new int[]{0, 1, 2,
             						0, 2, 3};
 
-            mesh = new Mesh(verts, indices, true);
+            m_mesh = new Mesh(verts, indices, true);
         }
 
-        if (material == null) {
-            material = new Material(new Texture(RES_LOC), new Vector3f(1,1,1));
+        if (m_material == null) {
+            m_material = new Material(new Texture(RES_LOC));
         }
 
-        this.transform = transform;
-        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
+        this.m_transform = transform;
+        this.m_meshRenderer = new MeshRenderer(m_mesh, this.m_transform, m_material);
     }
 
     /**
      * Updates the power-up every single frame.
      */
     public void update() {
-        Vector3f playerDistance = transform.getPosition().sub(Transform.getCamera().getPos());
+        Vector3f playerDistance = m_transform.getPosition().sub(Transform.getCamera().getPos());
 
         Vector3f orientation = playerDistance.normalized();
         float distance = playerDistance.length();
@@ -101,12 +98,12 @@ public class Bullet {
             angle = 180 + angle;
         }
 
-        transform.setRotation(0, angle + 90, 0);
+        m_transform.setRotation(0, angle + 90, 0);
 
         if (distance < PICKUP_THRESHHOLD && Level.getPlayer().getBullets() < 100) {
             Level.getPlayer().addBullets(AMOUNT);
             Level.removeBullets(this);
-            AudioUtil.playAudio(pickupNoise, 0);
+            AudioUtil.playAudio(PICKUP_NOISE, 0);
         }
     }
 
@@ -114,7 +111,6 @@ public class Bullet {
      * Method that renders the power-up's mesh.
      * @param shader to render
      */
-    public void render(Shader shader) {
-        meshRenderer.render(shader);
-    }
+    public void render(Shader shader) {m_meshRenderer.render(shader);}
+    
 }

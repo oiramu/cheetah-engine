@@ -158,33 +158,25 @@ public class SecretWall {
      * Renders the secret wall.
      * @param shader to render
      */
-    public void render(Shader shader) {
-        meshRenderer.render(shader);
-    }
+    public void render(Shader shader) {meshRenderer.render(shader);}
 
     /**
      * Checks if the secret wall is open or not.
      * @return Secret wall state.
      */
-    public boolean isOpen() {
-        return open;
-    }
+    public boolean isOpen() {return open;}
     
     /**
      * Checks if the secret wall tries to open or not.
      * @return Secret wall state.
      */
-    public boolean opens() {
-        return opening;
-    }
+    public boolean opens() {return opening;}
 
     /**
      * Returns the transform of the secret wall.
      * @return Transform.
      */
-    public Transform getTransform() {
-        return transform;
-    }
+    public Transform getTransform() {return transform;}
 
     /**
      * Returns the size of the door in the level.

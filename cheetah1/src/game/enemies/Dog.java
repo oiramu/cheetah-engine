@@ -48,7 +48,7 @@ public class Dog {
     private static final float SHOT_ANGLE = 10.0f;
     private static final float DAMAGE_MIN = 20f;
     private static final float DAMAGE_RANGE = 25f;
-    private static final float MONSTER_WIDTH = 0.2f;
+    private static final float DOG_WIDTH = 0.2f;
 
     private static final int STATE_IDLE = 0;
     private static final int STATE_CHASE = 1;
@@ -220,7 +220,7 @@ public class Dog {
                     Vector3f oldPos = transform.getPosition();
                     Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * Time.getDelta())));
 
-                    Vector3f collisionVector = Auschwitz.getLevel().checkCollisions(oldPos, newPos, MONSTER_WIDTH, MONSTER_WIDTH);
+                    Vector3f collisionVector = Auschwitz.getLevel().checkCollisions(oldPos, newPos, DOG_WIDTH, DOG_WIDTH);
 
                     Vector3f movementVector = collisionVector.mul(orientation.normalized());
 
@@ -365,24 +365,19 @@ public class Dog {
 	 * Gets the enemy's actual transformation.
 	 * @return the enemy's transform data.
 	 */
-    public Transform getTransform() {
-        return transform;
-    }
+    public Transform getTransform() {return transform;}
 
     /**
 	 * Gets if the enemy is dead or not.
 	 * @return the enemy's life state.
 	 */
-    public boolean isAlive() {
-        return !dead;
-    }
+    public boolean isAlive() {return !dead;}
 
     /**
      * Returns the enemy's size depending on the enemy's own width,
      * all of this in a Vector2f.
      * @return vector with the size.
      */
-    public Vector2f getSize() {
-        return new Vector2f(MONSTER_WIDTH, MONSTER_WIDTH);
-    }
+    public Vector2f getSize() {return new Vector2f(DOG_WIDTH, DOG_WIDTH);}
+    
 }

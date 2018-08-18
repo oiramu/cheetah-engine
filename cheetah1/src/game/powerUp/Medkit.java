@@ -18,6 +18,7 @@ package game.powerUp;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -32,10 +33,10 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.1
+ * @version 1.2
  * @since 2017
  */
-public class Medkit {
+public class Medkit extends GameComponent {
 
     private static final float PICKUP_THRESHHOLD = 0.75f;
     private static final int HEAL_AMOUNT = 50;

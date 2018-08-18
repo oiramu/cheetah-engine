@@ -15,6 +15,7 @@
  */
 package game.objects;
 
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -31,7 +32,7 @@ import engine.rendering.Vertex;
  * @version 1.0
  * @since 2018
  */
-public class Kitchen {
+public class Kitchen extends GameComponent {
 	
 	private static final String RES_LOC = "kitchen/PANSA0";
     

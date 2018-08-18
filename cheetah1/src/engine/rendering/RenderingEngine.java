@@ -20,6 +20,7 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
 import java.util.ArrayList;
 
+import game.enemies.*;
 import engine.components.BaseLight;
 import engine.components.Camera;
 import engine.components.GameComponent;
@@ -36,7 +37,7 @@ public class RenderingEngine {
 	
 	private Camera 						m_mainCamera;
 	private BaseLight 					m_activeLight;
-	public static Vector3f 				m_ambientLight;
+	public Vector3f 					m_ambientLight;
 	private Shader 						m_forwardAmbient;
 	
 	private static ArrayList<BaseLight> m_lights;
@@ -77,7 +78,7 @@ public class RenderingEngine {
     public void render(GameComponent component) {
     	try {
     		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-			m_forwardAmbient.setRenderingEngine(this);;
+			m_forwardAmbient.setRenderingEngine(this);
 	        component.render(m_forwardAmbient);
 	        glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE);
@@ -97,11 +98,96 @@ public class RenderingEngine {
     }
     
     /**
+     * Adds to the render pipeline the lists of objects to render.
+     * @param list of objects.
+     * @param shader to render.
+     */
+    public <E> void addListToRenderPipeline(ArrayList<E> list, Shader shader) {
+    	for (E component : list) ((GameComponent) component).render(shader);
+    }
+    
+    /**
+     * Kills everything on the list of objects.
+     * @param list of objects.
+     */
+    public <E> void updateAndKillToRenderPipeline(ArrayList<E> list) {
+    	for (E component : list) {
+    		((NaziSoldier) component).update();
+    		((NaziSoldier) component).damage(1000);
+    	}
+    }
+    
+    /**
+     * Adds to the render pipeline the lists of objects to update.
+     * @param list of objects.
+     */
+    public <E> void updateListToRenderPipeline(ArrayList<E> list) {
+    	for (E component : list) ((GameComponent) component).update();
+    }
+    
+    /**
+     * Removes to the render pipeline the lists of objects to render.
+     * @param list of objects.
+     * @param shader to render.
+     */
+    public <E> void removeListToRenderPipeline(ArrayList<E> list, ArrayList<E> removeList) {
+    	for (E component : removeList) list.remove(component);
+    }
+    
+    /**
+     * Sorts the number of components added.
+     * @param list of objects.
+     */
+    public <E> void sortNumberComponents(ArrayList<E> list) {
+    	if (list.size() > 0) {
+    		sortComponents(list, 0, list.size() - 1);
+        }
+    }
+    
+    /**
+     * Sorts all the objects in the level.
+     * @param list of objects.
+     * @param low of the array
+     * @param high of the array
+     */
+    private <E> void sortComponents(ArrayList<E> list, int low, int high) {
+    	int i = low;
+        int j = high;
+
+        E pivot = list.get(low + (high - low) / 2);
+        float pivotDistance = ((GameComponent) pivot).getTransform().getPosition().sub(Transform.getCamera().getPos()).length();
+
+        while (i <= j) {
+            while (((GameComponent) list.get(i)).getTransform().getPosition().sub(Transform.getCamera().getPos()).length() > pivotDistance) {
+                i++;
+            }
+            while (((GameComponent) list.get(j)).getTransform().getPosition().sub(Transform.getCamera().getPos()).length() < pivotDistance) {
+                j--;
+            }
+
+            if (i <= j) {
+            	E temp = list.get(i);
+
+            	list.set(i, list.get(j));
+            	list.set(j, temp);
+
+                i++;
+                j--;
+            }
+        }
+
+        if (low < j) {
+        	sortComponents(list, low, j);
+        }
+        if (i < high) {
+        	sortComponents(list, i, high);
+        }
+    }
+    
+    /**
 	 * Cleans everything light related.
 	 */
-    public void clearLights() {
-        m_lights.clear();
-    }
+    public void clearLights() {m_lights.clear();}
 
     /**
      * Sets textures to openGL.
@@ -134,13 +220,13 @@ public class RenderingEngine {
 	 * Adds a new directional light to the rendering engine.
 	 * @param light to add.
 	 */
-	public static void addLight(BaseLight light) {m_lights.add(light);}
+	public void addLight(BaseLight light) {m_lights.add(light);}
 	
 	/**
 	 * Removes a new directional light to the rendering engine.
 	 * @param light to remove.
 	 */
-	public static void removeLight(BaseLight light) {m_lights.remove(light);}
+	public void removeLight(BaseLight light) {m_lights.remove(light);}
 	
 	/**
 	 * Returns the light that is been used.
@@ -158,19 +244,19 @@ public class RenderingEngine {
 	 * Sets a new color for the fog.
 	 * @param color of the fog.
 	 */
-	public static void setFogColor(Vector3f color) {m_fogColor = color; setClearColor(color);}
+	public void setFogColor(Vector3f color) {m_fogColor = color; setClearColor(color);}
 
     /**
      * Returns the density of the fog.
 	 * @return fogDensity.
 	 */
-	public static float getFogDensity() {return m_fogDensity;}
+	public float getFogDensity() {return m_fogDensity;}
 
 	/**
 	 * Sets a density to the actual fog.
 	 * @param fogDensity to set.
 	 */
-	public static void setFogDensity(float fogDensity) {m_fogDensity = fogDensity;}
+	public void setFogDensity(float fogDensity) {m_fogDensity = fogDensity;}
 
 	/**
 	 * Returns the gradient of the fog.
@@ -182,7 +268,7 @@ public class RenderingEngine {
 	 * Sets a new gradient for the fog.
 	 * @param fogGradient to set.
 	 */
-	public static void setFogGradient(float fogGradient) {m_fogGradient = fogGradient;}
+	public void setFogGradient(float fogGradient) {m_fogGradient = fogGradient;}
 
 	/**
      * Bind the textures to openGL.

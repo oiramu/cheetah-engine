@@ -17,6 +17,7 @@ package game.objects;
 
 import java.util.ArrayList;
 
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
@@ -34,7 +35,7 @@ import engine.rendering.Vertex;
  * @version 1.0
  * @since 2018
  */
-public class Clock {
+public class Clock extends GameComponent {
 	
 	private static final String RES_LOC = "clock/";
 	private static final int STATE_IDLE = 0;

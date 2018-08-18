@@ -15,6 +15,7 @@
  */
 package game.objects;
 
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -28,10 +29,10 @@ import engine.rendering.Vertex;
 /**
  *
  * @author Julio Vergara.
- * @version 1.0
+ * @version 1.1
  * @since 2017
  */
-public class Tree {
+public class Tree extends GameComponent {
     
     private static Mesh mesh;
     private static Material material;

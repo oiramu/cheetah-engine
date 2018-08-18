@@ -108,7 +108,7 @@ public class CoreEngine {
 
         this.m_renderingEngine = new RenderingEngine();
         
-        m_game.init();
+        m_game.init(m_renderingEngine);
 
         double lastTime = Time.getTime();
         double unprocessedTime = 0;
@@ -136,10 +136,10 @@ public class CoreEngine {
 
                 Time.setDelta(m_frameTime);
 
-                m_game.input();
+                m_game.input(m_renderingEngine);
                 Input.update();
                 
-                m_game.update();
+                m_game.update(m_renderingEngine);
 
                 if (frameCounter >= 1.0) {
                     //System.out.println(frames);
@@ -166,8 +166,7 @@ public class CoreEngine {
      * Method that renders everything to render.
      */
     private void render() {
-        m_game.render(m_renderingEngine);
-        
+        m_game.render(m_renderingEngine);       
         Window.render();
     }
 	

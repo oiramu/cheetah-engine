@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
@@ -37,7 +38,7 @@ import engine.rendering.Vertex;
  * @version 1.0
  * @since 2018
  */
-public class Pillar {
+public class Pillar extends GameComponent {
 	
 	private static final String RES_LOC = "pillar/";
 	private static final int STATE_IDLE = 0;

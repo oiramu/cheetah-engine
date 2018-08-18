@@ -21,6 +21,7 @@ import java.util.Random;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
@@ -39,10 +40,10 @@ import game.Player;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
-public class Ghost {
+public class Ghost extends GameComponent {
 
 	private static final float MAX_HEALTH = 10f;
     private static final float SHOT_ANGLE = 10.0f;

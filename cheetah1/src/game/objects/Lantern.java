@@ -16,6 +16,7 @@
 package game.objects;
 
 import engine.components.Attenuation;
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.components.PointLight;
 import engine.core.Transform;
@@ -31,16 +32,15 @@ import engine.rendering.Vertex;
 /**
  *
  * @author Julio Vergara
- * @version 1.1
+ * @version 1.2
  * @since 2017
  */
-public class Lantern {
+public class Lantern extends GameComponent {
     
     private static Mesh 	m_mesh;
     private Material 		m_material;
     private MeshRenderer 	m_meshRenderer;
     private PointLight 		m_light;
-    
     private float 			m_sizeX;
     
     private static final String RES_LOC = "lantern/MEDIA";
@@ -51,7 +51,7 @@ public class Lantern {
      * Constructor of the actual object.
      * @param transform the transform of the object in a 3D space.
      */
-    public Lantern(Transform transform) {
+    public Lantern(Transform transform, RenderingEngine renderingEngine) {
         if (m_mesh == null) {
             float sizeY = 0.3f;
             m_sizeX = (float) ((double) sizeY / (1.5f * 2.0));
@@ -78,13 +78,12 @@ public class Lantern {
         if (m_material == null) {
             m_material = new Material(new Texture(RES_LOC), new Vector3f(1,1,1));
         }
-
         this.m_transform = transform;
         this.m_light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
         		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.25f, 
         				getTransform().getPosition().getZ()));
-        RenderingEngine.addLight(m_light);
         this.m_meshRenderer = new MeshRenderer(m_mesh, getTransform(), m_material);
+    	renderingEngine.addLight(m_light);
     }
 
     /**

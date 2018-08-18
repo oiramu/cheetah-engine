@@ -22,6 +22,7 @@ import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
 import engine.components.Attenuation;
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.components.SpotLight;
 import engine.core.Time;
@@ -43,10 +44,10 @@ import game.powerUp.Bullet;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2017
  */
-public class NaziSoldier {
+public class NaziSoldier extends GameComponent {
 
     private static final float MAX_HEALTH = 100f;
     private static final float SHOT_ANGLE = 10.0f;
@@ -78,6 +79,7 @@ public class NaziSoldier {
     private Transform transform;
     private Material material;
     private MeshRenderer meshRenderer;
+    private RenderingEngine renderingEngine;
     private SpotLight light;
 
     private int state;
@@ -90,8 +92,9 @@ public class NaziSoldier {
     /**
      * Constructor of the actual enemy.
      * @param transform the transform of the data.
+     * @param renderingEngine of the enemy.
      */
-    public NaziSoldier(Transform transform) {
+    public NaziSoldier(Transform transform, RenderingEngine renderingEngine) {
         if (rand == null) {
             rand = new Random();
         }
@@ -149,6 +152,7 @@ public class NaziSoldier {
         	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
         }   
 
+        this.renderingEngine = renderingEngine;
         this.transform = transform;
         this.material = new Material(animation.get(0));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
@@ -165,6 +169,7 @@ public class NaziSoldier {
 
     /**
      * Updates the enemy every single frame.
+     * @param engine to use.
      */
     public void update() {
     	
@@ -254,7 +259,7 @@ public class NaziSoldier {
                     Vector3f movementVector = collisionVector.mul(orientation.normalized());
 
                     if (!movementVector.equals(orientation.normalized())) {
-                        Auschwitz.getLevel().openDoors(transform.getPosition(), false);
+                        Auschwitz.getLevel().openDoors(transform.getPosition(), false, renderingEngine);
                     }
 
                     if (movementVector.length() > 0) {
@@ -313,7 +318,7 @@ public class NaziSoldier {
                             } else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
                          
-            		        	RenderingEngine.addLight(light);
+                            	renderingEngine.addLight(light);
                             	if(player.getArmorb() == false) {
                             		player.addHealth((int) -damage);
                             	}else {
@@ -326,7 +331,7 @@ public class NaziSoldier {
                         AudioUtil.playAudio(shootNoise, distance);
                     }
                     material.setDiffuse(animation.get(6));
-                    RenderingEngine.removeLight(light);
+                    renderingEngine.removeLight(light);
                 } else {
                     canAttack = true;
                     material.setDiffuse(animation.get(6));

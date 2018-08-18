@@ -48,7 +48,6 @@ import game.objects.Barrel;
 import game.objects.Bones;
 import game.objects.Clock;
 import game.objects.DeadJew;
-import game.objects.DeadNazi;
 import game.objects.Furnace;
 import game.objects.Hanged;
 import game.objects.Kitchen;
@@ -73,7 +72,7 @@ import game.powerUp.SuperShotgun;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.5
+ * @version 1.6
  * @since 2017
  */
 public class Level extends GameComponent {
@@ -142,7 +141,7 @@ public class Level extends GameComponent {
     private ArrayList<Lantern> flares;
     private ArrayList<LightBeam> lightPoints;
     private ArrayList<Bones> bones;
-    private ArrayList<DeadNazi> deadNazi;
+    private ArrayList<NaziSoldier> deadNazi;
     private ArrayList<DeadJew> deadJews;
     private ArrayList<Table> tables;
     private ArrayList<Pipe> pipes;
@@ -173,8 +172,9 @@ public class Level extends GameComponent {
      * Constructor of the level in the game.
      * @param bitmap to load and use.
      * @param material to load and use.
+     * @param engine to use.
      */
-    public Level(Bitmap bitmap, Material material) {	
+    public Level(Bitmap bitmap, Material material, RenderingEngine engine) {	
         //Remove list
         Level.removeMedkitList = new ArrayList<Medkit>();
         Level.removeFoodList = new ArrayList<Food>();
@@ -213,7 +213,7 @@ public class Level extends GameComponent {
         this.flares = new ArrayList<Lantern>();
         this.lightPoints = new ArrayList<LightBeam>();
         this.bones = new ArrayList<Bones>();
-        this.deadNazi = new ArrayList<DeadNazi>();
+        this.deadNazi = new ArrayList<NaziSoldier>();
         this.pipes = new ArrayList<Pipe>();
         this.pendules = new ArrayList<Pendule>();
         this.lamps = new ArrayList<Lamp>();
@@ -231,7 +231,7 @@ public class Level extends GameComponent {
         this.transform = new Transform();
         this.collisionPosStart = new ArrayList<Vector2f>();
         this.collisionPosEnd = new ArrayList<Vector2f>();
-        generateLevel();
+        generateLevel(engine);
         
         Transform.setCamera(player.getCamera());
     }
@@ -240,14 +240,16 @@ public class Level extends GameComponent {
 
     /**
      * Inputs accessible in the level.
+     * @param engine to use.
      */
-	public void input() {
+	public void input(RenderingEngine engine) {
 		double time = (double) Time.getTime() / Time.SECOND;
     	double timeDecimals = (time - (double) ((int) time));
+    	
 		if (!player.isAlive) {
 	        if(Input.getKeyDown(Input.KEY_E) || Input.getKeyDown(Input.KEY_SPACE)) {
 	    		if (timeDecimals <= 5.0f) {
-		            Auschwitz.loadLevel(Auschwitz.m_levelNum-Auschwitz.m_levelNum);
+		            Auschwitz.reloadLevel(engine);
 		            player.gotPistol();
 	    		}
 	        }
@@ -425,186 +427,63 @@ public class Level extends GameComponent {
             
         }
 
-        player.input();
+        player.input(engine);
     }
 
     /**
      * Updates everything rendered in the level.
+     * @param engine to use.
      */
-    public void update() {
+    public void update(RenderingEngine engine) {
+        
+        engine.updateListToRenderPipeline(naziSoldiers);
+        engine.updateListToRenderPipeline(ssSoldiers);
+        engine.updateListToRenderPipeline(naziSeargeants);
+        engine.updateListToRenderPipeline(dogs);
+        engine.updateListToRenderPipeline(ghosts);
+        
+        engine.updateListToRenderPipeline(doors);
+        engine.updateListToRenderPipeline(secretWalls);
+        engine.updateListToRenderPipeline(trees);
+        engine.updateListToRenderPipeline(flares);
+        engine.updateListToRenderPipeline(lightPoints);
+        engine.updateListToRenderPipeline(bones);
+        engine.updateListToRenderPipeline(tables);
+        engine.updateAndKillToRenderPipeline(deadNazi);
+        engine.updateListToRenderPipeline(deadJews);
+        engine.updateListToRenderPipeline(pipes);
+        engine.updateListToRenderPipeline(pendules);
+        engine.updateListToRenderPipeline(lamps);
+        engine.updateListToRenderPipeline(hangeds);
+        engine.updateListToRenderPipeline(pillars);
+        engine.updateListToRenderPipeline(clocks);
+        engine.updateListToRenderPipeline(furnaces);
+        engine.updateListToRenderPipeline(kitchens);
+        engine.updateListToRenderPipeline(barrels);
+        
+        engine.updateListToRenderPipeline(medkits);
+        engine.updateListToRenderPipeline(foods);
+        engine.updateListToRenderPipeline(bullets);
+        engine.updateListToRenderPipeline(bags);
+        engine.updateListToRenderPipeline(shotguns);
+        engine.updateListToRenderPipeline(machineguns);
+        engine.updateListToRenderPipeline(armors);
+        engine.updateListToRenderPipeline(helmets);
+        engine.updateListToRenderPipeline(superShotguns);
+        
+        engine.removeListToRenderPipeline(medkits, removeMedkitList);
+        engine.removeListToRenderPipeline(foods, removeFoodList);
+        engine.removeListToRenderPipeline(bullets, removeBulletList);
+        engine.removeListToRenderPipeline(bags, removeBagList);
+        engine.removeListToRenderPipeline(shotguns, removeShotgunList);
+        engine.removeListToRenderPipeline(machineguns, removeMachineGunList);
+        engine.removeListToRenderPipeline(ghosts, removeGhostList);
+        engine.removeListToRenderPipeline(armors, removeArmorList);
+        engine.removeListToRenderPipeline(helmets, removeHelmets);
+        engine.removeListToRenderPipeline(superShotguns, removeSuperShotgunList);
+        engine.removeListToRenderPipeline(barrels, removeBarrels);
+        
         player.update();
-
-        for (Door door : doors) {
-            door.update();
-        }
-        
-        for (SecretWall secretWall : secretWalls) {
-        	secretWall.update();
-        }
-
-        for (NaziSoldier monster : naziSoldiers) {
-            monster.update();
-        }
-
-        for (Medkit medkit : medkits) {
-            medkit.update();
-        }
-
-        for (Tree tree : trees) {
-            tree.update();
-        }
-        
-        for (Lantern flare : flares) {
-            flare.update();
-        }
-        
-        for (LightBeam light : lightPoints) {
-        	light.update();
-        }
-        
-        for (Bones bone : bones) {
-        	bone.update();
-        }
-        
-        for (DeadNazi deadNazi : deadNazi) {
-        	deadNazi.update();
-        }
-        
-        for (DeadJew deadJew : deadJews) {
-        	deadJew.update();
-        }
-        
-        for (Food food : foods) {
-        	food.update();
-        }
-        
-        for (Bullet bullet : bullets) {
-        	bullet.update();
-        }
-        
-        for (Bag bag : bags) {
-        	bag.update();
-        }
-        
-        for (Shotgun shotgun : shotguns) {
-        	shotgun.update();
-        }
-        
-        for (Machinegun machinegun : machineguns) {
-        	machinegun.update();
-        }
-        
-        for (Dog dog : dogs) {
-        	dog.update();
-        }
-        
-        for (SsSoldier ssSoldier : ssSoldiers) {
-        	ssSoldier.update();
-        }
-        
-        for (Table table : tables) {
-        	table.update();
-        }
-        
-        for (Pipe pipe : pipes) {
-        	pipe.update();
-        }
-        
-        for (Pendule pendule : pendules) {
-        	pendule.update();
-        }
-        
-        for (Lamp lamp : lamps) {
-        	lamp.update();
-        }
-        
-        for (Hanged hanged : hangeds) {
-        	hanged.update();
-        }
-        
-        for (Pillar pillar : pillars) {
-        	pillar.update();
-        }
-        
-        for (Clock clock : clocks) {
-        	clock.update();
-        }
-        
-        for (Furnace furnace : furnaces) {
-        	furnace.update();
-        }
-        
-        for (Kitchen kitchen : kitchens) {
-            kitchen.update();
-        }
-        
-        for (NaziSergeant naziSergeants : naziSeargeants) {
-        	naziSergeants.update();
-        }
-        
-        for (Ghost ghost : ghosts) {
-        	ghost.update();
-        }
-        
-        for (Armor armor : armors) {
-        	armor.update();
-        }
-        
-        for (Helmet helmet : helmets) {
-            helmet.update();
-        }
-        
-        for (SuperShotgun superShotgun : superShotguns) {
-            superShotgun.update();
-        }
-        
-        for (Barrel barrel : barrels) {
-            barrel.update();
-        }
-
-        for (Medkit medkit : removeMedkitList) {
-            medkits.remove(medkit);
-        }
-        
-        for (Food food : removeFoodList) {
-            foods.remove(food);
-        }
-        
-        for (Bullet bullet : removeBulletList) {
-            bullets.remove(bullet);
-        }
-
-        for (Bag bag : removeBagList) {
-        	bags.remove(bag);
-        }
-        
-        for (Shotgun shotgun : removeShotgunList) {
-        	shotguns.remove(shotgun);
-        }
-        
-        for (Machinegun machinegun : removeMachineGunList) {
-        	machineguns.remove(machinegun);
-        }
-        
-        for (Ghost ghost : removeGhostList) {
-        	ghosts.remove(ghost);
-        }
-        
-        for (Armor armor : removeArmorList) {
-        	armors.remove(armor);
-        }
-        
-        for (Helmet helmet : removeHelmets) {
-            helmets.remove(helmet);
-        }
-        
-        for (SuperShotgun superShotgun : removeSuperShotgunList) {
-            superShotguns.remove(superShotgun);
-        }
-        
-        for (Barrel barrel : removeBarrels) {
-            barrels.remove(barrel);
-        }
         
         removeMedkitList.clear();
         removeFoodList.clear();
@@ -626,359 +505,57 @@ public class Level extends GameComponent {
     public void render(Shader shader) {
     	shader.getRenderingEngine().setMainCamera(player.getCamera());
     	meshRenderer.render(shader);
+    	player.render(shader);
 
-        for (Door door : doors) {
-            door.render(shader);
-        }
+    	shader.getRenderingEngine().addListToRenderPipeline(naziSoldiers, shader);
+    	shader.getRenderingEngine().addListToRenderPipeline(dogs, shader);
+    	shader.getRenderingEngine().addListToRenderPipeline(ssSoldiers, shader);
+    	shader.getRenderingEngine().addListToRenderPipeline(naziSeargeants, shader);
+    	shader.getRenderingEngine().addListToRenderPipeline(ghosts, shader);
+    	
+        shader.getRenderingEngine().addListToRenderPipeline(doors, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(secretWalls, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(trees, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(flares, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(lightPoints, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(bones, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(tables, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(deadNazi, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(deadJews, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(pipes, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(pendules, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(lamps, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(hangeds, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(pillars, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(clocks, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(furnaces, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(kitchens, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(barrels, shader);
         
-        for (SecretWall secretWall : secretWalls) {
-        	secretWall.render(shader);
-        }
+        shader.getRenderingEngine().addListToRenderPipeline(medkits, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(foods, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(bullets, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(bags, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(shotguns, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(machineguns, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(armors, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(helmets, shader);
+        shader.getRenderingEngine().addListToRenderPipeline(superShotguns, shader);
         
-        if (secretWalls.size() > 0) {
-        	sortSecrets(0, secretWalls.size() - 1);
-        }
+        shader.getRenderingEngine().sortNumberComponents(secretWalls);
+        shader.getRenderingEngine().sortNumberComponents(naziSoldiers);
+        shader.getRenderingEngine().sortNumberComponents(dogs);
+        shader.getRenderingEngine().sortNumberComponents(ssSoldiers);
+        shader.getRenderingEngine().sortNumberComponents(naziSeargeants);
 
-        if (naziSoldiers.size() > 0) {
-            sortNaziSoldiers(0, naziSoldiers.size() - 1);
-        }
-        
-        if (dogs.size() > 0) {
-            sortDogs(0, dogs.size() - 1);
-        }
-        
-        if (ssSoldiers.size() > 0) {
-            sortSsSoldiers(0, ssSoldiers.size() - 1);
-        }
-        
-        if (naziSeargeants.size() > 0) {
-            sortNaziSergeants(0, naziSeargeants.size() - 1);
-        }
-
-        for (NaziSoldier monster : naziSoldiers) {
-            monster.render(shader);
-        }
-
-        for (Medkit medkit : medkits) {
-            medkit.render(shader);
-        }
-
-        for (Tree tree : trees) {
-            tree.render(shader);
-        }
-        
-        for (Lantern flare : flares) {
-            flare.render(shader);
-        }
-        
-        for (LightBeam light : lightPoints) {
-        	light.render(shader);
-        }
-        
-        for (Bones bone : bones) {
-        	bone.render(shader);
-        }
-        
-        for (DeadNazi deadNazi : deadNazi) {
-        	deadNazi.render(shader);
-        }
-        
-        for (DeadJew deadJew : deadJews) {
-        	deadJew.render(shader);
-        }
-        
-        for (Pipe pipe : pipes) {
-        	pipe.render(shader);
-        }
-        
-        for (Pendule pendule : pendules) {
-        	pendule.render(shader);
-        }
-        
-        for (Lamp lamp : lamps) {
-        	lamp.render(shader);
-        }
-        
-        for (Hanged hanged : hangeds) {
-        	hanged.render(shader);
-        }
-        
-        for (Pillar pillar : pillars) {
-        	pillar.render(shader);
-        }
-        
-        for (Clock clock : clocks) {
-        	clock.render(shader);
-        }
-        
-        for (Food food : foods) {
-        	food.render(shader);
-        }
-        
-        for (Bullet bullet : bullets) {
-        	bullet.render(shader);
-        }
-        
-        for (Bag bag : bags) {
-        	bag.render(shader);
-        }
-        
-        for (Shotgun shotgun : shotguns) {
-        	shotgun.render(shader);
-        }
-        
-        for (Machinegun machinegun : machineguns) {
-        	machinegun.render(shader);
-        }
-        
-        for (Table table : tables) {
-        	table.render(shader);
-        }
-        
-        for (Dog dog : dogs) {
-        	dog.render(shader);
-        }
-        
-        for (SsSoldier ssSoldier : ssSoldiers) {
-        	ssSoldier.render(shader);
-        }
-        
-        for (NaziSergeant naziSergeants : naziSeargeants) {
-        	naziSergeants.render(shader);
-        }
-        
-        for (Ghost ghost : ghosts) {
-        	ghost.render(shader);
-        }
-        
-        for (Armor armor : armors) {
-        	armor.render(shader);
-        }
-        
-        for (Helmet helmet : helmets) {
-            helmet.render(shader);
-        }
-        
-        for (Furnace furnace : furnaces) {
-        	furnace.render(shader);
-        }
-        
-        for (Kitchen kitchen : kitchens) {
-            kitchen.render(shader);
-        }
-        
-        for (SuperShotgun superShotgun : superShotguns) {
-        	superShotgun.render(shader);
-        }
-        
-        for (Barrel barrel : barrels) {
-            barrel.render(shader);
-        }
-
-        player.render(shader);
     }
     
-    /**
-     * Sorts all the secrets in the level.
-     * @param low of the array
-     * @param high of the array
-     */
-    private void sortSecrets(int low, int high) {
-        int i = low;
-        int j = high;
-
-        SecretWall pivot = secretWalls.get(low + (high - low) / 2);
-        float pivotDistance = pivot.getTransform().getPosition().sub(Transform.getCamera().getPos()).length();
-
-        while (i <= j) {
-            while (secretWalls.get(i).getTransform().getPosition().sub(Transform.getCamera().getPos()).length() > pivotDistance) {
-                i++;
-            }
-            while (secretWalls.get(j).getTransform().getPosition().sub(Transform.getCamera().getPos()).length() < pivotDistance) {
-                j--;
-            }
-
-            if (i <= j) {
-            	SecretWall temp = secretWalls.get(i);
-
-            	secretWalls.set(i, secretWalls.get(j));
-            	secretWalls.set(j, temp);
-
-                i++;
-                j--;
-            }
-        }
-
-        if (low < j) {
-        	sortSecrets(low, j);
-        }
-        if (i < high) {
-        	sortSecrets(i, high);
-        }
-    }
-
-    /**
-     * Sorts all the Nazi soldiers in the level.
-     * @param low of the array
-     * @param high of the array
-     */
-    private void sortNaziSoldiers(int low, int high) {
-        int i = low;
-        int j = high;
-
-        NaziSoldier pivot = naziSoldiers.get(low + (high - low) / 2);
-        float pivotDistance = pivot.getTransform().getPosition().sub(Transform.getCamera().getPos()).length();
-
-        while (i <= j) {
-            while (naziSoldiers.get(i).getTransform().getPosition().sub(Transform.getCamera().getPos()).length() > pivotDistance) {
-                i++;
-            }
-            while (naziSoldiers.get(j).getTransform().getPosition().sub(Transform.getCamera().getPos()).length() < pivotDistance) {
-                j--;
-            }
-
-            if (i <= j) {
-                NaziSoldier temp = naziSoldiers.get(i);
-
-                naziSoldiers.set(i, naziSoldiers.get(j));
-                naziSoldiers.set(j, temp);
-
-                i++;
-                j--;
-            }
-        }
-
-        if (low < j) {
-            sortNaziSoldiers(low, j);
-        }
-        if (i < high) {
-            sortNaziSoldiers(i, high);
-        }
-    }
-    
-    /**
-     * Sorts all the Dogs in the level.
-     * @param low of the array
-     * @param high of the array
-     */
-    private void sortDogs(int low, int high) {
-        int i = low;
-        int j = high;
-
-        Dog pivot = dogs.get(low + (high - low) / 2);
-        float pivotDistance = pivot.getTransform().getPosition().sub(Transform.getCamera().getPos()).length();
-
-        while (i <= j) {
-            while (dogs.get(i).getTransform().getPosition().sub(Transform.getCamera().getPos()).length() > pivotDistance) {
-                i++;
-            }
-            while (dogs.get(j).getTransform().getPosition().sub(Transform.getCamera().getPos()).length() < pivotDistance) {
-                j--;
-            }
-
-            if (i <= j) {
-                Dog temp = dogs.get(i);
-
-                dogs.set(i, dogs.get(j));
-                dogs.set(j, temp);
-
-                i++;
-                j--;
-            }
-        }
-
-        if (low < j) {
-        	sortDogs(low, j);
-        }
-        if (i < high) {
-        	sortDogs(i, high);
-        }
-    }
-        
-    /**
-     * Sorts all the SS soldiers in the level.
-     * @param low of the array
-     * @param high of the array
-     */
-    private void sortSsSoldiers(int low, int high) {
-        int i = low;
-        int j = high;
-
-        SsSoldier pivot = ssSoldiers.get(low + (high - low) / 2);
-        float pivotDistance = pivot.getTransform().getPosition().sub(Transform.getCamera().getPos()).length();
-
-        while (i <= j) {
-            while (ssSoldiers.get(i).getTransform().getPosition().sub(Transform.getCamera().getPos()).length() > pivotDistance) {
-                i++;
-            }
-            while (ssSoldiers.get(j).getTransform().getPosition().sub(Transform.getCamera().getPos()).length() < pivotDistance) {
-                j--;
-            }
-
-            if (i <= j) {
-                SsSoldier temp = ssSoldiers.get(i);
-
-                ssSoldiers.set(i, ssSoldiers.get(j));
-                ssSoldiers.set(j, temp);
-
-                i++;
-                j--;
-            }
-        }
-
-        if (low < j) {
-        	sortSsSoldiers(low, j);
-        }
-        if (i < high) {
-        	sortSsSoldiers(i, high);
-        }
-    }
-    
-    /**
-     * Sorts all the Nazi sergeants in the level.
-     * @param low of the array
-     * @param high of the array
-     */
-    private void sortNaziSergeants(int low, int high) {
-        int i = low;
-        int j = high;
-
-        NaziSergeant pivot = naziSeargeants.get(low + (high - low) / 2);
-        float pivotDistance = pivot.getTransform().getPosition().sub(Transform.getCamera().getPos()).length();
-
-        while (i <= j) {
-            while (naziSeargeants.get(i).getTransform().getPosition().sub(Transform.getCamera().getPos()).length() > pivotDistance) {
-                i++;
-            }
-            while (naziSeargeants.get(j).getTransform().getPosition().sub(Transform.getCamera().getPos()).length() < pivotDistance) {
-                j--;
-            }
-
-            if (i <= j) {
-            	NaziSergeant temp = naziSeargeants.get(i);
-
-                naziSeargeants.set(i, naziSeargeants.get(j));
-                naziSeargeants.set(j, temp);
-
-                i++;
-                j--;
-            }
-        }
-
-        if (low < j) {
-        	sortNaziSergeants(low, j);
-        }
-        if (i < high) {
-        	sortNaziSergeants(i, high);
-        }
-    }
-
     /**
      * Method that opens the accessible doors in the level.
      * @param position coordinates.
      * @param playSound If can play a sound.
      */
-    public void openDoors(Vector3f position, boolean playSound) {
+    public void openDoors(Vector3f position, boolean playSound, RenderingEngine engine) {
         boolean worked = false;
 
         for (Door door : doors) {
@@ -998,7 +575,7 @@ public class Level extends GameComponent {
         if (playSound) {
             for (int i = 0; i < exitPoints.size(); i++) {
                 if (Math.abs(exitPoints.get(i).sub(position).length()) < 1f) {
-                    Auschwitz.loadLevel(exitOffsets.get(i));
+                    Auschwitz.loadLevel(exitOffsets.get(i), engine);
                 }
             }
         }
@@ -1037,77 +614,59 @@ public class Level extends GameComponent {
                 }
             }
 
-            for (Door door : doors) {
+            for (Door door : doors)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, door.getTransform().getPosition().getXZ(), door.getSize()));
-            }
             
-            for (SecretWall secretWall : secretWalls) {
+            for (SecretWall secretWall : secretWalls)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, secretWall.getTransform().getPosition().getXZ(), secretWall.getSize()));
-            }
             /**
-            for (NaziSoldier monster : naziSoldiers) {
+            for (NaziSoldier monster : naziSoldiers)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, monster.getTransform().getPosition().getXZ(), monster.getSize()));
-            }
             
-            for (SsSoldier ssSoldier : ssSoldiers) {
+            for (SsSoldier ssSoldier : ssSoldiers)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, ssSoldier.getTransform().getPosition().getXZ(), ssSoldier.getSize()));
-            }
             
-            for (Dog dog : dogs) {
+            for (Dog dog : dogs)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, dog.getTransform().getPosition().getXZ(), dog.getSize()));
-            }
             
-            for (NaziSergeant naziSergeants : naziSeargeants) {
+            for (NaziSergeant naziSergeants : naziSeargeants)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, naziSergeants.getTransform().getPosition().getXZ(), naziSergeants.getSize()));
-            }
             */
-            for (Bones bone : bones) {
+            for (Bones bone : bones)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, bone.getTransform().getPosition().getXZ(), bone.getSize()));
-            }
             
-            for (DeadJew deadJew : deadJews) {
+            for (DeadJew deadJew : deadJews)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, deadJew.getTransform().getPosition().getXZ(), deadJew.getSize()));
-            }
             
-            for (Tree tree : trees) {
+            for (Tree tree : trees)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, tree.getTransform().getPosition().getXZ(), tree.getSize()));
-            }
             
-            for (Table table : tables) {
+            for (Table table : tables)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, table.getTransform().getPosition().getXZ(), table.getSize()));
-            }
             
-            for (Pipe pipe : pipes) {
+            for (Pipe pipe : pipes)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, pipe.getTransform().getPosition().getXZ(), pipe.getSize()));
-            }
             
-            for (Pendule pendule : pendules) {
+            for (Pendule pendule : pendules)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, pendule.getTransform().getPosition().getXZ(), pendule.getSize()));
-            }
             
-            for (Lamp lamp : lamps) {
+            for (Lamp lamp : lamps)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, lamp.getTransform().getPosition().getXZ(), lamp.getSize()));
-            }
             
-            for (Hanged jew : hangeds) {
+            for (Hanged jew : hangeds)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, jew.getTransform().getPosition().getXZ(), jew.getSize()));
-            }
             
-            for (Pillar pillar : pillars) {
+            for (Pillar pillar : pillars)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, pillar.getTransform().getPosition().getXZ(), pillar.getSize()));
-            }
             
-            for (Clock clock : clocks) {
+            for (Clock clock : clocks)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, clock.getTransform().getPosition().getXZ(), clock.getSize()));
-            }
             
-            for (Furnace furnace : furnaces) {
+            for (Furnace furnace : furnaces)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, furnace.getTransform().getPosition().getXZ(), furnace.getSize()));
-            }
             
-            for (Barrel barrel : barrels) {
+            for (Barrel barrel : barrels)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, barrel.getTransform().getPosition().getXZ(), barrel.getSize()));
-            }
             
         }
 
@@ -1305,8 +864,9 @@ public class Level extends GameComponent {
 
     /**
      * Method that generates the level for the game.
+     * @param engine to use.
      */
-    private void generateLevel() {
+    private void generateLevel(RenderingEngine engine) {
         ArrayList<Vertex> vertices = new ArrayList<Vertex>();
         ArrayList<Integer> indices = new ArrayList<Integer>();
 
@@ -1356,25 +916,25 @@ public class Level extends GameComponent {
                             secretWalls.add(new SecretWall(wallTransform, material, wallTransform.getPosition().add(new Vector3f(0, 0, -0.9f))));
                         }
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 128) {
-                    	naziSoldiers.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                    	naziSoldiers.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), engine));
                         //bullets.add(new Bullet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.025f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 1) {
-                        player = new Player(new Vector3f((i + 0.5f) * SPOT_WIDTH, PLAYER_HEIGHT, (j + 0.5f) * SPOT_LENGTH));
+                        player = new Player(new Vector3f((i + 0.5f) * SPOT_WIDTH, PLAYER_HEIGHT, (j + 0.5f) * SPOT_LENGTH), engine);
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 192) {
                         medkits.add(new Medkit(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 100) {
                         trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 50) {
-                    	flares.add(new Lantern(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, LEVEL_HEIGHT * 0.75f, (j + 0.5f) * SPOT_LENGTH))));
+                    	flares.add(new Lantern(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, LEVEL_HEIGHT * 0.75f, (j + 0.5f) * SPOT_LENGTH)), engine));
                     	//lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 51) {
                     	//lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
-                    	lamps.add(new Lamp(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                    	lamps.add(new Lamp(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), engine));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 55) {
                         bones.add(new Bones(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 60) {
-                        deadNazi.add(new DeadNazi(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                        bullets.add(new Bullet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                        deadNazi.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), engine));
+                        //bullets.add(new Bullet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 70) {
                         deadJews.add(new DeadJew(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.05f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 80) {
@@ -1382,12 +942,12 @@ public class Level extends GameComponent {
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 90) {
                         dogs.add(new Dog(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 110) {
-                        ssSoldiers.add(new SsSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                        ssSoldiers.add(new SsSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), engine));
                         //machineguns.add(new Machinegun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 120) {
                     	tables.add(new Table(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 121) {
-                    	furnaces.add(new Furnace(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                    	furnaces.add(new Furnace(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), engine));
                 	} else if ((level.getPixel(i, j) & 0x0000FF) == 122) {
                     	kitchens.add(new Kitchen(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         foods.add(new Food(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
@@ -1396,7 +956,7 @@ public class Level extends GameComponent {
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 130) {
                     	superShotguns.add(new SuperShotgun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 140) {
-                    	naziSeargeants.add(new NaziSergeant(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                    	naziSeargeants.add(new NaziSergeant(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), engine));
                         shotguns.add(new Shotgun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 150) {
                     	pipes.add(new Pipe(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.00000000001f * LEVEL_HEIGHT, (j + 0.5f) * SPOT_LENGTH))));
@@ -1412,7 +972,7 @@ public class Level extends GameComponent {
                         helmets.add(new Helmet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         //barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 160) {
-                        barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                        barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), engine));
                     } else if ((level.getPixel(i, j) & 0x0000FF) < 128 && (level.getPixel(i, j) & 0x0000FF) > 96) {
                         int offset = (level.getPixel(i, j) & 0x0000FF) - 96;
                         exitPoints.add(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0f, (j + 0.5f) * SPOT_LENGTH));
@@ -1542,11 +1102,11 @@ public class Level extends GameComponent {
         indices.toArray(intArray);
         geometry = new Mesh(vertArray, Util.toIntArray(intArray), true);
         meshRenderer = new MeshRenderer(geometry, transform, material);
-        RenderingEngine.setFogDensity(0.07f);
-        RenderingEngine.setFogGradient(1.5f);
-        RenderingEngine.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
-        RenderingEngine.m_ambientLight = new Vector3f(0.75f,0.75f,0.75f);
-        RenderingEngine.addLight(new DirectionalLight(new Vector3f(1,1,1), 
+        engine.setFogDensity(0.07f);
+        engine.setFogGradient(1.5f);
+        engine.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
+        engine.m_ambientLight = new Vector3f(0.75f,0.75f,0.75f);
+        engine.addLight(new DirectionalLight(new Vector3f(1,1,1), 
         		1f, new Vector3f(level.getWidth()/2,10,level.getHeight()/2)));
     }
 	

@@ -17,6 +17,7 @@ package game.objects;
 
 import java.util.ArrayList;
 
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
@@ -34,7 +35,7 @@ import engine.rendering.Vertex;
  * @version 1.1
  * @since 2017
  */
-public class DeadJew {
+public class DeadJew extends GameComponent {
 	
 	private static final String RES_LOC = "deadJew/";
 	private static final int STATE_1 = 0;

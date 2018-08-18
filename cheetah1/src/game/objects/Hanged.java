@@ -18,6 +18,7 @@ package game.objects;
 import java.util.ArrayList;
 import java.util.Random;
 
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -31,10 +32,10 @@ import engine.rendering.Vertex;
 /**
  *
  * @author Julio Vergara.
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
-public class Hanged {
+public class Hanged extends GameComponent {
 	
 	private static final String RES_LOC = "hanged/";
     

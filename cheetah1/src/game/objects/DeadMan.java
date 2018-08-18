@@ -15,6 +15,7 @@
  */
 package game.objects;
 
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -31,7 +32,7 @@ import engine.rendering.Vertex;
  * @version 1.1
  * @since 2017
  */
-public class DeadMan {
+public class DeadMan extends GameComponent {
     
     private static Mesh mesh;
     private static Material material;

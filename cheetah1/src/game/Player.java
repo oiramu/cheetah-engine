@@ -144,6 +144,7 @@ public class Player {
     private Transform hudTransform;
     private MeshRenderer gunRenderer;
     private MeshRenderer hudRenderer;
+    private RenderingEngine renderingEngine;
 
     private Camera playerCamera;
     private Random rand;
@@ -185,7 +186,7 @@ public class Player {
      * Constructor of the main player.
      * @param position the position in the 3D space.
      */
-    public Player(Vector3f position) {
+    public Player(Vector3f position, RenderingEngine renderingEngine) {
     	
     	playerCamera = new Camera(position);
     	
@@ -371,7 +372,7 @@ public class Player {
     		fireShellLight = new PointLight(new Vector3f(0.45f,0.35f,0.1f), 1.6f, 
             		new Attenuation(1,0,1), getCamera().getPos());
     	}
-
+        this.renderingEngine = renderingEngine;
         gunFireTime = 0;
         painTime = 0;
         mouseLocked = false;
@@ -538,8 +539,9 @@ public class Player {
 
     /**
      * The player's input system.
+     * @param engine to use.
      */
-    public void input() {
+    public void input(RenderingEngine engine) {
     	Vector2f deltaPos = Input.getMousePosition().sub(centerPosition);
     	
         boolean rotY = deltaPos.getX() != 0;
@@ -552,7 +554,7 @@ public class Player {
         
     	if(!(health <= 0)) {
 	        if (Input.getKeyDown(Input.KEY_E) || Input.getKeyDown(Input.KEY_SPACE)) {
-	            Auschwitz.getLevel().openDoors(Transform.getCamera().getPos(), true);
+	            Auschwitz.getLevel().openDoors(Transform.getCamera().getPos(), true, engine);
 	        }
 	        
 	        if (Input.getKeyDown(Input.KEY_1)) {
@@ -644,12 +646,12 @@ public class Player {
 
 	        if(isOn) {
 				if (Input.getKeyDown(Input.KEY_F)) {
-					RenderingEngine.removeLight(sLight);
+					renderingEngine.removeLight(sLight);
 					isOn = false;
 				}
             } else {
             	if (Input.getKeyDown(Input.KEY_F)) {
-            		RenderingEngine.addLight(sLight);
+            		renderingEngine.addLight(sLight);
 	            	isOn = true;
             	}
             }
@@ -800,19 +802,20 @@ public class Player {
 			if(bullets != 0) {
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
-		        	RenderingEngine.addLight(fireBulletLight);
+		        	renderingEngine.addLight(fireBulletLight);
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial1, shader);
 		        } else if ((double) time < gunTime2) {
 			        hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
 		        } else {
-		        	RenderingEngine.removeLight(fireBulletLight);
+		        	renderingEngine.removeLight(fireBulletLight);
 		            hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunMaterial, shader);
 	            	isReloading = false;
 		        }
 			} else {
+				renderingEngine.removeLight(fireBulletLight);
 				hudRenderer.render(crossHairMaterial, shader);
 	        	gunRenderer.render(gunMaterial, shader);
             	isReloading = false;
@@ -824,13 +827,13 @@ public class Player {
 			if(shells != i) {
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
-		        	RenderingEngine.addLight(fireShellLight);
+		        	renderingEngine.addLight(fireShellLight);
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial1, shader);
 		        } else if ((double) time < gunTime2) {
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
-		        	RenderingEngine.removeLight(fireShellLight);
+		        	renderingEngine.removeLight(fireShellLight);
 			        AudioUtil.playAudio(gunReload, 0);
 		        } else if ((double) time < gunTime3) {
 		        	hudRenderer.render(crossHairMaterial, shader);
@@ -840,11 +843,13 @@ public class Player {
 		        	hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial4, shader);
 		        } else {
+		        	renderingEngine.removeLight(fireShellLight);
 		        	hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunMaterial, shader);
 		            isReloading = false;
 		        }
 			} else {
+				renderingEngine.removeLight(fireShellLight);
 				hudRenderer.render(crossHairMaterial, shader);
 	        	gunRenderer.render(gunMaterial, shader);
 	            isReloading = false;
@@ -904,6 +909,7 @@ public class Player {
         if(isBulletBased) {
         	if (bullets <= 0) {
         		bullets = 0;
+        		renderingEngine.removeLight(fireBulletLight);
         		AudioUtil.playAudio(gunEmptyNoise, 1);
         	}
         }
@@ -929,6 +935,7 @@ public class Player {
         if(isShellBased) {
         	if (shells <= 0) {
         		shells = 0;
+        		renderingEngine.removeLight(fireShellLight);
         		AudioUtil.playAudio(gunEmptyNoise, 1);
         	}
         }

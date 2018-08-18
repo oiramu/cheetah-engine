@@ -18,6 +18,7 @@ package game.doors;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
@@ -32,10 +33,10 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
-public class SecretWall {
+public class SecretWall extends GameComponent {
 	
 	private static final float HEIGHT = Level.LEVEL_HEIGHT;
 	private static final float LENGTH = Level.SPOT_LENGTH;

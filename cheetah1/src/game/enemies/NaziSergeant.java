@@ -21,6 +21,7 @@ import java.util.Random;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
@@ -29,6 +30,7 @@ import engine.core.Vector3f;
 import engine.physics.PhysicsUtil;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -39,10 +41,10 @@ import game.Player;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2017
  */
-public class NaziSergeant {
+public class NaziSergeant extends GameComponent {
 
     private static final float MAX_HEALTH = 180f;
     private static final float SHOT_ANGLE = 10.0f;
@@ -72,6 +74,7 @@ public class NaziSergeant {
     private Transform transform;
     private Material material;
     private MeshRenderer meshRenderer;
+    private RenderingEngine renderingEngine;
 
     private int state;
     private boolean canAttack;
@@ -84,7 +87,7 @@ public class NaziSergeant {
      * Constructor of the actual enemy.
      * @param transform the transform of the data.
      */
-    public NaziSergeant(Transform transform) {
+    public NaziSergeant(Transform transform, RenderingEngine renderingEngine) {
         if (rand == null) {
             rand = new Random();
         }
@@ -130,7 +133,7 @@ public class NaziSergeant {
 
             mesh = new Mesh(verts, indices, true);
         }
-
+        this.renderingEngine = renderingEngine;
         this.transform = transform;
         this.material = new Material(animation.get(0));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
@@ -227,7 +230,7 @@ public class NaziSergeant {
                     Vector3f movementVector = collisionVector.mul(orientation.normalized());
 
                     if (!movementVector.equals(orientation.normalized())) {
-                        Auschwitz.getLevel().openDoors(transform.getPosition(), false);
+                        Auschwitz.getLevel().openDoors(transform.getPosition(), false, renderingEngine);
                     }
 
                     if (movementVector.length() > 0) {

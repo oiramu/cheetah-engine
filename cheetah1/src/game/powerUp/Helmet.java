@@ -18,6 +18,7 @@ package game.powerUp;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -35,7 +36,7 @@ import game.Level;
  * @version 1.0
  * @since 2018
  */
-public class Helmet {
+public class Helmet extends GameComponent {
 
     private static final float PICKUP_THRESHHOLD = 0.75f;
     private static final boolean STATE = true;

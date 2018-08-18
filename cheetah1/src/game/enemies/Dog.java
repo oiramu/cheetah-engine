@@ -21,6 +21,7 @@ import java.util.Random;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
@@ -37,12 +38,12 @@ import game.Level;
 import game.Player;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
-public class Dog {
+ *
+ * @author Carlos Rodriguez
+ * @version 1.1
+ * @since 2017
+ */
+public class Dog extends GameComponent {
 
 	private static final float MAX_HEALTH = 100f;
     private static final float SHOT_ANGLE = 10.0f;

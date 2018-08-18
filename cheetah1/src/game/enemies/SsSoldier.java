@@ -21,6 +21,7 @@ import java.util.Random;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
@@ -29,6 +30,7 @@ import engine.core.Vector3f;
 import engine.physics.PhysicsUtil;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -40,10 +42,10 @@ import game.powerUp.Machinegun;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2017
  */
-public class SsSoldier {
+public class SsSoldier extends GameComponent {
 
     private static final float MAX_HEALTH = 200f;
     private static final float SHOT_ANGLE = 20.0f;
@@ -74,6 +76,7 @@ public class SsSoldier {
     private Transform transform;
     private Material material;
     private MeshRenderer meshRenderer;
+    private RenderingEngine renderingEngine;
 
     private int state;
     private boolean canAttack;
@@ -86,7 +89,7 @@ public class SsSoldier {
      * Constructor of the actual enemy.
      * @param transform the transform of the data.
      */
-    public SsSoldier(Transform transform) {
+    public SsSoldier(Transform transform, RenderingEngine renderingEngine) {
         if (rand == null) {
             rand = new Random();
         }
@@ -137,7 +140,7 @@ public class SsSoldier {
 
             mesh = new Mesh(verts, indices, true);
         }
-
+        this.renderingEngine = renderingEngine;
         this.transform = transform;
         this.material = new Material(animation.get(0));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
@@ -154,6 +157,7 @@ public class SsSoldier {
 
     /**
      * Updates the enemy every single frame.
+     * @param engine to use.
      */
     public void update() {
     	
@@ -240,7 +244,7 @@ public class SsSoldier {
                     Vector3f movementVector = collisionVector.mul(orientation.normalized());
 
                     if (!movementVector.equals(orientation.normalized())) {
-                        Auschwitz.getLevel().openDoors(transform.getPosition(), false);
+                        Auschwitz.getLevel().openDoors(transform.getPosition(), false, renderingEngine);
                     }
 
                     if (movementVector.length() > 0) {

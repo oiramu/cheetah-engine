@@ -17,6 +17,7 @@ package game.objects;
 
 import java.util.ArrayList;
 
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
@@ -32,10 +33,10 @@ import game.Level;
 /**
  *
  * @author Julio Vergara.
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
-public class Pendule {
+public class Pendule extends GameComponent {
 	
 	private static final String RES_LOC = "pendule/";
 	private static final int STATE_IDLE = 0;

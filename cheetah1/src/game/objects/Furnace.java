@@ -58,8 +58,9 @@ public class Furnace {
     /**
      * Constructor of the actual object.
      * @param transform the transform of the object in a 3D space.
+     * @param renderingEngine of the furnace.
      */
-    public Furnace(Transform transform) {
+    public Furnace(Transform transform, RenderingEngine renderingEngine) {
     	
     	if (animation == null) {
             animation = new ArrayList<Texture>();
@@ -90,7 +91,6 @@ public class Furnace {
 
             mesh = new Mesh(verts, indices, true);
         }
-        
         this.material = new Material(animation.get(0));
         this.state = STATE_IDLE;
         this.transform = transform;
@@ -98,7 +98,7 @@ public class Furnace {
         this.light = new PointLight(new Vector3f(0.45f,0.35f,0.1f), 0.8f, 
         		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0, 
         				getTransform().getPosition().getZ()));
-        RenderingEngine.addLight(light);
+        renderingEngine.addLight(light);
     }
 
     /**

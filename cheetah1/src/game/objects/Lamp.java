@@ -21,6 +21,7 @@ import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
 import engine.components.Attenuation;
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.components.PointLight;
 import engine.core.Time;
@@ -37,10 +38,10 @@ import engine.rendering.Vertex;
 /**
  *
  * @author Julio Vergara.
- * @version 1.0
+ * @version 1.1
  * @since 2017
  */
-public class Lamp {
+public class Lamp extends GameComponent {
 	
 	private static final String 		RES_LOC = "lamp/";
 	private static final int 			STATE_IDLE = 0;
@@ -56,12 +57,14 @@ public class Lamp {
     private boolean 					dead;
     private static ArrayList<Texture> 	animation;
     private Transform 					transform;
+    private RenderingEngine				renderingEngine;
 
     /**
      * Constructor of the actual object.
      * @param transform the transform of the object in a 3D space.
+     * @param renderingEngine of the lamp.
      */
-    public Lamp(Transform transform) {
+    public Lamp(Transform transform, RenderingEngine renderingEngine) {
     	
     	if (animation == null) {
             animation = new ArrayList<Texture>();
@@ -96,14 +99,14 @@ public class Lamp {
 
             mesh = new Mesh(verts, indices, true);
         }
-        
+        this.renderingEngine = renderingEngine;
         this.material = new Material(animation.get(0), new Vector3f(1,1,1));
         this.state = STATE_IDLE;
         this.transform = transform;
         this.light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
         		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.1f, 
         				getTransform().getPosition().getZ()));
-        RenderingEngine.addLight(light);
+        renderingEngine.addLight(light);
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         this.dead = false;
         this.health = 20;
@@ -155,7 +158,7 @@ public class Lamp {
         }
         
         if (state == STATE_DEAD) {
-        	RenderingEngine.removeLight(light);
+        	renderingEngine.removeLight(light);
             dead = true;
             material.setDiffuse(animation.get(4));
         }

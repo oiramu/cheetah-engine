@@ -55,6 +55,7 @@ public class Barrel {
     private static Mesh mesh;
     private Material material;
     private MeshRenderer meshRenderer;
+    private RenderingEngine renderingEngine;
     private PointLight light;
     
     private float sizeX;
@@ -70,8 +71,9 @@ public class Barrel {
     /**
      * Constructor of the actual object.
      * @param transform the transform of the object in a 3D space.
+     * @param renderingEngine of the barrel.
      */
-	public Barrel(Transform transform) {
+	public Barrel(Transform transform, RenderingEngine renderingEngine) {
     	
     	if (animation == null) {
             animation = new ArrayList<Texture>();
@@ -117,7 +119,7 @@ public class Barrel {
 
             mesh = new Mesh(verts, indices, true);
         }
-        
+        this.renderingEngine = renderingEngine;
         this.material = new Material(animation.get(0), new Vector3f(1,1,1));
         this.state = STATE_IDLE;
         this.transform = transform;
@@ -171,7 +173,7 @@ public class Barrel {
         		dead = true;
                 material.setDiffuse(animation.get(1));
             } else if (timeDecimals <= 0.5f) {
-            	RenderingEngine.addLight(light);
+            	renderingEngine.addLight(light);
                 material.setDiffuse(animation.get(2));
             } else if (timeDecimals <= 0.75f) {
             	if(distance<1) {
@@ -212,7 +214,7 @@ public class Barrel {
         }
         
         if (state == STATE_DEAD) {
-        	RenderingEngine.removeLight(light);
+        	renderingEngine.removeLight(light);
         	boom = false;
         	Level.removeBarrel(this);
         }

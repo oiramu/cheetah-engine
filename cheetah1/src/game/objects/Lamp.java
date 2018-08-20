@@ -30,7 +30,6 @@ import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -55,16 +54,15 @@ public class Lamp extends GameComponent {
     private float 						sizeX;
     private double 						health;
     private boolean 					dead;
+    private double						fireTime;
     private static ArrayList<Texture> 	animation;
     private Transform 					transform;
-    private RenderingEngine				renderingEngine;
 
     /**
      * Constructor of the actual object.
      * @param transform the transform of the object in a 3D space.
-     * @param renderingEngine of the lamp.
      */
-    public Lamp(Transform transform, RenderingEngine renderingEngine) {
+    public Lamp(Transform transform) {
     	
     	if (animation == null) {
             animation = new ArrayList<Texture>();
@@ -99,14 +97,13 @@ public class Lamp extends GameComponent {
 
             mesh = new Mesh(verts, indices, true);
         }
-        this.renderingEngine = renderingEngine;
+        this.fireTime = 0;
         this.material = new Material(animation.get(0), new Vector3f(1,1,1));
         this.state = STATE_IDLE;
         this.transform = transform;
         this.light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
         		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.1f, 
         				getTransform().getPosition().getZ()));
-        renderingEngine.addLight(light);
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         this.dead = false;
         this.health = 20;
@@ -158,7 +155,7 @@ public class Lamp extends GameComponent {
         }
         
         if (state == STATE_DEAD) {
-        	renderingEngine.removeLight(light);
+        	fireTime = (double) Time.getTime() / Time.SECOND;
             dead = true;
             material.setDiffuse(animation.get(4));
         }
@@ -169,7 +166,14 @@ public class Lamp extends GameComponent {
      * Method that renders the object's mesh to screen.
      * @param shader to render
      */
-    public void render(Shader shader) {meshRenderer.render(shader);}
+    public void render(Shader shader) {
+    	double time = (double) Time.getTime() / Time.SECOND;
+    	if((double)time < fireTime + 0.1f)
+    		shader.getRenderingEngine().removeLight(light);
+    	else
+    		shader.getRenderingEngine().addLight(light);
+    	meshRenderer.render(shader);
+    }
     
     /**
      * Gets the transform of the object in projection.

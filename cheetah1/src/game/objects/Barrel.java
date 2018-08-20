@@ -51,11 +51,11 @@ public class Barrel {
 	public int damage;
 	public boolean boom;
 	private int state;
+	private double fireTime;
     
     private static Mesh mesh;
     private Material material;
     private MeshRenderer meshRenderer;
-    private RenderingEngine renderingEngine;
     private PointLight light;
     
     private float sizeX;
@@ -119,7 +119,6 @@ public class Barrel {
 
             mesh = new Mesh(verts, indices, true);
         }
-        this.renderingEngine = renderingEngine;
         this.material = new Material(animation.get(0), new Vector3f(1,1,1));
         this.state = STATE_IDLE;
         this.transform = transform;
@@ -130,6 +129,7 @@ public class Barrel {
         this.dead = false;
         this.health = 200;
         this.damage = 0;
+        this.fireTime = 0;
         this.boom = false;
     }
 
@@ -173,7 +173,7 @@ public class Barrel {
         		dead = true;
                 material.setDiffuse(animation.get(1));
             } else if (timeDecimals <= 0.5f) {
-            	renderingEngine.addLight(light);
+            	fireTime = (double) Time.getTime() / Time.SECOND;
                 material.setDiffuse(animation.get(2));
             } else if (timeDecimals <= 0.75f) {
             	if(distance<1) {
@@ -214,7 +214,6 @@ public class Barrel {
         }
         
         if (state == STATE_DEAD) {
-        	renderingEngine.removeLight(light);
         	boom = false;
         	Level.removeBarrel(this);
         }
@@ -225,7 +224,14 @@ public class Barrel {
      * Method that renders the object's mesh to screen.
      * @param shader to render
      */
-    public void render(Shader shader) {meshRenderer.render(shader);}
+    public void render(Shader shader) {
+    	double time = (double) Time.getTime() / Time.SECOND;
+    	if((double)time < fireTime + 1.0f)
+    		shader.getRenderingEngine().addLight(light);
+    	else
+    		shader.getRenderingEngine().removeLight(light);
+    	meshRenderer.render(shader);
+    }
     
     /**
      * Gets the transform of the object in projection.

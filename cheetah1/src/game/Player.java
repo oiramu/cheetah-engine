@@ -26,7 +26,6 @@ import engine.audio.AudioUtil;
 import engine.components.Attenuation;
 import engine.components.Camera;
 import engine.components.MeshRenderer;
-import engine.components.PointLight;
 import engine.components.SpotLight;
 import engine.core.Input;
 import engine.core.Time;
@@ -150,8 +149,8 @@ public class Player {
     private Random rand;
     private Vector3f movementVector;
     
-    private PointLight fireBulletLight;
-    private PointLight fireShellLight;
+    private SpotLight fireBulletLight;
+    private SpotLight fireShellLight;
     private SpotLight sLight;
     
     private double gunFireTime;
@@ -367,10 +366,10 @@ public class Player {
         if(sLight == null && fireBulletLight == null && fireShellLight == null) {
         	sLight = new SpotLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f, 
         	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
-    		fireBulletLight = new PointLight(new Vector3f(0.5f,0.3f,0.1f), 1.6f, 
-            		new Attenuation(1,0,1), getCamera().getPos());
-    		fireShellLight = new PointLight(new Vector3f(0.45f,0.35f,0.1f), 1.6f, 
-            		new Attenuation(1,0,1), getCamera().getPos());
+    		fireBulletLight = new SpotLight(new Vector3f(0.5f,0.3f,0.1f), 1.6f, 
+            		new Attenuation(1,0,1), getCamera().getPos(), new Vector3f(1,1,1), 0.7f);
+    		fireShellLight = new SpotLight(new Vector3f(0.45f,0.35f,0.1f), 1.6f, 
+            		new Attenuation(1,0,1), getCamera().getPos(), new Vector3f(1,1,1), 0.7f);
     	}
         this.renderingEngine = renderingEngine;
         gunFireTime = 0;
@@ -751,7 +750,9 @@ public class Player {
         sLight.setPosition(getCamera().getPos());
         sLight.setDirection(getCamera().getForward());
         fireBulletLight.setPosition(getCamera().getPos());
+        fireBulletLight.setDirection(getCamera().getForward());
         fireShellLight.setPosition(getCamera().getPos());
+        fireShellLight.setDirection(getCamera().getForward());
         
         healthMaterial = new Material(healthMaterials.get(getHealth()));
         if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;

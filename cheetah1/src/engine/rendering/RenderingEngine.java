@@ -128,7 +128,7 @@ public class RenderingEngine {
     /**
      * Removes to the render pipeline the lists of objects to render.
      * @param list of objects.
-     * @param shader to render.
+     * @param removeList of objects.
      */
     public <E> void removeListToRenderPipeline(ArrayList<E> list, ArrayList<E> removeList) {
     	for (E component : removeList) list.remove(component);

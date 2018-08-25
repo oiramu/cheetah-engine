@@ -59,7 +59,7 @@ public class NaziSoldier extends GameComponent {
     private static final int STATE_CHASE = 1;
     private static final int STATE_ATTACK = 2;
     private static final int STATE_DYING = 3;
-    private static final int STATE_PICK_UP = 4;
+    private static final int STATE_POST_DEATH = 4;
     private static final int STATE_DONE = 5;
     private static final int STATE_HIT = 6;
     private static final int STATE_DEAD = 7;
@@ -80,6 +80,7 @@ public class NaziSoldier extends GameComponent {
     private Material material;
     private MeshRenderer meshRenderer;
     private RenderingEngine renderingEngine;
+    private Bullet bullet;
     private SpotLight light;
 
     private int state;
@@ -118,8 +119,6 @@ public class NaziSoldier extends GameComponent {
             animation.add(new Texture(RES_LOC + "TRANJ0"));
             animation.add(new Texture(RES_LOC + "TRANK0"));
             animation.add(new Texture(RES_LOC + "TRANL0"));
-            animation.add(new Texture(RES_LOC + "TRANL0"));
-            animation.add(new Texture(RES_LOC + "TRANL1"));
             
             animation.add(new Texture(RES_LOC + "SSWVN0"));
             animation.add(new Texture(RES_LOC + "SSWVO0"));
@@ -152,7 +151,6 @@ public class NaziSoldier extends GameComponent {
         	light = new SpotLight(new Vector3f(0.5f,0.3f,0.1f), 0.8f, 
         	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
         }   
-
         this.renderingEngine = renderingEngine;
         this.transform = transform;
         this.material = new Material(animation.get(0));
@@ -174,11 +172,6 @@ public class NaziSoldier extends GameComponent {
      * @param engine to use.
      */
     public void update() {
-    	
-    	final float PICKUP_THRESHHOLD = Bullet.PICKUP_THRESHHOLD;
-        final int AMOUNT = Bullet.AMOUNT;
-
-        final Clip pickupNoise = Bullet.PICKUP_NOISE;
         
         //Set Height
         transform.setPosition(transform.getPosition().getX(), 0, transform.getPosition().getZ());
@@ -190,6 +183,8 @@ public class NaziSoldier extends GameComponent {
         float distance = playerDistance.length();
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
+        
+        this.bullet = new Bullet(getTransform());
         
         light.setPosition(transform.getPosition());
         light.setDirection(orientation.mul(-1));
@@ -355,25 +350,23 @@ public class NaziSoldier extends GameComponent {
             } else if (time > deathTime + time2 && time <= deathTime + time3) {
                 material.setDiffuse(animation.get(11));
             } else if (time > deathTime + time3 && time <= deathTime + time4) {
-                material.setDiffuse(animation.get(14));
+                material.setDiffuse(animation.get(12));
             } else if (time > deathTime + time4) {
-                state = STATE_PICK_UP;
-            }
-        }
-
-        if (state == STATE_PICK_UP) {      	
-        	if (distance < PICKUP_THRESHHOLD && Level.getPlayer().getBullets() < 100) {
-                Level.getPlayer().addBullets(AMOUNT);
-                AudioUtil.playAudio(pickupNoise, 0);
                 state = STATE_DEAD;
             }
-        	material.setDiffuse(animation.get(14));
-            dead = true;            
         }
         
         if (state == STATE_DEAD) {
-        	material.setDiffuse(animation.get(13));   	
-            dead = true;    
+        	bullet.update();
+        	material.setDiffuse(animation.get(12));   	
+            dead = true;  
+            if (distance < bullet.PICKUP_THRESHHOLD) {
+            	state = STATE_POST_DEATH;
+            }
+        }
+        
+        if (state == STATE_POST_DEATH) {
+            material.setDiffuse(animation.get(12));
         }
         
         if (state == STATE_DONE) {
@@ -426,6 +419,10 @@ public class NaziSoldier extends GameComponent {
         Vector3f prevPosition = transform.getPosition();
         transform.setPosition(new Vector3f(transform.getPosition().getX() + offsetX, transform.getPosition().getY() + offsetY, transform.getPosition().getZ()));
         meshRenderer.render(shader);
+        
+        if (state == STATE_DEAD) {      	
+        	bullet.render(shader);          
+        }
 
         transform.setPosition(prevPosition);
     }

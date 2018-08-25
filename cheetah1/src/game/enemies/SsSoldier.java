@@ -59,7 +59,7 @@ public class SsSoldier extends GameComponent {
     private static final int STATE_CHASE = 1;
     private static final int STATE_ATTACK = 2;
     private static final int STATE_DYING = 3;
-    private static final int STATE_PICK_UP = 4;
+    private static final int STATE_POST_DEATH = 4;
     private static final int STATE_DONE = 5;
     private static final int STATE_HIT = 6;
     private static final int STATE_DEAD = 7;
@@ -79,6 +79,7 @@ public class SsSoldier extends GameComponent {
     private Material material;
     private MeshRenderer meshRenderer;
     private RenderingEngine renderingEngine;
+    private Machinegun machineGun;
     private SpotLight light;
 
     private int state;
@@ -170,12 +171,7 @@ public class SsSoldier extends GameComponent {
      * Updates the enemy every single frame.
      * @param engine to use.
      */
-    public void update() {
-    	
-    	final float PICKUP_THRESHHOLD = Machinegun.PICKUP_THRESHHOLD;
-        final int AMOUNT = Machinegun.AMOUNT;
-
-        final Clip pickupNoise = Machinegun.PICKUP_NOISE;
+	public void update() {
     	
         //Set Height
         transform.setPosition(transform.getPosition().getX(), 0, transform.getPosition().getZ());
@@ -188,6 +184,8 @@ public class SsSoldier extends GameComponent {
         
         light.setPosition(transform.getPosition());
         light.setDirection(orientation.mul(-1));
+        
+        this.machineGun = new Machinegun(getTransform());
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
@@ -353,23 +351,20 @@ public class SsSoldier extends GameComponent {
             } else if (time > deathTime + time3 && time <= deathTime + time4) {
                 material.setDiffuse(animation.get(14));
             } else if (time > deathTime + time4) {
-                state = STATE_PICK_UP;
-            }
-        }
-        
-        if (state == STATE_PICK_UP) {      	
-        	if (distance < PICKUP_THRESHHOLD) {
-                Level.getPlayer().setMachinegun(true);
-                Level.getPlayer().addBullets(AMOUNT);
-                AudioUtil.playAudio(pickupNoise, 0);
                 state = STATE_DEAD;
             }
-        	material.setDiffuse(animation.get(14));
-            dead = true;            
         }
 
         if (state == STATE_DEAD) {
+        	machineGun.update();
             dead = true;
+            material.setDiffuse(animation.get(15));
+            if (distance < machineGun.PICKUP_THRESHHOLD) {
+            	state = STATE_POST_DEATH;
+            }
+        }
+        
+        if (state == STATE_POST_DEATH) {
             material.setDiffuse(animation.get(15));
         }
         
@@ -417,6 +412,9 @@ public class SsSoldier extends GameComponent {
         Vector3f prevPosition = transform.getPosition();
         transform.setPosition(new Vector3f(transform.getPosition().getX() + offsetX, transform.getPosition().getY() + offsetY, transform.getPosition().getZ()));
 
+        if (state == STATE_DEAD)
+        	machineGun.render(shader);
+        
         meshRenderer.render(shader);
 
         transform.setPosition(prevPosition);

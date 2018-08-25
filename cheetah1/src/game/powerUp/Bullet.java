@@ -38,10 +38,10 @@ import game.Level;
  */
 public class Bullet extends GameComponent {
 
-    public static final float PICKUP_THRESHHOLD = 0.75f;
-    public static final int AMOUNT = 7;
-    public static final String RES_LOC = "bullet/MEDIA";
-    public static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
+    public final float PICKUP_THRESHHOLD = 0.75f;
+    public final int AMOUNT = 7;
+    public final String RES_LOC = "bullet/MEDIA";
+    public final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
 
     private static Mesh 	m_mesh;
     private static Material m_material;

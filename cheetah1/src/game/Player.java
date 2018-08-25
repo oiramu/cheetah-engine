@@ -144,6 +144,7 @@ public class Player {
     private MeshRenderer gunRenderer;
     private MeshRenderer hudRenderer;
     private RenderingEngine renderingEngine;
+    private Shader hudShader;
 
     private Camera playerCamera;
     private Random rand;
@@ -257,6 +258,8 @@ public class Player {
     			ammoMaterials.add(new Texture("/hud/hud/AR" + i));
 			}
     	}
+    	
+    	hudShader = new Shader("hud");
     	
     	if(crossHairMaterials == null) {
     		crossHairMaterials = new ArrayList<Texture>();
@@ -701,7 +704,6 @@ public class Player {
      * Updates the player every single frame.
      */
     public void update() {
-
     	int ammo = 0;
     	float movAmt = 0;
     	double time = (double) Time.getTime() / Time.SECOND;
@@ -723,13 +725,13 @@ public class Player {
         }
 
         //Gun movement
-        gunTransform.setScale(1, 1, 1);
+        gunTransform.setScale(1, 1, 0);
         gunTransform.setPosition(playerCamera.getPos().add(playerCamera.getForward().normalized().mul(GUN_TRANSFORM_MUL)));
         gunTransform.setPosition(gunTransform.getPosition().add(playerCamera.getLeft().normalized().mul(dx)));
         gunTransform.getPosition().setY(gunTransform.getPosition().getY() + dy);
         
         //HUD movement
-        hudTransform.setScale(1, 1, 1);
+        hudTransform.setScale(1, 1, 0);
         hudTransform.setPosition(playerCamera.getPos().add(playerCamera.getForward().normalized().mul(GUN_TRANSFORM_MUL-0.002f)));
         hudTransform.setPosition(hudTransform.getPosition().add(playerCamera.getLeft().normalized().mul(GUN_OFFSET_X)));
         hudTransform.getPosition().setY(hudTransform.getPosition().getY() + GUN_OFFSET);
@@ -764,7 +766,6 @@ public class Player {
      * Method that renders the player's mesh.
      */
     public void render(Shader shader) {	
-    	
     	double time = (double) Time.getTime() / Time.SECOND;
     	double gunTime = gunFireTime + gunFireAnimationTime;
     	double gunTime2 = gunTime + gunFireAnimationTime;
@@ -772,20 +773,20 @@ public class Player {
     	double gunTime4 = gunTime3 + gunFireAnimationTime;
         
         if((double)time < healthTime + 0.5f)
-        	hudRenderer.render(healthMaterial, shader);
+        	hudRenderer.render(healthMaterial, hudShader);
         else
-        	hudRenderer.render(healthMaterial, shader);
+        	hudRenderer.render(healthMaterial, hudShader);
         
         if((double)time < ammoTime + 0.5f)
-        	hudRenderer.render(ammoMaterial, shader);
+        	hudRenderer.render(ammoMaterial, hudShader);
         else
-        	hudRenderer.render(ammoMaterial, shader);
+        	hudRenderer.render(ammoMaterial, hudShader);
         
         if(isAlive) {
 	        if((double)time < painTime + 0.5f)
-	        	hudRenderer.render(painMaterial, shader);
+	        	hudRenderer.render(painMaterial, hudShader);
         } else {
-        	hudRenderer.render(new Material(new Texture("hud/DEATH")), shader);
+        	hudRenderer.render(new Material(new Texture("hud/DEATH")), hudShader);
         }
         
 		if(isMelee) {
@@ -804,20 +805,20 @@ public class Player {
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
 		        	renderingEngine.addLight(fireBulletLight);
-		        	hudRenderer.render(crossHairAnimationMaterial, shader);
+		        	hudRenderer.render(crossHairAnimationMaterial, hudShader);
 		        	gunRenderer.render(gunAnimationMaterial1, shader);
 		        } else if ((double) time < gunTime2) {
-			        hudRenderer.render(crossHairAnimationMaterial, shader);
+			        hudRenderer.render(crossHairAnimationMaterial, hudShader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
 		        } else {
 		        	renderingEngine.removeLight(fireBulletLight);
-		            hudRenderer.render(crossHairMaterial, shader);
+		            hudRenderer.render(crossHairMaterial, hudShader);
 		        	gunRenderer.render(gunMaterial, shader);
 	            	isReloading = false;
 		        }
 			} else {
 				renderingEngine.removeLight(fireBulletLight);
-				hudRenderer.render(crossHairMaterial, shader);
+				hudRenderer.render(crossHairMaterial, hudShader);
 	        	gunRenderer.render(gunMaterial, shader);
             	isReloading = false;
 			}
@@ -829,29 +830,29 @@ public class Player {
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
 		        	renderingEngine.addLight(fireShellLight);
-		        	hudRenderer.render(crossHairAnimationMaterial, shader);
+		        	hudRenderer.render(crossHairAnimationMaterial, hudShader);
 		        	gunRenderer.render(gunAnimationMaterial1, shader);
 		        } else if ((double) time < gunTime2) {
-		        	hudRenderer.render(crossHairAnimationMaterial, shader);
+		        	hudRenderer.render(crossHairAnimationMaterial, hudShader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
 		        	renderingEngine.removeLight(fireShellLight);
 			        AudioUtil.playAudio(gunReload, 0);
 		        } else if ((double) time < gunTime3) {
-		        	hudRenderer.render(crossHairMaterial, shader);
+		        	hudRenderer.render(crossHairMaterial, hudShader);
 		        	gunRenderer.render(gunAnimationMaterial3, shader);
 			        AudioUtil.playAudio(gunClipp, 0);
 		        } else if ((double) time < gunTime4) {
-		        	hudRenderer.render(crossHairMaterial, shader);
+		        	hudRenderer.render(crossHairMaterial, hudShader);
 		        	gunRenderer.render(gunAnimationMaterial4, shader);
 		        } else {
 		        	renderingEngine.removeLight(fireShellLight);
-		        	hudRenderer.render(crossHairMaterial, shader);
+		        	hudRenderer.render(crossHairMaterial, hudShader);
 		        	gunRenderer.render(gunMaterial, shader);
 		            isReloading = false;
 		        }
 			} else {
 				renderingEngine.removeLight(fireShellLight);
-				hudRenderer.render(crossHairMaterial, shader);
+				hudRenderer.render(crossHairMaterial, hudShader);
 	        	gunRenderer.render(gunMaterial, shader);
 	            isReloading = false;
 			}
@@ -870,6 +871,8 @@ public class Player {
             health = MAX_LIFE;
         }
         if (health <= 0) {
+        	renderingEngine.removeLight(fireBulletLight);
+        	renderingEngine.removeLight(fireShellLight);
         	AudioUtil.playAudio(deathNoise, 0);
         	health = 0;
             bullets = 0;

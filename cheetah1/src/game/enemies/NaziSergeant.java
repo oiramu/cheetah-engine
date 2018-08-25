@@ -39,6 +39,7 @@ import engine.rendering.Vertex;
 import game.Auschwitz;
 import game.Level;
 import game.Player;
+import game.powerUp.Shotgun;
 
 /**
  *
@@ -61,6 +62,7 @@ public class NaziSergeant extends GameComponent {
     private static final int STATE_DEAD = 4;
     private static final int STATE_DONE = 5;
     private static final int STATE_HIT = 6;
+    private static final int STATE_POST_DEATH = 7;
     
     private static final String RES_LOC = "naziSergeant/";
 
@@ -77,6 +79,7 @@ public class NaziSergeant extends GameComponent {
     private Material material;
     private MeshRenderer meshRenderer;
     private RenderingEngine renderingEngine;
+    private Shotgun shotgun;
     private SpotLight light;
 
     private int state;
@@ -174,6 +177,8 @@ public class NaziSergeant extends GameComponent {
         
         light.setPosition(transform.getPosition());
         light.setDirection(orientation.mul(-1));
+        
+        this.shotgun = new Shotgun(getTransform());
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
@@ -338,7 +343,15 @@ public class NaziSergeant extends GameComponent {
         }
 
         if (state == STATE_DEAD) {
+        	shotgun.update();
             dead = true;
+            material.setDiffuse(animation.get(11));
+            if (distance < shotgun.PICKUP_THRESHHOLD) {
+            	state = STATE_POST_DEATH;
+            }
+        }
+        
+        if (state == STATE_POST_DEATH) {
             material.setDiffuse(animation.get(11));
         }
         

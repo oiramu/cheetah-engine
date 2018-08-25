@@ -25,11 +25,11 @@ import org.lwjgl.BufferUtils;
 import engine.rendering.Vertex;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class Util {
 
 	/**

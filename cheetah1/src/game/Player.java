@@ -259,7 +259,8 @@ public class Player {
 			}
     	}
     	
-    	hudShader = new Shader("hud");
+    	if(hudShader == null)
+    		hudShader = new Shader("hud");
     	
     	if(crossHairMaterials == null) {
     		crossHairMaterials = new ArrayList<Texture>();

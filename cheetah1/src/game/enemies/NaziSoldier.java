@@ -184,8 +184,6 @@ public class NaziSoldier extends GameComponent {
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
         
-        this.bullet = new Bullet(getTransform());
-        
         light.setPosition(transform.getPosition());
         light.setDirection(orientation.mul(-1));
 
@@ -357,6 +355,7 @@ public class NaziSoldier extends GameComponent {
         }
         
         if (state == STATE_DEAD) {
+            bullet = new Bullet(getTransform());
         	bullet.update();
         	material.setDiffuse(animation.get(12));   	
             dead = true;  
@@ -367,15 +366,16 @@ public class NaziSoldier extends GameComponent {
         
         if (state == STATE_POST_DEATH) {
             material.setDiffuse(animation.get(12));
+            dead = true;
         }
         
         if (state == STATE_DONE) {
         	double timeDecimals = (time - (double) ((int) time));
 
             if (timeDecimals <= 0.75f) {
-                material.setDiffuse(animation.get(15));
+                material.setDiffuse(animation.get(13));
             } else {
-                material.setDiffuse(animation.get(16));
+                material.setDiffuse(animation.get(14));
             }
         }
         

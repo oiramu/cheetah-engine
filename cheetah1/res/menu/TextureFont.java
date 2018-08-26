@@ -79,7 +79,7 @@ public class TextureFont
 
         material = new Material(new Texture("font"));
         
-        shader = new Shader("text");
+        shader = new Shader("hud");
         Matrix4f matrixScaleFont = new Matrix4f();
         Matrix4f matrixTranslationFont = new Matrix4f();
         Matrix4f matrixScaleCrossHair = new Matrix4f();
@@ -90,7 +90,7 @@ public class TextureFont
         matrixTranslationCrossHair.initTranslation(0, 0, 0);
         fontMatrix = matrixScaleFont.mul(matrixTranslationFont);
         crossHairMatrix = matrixScaleCrossHair.mul(matrixTranslationCrossHair);
-        shader = new Shader("text");
+        shader = new Shader("hud");
     }
 
     public void update()

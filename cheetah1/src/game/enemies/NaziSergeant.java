@@ -177,8 +177,6 @@ public class NaziSergeant extends GameComponent {
         
         light.setPosition(transform.getPosition());
         light.setDirection(orientation.mul(-1));
-        
-        this.shotgun = new Shotgun(getTransform());
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
@@ -343,6 +341,7 @@ public class NaziSergeant extends GameComponent {
         }
 
         if (state == STATE_DEAD) {
+        	shotgun = new Shotgun(getTransform());
         	shotgun.update();
             dead = true;
             material.setDiffuse(animation.get(11));

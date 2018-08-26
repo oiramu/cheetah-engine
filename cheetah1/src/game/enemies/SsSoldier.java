@@ -184,8 +184,6 @@ public class SsSoldier extends GameComponent {
         
         light.setPosition(transform.getPosition());
         light.setDirection(orientation.mul(-1));
-        
-        this.machineGun = new Machinegun(getTransform());
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
@@ -356,6 +354,7 @@ public class SsSoldier extends GameComponent {
         }
 
         if (state == STATE_DEAD) {
+        	machineGun = new Machinegun(getTransform());
         	machineGun.update();
             dead = true;
             material.setDiffuse(animation.get(15));

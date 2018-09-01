@@ -88,8 +88,6 @@ public class Level extends GameComponent {
     private static final float MELEE_RANGE = 0.55f;
     private static final float BULLET_RANGE = 2f;
     private static final float SHELL_RANGE = 3f;
-    
-    private static final float PLAYER_HEIGHT = 0.4375f;
 
     private static final String PLAYER_RES_LOC = "player/";
     
@@ -172,7 +170,7 @@ public class Level extends GameComponent {
      * Constructor of the level in the game.
      * @param bitmap to load and use.
      * @param material to load and use.
-     * @param engine to use.
+     * @param engine of the level.
      */
     public Level(Bitmap bitmap, Material material, RenderingEngine engine) {	
         //Remove list
@@ -240,16 +238,15 @@ public class Level extends GameComponent {
 
     /**
      * Inputs accessible in the level.
-     * @param engine to use.
      */
-	public void input(RenderingEngine engine) {
+	public void input() {
 		double time = (double) Time.getTime() / Time.SECOND;
     	double timeDecimals = (time - (double) ((int) time));
     	
 		if (!player.isAlive) {
 	        if(Input.getKeyDown(Input.KEY_E) || Input.getKeyDown(Input.KEY_SPACE)) {
 	    		if (timeDecimals <= 5.0f) {
-		            Auschwitz.reloadLevel(engine);
+		            Auschwitz.reloadLevel();
 		            player.gotPistol();
 	    		}
 	        }
@@ -427,7 +424,7 @@ public class Level extends GameComponent {
             
         }
 
-        player.input(engine);
+        player.input();
     }
 
     /**
@@ -505,7 +502,6 @@ public class Level extends GameComponent {
     public void render(Shader shader) {
     	shader.getRenderingEngine().setMainCamera(player.getCamera());
     	meshRenderer.render(shader);
-    	player.render(shader);
 
     	shader.getRenderingEngine().addListToRenderPipeline(naziSoldiers, shader);
     	shader.getRenderingEngine().addListToRenderPipeline(dogs, shader);
@@ -547,6 +543,8 @@ public class Level extends GameComponent {
         shader.getRenderingEngine().sortNumberComponents(dogs);
         shader.getRenderingEngine().sortNumberComponents(ssSoldiers);
         shader.getRenderingEngine().sortNumberComponents(naziSeargeants);
+        
+        player.render(shader);
 
     }
     
@@ -555,7 +553,7 @@ public class Level extends GameComponent {
      * @param position coordinates.
      * @param playSound If can play a sound.
      */
-    public void openDoors(Vector3f position, boolean playSound, RenderingEngine engine) {
+    public void openDoors(Vector3f position, boolean playSound) {
         boolean worked = false;
 
         for (Door door : doors) {
@@ -575,7 +573,7 @@ public class Level extends GameComponent {
         if (playSound) {
             for (int i = 0; i < exitPoints.size(); i++) {
                 if (Math.abs(exitPoints.get(i).sub(position).length()) < 1f) {
-                    Auschwitz.loadLevel(exitOffsets.get(i), engine);
+                    Auschwitz.loadLevel(exitOffsets.get(i));
                 }
             }
         }
@@ -649,6 +647,9 @@ public class Level extends GameComponent {
             
             for (Pendule pendule : pendules)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, pendule.getTransform().getPosition().getXZ(), pendule.getSize()));
+            
+            //for (Lantern flare : flares)
+                //collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, flare.getTransform().getPosition().getXZ(), flare.getSize()));
             
             for (Lamp lamp : lamps)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, lamp.getTransform().getPosition().getXZ(), lamp.getSize()));
@@ -864,7 +865,7 @@ public class Level extends GameComponent {
 
     /**
      * Method that generates the level for the game.
-     * @param engine to use.
+     * @param engine of the level.
      */
     private void generateLevel(RenderingEngine engine) {
         ArrayList<Vertex> vertices = new ArrayList<Vertex>();
@@ -916,10 +917,10 @@ public class Level extends GameComponent {
                             secretWalls.add(new SecretWall(wallTransform, material, wallTransform.getPosition().add(new Vector3f(0, 0, -0.9f))));
                         }
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 128) {
-                    	naziSoldiers.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), engine));
+                    	naziSoldiers.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         //bullets.add(new Bullet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.025f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 1) {
-                        player = new Player(new Vector3f((i + 0.5f) * SPOT_WIDTH, PLAYER_HEIGHT, (j + 0.5f) * SPOT_LENGTH), engine);
+                        player = new Player(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.4375f, (j + 0.5f) * SPOT_LENGTH), engine);
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 192) {
                         medkits.add(new Medkit(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 100) {
@@ -933,7 +934,7 @@ public class Level extends GameComponent {
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 55) {
                         bones.add(new Bones(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 60) {
-                        deadNazi.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), engine));
+                        deadNazi.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         //bullets.add(new Bullet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 70) {
                         deadJews.add(new DeadJew(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.05f, (j + 0.5f) * SPOT_LENGTH))));
@@ -942,7 +943,7 @@ public class Level extends GameComponent {
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 90) {
                         dogs.add(new Dog(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 110) {
-                        ssSoldiers.add(new SsSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), engine));
+                        ssSoldiers.add(new SsSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         //machineguns.add(new Machinegun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 120) {
                     	tables.add(new Table(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
@@ -956,7 +957,7 @@ public class Level extends GameComponent {
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 130) {
                     	superShotguns.add(new SuperShotgun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 140) {
-                    	naziSeargeants.add(new NaziSergeant(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), engine));
+                    	naziSeargeants.add(new NaziSergeant(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         shotguns.add(new Shotgun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 150) {
                     	pipes.add(new Pipe(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.00000000001f * LEVEL_HEIGHT, (j + 0.5f) * SPOT_LENGTH))));
@@ -972,7 +973,7 @@ public class Level extends GameComponent {
                         helmets.add(new Helmet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         //barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) == 160) {
-                        barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), engine));
+                        barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((level.getPixel(i, j) & 0x0000FF) < 128 && (level.getPixel(i, j) & 0x0000FF) > 96) {
                         int offset = (level.getPixel(i, j) & 0x0000FF) - 96;
                         exitPoints.add(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0f, (j + 0.5f) * SPOT_LENGTH));

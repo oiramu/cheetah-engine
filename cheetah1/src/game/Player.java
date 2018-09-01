@@ -56,6 +56,9 @@ public class Player {
     private static final float MAX_LOOK_ANGLE = 0;
     private static final float MIN_LOOK_ANGLE = 0;
     private static final float PLAYER_WIDTH = 0.2f;
+    private static final float GRAVITY = 0.98f;
+    
+    private static final float PLAYER_TO_GROUND = 0.4375f;
     
     private static final int MAX_LIFE = 100;
     
@@ -64,6 +67,7 @@ public class Player {
     
     public float damageMin;
     public float damageRange;
+    public float attenuation;
     
     public static final String HAND = "hand";
     public static final String PISTOL = "pistol";
@@ -110,6 +114,7 @@ public class Player {
     private static ArrayList<Clip> gunsReloadSounds;
     private static ArrayList<Clip> gunsClippingSounds;
     private static ArrayList<Clip> gunsEmptyNoiseSounds;
+    private static ArrayList<Clip> playerMovement;
     
     private static Material healthMaterial;
     private static Material ammoMaterial;
@@ -144,7 +149,6 @@ public class Player {
     private MeshRenderer gunRenderer;
     private MeshRenderer hudRenderer;
     private RenderingEngine renderingEngine;
-    private Shader hudShader;
 
     private Camera playerCamera;
     private Random rand;
@@ -159,6 +163,7 @@ public class Player {
     private double ammoTime;
     private double painTime;
     private float width;
+    private float upAmt = 0;
     private int health;
     private int armori;
     private int bullets;
@@ -168,6 +173,7 @@ public class Player {
     private boolean machinegun;
     private boolean sShotgun;
     private boolean chaingun;
+    private boolean isInAir = false;
     
     public static boolean mouseLocked;
     public static boolean isOn;
@@ -259,9 +265,6 @@ public class Player {
 			}
     	}
     	
-    	if(hudShader == null)
-    		hudShader = new Shader("hud");
-    	
     	if(crossHairMaterials == null) {
     		crossHairMaterials = new ArrayList<Texture>();
     		crossHairMaterials.add(new Texture("/hud/CROSS0"));
@@ -316,6 +319,14 @@ public class Player {
     		gunsEmptyNoiseSounds.add(AudioUtil.loadAudio(SUPER_SHOTGUN_RES_LOC + EMPTY));
     	}
     	
+    	if(playerMovement == null) {
+    		playerMovement = new ArrayList<Clip>();
+    		
+    		for (int i = 1; i < 7; i++) {
+    			playerMovement.add(AudioUtil.loadAudio(PLAYER_RES_LOC + "walking/FSHARD" + i));
+			}
+    	}
+    	
     	if(weaponState == null) {
     		gotPistol();
     	}
@@ -327,7 +338,7 @@ public class Player {
     		painMaterials.add(new Texture("hud/HEALTH1"));
     	}
     	
-        if (gunMesh == null) {
+        if (gunMesh == null && hudMesh == null) {
             float sizeY = GUN_SIZE;
             float sizeX = (float) ((double) sizeY / (0.5f * 2.0));
 
@@ -358,8 +369,8 @@ public class Player {
         shells = 0;
 
         if (gunTransform == null && hudTransform == null) {
+        	hudTransform = new Transform(playerCamera.getPos());
             gunTransform = new Transform(playerCamera.getPos());
-            hudTransform = new Transform(playerCamera.getPos());
         }
         
         if(gunRenderer == null && hudRenderer == null) {
@@ -371,9 +382,9 @@ public class Player {
         	sLight = new SpotLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f, 
         	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
     		fireBulletLight = new SpotLight(new Vector3f(0.5f,0.3f,0.1f), 1.6f, 
-            		new Attenuation(1,0,1), getCamera().getPos(), new Vector3f(1,1,1), 0.7f);
+            		new Attenuation(attenuation,0,attenuation), getCamera().getPos(), new Vector3f(1,1,1), 0.7f);
     		fireShellLight = new SpotLight(new Vector3f(0.45f,0.35f,0.1f), 1.6f, 
-            		new Attenuation(1,0,1), getCamera().getPos(), new Vector3f(1,1,1), 0.7f);
+            		new Attenuation(attenuation,0,attenuation), getCamera().getPos(), new Vector3f(1,1,1), 0.7f);
     	}
         this.renderingEngine = renderingEngine;
         gunFireTime = 0;
@@ -404,6 +415,7 @@ public class Player {
         damageRange = 0.1f;
         gunFireAnimationTime = 0.1f;
         moveSpeed = 6f;
+        attenuation = 0;
         isMelee = true;    
         isBulletBased = false;
         isShellBased = false;
@@ -428,6 +440,7 @@ public class Player {
         damageMin = 20f;
         damageRange = 30f;
         moveSpeed = 5f;
+        attenuation = 2.5f;
         isMelee = false;
         isBulletBased = true;
         isShellBased = false;
@@ -456,6 +469,7 @@ public class Player {
         damageMin = 60f;
         damageRange = 60f;
         moveSpeed = 4f;
+        attenuation = 1;
         isMelee = false;
         isBulletBased = false;
         isShellBased = true;
@@ -476,10 +490,11 @@ public class Player {
     	crossHairAnimationMaterial = new Material(crossHairAnimationMaterials.get(2));
         gunNoise = gunsNoiseSounds.get(3);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(3);
-        gunFireAnimationTime = 0.120f;   
+        gunFireAnimationTime = 0.05f;   
         damageMin = 20f;
         damageRange = 60f;
         moveSpeed = 4.5f;
+        attenuation = 1.75f;
         isMelee = false;
         isBulletBased = true;
         isShellBased = false;
@@ -508,6 +523,7 @@ public class Player {
         damageMin = 100f;
         damageRange = 60f;
         moveSpeed = 4f;
+        attenuation = 0.5f;
         isMelee = false;
         isBulletBased = false;
         isShellBased = true;
@@ -528,10 +544,11 @@ public class Player {
     	crossHairAnimationMaterial = new Material(crossHairAnimationMaterials.get(2));
         gunNoise = gunsNoiseSounds.get(3);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(3);
-        gunFireAnimationTime = 0.075f;   
+        gunFireAnimationTime = 0.05f;   
         damageMin = 20f;
         damageRange = 120f;
         moveSpeed = 4.5f;
+        attenuation = 0.25f;
         isMelee = false;
         isBulletBased = true;
         isShellBased = false;
@@ -542,9 +559,8 @@ public class Player {
 
     /**
      * The player's input system.
-     * @param engine to use.
      */
-    public void input(RenderingEngine engine) {
+    public void input() {
     	Vector2f deltaPos = Input.getMousePosition().sub(centerPosition);
     	
         boolean rotY = deltaPos.getX() != 0;
@@ -556,8 +572,8 @@ public class Player {
         	fires = (Input.getMouseDown(0) || Input.getKeyDown(Input.KEY_LCONTROL));
         
     	if(!(health <= 0)) {
-	        if (Input.getKeyDown(Input.KEY_E) || Input.getKeyDown(Input.KEY_SPACE)) {
-	            Auschwitz.getLevel().openDoors(Transform.getCamera().getPos(), true, engine);
+	        if (Input.getKeyDown(Input.KEY_E)) {
+	            Auschwitz.getLevel().openDoors(Transform.getCamera().getPos(), true);
 	        }
 	        
 	        if (Input.getKeyDown(Input.KEY_1)) {
@@ -660,7 +676,13 @@ public class Player {
             }
 	
 	        movementVector = zeroVector;
-	
+	        
+	        if(Input.getKeyDown(Input.KEY_W) || Input.getKey(Input.KEY_UP) ||
+	        		Input.getKeyDown(Input.KEY_S) || Input.getKeyDown(Input.KEY_DOWN)
+	        		|| Input.getKeyDown(Input.KEY_A) || Input.getKeyDown(Input.KEY_D)) {
+	        	AudioUtil.playAudio(playerMovement.get(new Random().nextInt(playerMovement.size())), 0);
+	        }
+	        		
 	        if (Input.getKey(Input.KEY_W) || Input.getKey(Input.KEY_UP)) {
 	            movementVector = movementVector.add(playerCamera.getForward());
 	        }
@@ -679,6 +701,12 @@ public class Player {
             if(Input.getKey(Input.KEY_RIGHT)) {
             	playerCamera.rotateY(deltaPos.getX() + SIDE_SENSITIVITY);
             }
+            if (Input.getKey(Input.KEY_SPACE)) {
+            	if(!isInAir) {
+            		upAmt = 0.8f;
+            		isInAir = true;
+            	}
+	        }
 	
 	        if (mouseLocked) {
 	            if (rotY) {
@@ -706,10 +734,27 @@ public class Player {
      */
     public void update() {
     	int ammo = 0;
+    	float bool = 0;
     	float movAmt = 0;
     	double time = (double) Time.getTime() / Time.SECOND;
-    	if(isAlive) { movAmt = (float) (moveSpeed * Time.getDelta()); dy = GUN_OFFSET; dx = GUN_OFFSET_X;}
-
+    	if(isAlive) { 
+    		upAmt += (-GRAVITY * 2) * Time.getDelta();
+    		movAmt = (float) (moveSpeed * Time.getDelta());
+    		bool = PLAYER_TO_GROUND;
+    		dy = GUN_OFFSET; 
+    		dx = GUN_OFFSET_X;
+    	}else {
+    		upAmt += (-GRAVITY / 4) * Time.getDelta();
+    		bool = 0.15f;
+    	}
+    	
+    	playerCamera.getPos().setY(upAmt);
+        if(playerCamera.getPos().getY()<bool) {
+        	upAmt = 0;
+        	playerCamera.getPos().setY(bool);
+        	isInAir = false;
+        }  
+        
         movementVector.setY(0);
 
         Vector3f oldPos = Transform.getCamera().getPos();
@@ -726,13 +771,13 @@ public class Player {
         }
 
         //Gun movement
-        gunTransform.setScale(1, 1, 0);
+        gunTransform.setScale(1, 1, 1);
         gunTransform.setPosition(playerCamera.getPos().add(playerCamera.getForward().normalized().mul(GUN_TRANSFORM_MUL)));
         gunTransform.setPosition(gunTransform.getPosition().add(playerCamera.getLeft().normalized().mul(dx)));
         gunTransform.getPosition().setY(gunTransform.getPosition().getY() + dy);
         
         //HUD movement
-        hudTransform.setScale(1, 1, 0);
+        hudTransform.setScale(1, 1, 1);
         hudTransform.setPosition(playerCamera.getPos().add(playerCamera.getForward().normalized().mul(GUN_TRANSFORM_MUL-0.002f)));
         hudTransform.setPosition(hudTransform.getPosition().add(playerCamera.getLeft().normalized().mul(GUN_OFFSET_X)));
         hudTransform.getPosition().setY(hudTransform.getPosition().getY() + GUN_OFFSET);
@@ -760,13 +805,12 @@ public class Player {
         healthMaterial = new Material(healthMaterials.get(getHealth()));
         if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
         ammoMaterial = new Material(ammoMaterials.get(ammo));
-        
     }
 
     /**
      * Method that renders the player's mesh.
      */
-    public void render(Shader shader) {	
+    public void render(Shader shader) {
     	double time = (double) Time.getTime() / Time.SECOND;
     	double gunTime = gunFireTime + gunFireAnimationTime;
     	double gunTime2 = gunTime + gunFireAnimationTime;
@@ -774,20 +818,20 @@ public class Player {
     	double gunTime4 = gunTime3 + gunFireAnimationTime;
         
         if((double)time < healthTime + 0.5f)
-        	hudRenderer.render(healthMaterial, hudShader);
+        	hudRenderer.render(healthMaterial, shader);
         else
-        	hudRenderer.render(healthMaterial, hudShader);
+        	hudRenderer.render(healthMaterial, shader);
         
         if((double)time < ammoTime + 0.5f)
-        	hudRenderer.render(ammoMaterial, hudShader);
+        	hudRenderer.render(ammoMaterial, shader);
         else
-        	hudRenderer.render(ammoMaterial, hudShader);
+        	hudRenderer.render(ammoMaterial, shader);
         
         if(isAlive) {
 	        if((double)time < painTime + 0.5f)
-	        	hudRenderer.render(painMaterial, hudShader);
+	        	hudRenderer.render(painMaterial, shader);
         } else {
-        	hudRenderer.render(new Material(new Texture("hud/DEATH")), hudShader);
+        	hudRenderer.render(new Material(new Texture("hud/DEATH")), shader);
         }
         
 		if(isMelee) {
@@ -806,20 +850,20 @@ public class Player {
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
 		        	renderingEngine.addLight(fireBulletLight);
-		        	hudRenderer.render(crossHairAnimationMaterial, hudShader);
+		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial1, shader);
 		        } else if ((double) time < gunTime2) {
-			        hudRenderer.render(crossHairAnimationMaterial, hudShader);
+			        hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
 		        } else {
 		        	renderingEngine.removeLight(fireBulletLight);
-		            hudRenderer.render(crossHairMaterial, hudShader);
+		            hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunMaterial, shader);
 	            	isReloading = false;
 		        }
 			} else {
 				renderingEngine.removeLight(fireBulletLight);
-				hudRenderer.render(crossHairMaterial, hudShader);
+				hudRenderer.render(crossHairMaterial, shader);
 	        	gunRenderer.render(gunMaterial, shader);
             	isReloading = false;
 			}
@@ -831,29 +875,29 @@ public class Player {
 		        if ((double) time < gunTime) {
 		        	isReloading = true;
 		        	renderingEngine.addLight(fireShellLight);
-		        	hudRenderer.render(crossHairAnimationMaterial, hudShader);
+		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial1, shader);
 		        } else if ((double) time < gunTime2) {
-		        	hudRenderer.render(crossHairAnimationMaterial, hudShader);
+		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
 		        	renderingEngine.removeLight(fireShellLight);
 			        AudioUtil.playAudio(gunReload, 0);
 		        } else if ((double) time < gunTime3) {
-		        	hudRenderer.render(crossHairMaterial, hudShader);
+		        	hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial3, shader);
 			        AudioUtil.playAudio(gunClipp, 0);
 		        } else if ((double) time < gunTime4) {
-		        	hudRenderer.render(crossHairMaterial, hudShader);
+		        	hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial4, shader);
 		        } else {
 		        	renderingEngine.removeLight(fireShellLight);
-		        	hudRenderer.render(crossHairMaterial, hudShader);
+		        	hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunMaterial, shader);
 		            isReloading = false;
 		        }
 			} else {
 				renderingEngine.removeLight(fireShellLight);
-				hudRenderer.render(crossHairMaterial, hudShader);
+				hudRenderer.render(crossHairMaterial, shader);
 	        	gunRenderer.render(gunMaterial, shader);
 	            isReloading = false;
 			}

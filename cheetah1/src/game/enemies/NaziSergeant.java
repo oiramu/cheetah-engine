@@ -32,7 +32,6 @@ import engine.core.Vector3f;
 import engine.physics.PhysicsUtil;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -78,7 +77,6 @@ public class NaziSergeant extends GameComponent {
     private Transform transform;
     private Material material;
     private MeshRenderer meshRenderer;
-    private RenderingEngine renderingEngine;
     private Shotgun shotgun;
     private SpotLight light;
 
@@ -94,7 +92,7 @@ public class NaziSergeant extends GameComponent {
      * Constructor of the actual enemy.
      * @param transform the transform of the data.
      */
-    public NaziSergeant(Transform transform, RenderingEngine renderingEngine) {
+    public NaziSergeant(Transform transform) {
         if (rand == null) {
             rand = new Random();
         }
@@ -146,7 +144,6 @@ public class NaziSergeant extends GameComponent {
         	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
         }
         
-        this.renderingEngine = renderingEngine;
         this.transform = transform;
         this.material = new Material(animation.get(0));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
@@ -247,7 +244,7 @@ public class NaziSergeant extends GameComponent {
                     Vector3f movementVector = collisionVector.mul(orientation.normalized());
 
                     if (!movementVector.equals(orientation.normalized())) {
-                        Auschwitz.getLevel().openDoors(transform.getPosition(), false, renderingEngine);
+                        Auschwitz.getLevel().openDoors(transform.getPosition(), false);
                     }
 
                     if (movementVector.length() > 0) {
@@ -341,7 +338,8 @@ public class NaziSergeant extends GameComponent {
         }
 
         if (state == STATE_DEAD) {
-        	shotgun = new Shotgun(getTransform());
+        	if(shotgun == null)
+        		shotgun = new Shotgun(getTransform());
         	shotgun.update();
             dead = true;
             material.setDiffuse(animation.get(11));

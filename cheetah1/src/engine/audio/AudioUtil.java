@@ -40,9 +40,8 @@ public class AudioUtil {
 
     /**
      * Plays an audio clip in a 3D space.
-     * @param clip to play
+     * @param clip to play {@code THE FILE HAD TO BE MONO}
      * @param distance Where to play.
-     * {@code THE FILE HAD TO BE MONO}
      */
     public static void playAudio(Clip clip, float distance) {
         
@@ -56,9 +55,9 @@ public class AudioUtil {
 
         volume.setValue(volumeAmount);
 
-        if (clip.isRunning()) {
-            clip.stop();
-        }
+        //if (clip.isRunning()) {
+        //    clip.stop();
+        //}
 
         clip.setFramePosition(0);
         clip.start();

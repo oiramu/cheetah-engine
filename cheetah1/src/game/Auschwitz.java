@@ -19,6 +19,8 @@ import java.util.ArrayList;
 
 import javax.sound.midi.Sequence;
 
+import static engine.core.CoreEngine.*;
+
 import engine.audio.AudioUtil;
 import engine.core.*;
 import engine.rendering.*;
@@ -49,14 +51,14 @@ public class Auschwitz implements Game {
     /**
      * The constructor method of the compiling game.
      */
-    public void init(RenderingEngine engine) {
+    public void init() {
         for (int i = 0; i < 13; i++)
         	m_playlist.add(AudioUtil.loadMidi("THEME" + i));
 
         m_track = m_startingLevel - 1;
         m_levelNum = m_startingLevel - 1;
         m_isRunning = true;
-        loadLevel(1, engine);
+        loadLevel(1);
     }
     
     /**
@@ -68,8 +70,8 @@ public class Auschwitz implements Game {
     /**
      * Checks all the inputs.
      */
-    public void input(RenderingEngine engine) {
-        m_level.input(engine);
+    public void input() {
+        m_level.input();
 
         /**
         if (Input.getKey(Input.KEY_1)) {
@@ -103,14 +105,14 @@ public class Auschwitz implements Game {
 	/**
      * Reloads the last level played.
      */
-	public static void reloadLevel(RenderingEngine engine) {loadLevel(m_levelNum-m_levelNum, engine);}
+	public static void reloadLevel() {loadLevel(m_levelNum-m_levelNum);}
 
     /**
      * Load the level and also charges the next level when the last end.
      * @param offset count of level offset by offset.
      */
 	@SuppressWarnings({ "static-access", "unused" })
-	public static void loadLevel(int offset, RenderingEngine engine) {
+	public static void loadLevel(int offset) {
         try {
         	int secrets = 0;
             int deadMonsters = 0;
@@ -176,7 +178,7 @@ public class Auschwitz implements Game {
                 chaingunTemp = m_level.getPlayer().getChaingun();
                 weaponStateTemp = m_level.getPlayer().getWeaponState();
                 mouseLocktemp = m_level.getPlayer().mouseLocked;
-                engine.clearLights();
+                m_renderingEngine.clearLights();
             }
 
             if(m_levelNum > 9)
@@ -193,7 +195,7 @@ public class Auschwitz implements Game {
         	Material material2 = new Material(new Texture("mapTexture" + m_currentEpisode));
             m_material = material1;
             
-            m_level = new Level(new Bitmap("level" + m_levelNum).flipX(), m_material, engine);
+            m_level = new Level(new Bitmap("level" + m_levelNum).flipX(), m_material, m_renderingEngine);
 
             if(m_levelNum % 2 == 2) sector = "B."; else sector = "A.";   
             

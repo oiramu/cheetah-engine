@@ -32,7 +32,6 @@ import engine.core.Vector3f;
 import engine.physics.PhysicsUtil;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -79,7 +78,6 @@ public class NaziSoldier extends GameComponent {
     private Transform transform;
     private Material material;
     private MeshRenderer meshRenderer;
-    private RenderingEngine renderingEngine;
     private Bullet bullet;
     private SpotLight light;
 
@@ -96,7 +94,7 @@ public class NaziSoldier extends GameComponent {
      * @param transform the transform of the data.
      * @param renderingEngine of the enemy.
      */
-    public NaziSoldier(Transform transform, RenderingEngine renderingEngine) {
+    public NaziSoldier(Transform transform) {
         if (rand == null) {
             rand = new Random();
         }
@@ -151,7 +149,6 @@ public class NaziSoldier extends GameComponent {
         	light = new SpotLight(new Vector3f(0.5f,0.3f,0.1f), 0.8f, 
         	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
         }   
-        this.renderingEngine = renderingEngine;
         this.transform = transform;
         this.material = new Material(animation.get(0));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
@@ -254,7 +251,7 @@ public class NaziSoldier extends GameComponent {
                     Vector3f movementVector = collisionVector.mul(orientation.normalized());
 
                     if (!movementVector.equals(orientation.normalized())) {
-                        Auschwitz.getLevel().openDoors(transform.getPosition(), false, renderingEngine);
+                        Auschwitz.getLevel().openDoors(transform.getPosition(), false);
                     }
 
                     if (movementVector.length() > 0) {
@@ -355,7 +352,8 @@ public class NaziSoldier extends GameComponent {
         }
         
         if (state == STATE_DEAD) {
-            bullet = new Bullet(getTransform());
+        	if(bullet == null)
+            	bullet = new Bullet(getTransform());
         	bullet.update();
         	material.setDiffuse(animation.get(12));   	
             dead = true;  
@@ -426,6 +424,12 @@ public class NaziSoldier extends GameComponent {
 
         transform.setPosition(prevPosition);
     }
+    
+    /**
+     * Sets the state to start with.
+     * @param state to set.
+     */
+    public void setState(int state) {this.state = state;}
 
     /**
 	 * Gets the enemy's actual transformation.

@@ -25,8 +25,8 @@ import engine.rendering.RenderingEngine;
 */
 public interface Game {
 		
-	public void init(RenderingEngine engine);
-	public void input(RenderingEngine engine);
+	public void init();
+	public void input();
 	public void update(RenderingEngine engine);
 	public void render(RenderingEngine engine);
 

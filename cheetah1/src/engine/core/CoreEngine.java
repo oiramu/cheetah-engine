@@ -26,15 +26,15 @@ import engine.rendering.Window;
  */
 public class CoreEngine {
 	
-	private int 				m_width;
-	private int 				m_height;
-	private double 				m_frameTime;
-	private boolean 			m_fullscreen;
-	private boolean 			m_isRunning;
-	private String 				m_title;
-	private Game 				m_game;
-	private RenderingEngine 	m_renderingEngine;
-	private static CoreEngine 	m_engine;
+	private int 					m_width;
+	private int 					m_height;
+	private double 					m_frameTime;
+	private boolean 				m_fullscreen;
+	private boolean 				m_isRunning;
+	private String 					m_title;
+	private Game 					m_game;
+	public static RenderingEngine 	m_renderingEngine;
+	private static CoreEngine 		m_engine;
 	
 	/**
 	 * Constructor for the engine display.
@@ -106,9 +106,9 @@ public class CoreEngine {
 		int frames = 0;
         long frameCounter = 0;
 
-        this.m_renderingEngine = new RenderingEngine();
+        m_renderingEngine = new RenderingEngine();
         
-        m_game.init(m_renderingEngine);
+        m_game.init();
 
         double lastTime = Time.getTime();
         double unprocessedTime = 0;
@@ -136,7 +136,7 @@ public class CoreEngine {
 
                 Time.setDelta(m_frameTime);
 
-                m_game.input(m_renderingEngine);
+                m_game.input();
                 Input.update();
                 
                 m_game.update(m_renderingEngine);

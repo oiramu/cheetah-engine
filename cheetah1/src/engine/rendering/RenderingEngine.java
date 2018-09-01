@@ -77,8 +77,9 @@ public class RenderingEngine {
      */
     public void render(GameComponent component) {
     	try {
-    		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			m_forwardAmbient.setRenderingEngine(this);
+			//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	        component.render(m_forwardAmbient);
 	        glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE);
@@ -113,7 +114,7 @@ public class RenderingEngine {
     public <E> void updateAndKillToRenderPipeline(ArrayList<E> list) {
     	for (E component : list) {
     		((NaziSoldier) component).update();
-    		((NaziSoldier) component).damage(1000);
+    		((NaziSoldier) component).setState(4);
     	}
     }
     

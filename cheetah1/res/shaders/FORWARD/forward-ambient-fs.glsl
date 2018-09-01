@@ -24,7 +24,7 @@ void main() {
     float visibility = exp(-pow((distance * R_fogDensity), R_fogGradient));
     visibility = clamp(visibility, 0.0, 1.0);
 
-	vec4 textureColor = texture2D(R_diffuse, texCoord0.xy); if(textureColor.a < 1.0) {discard;}
+	vec4 textureColor = texture2D(R_diffuse, texCoord0.xy); if(textureColor.a < 0.5) {discard;}
 	vec3 directionToEye = normalize(R_eyePos - worldPos0);
 	vec2 texCoords = CalcParallaxTexCoords(R_dispMap, tbnMatrix, directionToEye, texCoord0, M_dispMapScale, M_dispMapBias);
 	vec3 normal = normalize(tbnMatrix * (255.0/128.0 * texture2D(R_normalMap, texCoords).xyz - 1));

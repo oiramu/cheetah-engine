@@ -29,7 +29,6 @@ import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
-import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -71,9 +70,8 @@ public class Barrel {
     /**
      * Constructor of the actual object.
      * @param transform the transform of the object in a 3D space.
-     * @param renderingEngine of the barrel.
      */
-	public Barrel(Transform transform, RenderingEngine renderingEngine) {
+	public Barrel(Transform transform) {
     	
     	if (animation == null) {
             animation = new ArrayList<Texture>();

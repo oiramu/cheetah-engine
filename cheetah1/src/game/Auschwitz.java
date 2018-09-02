@@ -111,7 +111,7 @@ public class Auschwitz implements Game {
      * Load the level and also charges the next level when the last end.
      * @param offset count of level offset by offset.
      */
-	@SuppressWarnings({ "static-access", "unused" })
+	@SuppressWarnings("static-access")
 	public static void loadLevel(int offset) {
         try {
         	int secrets = 0;
@@ -189,13 +189,27 @@ public class Auschwitz implements Game {
             	m_currentEpisode = EPISODE_1;
 
             m_levelNum += offset;
-            Material material1 = new Material(new Texture("mapTexture" + m_currentEpisode), 1, 8, 
-    				new Texture("mapTextureNormal" + m_currentEpisode), 
-    				new Texture("mapTextureBump" + m_currentEpisode), 0.0004f, -1.0f);
-        	Material material2 = new Material(new Texture("mapTexture" + m_currentEpisode));
-            m_material = material1;
+            
+            switch("1texDetail") {
+            	case "0texDetail":
+            		m_material = new Material(new Texture("mapTexture" + m_currentEpisode));
+            		break;
+            	case "1texDetail":
+            		m_material = new Material(new Texture("mapTexture" + m_currentEpisode), 1, 8, 
+            				new Texture("mapTextureNormal" + m_currentEpisode), 
+            				new Texture("mapTextureBump" + m_currentEpisode), 0.0004f, -1.0f);
+            		break;
+            }
             
             m_level = new Level(new Bitmap("level" + m_levelNum).flipX(), m_material, m_renderingEngine);
+            
+            switch("1light") {
+        	case "0light":
+        		m_renderingEngine.clearLights();
+        		break;
+        	case "1light":
+        		break;
+            }
 
             if(m_levelNum % 2 == 2) sector = "B."; else sector = "A.";   
             

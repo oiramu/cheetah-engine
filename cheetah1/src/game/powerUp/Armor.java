@@ -55,7 +55,7 @@ public class Armor extends GameComponent {
      */
     public Armor(Transform transform) {
         if (m_mesh == null) {
-            final float sizeY = 0.5f;
+            final float sizeY = 0.4f;
             final float sizeX = (float) ((double) sizeY / (sizeY * 4.0));
 
             float offsetX = 0.0f;

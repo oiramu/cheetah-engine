@@ -123,7 +123,6 @@ public class Texture {
             		break;
             	case "2filter":
             		glGenerateMipmap(GL_TEXTURE_2D);
-                    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0.0f);
         			if(GLContext.getCapabilities().GL_EXT_texture_filter_anisotropic) {

@@ -18,6 +18,7 @@ package game.objects;
 import java.util.ArrayList;
 
 import engine.components.Attenuation;
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.components.PointLight;
 import engine.core.Time;
@@ -37,7 +38,7 @@ import engine.rendering.Vertex;
  * @version 1.0
  * @since 2018
  */
-public class Furnace {
+public class Furnace extends GameComponent {
 	
 	private static final String RES_LOC = "furnace/";
 	private static final int STATE_IDLE = 0;

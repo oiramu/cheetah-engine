@@ -249,7 +249,6 @@ public class Auschwitz implements Game {
             System.out.println("=============================");
 
             if (displayMonsters) {
-            	//engine.clearLights();	//For slower machines
             	System.out.println("Killed " + deadMonsters + "/" + totalMonsters + " baddies: " +
             	((float) deadMonsters / (float) totalMonsters) * 100f + "%");        	
             	System.out.println("Secrets " + secrets + "/" + totalSecrets + " secrets: " +

@@ -102,7 +102,6 @@ public class CoreEngine {
     	
     	m_isRunning = true;
 
-		@SuppressWarnings("unused")
 		int frames = 0;
         long frameCounter = 0;
 
@@ -142,7 +141,7 @@ public class CoreEngine {
                 m_game.update(m_renderingEngine);
 
                 if (frameCounter >= 1.0) {
-                    //System.out.println(frames);
+                    System.out.println(frames);
                     frames = 0;
                     frameCounter = 0;
                 }

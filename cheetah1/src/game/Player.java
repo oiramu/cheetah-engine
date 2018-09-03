@@ -124,6 +124,7 @@ public class Player {
     
     private static float dy = 0;
     private static float dx = 0;
+    private static float toTerrain = 0;
     
     private static Clip gunNoise;
     private static Clip gunEmptyNoise;
@@ -571,7 +572,7 @@ public class Player {
         else
         	fires = (Input.getMouseDown(0) || Input.getKeyDown(Input.KEY_LCONTROL));
         
-    	if(!(health <= 0)) {
+    	if(isAlive) {
 	        if (Input.getKeyDown(Input.KEY_E)) {
 	            Auschwitz.getLevel().openDoors(Transform.getCamera().getPos(), true);
 	        }
@@ -676,11 +677,12 @@ public class Player {
             }
 	
 	        movementVector = zeroVector;
-	        
-	        if(Input.getKeyDown(Input.KEY_W) || Input.getKey(Input.KEY_UP) ||
-	        		Input.getKeyDown(Input.KEY_S) || Input.getKeyDown(Input.KEY_DOWN)
-	        		|| Input.getKeyDown(Input.KEY_A) || Input.getKeyDown(Input.KEY_D)) {
-	        	AudioUtil.playAudio(playerMovement.get(new Random().nextInt(playerMovement.size())), 0);
+	        if(playerCamera.getPos().getY() == toTerrain) {
+		        if(Input.getKeyDown(Input.KEY_W) || Input.getKey(Input.KEY_UP) ||
+		        		Input.getKeyDown(Input.KEY_S) || Input.getKeyDown(Input.KEY_DOWN)
+		        		|| Input.getKeyDown(Input.KEY_A) || Input.getKeyDown(Input.KEY_D)) {
+		        	AudioUtil.playAudio(playerMovement.get(new Random().nextInt(playerMovement.size())), 0);
+		        }
 	        }
 	        		
 	        if (Input.getKey(Input.KEY_W) || Input.getKey(Input.KEY_UP)) {
@@ -734,24 +736,23 @@ public class Player {
      */
     public void update() {
     	int ammo = 0;
-    	float bool = 0;
     	float movAmt = 0;
     	double time = (double) Time.getTime() / Time.SECOND;
     	if(isAlive) { 
     		upAmt += (-GRAVITY * 2) * Time.getDelta();
     		movAmt = (float) (moveSpeed * Time.getDelta());
-    		bool = PLAYER_TO_GROUND;
+    		toTerrain = PLAYER_TO_GROUND;
     		dy = GUN_OFFSET; 
     		dx = GUN_OFFSET_X;
     	}else {
     		upAmt += (-GRAVITY / 4) * Time.getDelta();
-    		bool = 0.15f;
+    		toTerrain = 0.15f;
     	}
     	
     	playerCamera.getPos().setY(upAmt);
-        if(playerCamera.getPos().getY()<bool) {
+        if(playerCamera.getPos().getY() < toTerrain) {
         	upAmt = 0;
-        	playerCamera.getPos().setY(bool);
+        	playerCamera.getPos().setY(toTerrain);
         	isInAir = false;
         }  
         

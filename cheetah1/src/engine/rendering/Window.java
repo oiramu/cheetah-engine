@@ -15,6 +15,9 @@
  */
 package engine.rendering;
 
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.*;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
@@ -37,11 +40,11 @@ import engine.menu.Rendering2DEngine;
 import engine.menu.system.SGameTime;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2018
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2018
+ */
 public class Window {
 	
 	private static Menu 			m_menu;
@@ -161,6 +164,14 @@ public class Window {
         Keyboard.destroy();
         Mouse.destroy();
         System.exit(0);
+    }
+
+    /**
+     * Binds as a render target all of the screen.
+     */
+    public static void bindAsRenderTarget() {
+    	glBindFramebuffer(GL_DRAW_BUFFER, 0);
+    	glViewport(0, 0, getWidth(), getHeight());
     }
 
     /**

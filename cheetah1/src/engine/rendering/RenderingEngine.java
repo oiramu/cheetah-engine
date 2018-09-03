@@ -52,6 +52,7 @@ public class RenderingEngine {
 	public RenderingEngine() {
         m_lights = new ArrayList<BaseLight>();
         m_forwardAmbient = new Shader("forward-ambient");
+        m_forwardAmbient.setRenderingEngine(this);
         
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -59,13 +60,12 @@ public class RenderingEngine {
         glCullFace(GL_BACK);
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_DEPTH_CLAMP);
 
         glEnable(GL_TEXTURE_2D);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        
-        glEnable(GL_DEPTH_CLAMP);
         
         Transform.setProjection(70, Window.getWidth(), Window.getHeight(), 0.01f, 1000f);
 		
@@ -77,18 +77,22 @@ public class RenderingEngine {
      */
     public void render(GameComponent component) {
     	try {
+    		Window.bindAsRenderTarget();
+    		
     		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			m_forwardAmbient.setRenderingEngine(this);
 			//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	        component.render(m_forwardAmbient);
+	        
 	        glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE);
 			glDepthMask(false);
 			glDepthFunc(GL_EQUAL);
+			
 			for(int i = 0; i < m_lights.size(); i++) {
 				m_activeLight = m_lights.get(i);
 				component.render(m_activeLight.getShader(this));
 			}
+			
 			glDepthFunc(GL_LESS);
 			glDepthMask(true);
 			glDisable(GL_BLEND);

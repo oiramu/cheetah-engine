@@ -229,8 +229,8 @@ public class Level extends GameComponent {
         this.transform = new Transform();
         this.collisionPosStart = new ArrayList<Vector2f>();
         this.collisionPosEnd = new ArrayList<Vector2f>();
-        generateLevel(engine);
         
+        generateLevel(engine);
         Transform.setCamera(player.getCamera());
     }
 

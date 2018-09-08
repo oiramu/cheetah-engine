@@ -77,7 +77,6 @@ public class SecretWall extends GameComponent {
         this.openPos = openPosition;
         this.closedPos = transform.getPosition();
         this.material = material;
-        this.meshRenderer = new MeshRenderer(mesh, this.transform, this.material);
 
         opening = false;
         open = false;

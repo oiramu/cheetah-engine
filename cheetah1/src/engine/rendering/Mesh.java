@@ -70,9 +70,18 @@ public class Mesh {
      * @param calcNormals if the mesh uses normals
      * or not.
      */
-    public Mesh(Vertex[] vertices, int[] indices, boolean calcNormals) {
+    public Mesh(Vertex[] vertices, int[] indices, boolean calcNormals) {this(vertices, indices, calcNormals, false);}
+    
+    /**
+     * Constructor of the game obect's mesh.
+     * @param vertices of the mesh.
+     * @param indices of the mesh.
+     * @param calcNormals if the mesh uses normals
+     * or not.
+     */
+    public Mesh(Vertex[] vertices, int[] indices, boolean calcNormals, boolean calcTangents) {
     	m_fileName = "";
-        addVertices(vertices, indices, calcNormals);
+        addVertices(vertices, indices, calcNormals, calcTangents);
     }
 
 	/**
@@ -82,9 +91,11 @@ public class Mesh {
 	 * @param indices Vertices indices.
 	 * @param calcNormals If the mesh calculates normals or not
 	 */
-    private void addVertices(Vertex[] vertices, int[] indices, boolean calcNormals) {
+    private void addVertices(Vertex[] vertices, int[] indices, boolean calcNormals, boolean calcTangent) {
         if(calcNormals)
         	calcNormals(vertices, indices);
+        if(calcTangent)
+        	calcTangents(vertices, indices);
         m_resource = new MeshResource(indices.length);
 
         glBindBuffer(GL_ARRAY_BUFFER, m_resource.getVbo());
@@ -154,6 +165,44 @@ public class Mesh {
     }
     
     /**
+	 * Calculates the tangent space of the mesh.
+	 * @param vertices of the object.
+     * @param indices of vertices.
+	 */
+	public void calcTangents(Vertex[] vertices, int[] indices) {
+		
+		for(int i = 0; i < indices.length; i+=3) {
+			int i0 = indices[i];
+			int i1 = indices[i+1];
+			int i2 = indices[i+2];
+
+			Vector3f edge1 = vertices[i1].getPos().sub(vertices[i0].getPos());
+			Vector3f edge2 = vertices[i2].getPos().sub(vertices[i0].getPos());
+
+			float deltaU1 = vertices[i1].getTexCoord().getX() - vertices[i0].getTexCoord().getX();
+			float deltaV1 = vertices[i1].getTexCoord().getY() - vertices[i0].getTexCoord().getY();
+			float deltaU2 = vertices[i2].getTexCoord().getX() - vertices[i0].getTexCoord().getX();
+			float deltaV2 = vertices[i2].getTexCoord().getY() - vertices[i0].getTexCoord().getY();
+
+			float dividend = (deltaU1*deltaV2 - deltaU2*deltaV1);
+			//TODO: The first 0.0f may need to be changed to 1.0f here.
+			float f = dividend == 0 ? 0.0f : 1.0f/dividend;
+
+			Vector3f tangent = new Vector3f(0,0,0);
+			tangent.setX(f * (deltaV2 * edge1.getX() - deltaV1 * edge2.getX()));
+			tangent.setY(f * (deltaV2 * edge1.getY() - deltaV1 * edge2.getY()));
+			tangent.setZ(f * (deltaV2 * edge1.getZ() - deltaV1 * edge2.getZ()));
+
+			vertices[i0].setTangent(vertices[i0].getTangent().add(tangent));
+			vertices[i1].setTangent(vertices[i1].getTangent().add(tangent));
+			vertices[i2].setTangent(vertices[i2].getTangent().add(tangent));
+		}
+
+		for(int i = 0; i < vertices.length; i++)
+			vertices[i].setTangent(vertices[i].getTangent().normalized());
+	}
+    
+    /**
 	 * Loads a OBJ 3D model file named like that.
 	 * @param fileName Name of the 3D model file.
 	 * @return 3D model.
@@ -187,7 +236,7 @@ public class Mesh {
 		Integer[] indexData = new Integer[model.GetIndices().size()];
 		model.GetIndices().toArray(indexData);
 
-		addVertices(vertexData, Util.toIntArray(indexData), false);
+		addVertices(vertexData, Util.toIntArray(indexData), false, false);
 		
 		return this;
     }

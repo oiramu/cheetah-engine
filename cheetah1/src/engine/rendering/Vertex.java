@@ -26,7 +26,7 @@ import engine.core.Vector3f;
  */
 public class Vertex {
 
-    public static final int SIZE = 8;//11
+    public static final int SIZE = 11;
 
     private Vector3f m_pos;
     private Vector2f m_texCoord;
@@ -83,13 +83,13 @@ public class Vertex {
 	 * Returns the tangent space of the vertex.
 	 * @return Tangent space.
 	 */
-	public Vector3f GetTangent() { return m_tangent; }
+	public Vector3f getTangent() { return m_tangent; }
 
 	/**
 	 * Sets a new tangent space for the vertex.
 	 * @param tangent to set.
 	 */
-	public void SetTangent(Vector3f tangent) { this.m_tangent = tangent; }
+	public void setTangent(Vector3f tangent) { this.m_tangent = tangent; }
 
     /**
      * Returns the vertex position.

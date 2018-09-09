@@ -27,9 +27,9 @@ import engine.rendering.Shader;
  */
 public abstract class GameComponent {
 	
-	private Transform transform;
+	private Transform m_transform;
 	public void input(RenderingEngine engine) {}
 	public void render(Shader shader) {}
 	public void update() {}
-	public Transform getTransform() {return transform;}
+	public Transform getTransform() {return m_transform;}
 }

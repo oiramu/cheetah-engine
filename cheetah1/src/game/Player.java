@@ -766,15 +766,17 @@ public class Player {
         movementVector = movementVector.normalized().mul(collisionVector);
 
         if (movementVector.length() > 0) {
+        	float bobOscillate = (float) Math.sin(time * moveSpeed * (2 * Math.PI));
             playerCamera.move(movementVector, movAmt);
-            dy -= (Math.sin(time*3)*(movAmt/10));
-            dx -= (Math.cos(time*3)*(movAmt/10));
+            dy += bobOscillate * movAmt/20;
+            dx += (bobOscillate * movAmt/20) * 5;
         }
 
         //Gun movement
         gunTransform.setScale(1, 1, 1);
         gunTransform.setPosition(playerCamera.getPos().add(playerCamera.getForward().normalized().mul(GUN_TRANSFORM_MUL)));
-        gunTransform.setPosition(gunTransform.getPosition().add(playerCamera.getLeft().normalized().mul(dx)));
+        gunTransform.setPosition(gunTransform.getPosition().add(playerCamera.getLeft().normalized().mul(GUN_OFFSET_X)));
+        gunTransform.setRotation(gunTransform.getPosition().add(playerCamera.getLeft().normalized().mul(dx)));
         gunTransform.getPosition().setY(gunTransform.getPosition().getY() + dy);
         
         //HUD movement

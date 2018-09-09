@@ -39,7 +39,7 @@ import game.Level;
 public class Bullet extends GameComponent {
 
     public final float PICKUP_THRESHHOLD = 0.75f;
-    public final int AMOUNT = 7;
+    public final int AMOUNT = 9;
     public final String RES_LOC = "bullet/MEDIA";
     public final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
 

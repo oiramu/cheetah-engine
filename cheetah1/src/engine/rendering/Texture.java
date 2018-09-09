@@ -19,16 +19,17 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL14.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL32.glFramebufferTexture;
+import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.*;
+import static org.lwjgl.opengl.GLContext.*;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
-
-import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
-import org.lwjgl.opengl.GLContext;
 
 import engine.core.Util;
 import engine.rendering.resourceManagement.TextureResource;
@@ -44,6 +45,11 @@ public class Texture {
 	private static HashMap<String, TextureResource> m_loadedTextures = new HashMap<String, TextureResource>();
 	private String 									m_fileName;
     private TextureResource 						m_resource;
+    private int										m_height;
+    private int										m_width;
+    private int										m_FBOId;
+    private int 									m_FBO;
+    private static int 								m_lastWriteBind = 0;
     
     /**
      * Texture's constructor with a file.
@@ -60,6 +66,36 @@ public class Texture {
     		m_loadedTextures.put(fileName, m_resource);
     	}
     }
+    
+    /**
+     * Texture's constructor for a raw or FBO texture.
+     * @param width of the texture.
+     * @param height of the texture.
+     * @param data of the texture.
+     * @param filter of the texture.
+     * @param wrapMode if it should repeat or not.
+     */
+    public Texture(int width, int height, FloatBuffer data, int filter, int wrapMode) {
+    	this.m_fileName = "";
+		int textureID = glGenTextures(); // Generate texture ID
+		glBindTexture(GL_TEXTURE_2D, textureID); // Bind texture ID
+		
+		// Setup wrap mode (GL_CLAMP | GL_REPEAT)
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode);
+
+		// Setup texture scaling filtering (GL_LINEAR | GL_NEAREST)
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+
+		// Send texture to graphics card
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, data);
+
+		this.m_FBOId = textureID;
+		this.m_FBO = 0;
+		this.m_width = width;
+		this.m_height = height;
+	}
     
     /**
      * Cleans everything in the GPU and RAM.
@@ -125,10 +161,10 @@ public class Texture {
             		glGenerateMipmap(GL_TEXTURE_2D);
                     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0.0f);
-        			if(GLContext.getCapabilities().GL_EXT_texture_filter_anisotropic) {
+        			if(getCapabilities().GL_EXT_texture_filter_anisotropic) {
         				float ammount = Math.min(4,
-        						glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
-        				glTexParameterf(GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT,
+        						glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
+        				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
         						ammount);
         			}
             		break;
@@ -143,6 +179,32 @@ public class Texture {
         return null;
     }
 	
+	/**
+	 * Generates a render target in the FBO.
+	 * @param attachment of the FBO texture.
+	 * @param bind if it should.
+	 */
+	public void initRenderTarget(int attachment, boolean bind) {
+		m_FBO = glGenFramebuffers();
+		glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
+		glFramebufferTexture(GL_FRAMEBUFFER, attachment, m_FBOId, 0);
+		
+		if(attachment == GL_DEPTH_ATTACHMENT)
+			glDrawBuffer(GL_NONE);
+		if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+			System.err.println("Shadow framebuffer creation has failed");
+			new Exception().printStackTrace();
+			System.exit(1);
+		}
+		
+		if(bind) {
+			m_lastWriteBind = m_FBO;
+			glViewport(0,0,m_width,m_height);
+		}
+		else
+			glBindFramebuffer(GL_FRAMEBUFFER, m_lastWriteBind);
+	}
+	
     /**
      * Binds the texture for openGL.
      */
@@ -156,5 +218,24 @@ public class Texture {
      * @return Index.
      */
     public int getID() {return m_resource.getId();}
+    
+    /**
+	 * Binds a render target in the FBO.
+	 */
+    public void bindAsRenderTarget() {
+		if(m_lastWriteBind != m_FBO) {
+			glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
+			m_lastWriteBind = m_FBO;
+			glViewport(0,0,m_width,m_height);
+		}
+	}
+	
+    /**
+	 * Stop binding of the render target in the FBO.
+	 */
+	public static void unbindRenderTarget() {
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0,0,Window.getWidth(),Window.getHeight());
+	}
     
 }

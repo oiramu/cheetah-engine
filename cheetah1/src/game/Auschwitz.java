@@ -197,13 +197,13 @@ public class Auschwitz implements Game {
             	case "1texDetail":
             		m_material = new Material(new Texture("mapTexture" + m_currentEpisode), 1, 8, 
             				new Texture("mapTextureNormal" + m_currentEpisode), 
-            				new Texture("mapTextureBump" + m_currentEpisode), 0.0004f, -1.0f);
+            				new Texture("mapTextureBump" + m_currentEpisode), 0.0004f, -0.75f);
             		break;
             }
             
             m_level = new Level(new Bitmap("level" + m_levelNum).flipX(), m_material, m_renderingEngine);
             
-            switch("1light") {
+            switch("0light") {
 	        	case "0light":
 	        		m_renderingEngine.clearLights();
 	        		break;

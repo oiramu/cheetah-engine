@@ -90,7 +90,7 @@ public class DeadJew extends GameComponent {
         }
 
         if (material == null) {
-			material = new Material(animation.get(1), new Vector3f(1,1,1));
+			material = new Material(animation.get(1));
         }
         this.state = STATE_1;
         this.transform = transform;

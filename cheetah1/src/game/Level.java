@@ -862,6 +862,92 @@ public class Level extends GameComponent {
 
         return nearestIntersect;
     }
+    
+    /**
+     * Adds a face for the level's mesh.
+     * @param indices of the mesh.
+     * @param startLocation of the mesh.
+     * @param direction of face.
+     */
+    private void addFace(ArrayList<Integer> indices, int startLocation, boolean direction) {
+		if(direction) {
+			indices.add(startLocation + 2);
+			indices.add(startLocation + 1);
+			indices.add(startLocation + 0);
+			indices.add(startLocation + 3);
+			indices.add(startLocation + 2);
+			indices.add(startLocation + 0);
+		} else {
+			indices.add(startLocation + 0);
+			indices.add(startLocation + 1);
+			indices.add(startLocation + 2);
+			indices.add(startLocation + 0);
+			indices.add(startLocation + 2);
+			indices.add(startLocation + 3);
+		}
+	}
+    
+    /**
+     * Calculates the texture's coordinates of
+     * the level's mesh.
+     * @param value of the coordinates.
+     * @return Texture's coordinates.
+     */
+    private float[] calcTextCoords(int value) {
+    	int texX = value / 16;
+        int texY = texX % 4;
+        texX /= 4;
+        
+        float[] result = new float[4];
+
+        result[0] = 1f - texX / NUM_TEX_X;
+        result[1] = result[0] - 1 / NUM_TEX_X;
+        result[2] = 1f - texY / NUM_TEX_Y;
+        result[3] = result[2] - 1 / NUM_TEX_Y;
+        
+    	return result;
+    }
+    
+    /**
+     * Adds a vertex for the level's mesh.
+     * @param vertices of the mesh
+     * @param i pixel in bitmap.
+     * @param j pixel in bitmap.
+     * @param offset of height.
+     * @param x position.
+     * @param y position.
+     * @param z position.
+     * @param texCoords of the mesh.
+     */
+    private void addVertices(ArrayList<Vertex> vertices, int i, int j, float offset, boolean x, boolean y, boolean z, float[] texCoords) {
+		if(x && z)
+		{
+			vertices.add(new Vertex(new Vector3f(i * SPOT_WIDTH, offset * LEVEL_HEIGHT, j * SPOT_LENGTH), new Vector2f(texCoords[0],texCoords[2])));
+			vertices.add(new Vertex(new Vector3f((i + 1) * SPOT_WIDTH, offset * LEVEL_HEIGHT, j * SPOT_LENGTH), new Vector2f(texCoords[1],texCoords[2])));
+			vertices.add(new Vertex(new Vector3f((i + 1) * SPOT_WIDTH, offset * LEVEL_HEIGHT, (j + 1) * SPOT_LENGTH), new Vector2f(texCoords[1],texCoords[3])));
+			vertices.add(new Vertex(new Vector3f(i * SPOT_WIDTH, offset * LEVEL_HEIGHT, (j + 1) * SPOT_LENGTH), new Vector2f(texCoords[0],texCoords[3])));
+		}
+		else if(x && y)
+		{
+			vertices.add(new Vertex(new Vector3f(i * SPOT_WIDTH, j * LEVEL_HEIGHT, offset * SPOT_LENGTH), new Vector2f(texCoords[0],texCoords[2])));
+			vertices.add(new Vertex(new Vector3f((i + 1) * SPOT_WIDTH, j * LEVEL_HEIGHT, offset * SPOT_LENGTH), new Vector2f(texCoords[1],texCoords[2])));
+			vertices.add(new Vertex(new Vector3f((i + 1) * SPOT_WIDTH, (j + 1) * LEVEL_HEIGHT, offset * SPOT_LENGTH), new Vector2f(texCoords[1],texCoords[3])));
+			vertices.add(new Vertex(new Vector3f(i * SPOT_WIDTH, (j + 1) * LEVEL_HEIGHT, offset * SPOT_LENGTH), new Vector2f(texCoords[0],texCoords[3])));
+		}
+		else if(y && z)
+		{
+			vertices.add(new Vertex(new Vector3f(offset * SPOT_WIDTH, i * LEVEL_HEIGHT, j * SPOT_LENGTH), new Vector2f(texCoords[0],texCoords[2])));
+			vertices.add(new Vertex(new Vector3f(offset * SPOT_WIDTH, i * LEVEL_HEIGHT, (j + 1) * SPOT_LENGTH), new Vector2f(texCoords[1],texCoords[2])));
+			vertices.add(new Vertex(new Vector3f(offset * SPOT_WIDTH, (i + 1) * LEVEL_HEIGHT, (j + 1) * SPOT_LENGTH), new Vector2f(texCoords[1],texCoords[3])));
+			vertices.add(new Vertex(new Vector3f(offset * SPOT_WIDTH, (i + 1) * LEVEL_HEIGHT, j * SPOT_LENGTH), new Vector2f(texCoords[0],texCoords[3])));
+		}
+		else
+		{
+			System.err.println("Invalid plane used in level generator");
+			new Exception().printStackTrace();
+			System.exit(1);
+		}
+	}
 
     /**
      * Method that generates the level for the game.
@@ -873,8 +959,8 @@ public class Level extends GameComponent {
 
         for (int i = 1; i < level.getWidth() - 1; i++) {
             for (int j = 1; j < level.getHeight() - 1; j++) {
-                if ((level.getPixel(i, j) & 0xFFFFFF) != 0) // If it isn't a black (wall) pixel
-                {
+                if ((level.getPixel(i, j) & 0xFFFFFF) == 0) // If it isn't a black (wall) pixel
+                	continue;
                 	//LEVEL_HEIGHT = level.getPixel(i, j) & 0x0000FF;
                     if ((level.getPixel(i, j) & 0x0000FF) == 16) {
                         Transform doorTransform = new Transform();
@@ -979,122 +1065,49 @@ public class Level extends GameComponent {
                         exitPoints.add(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0f, (j + 0.5f) * SPOT_LENGTH));
                         exitOffsets.add(offset);
                     }
-
-                    int texX = ((level.getPixel(i, j) & 0x00FF00) >> 8) / 16;
-                    int texY = texX % 4;
-                    texX /= 4;
-
-                    float XHigher = 1f - texX / NUM_TEX_X;
-                    float XLower = XHigher - 1 / NUM_TEX_X;
-                    float YHigher = 1f - texY / NUM_TEX_Y;
-                    float YLower = YHigher - 1 / NUM_TEX_Y;
+                    
+                    float[] texCoords = calcTextCoords((level.getPixel(i, j) & 0x00FF00) >> 8);
                     
                     //Generate Floor
-                    indices.add(vertices.size() + 2);
-                    indices.add(vertices.size() + 1);
-                    indices.add(vertices.size() + 0);
-                    indices.add(vertices.size() + 3);
-                    indices.add(vertices.size() + 2);
-                    indices.add(vertices.size() + 0);
-
-                    vertices.add(new Vertex(new Vector3f(i * SPOT_WIDTH, 0, j * SPOT_LENGTH), new Vector2f(XLower, YLower)));
-                    vertices.add(new Vertex(new Vector3f((i + 1) * SPOT_WIDTH, 0, j * SPOT_LENGTH), new Vector2f(XHigher, YLower)));
-                    vertices.add(new Vertex(new Vector3f((i + 1) * SPOT_WIDTH, 0, (j + 1) * SPOT_LENGTH), new Vector2f(XHigher, YHigher)));
-                    vertices.add(new Vertex(new Vector3f(i * SPOT_WIDTH, 0, (j + 1) * SPOT_LENGTH), new Vector2f(XLower, YHigher)));
+    				addFace(indices, vertices.size(), true);
+    				addVertices(vertices, i, j, 0, true, false, true, texCoords);
+    				
+    				//Generate Ceiling
+    				addFace(indices, vertices.size(), false);
+    				addVertices(vertices, i, j, 1, true, false, true, texCoords);
                     
-                    //Generate Ceiling
-                    indices.add(vertices.size() + 0);
-                    indices.add(vertices.size() + 1);
-                    indices.add(vertices.size() + 2);
-                    indices.add(vertices.size() + 0);
-                    indices.add(vertices.size() + 2);
-                    indices.add(vertices.size() + 3);
-
-                    vertices.add(new Vertex(new Vector3f(i * SPOT_WIDTH, LEVEL_HEIGHT, j * SPOT_LENGTH), new Vector2f(XLower, YLower)));
-                    vertices.add(new Vertex(new Vector3f((i + 1) * SPOT_WIDTH, LEVEL_HEIGHT, j * SPOT_LENGTH), new Vector2f(XHigher, YLower)));
-                    vertices.add(new Vertex(new Vector3f((i + 1) * SPOT_WIDTH, LEVEL_HEIGHT, (j + 1) * SPOT_LENGTH), new Vector2f(XHigher, YHigher)));
-                    vertices.add(new Vertex(new Vector3f(i * SPOT_WIDTH, LEVEL_HEIGHT, (j + 1) * SPOT_LENGTH), new Vector2f(XLower, YHigher)));
+                    texCoords = calcTextCoords((level.getPixel(i, j) & 0xFF0000) >> 16);
                     
-                    texX = ((level.getPixel(i, j) & 0xFF0000) >> 16) / 16;
-                    texY = texX % 4;
-                    texX /= 4;
-
-                    XHigher = 1f - texX / NUM_TEX_X;
-                    XLower = XHigher - 1 / NUM_TEX_X;
-                    YHigher = 1f - texY / NUM_TEX_Y;
-                    YLower = YHigher - 1 / NUM_TEX_Y;
-                    
-                    SecretWall.xHigher = YHigher;
-                    SecretWall.xLower = XLower;
-                    SecretWall.yHigher = YHigher;
-                    SecretWall.yLower = YLower;
+                    SecretWall.xHigher = texCoords[0];
+                    SecretWall.xLower = texCoords[1];
+                    SecretWall.yHigher = texCoords[2];
+                    SecretWall.yLower = texCoords[3];
 
                     //Generate Walls
                     if ((level.getPixel(i, j - 1) & 0xFFFFFF) == 0) {
                         collisionPosStart.add(new Vector2f(i * SPOT_WIDTH, j * SPOT_LENGTH));
                         collisionPosEnd.add(new Vector2f((i + 1) * SPOT_WIDTH, j * SPOT_LENGTH));
-
-                        indices.add(vertices.size() + 0);
-                        indices.add(vertices.size() + 1);
-                        indices.add(vertices.size() + 2);
-                        indices.add(vertices.size() + 0);
-                        indices.add(vertices.size() + 2);
-                        indices.add(vertices.size() + 3);
-
-                        vertices.add(new Vertex(new Vector3f(i * SPOT_WIDTH, 0, j * SPOT_LENGTH), new Vector2f(XHigher, YHigher)));
-                        vertices.add(new Vertex(new Vector3f((i + 1) * SPOT_WIDTH, 0, j * SPOT_LENGTH), new Vector2f(XLower, YHigher)));
-                        vertices.add(new Vertex(new Vector3f((i + 1) * SPOT_WIDTH, LEVEL_HEIGHT, j * SPOT_LENGTH), new Vector2f(XLower, YLower)));
-                        vertices.add(new Vertex(new Vector3f(i * SPOT_WIDTH, LEVEL_HEIGHT, j * SPOT_LENGTH), new Vector2f(XHigher, YLower)));
+                        addFace(indices,vertices.size(),false);
+                        addVertices(vertices, i, 0, j, true, true, false, texCoords);
                     }
                     if ((level.getPixel(i, j + 1) & 0xFFFFFF) == 0) {
                         collisionPosStart.add(new Vector2f(i * SPOT_WIDTH, (j + 1) * SPOT_LENGTH));
                         collisionPosEnd.add(new Vector2f((i + 1) * SPOT_WIDTH, (j + 1) * SPOT_LENGTH));
-
-                        indices.add(vertices.size() + 2);
-                        indices.add(vertices.size() + 1);
-                        indices.add(vertices.size() + 0);
-                        indices.add(vertices.size() + 3);
-                        indices.add(vertices.size() + 2);
-                        indices.add(vertices.size() + 0);
-
-                        vertices.add(new Vertex(new Vector3f(i * SPOT_WIDTH, 0, (j + 1) * SPOT_LENGTH), new Vector2f(XHigher, YHigher)));
-                        vertices.add(new Vertex(new Vector3f((i + 1) * SPOT_WIDTH, 0, (j + 1) * SPOT_LENGTH), new Vector2f(XLower, YHigher)));
-                        vertices.add(new Vertex(new Vector3f((i + 1) * SPOT_WIDTH, LEVEL_HEIGHT, (j + 1) * SPOT_LENGTH), new Vector2f(XLower, YLower)));
-                        vertices.add(new Vertex(new Vector3f(i * SPOT_WIDTH, LEVEL_HEIGHT, (j + 1) * SPOT_LENGTH), new Vector2f(XHigher, YLower)));
+                        addFace(indices,vertices.size(),true);
+                        addVertices(vertices, i, 0, (j + 1), true, true, false, texCoords);
                     }
                     if ((level.getPixel(i - 1, j) & 0xFFFFFF) == 0) {
                         collisionPosStart.add(new Vector2f(i * SPOT_WIDTH, j * SPOT_LENGTH));
                         collisionPosEnd.add(new Vector2f(i * SPOT_WIDTH, (j + 1) * SPOT_LENGTH));
-
-                        indices.add(vertices.size() + 2);
-                        indices.add(vertices.size() + 1);
-                        indices.add(vertices.size() + 0);
-                        indices.add(vertices.size() + 3);
-                        indices.add(vertices.size() + 2);
-                        indices.add(vertices.size() + 0);
-
-                        vertices.add(new Vertex(new Vector3f(i * SPOT_WIDTH, 0, j * SPOT_LENGTH), new Vector2f(XHigher, YHigher)));
-                        vertices.add(new Vertex(new Vector3f(i * SPOT_WIDTH, 0, (j + 1) * SPOT_LENGTH), new Vector2f(XLower, YHigher)));
-                        vertices.add(new Vertex(new Vector3f(i * SPOT_WIDTH, LEVEL_HEIGHT, (j + 1) * SPOT_LENGTH), new Vector2f(XLower, YLower)));
-                        vertices.add(new Vertex(new Vector3f(i * SPOT_WIDTH, LEVEL_HEIGHT, j * SPOT_LENGTH), new Vector2f(XHigher, YLower)));
+                        addFace(indices,vertices.size(),true);
+                        addVertices(vertices, 0, j, i, false, true, true, texCoords);
                     }
                     if ((level.getPixel(i + 1, j) & 0xFFFFFF) == 0) {
                         collisionPosStart.add(new Vector2f((i + 1) * SPOT_WIDTH, j * SPOT_LENGTH));
                         collisionPosEnd.add(new Vector2f((i + 1) * SPOT_WIDTH, (j + 1) * SPOT_LENGTH));
-
-                        indices.add(vertices.size() + 0);
-                        indices.add(vertices.size() + 1);
-                        indices.add(vertices.size() + 2);
-                        indices.add(vertices.size() + 0);
-                        indices.add(vertices.size() + 2);
-                        indices.add(vertices.size() + 3);
-
-                        vertices.add(new Vertex(new Vector3f((i + 1) * SPOT_WIDTH, 0, j * SPOT_LENGTH), new Vector2f(XHigher, YHigher)));
-                        vertices.add(new Vertex(new Vector3f((i + 1) * SPOT_WIDTH, 0, (j + 1) * SPOT_LENGTH), new Vector2f(XLower, YHigher)));
-                        vertices.add(new Vertex(new Vector3f((i + 1) * SPOT_WIDTH, LEVEL_HEIGHT, (j + 1) * SPOT_LENGTH), new Vector2f(XLower, YLower)));
-                        vertices.add(new Vertex(new Vector3f((i + 1) * SPOT_WIDTH, LEVEL_HEIGHT, j * SPOT_LENGTH), new Vector2f(XHigher, YLower)));
+                        addFace(indices,vertices.size(),false);
+                        addVertices(vertices, 0, j, (i + 1), false, true, true, texCoords);
                     }
-                }
             }
         }
         Vertex[] vertArray = new Vertex[vertices.size()];
@@ -1106,7 +1119,7 @@ public class Level extends GameComponent {
         engine.setFogDensity(0.07f);
         engine.setFogGradient(1.5f);
         engine.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
-        engine.m_ambientLight = new Vector3f(0.75f,0.75f,0.75f);
+        engine.setAmbientLight(new Vector3f(0.75f,0.75f,0.75f));
         engine.addLight(new DirectionalLight(new Vector3f(0.75f,0.75f,0.75f), 
         		1f, new Vector3f(level.getWidth()/2,10,level.getHeight()/2)));
     }

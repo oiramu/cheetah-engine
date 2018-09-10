@@ -98,7 +98,6 @@ public class Shader {
      * @param transform of the object.
      * @param material Material of the object.
      */
-    @SuppressWarnings("static-access")
 	public void updateUniforms(Transform transform, Material material) {
     	Matrix4f worldMatrix = transform.getTransformation();
 		Matrix4f MVPMatrix = transform.getPerspectiveTransformation();
@@ -106,7 +105,11 @@ public class Shader {
     		String uniformName = m_resource.getUniformNames().get(i);
     		String uniformType = m_resource.getUniformTypes().get(i);
     		
-    		if(uniformName.startsWith("T_")) {
+    		if(uniformType.equals("sampler2D")) {
+    			int samplerSlot = m_renderingEngine.getSamplerSlot(uniformName);
+				material.getTexture(uniformName).bind(samplerSlot);
+				setUniformi(uniformName, samplerSlot);
+			} else if(uniformName.startsWith("T_")) {
     			if(uniformName.equals("T_MVP")) 
     				setUniform(uniformName, MVPMatrix);
     			else if(uniformName.equals("T_model"))
@@ -114,52 +117,32 @@ public class Shader {
     			else
     				throw new IllegalArgumentException(uniformName + " is not a valid component of Transform.");
     		} else if(uniformName.startsWith("R_")) {
-    			if(uniformType.equals("sampler2D")) {
-    				if(uniformName.equals("R_diffuse")) {
-	    				material.getDiffuse().bind(0);
-	    				setUniformi(uniformName, 0);
-    				}else if(uniformName.equals("R_normalMap")) {
-	    				material.getNormalMap().bind(1);
-	    				setUniformi(uniformName, 1);
-    				}else if(uniformName.equals("R_dispMap")) {
-	    				material.getDispMap().bind(2);
-	    				setUniformi(uniformName, 2);
-    				}
-    			}else if(uniformType.equals("vec3")) {
-	    			if(uniformName.equals("R_eyePos")) 
-	    				setUniform(uniformName, getRenderingEngine().getMainCamera().getPos());
-	    			else if(uniformName.equals("R_ambient"))
-	    				setUniform(uniformName, getRenderingEngine().getAmbientLight());
-	    			else if(uniformName.equals("R_fogColor"))
-	    				setUniform(uniformName, getRenderingEngine().getFogColor());
-    			}else if(uniformType.equals("float")) {
-	    			if(uniformName.equals("R_fogDensity"))
-	    				setUniformf(uniformName, getRenderingEngine().getFogDensity());
-	    			else if(uniformName.equals("R_fogGradient"))
-	    				setUniformf(uniformName, getRenderingEngine().getFogGradient());
-    			}else if(uniformType.equals("DirectionalLight")) {
-	    			if(uniformName.equals("R_directionalLight"))
-	    				setUniformDirectionalLight(uniformName, (DirectionalLight)getRenderingEngine().getActiveLight());
-    			}else if(uniformType.equals("PointLight")) {
-    				if(uniformName.equals("R_pointLight"))
-    					setUniformPointLight(uniformName, (PointLight)getRenderingEngine().getActiveLight());
-    			}else if(uniformType.equals("SpotLight")){
-    				if(uniformName.equals("R_spotLight"))
-    					setUniformSpotLight(uniformName, (SpotLight)getRenderingEngine().getActiveLight());
-    			}else
-    				throw new IllegalArgumentException(uniformName + " is not a valid component of Rendering Engine.");
-    		}else if(uniformName.startsWith("M_")) {
-    			if(uniformName.equals("M_specularIntensity")) 
-    				setUniformf(uniformName, material.getSpecularIntensity());
-    			else if(uniformName.equals("M_specularPower"))
-    				setUniformf(uniformName, material.getSpecularPower());
-    			else if(uniformName.equals("M_dispMapScale"))
-    				setUniformf(uniformName, material.getDispMapScale());
-    			else if(uniformName.equals("M_dispMapBias"))
-    				setUniformf(uniformName, material.getDispMapBias());
-    			else
-    				throw new IllegalArgumentException(uniformName + " is not a valid component of Material.");
-    		}
+    			String unprefixedUniformName = uniformName.substring(2);
+				if(uniformType.equals("vec3"))
+					setUniform(uniformName, m_renderingEngine.GetVector3f(unprefixedUniformName));
+				else if(uniformType.equals("float"))
+					setUniformf(uniformName, m_renderingEngine.GetFloat(unprefixedUniformName));
+				else if(uniformType.equals("DirectionalLight"))
+					setUniformDirectionalLight(uniformName, (DirectionalLight) m_renderingEngine.getActiveLight());
+				else if(uniformType.equals("PointLight"))
+					setUniformPointLight(uniformName, (PointLight) m_renderingEngine.getActiveLight());
+				else if(uniformType.equals("SpotLight"))
+					setUniformSpotLight(uniformName, (SpotLight) m_renderingEngine.getActiveLight());
+				else
+					throw new IllegalArgumentException(uniformType + " is not a supported type in RenderingEngine");
+    		} else if(uniformName.startsWith("C_")) {
+				if(uniformName.equals("C_eyePos"))
+					setUniform(uniformName, m_renderingEngine.getMainCamera().getPos());
+				else
+					throw new IllegalArgumentException(uniformName + " is not a valid component of Camera");
+			} else {
+				if(uniformType.equals("vec3"))
+					setUniform(uniformName, material.GetVector3f(uniformName));
+				else if(uniformType.equals("float"))
+					setUniformf(uniformName, material.GetFloat(uniformName));
+				else
+					throw new IllegalArgumentException(uniformType + " is not a supported type in Material");
+			}
     	}
     }
     

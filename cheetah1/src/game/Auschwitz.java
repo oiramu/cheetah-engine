@@ -203,7 +203,7 @@ public class Auschwitz implements Game {
             
             m_level = new Level(new Bitmap("level" + m_levelNum).flipX(), m_material, m_renderingEngine);
             
-            switch("0light") {
+            switch("1light") {
 	        	case "0light":
 	        		m_renderingEngine.clearLights();
 	        		break;

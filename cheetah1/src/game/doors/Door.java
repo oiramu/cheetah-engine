@@ -115,7 +115,7 @@ public class Door extends GameComponent {
             								12, 13, 14,
             								12, 14, 15};
 
-            door = new Mesh(doorVerts, doorIndices, true);
+            door = new Mesh(doorVerts, doorIndices, true, true);
         }
         
         this.meshRenderer = new MeshRenderer(door, getTransform(), this.material);

@@ -76,7 +76,7 @@ public class Lantern extends GameComponent {
         }
 
         if (m_material == null) {
-            m_material = new Material(new Texture(RES_LOC), new Vector3f(1,1,1));
+            m_material = new Material(new Texture(RES_LOC));
         }
         this.m_transform = transform;
         this.m_light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 

@@ -19,6 +19,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import game.enemies.*;
 import engine.components.BaseLight;
@@ -26,6 +27,7 @@ import engine.components.Camera;
 import engine.components.GameComponent;
 import engine.core.Transform;
 import engine.core.Vector3f;
+import engine.rendering.resourceManagement.MappedValues;
 
 /**
  *
@@ -33,27 +35,29 @@ import engine.core.Vector3f;
  * @version 1.2
  * @since 2018
  */
-public class RenderingEngine {
+public class RenderingEngine extends MappedValues {
 	
 	private Camera 						m_mainCamera;
 	private BaseLight 					m_activeLight;
-	public Vector3f 					m_ambientLight;
 	private Shader 						m_forwardAmbient;
 	
 	private static ArrayList<BaseLight> m_lights;
-	
-	private static float 				m_fogDensity;
-	private static float 				m_fogGradient;
-    private static Vector3f 			m_fogColor;
+	private HashMap<String, Integer> 	m_samplerMap;
 	
 	/**
 	 * Constructor for the rendering engine.
 	 */
 	public RenderingEngine() {
+		super();
         m_lights = new ArrayList<BaseLight>();
-        m_forwardAmbient = new Shader("forward-ambient");
-        m_forwardAmbient.setRenderingEngine(this);
+        m_samplerMap = new HashMap<String, Integer>();
+		m_samplerMap.put("diffuse", 0);
+		m_samplerMap.put("normalMap", 1);
+		m_samplerMap.put("dispMap", 2);
         
+		m_forwardAmbient = new Shader("forward-ambient");
+		m_forwardAmbient.setRenderingEngine(this);
+		
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
         glFrontFace(GL_CW);
@@ -238,42 +242,31 @@ public class RenderingEngine {
 	 * @return Active light.
 	 */
 	public BaseLight getActiveLight() {return m_activeLight;}
-	
-	/**
-	 * Returns the color of the fog.
-	 * @return fogColor.
-	 */
-	public Vector3f getFogColor() {return m_fogColor;}
 
 	/**
 	 * Sets a new color for the fog.
 	 * @param color of the fog.
 	 */
-	public void setFogColor(Vector3f color) {m_fogColor = color; setClearColor(color);}
-
-    /**
-     * Returns the density of the fog.
-	 * @return fogDensity.
-	 */
-	public float getFogDensity() {return m_fogDensity;}
+	public void setFogColor(Vector3f color) {AddVector3f("fogColor", color); setClearColor(color);}
 
 	/**
 	 * Sets a density to the actual fog.
 	 * @param fogDensity to set.
 	 */
-	public void setFogDensity(float fogDensity) {m_fogDensity = fogDensity;}
-
-	/**
-	 * Returns the gradient of the fog.
-	 * @return fogGradient.
-	 */
-	public static float getFogGradient() {return m_fogGradient;}
+	public void setFogDensity(float fogDensity) {AddFloat("fogDensity", fogDensity);}
 
 	/**
 	 * Sets a new gradient for the fog.
 	 * @param fogGradient to set.
 	 */
-	public void setFogGradient(float fogGradient) {m_fogGradient = fogGradient;}
+	public void setFogGradient(float fogGradient) {AddFloat("fogGradient", fogGradient);}
+	
+	/**
+	 * Returns the sampler's slot of the texture's unit.
+	 * @param samplerName of the texture.
+	 * @return Texture's slot.
+	 */
+	public int getSamplerSlot(String samplerName) { return m_samplerMap.get(samplerName); }
 
 	/**
      * Bind the textures to openGL.
@@ -288,10 +281,10 @@ public class RenderingEngine {
     public static void setClearColor(Vector3f color) {glClearColor(color.getX(), color.getY(), color.getZ(), 1.0f);}
 	
 	/**
-	 * Returns the actual ambient light.
-	 * @return Ambient light.
+	 * Sets a new ambient light.
+	 * @return ambient to set.
 	 */
-	public Vector3f getAmbientLight() {return m_ambientLight;}
+	public void setAmbientLight(Vector3f ambient) {AddVector3f("ambient", ambient);}
     
     /**
      * Returns the main camera in game.

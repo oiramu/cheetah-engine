@@ -15,6 +15,8 @@
  */
 package game.powerUp;
 
+import java.util.Random;
+
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
@@ -38,8 +40,8 @@ import game.Level;
  */
 public class SuperShotgun extends GameComponent {
 
-    private static final float PICKUP_THRESHHOLD = 0.75f;
-    private static final int AMOUNT = 6;
+    public static final float PICKUP_THRESHHOLD = 0.75f;
+    private static final int AMOUNT = new Random().nextInt(2-0) + 0;
     private static final String RES_LOC = "superShotgun/MEDIA";
     private static final String WEAPONS_RES_LOC = "weapons/";
     private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
@@ -56,7 +58,7 @@ public class SuperShotgun extends GameComponent {
     public SuperShotgun(Transform transform) {
         if (m_mesh == null) {
             float sizeY = 0.3142857142857143f;
-            float sizeX = (float) ((double) sizeY / (0.2295081967213115 * 4.0f));
+            float sizeX = (float) ((double) sizeY / (0.2295081967213115 * (sizeY * 10)));
 
             float offsetX = 0.0f;
             float offsetY = 0.0f;

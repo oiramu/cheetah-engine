@@ -72,7 +72,7 @@ public class DeadMan extends GameComponent {
         }
 
         if (material == null) {
-			material = new Material(new Texture("deadMan"), new Vector3f(1,1,1));
+			material = new Material(new Texture("deadMan"));
         }
 
         this.transform = transform;

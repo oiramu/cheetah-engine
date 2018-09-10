@@ -73,7 +73,7 @@ public class Pipe extends GameComponent {
         }
 
         if (material == null) {
-			material = new Material(new Texture(RES_LOC), new Vector3f(1,1,1));
+			material = new Material(new Texture(RES_LOC));
         }
 
         this.transform = transform;

@@ -1,6 +1,6 @@
-uniform vec3 R_eyePos;
-uniform float M_specularIntensity;
-uniform float M_specularPower;
+uniform vec3 C_eyePos;
+uniform float specularIntensity;
+uniform float specularPower;
 
 struct BaseLight
 {
@@ -47,16 +47,16 @@ vec4 CalcLight(BaseLight base, vec3 direction, vec3 normal, vec3 worldPos) {
     
         diffuseColor = vec4(base.color, 1.0) * base.intensity * diffuseFactor;
         
-        vec3 directionToEye = normalize(R_eyePos - worldPos);
+        vec3 directionToEye = normalize(C_eyePos - worldPos);
         //vec3 reflectDirection = normalize(reflect(direction, normal));
         vec3 halfDirection = normalize(directionToEye - direction);
         
         float specularFactor = dot(halfDirection, normal);       
         //float specularFactor = dot(directionToEye, reflectDirection);
-        specularFactor = pow(specularFactor, M_specularPower);
+        specularFactor = pow(specularFactor, specularPower);
         
         if(specularFactor > 0) {
-            specularColor = vec4(base.color, 1.0) * M_specularIntensity * specularFactor;
+            specularColor = vec4(base.color, 1.0) * specularIntensity * specularFactor;
         }
     }
     

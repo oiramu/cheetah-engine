@@ -103,7 +103,7 @@ public class Pillar extends GameComponent {
             mesh = new Mesh(verts, indices, true);
         }
         
-        this.material = new Material(animation.get(0), new Vector3f(1,1,1));
+        this.material = new Material(animation.get(0));
         this.state = STATE_IDLE;
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);

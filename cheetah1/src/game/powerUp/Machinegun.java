@@ -15,6 +15,8 @@
  */
 package game.powerUp;
 
+import java.util.Random;
+
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
@@ -39,10 +41,10 @@ import game.Level;
 public class Machinegun extends GameComponent {
 
     public final float PICKUP_THRESHHOLD = 0.75f;
-    public final int AMOUNT = 14;
-    private final String WEAPONS_RES_LOC = "weapons/";
-    private final String RES_LOC = "machinegun/MEDIA";
-    public final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
+    private static final int AMOUNT = new Random().nextInt(32-0) + 0;
+    private static final String WEAPONS_RES_LOC = "weapons/";
+    private static final String RES_LOC = "machinegun/MEDIA";
+    private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
 
     private static Mesh 	m_mesh;
     private static Material m_material;
@@ -56,7 +58,7 @@ public class Machinegun extends GameComponent {
     public Machinegun(Transform transform) {
         if (m_mesh == null) {
             float sizeY = 0.2f;
-            float sizeX = (float) ((double) sizeY / (0.3974358974358974f * 4.0));
+            float sizeX = (float) ((double) sizeY / (0.3974358974358974f * (sizeY * 10)));
 
             float offsetX = 0.0f;
             float offsetY = 0.0f;

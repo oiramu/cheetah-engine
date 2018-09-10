@@ -117,7 +117,7 @@ public class Barrel {
 
             mesh = new Mesh(verts, indices, true);
         }
-        this.material = new Material(animation.get(0), new Vector3f(1,1,1));
+        this.material = new Material(animation.get(0));
         this.state = STATE_IDLE;
         this.transform = transform;
         this.light = new PointLight(new Vector3f(0.9f,0.7f,0.2f), 0.8f, 

@@ -78,7 +78,7 @@ public class Armor extends GameComponent {
         }
 
         if (m_material == null) {
-            m_material = new Material(new Texture(RES_LOC), new Vector3f(1,1,1));
+            m_material = new Material(new Texture(RES_LOC));
         }
 
         this.m_transform = transform;

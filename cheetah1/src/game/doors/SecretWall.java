@@ -113,7 +113,7 @@ public class SecretWall extends GameComponent {
             								12, 13, 14,
             								12, 14, 15};
 
-            mesh = new Mesh(doorVerts, doorIndices, true);
+            mesh = new Mesh(doorVerts, doorIndices, true, true);
         }
         
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), this.material);

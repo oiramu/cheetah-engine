@@ -37,6 +37,7 @@ import engine.rendering.Mesh;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
+import engine.rendering.TextureFont;
 import engine.rendering.Vertex;
 
 /**
@@ -99,7 +100,6 @@ public class Player {
     
     private String weaponState;
     
-    private static ArrayList<Texture> healthMaterials;
     private static ArrayList<Texture> gunsMaterial;
     private static ArrayList<Texture> gunsAnimationMaterial1;
     private static ArrayList<Texture> gunsAnimationMaterial2;
@@ -107,7 +107,6 @@ public class Player {
     private static ArrayList<Texture> gunsAnimationMaterial4;
     private static ArrayList<Texture> crossHairMaterials;
     private static ArrayList<Texture> crossHairAnimationMaterials;
-    private static ArrayList<Texture> ammoMaterials;
     private static ArrayList<Texture> painMaterials;
     
     private static ArrayList<Clip> gunsNoiseSounds;
@@ -115,9 +114,6 @@ public class Player {
     private static ArrayList<Clip> gunsClippingSounds;
     private static ArrayList<Clip> gunsEmptyNoiseSounds;
     private static ArrayList<Clip> playerMovement;
-    
-    private static Material healthMaterial;
-    private static Material ammoMaterial;
 
     private static final Vector2f centerPosition = new Vector2f(Display.getWidth()/2, Display.getHeight()/2);
     private static final Vector3f zeroVector = new Vector3f(0, 0, 0);
@@ -158,10 +154,14 @@ public class Player {
     private SpotLight fireBulletLight;
     private SpotLight fireShellLight;
     private SpotLight sLight;
+    private TextureFont lifeText;
+    private TextureFont ammoText;
+    private TextureFont armorText;
     
     private double gunFireTime;
     private double healthTime;
     private double ammoTime;
+    private double armorTime;
     private double painTime;
     private float width;
     private float upAmt = 0;
@@ -253,20 +253,6 @@ public class Player {
     		gunsAnimationMaterial4.add(null);
     	}
     	
-    	if(healthMaterials == null) {
-    		healthMaterials = new ArrayList<Texture>();
-    		for (int i = 0; i < 101; i++) {
-    			healthMaterials.add(new Texture("/hud/hud/HP" + i));
-			}
-    	}
-    	
-    	if(ammoMaterials == null) {
-    		ammoMaterials = new ArrayList<Texture>();
-    		for (int i = 0; i < 101; i++) {
-    			ammoMaterials.add(new Texture("/hud/hud/AR" + i));
-			}
-    	}
-    	
     	if(crossHairMaterials == null) {
     		crossHairMaterials = new ArrayList<Texture>();
     		crossHairMaterials.add(new Texture("/hud/CROSS0"));
@@ -328,6 +314,10 @@ public class Player {
     			playerMovement.add(AudioUtil.loadAudio(PLAYER_RES_LOC + "walking/FSHARD" + i));
 			}
     	}
+    	
+    	lifeText = new TextureFont("", new Material(new Texture("font")), new Vector2f(-0.9f,-0.8f), new Vector2f(1f,1f));
+    	armorText = new TextureFont("", new Material(new Texture("font")), new Vector2f(-0.9f,-0.7f), new Vector2f(1f,1f));
+    	ammoText = new TextureFont("", new Material(new Texture("font")), new Vector2f(-0.9f,-0.9f), new Vector2f(1f,1f));
     	
     	if(weaponState == null) {
     		gotPistol();
@@ -736,7 +726,6 @@ public class Player {
      * Updates the player every single frame.
      */
     public void update() {
-    	int ammo = 0;
     	float movAmt = 0;
     	double time = (double) Time.getTime() / Time.SECOND;
     	if(isAlive) { 
@@ -810,30 +799,37 @@ public class Player {
         	renderingEngine.removeLight(fireShellLight);
         }
         
-        healthMaterial = new Material(healthMaterials.get(getHealth()));
-        if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
-        ammoMaterial = new Material(ammoMaterials.get(ammo));
     }
 
     /**
      * Method that renders the player's mesh.
      */
     public void render(Shader shader) {
+    	int ammo = 0;
     	double time = (double) Time.getTime() / Time.SECOND;
     	double gunTime = gunFireTime + gunFireAnimationTime;
     	double gunTime2 = gunTime + gunFireAnimationTime;
     	double gunTime3 = gunTime2 + gunFireAnimationTime;
     	double gunTime4 = gunTime3 + gunFireAnimationTime;
-        
+    	
+    	if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
+    	   
         if((double)time < healthTime + 0.5f)
-        	hudRenderer.render(healthMaterial, shader);
+        	lifeText.setText("Life:"+getHealth());
         else
-        	hudRenderer.render(healthMaterial, shader);
-        
+        	lifeText.setText("Life:"+getHealth());
+         
         if((double)time < ammoTime + 0.5f)
-        	hudRenderer.render(ammoMaterial, shader);
+        	ammoText.setText("Ammo:"+ammo);
         else
-        	hudRenderer.render(ammoMaterial, shader);
+        	ammoText.setText("Ammo:"+ammo);
+        
+        if(armorb) {
+	        if((double)time < armorTime + 0.5f)
+	        	armorText.setText("Armor:"+getArmori());
+	        else
+	        	armorText.setText("Armor:"+getArmori());
+        }
         
         if(isAlive) {
 	        if((double)time < painTime + 0.5f)
@@ -1116,6 +1112,7 @@ public class Player {
      */
 	public void addArmori(int amt) {
 		armori += amt;
+		armorTime = (double) Time.getTime() / Time.SECOND;
 		if (armori > 100)
         	armori = 100;
         

@@ -108,7 +108,7 @@ public class CoreEngine {
         m_renderingEngine = new RenderingEngine();
         
         m_game.init();
-
+        
         double lastTime = Time.getTime();
         double unprocessedTime = 0;
 

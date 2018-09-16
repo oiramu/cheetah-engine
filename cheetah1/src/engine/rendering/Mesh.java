@@ -36,9 +36,9 @@ import engine.rendering.resourceManagement.MeshResource;
  */
 public class Mesh {
 
-	private static HashMap<String, MeshResource> m_loadedModels = new HashMap<String, MeshResource>();
-	private String 			m_fileName;
-	private MeshResource 	m_resource;
+	private HashMap <String, MeshResource>	m_loadedModels = new HashMap<String, MeshResource>();
+	private String 							m_fileName;
+	private MeshResource 					m_resource;
 
     /**
      * Constructor of a mesh loaded from file.

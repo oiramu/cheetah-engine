@@ -145,6 +145,28 @@ public class Shader {
 			}
     	}
     }
+	
+	/**
+     * Updates all the uniforms of the shading program.
+     * @param transform of the object.
+     * @param material Material of the object.
+     */
+	public void updateUniforms(Matrix4f MVPMatrix, Material material) {
+    	for(int i = 0; i < m_resource.getUniformNames().size(); i++) {
+    		String uniformName = m_resource.getUniformNames().get(i);
+    		String uniformType = m_resource.getUniformTypes().get(i);
+    		
+    		if(uniformType.equals("sampler2D")) {
+				material.getTexture("diffuse").bind(0);
+				setUniformi("diffuse",0);
+			} else if(uniformName.startsWith("T_")) {
+    			if(uniformName.equals("T_MVP")) 
+    				setUniform(uniformName, MVPMatrix);
+    			else
+    				throw new IllegalArgumentException(uniformName + " is not a valid component of Transform.");
+    		}
+    	}
+    }
     
     /**
      * Add all of the attributes in the GLSL class.

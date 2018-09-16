@@ -41,7 +41,7 @@ import game.Level;
 public class Machinegun extends GameComponent {
 
     public final float PICKUP_THRESHHOLD = 0.75f;
-    private static final int AMOUNT = new Random().nextInt(32-0) + 0;
+    private static final int AMOUNT = new Random().nextInt(32-1) + 1;
     private static final String WEAPONS_RES_LOC = "weapons/";
     private static final String RES_LOC = "machinegun/MEDIA";
     private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);

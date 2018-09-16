@@ -42,10 +42,9 @@ public class Material extends MappedValues {
      * @param specularIntensity of the material.
      * @param specularPower of the material.
      */
-    public Material(Texture diffuse, float specularIntensity,
-    		float specularPower) {
-        this(diffuse, specularIntensity, specularPower, new Texture("default_normal"), 
-        		new Texture("default_disp"), 0, 0);//0.03f, -0.5f
+    public Material(Texture diffuse, float specularIntensity, float specularPower) {
+        this(diffuse, specularIntensity, specularPower, new Texture("default_normalMap"), 
+        		new Texture("default_dispMap"), 0, 0);//0.03f, -0.5f
     }
     
     /**
@@ -90,7 +89,7 @@ public class Material extends MappedValues {
     	Texture result = m_textureHashMap.get(texture);
     	if(result != null)
 			return result;
-    	return new Texture("default_diffuse");
+    	return new Texture("default_"+texture);
     }
 
     /**

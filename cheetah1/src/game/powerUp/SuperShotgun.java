@@ -41,7 +41,7 @@ import game.Level;
 public class SuperShotgun extends GameComponent {
 
     public static final float PICKUP_THRESHHOLD = 0.75f;
-    private static final int AMOUNT = new Random().nextInt(2-0) + 0;
+    private static final int AMOUNT = new Random().nextInt(2-1) + 1;
     private static final String RES_LOC = "superShotgun/MEDIA";
     private static final String WEAPONS_RES_LOC = "weapons/";
     private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);

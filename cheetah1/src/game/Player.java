@@ -56,7 +56,7 @@ public class Player {
     private static final float MAX_LOOK_ANGLE = 0;
     private static final float MIN_LOOK_ANGLE = 0;
     private static final float PLAYER_WIDTH = 0.2f;
-    private static final float GRAVITY = 0.98f;
+    private static final float GRAVITY = 9.8f;
     
     private static final float PLAYER_TO_GROUND = 0.4375f;
     
@@ -192,6 +192,7 @@ public class Player {
     /**
      * Constructor of the main player.
      * @param position the position in the 3D space.
+     * @param renderingEngine of the player.
      */
     public Player(Vector3f position, RenderingEngine renderingEngine) {
     	
@@ -441,7 +442,7 @@ public class Player {
         damageMin = 20f;
         damageRange = 30f;
         moveSpeed = 5f;
-        attenuation = 2.5f;
+        attenuation = 0.25f;
         isMelee = false;
         isBulletBased = true;
         isShellBased = false;
@@ -470,7 +471,7 @@ public class Player {
         damageMin = 60f;
         damageRange = 60f;
         moveSpeed = 4f;
-        attenuation = 1;
+        attenuation = 0.1f;
         isMelee = false;
         isBulletBased = false;
         isShellBased = true;
@@ -495,7 +496,7 @@ public class Player {
         damageMin = 20f;
         damageRange = 60f;
         moveSpeed = 4.5f;
-        attenuation = 1.75f;
+        attenuation = 0.175f;
         isMelee = false;
         isBulletBased = true;
         isShellBased = false;
@@ -524,7 +525,7 @@ public class Player {
         damageMin = 100f;
         damageRange = 60f;
         moveSpeed = 4f;
-        attenuation = 0.5f;
+        attenuation = 0.05f;
         isMelee = false;
         isBulletBased = false;
         isShellBased = true;
@@ -549,7 +550,7 @@ public class Player {
         damageMin = 20f;
         damageRange = 120f;
         moveSpeed = 4.5f;
-        attenuation = 0.25f;
+        attenuation = 0.025f;
         isMelee = false;
         isBulletBased = true;
         isShellBased = false;
@@ -586,7 +587,7 @@ public class Player {
 	        		ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_2)) {
-	        	if(weaponState == PISTOL) {
+	        	if(weaponState == PISTOL && isReloading) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	} else {
 	        		gotPistol();
@@ -594,7 +595,7 @@ public class Player {
 	        		ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_3)) {
-	        	if(shotgun == false || weaponState == SHOTGUN) {
+	        	if(shotgun == false || weaponState == SHOTGUN && isReloading) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	} else {
 	        		gotShotgun();
@@ -602,7 +603,7 @@ public class Player {
 	        		ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_4)) {
-	        	if(machinegun == false || weaponState == MACHINEGUN) {
+	        	if(machinegun == false || weaponState == MACHINEGUN && isReloading) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	} else {
 	        		gotMachinegun();
@@ -610,7 +611,7 @@ public class Player {
 	        		ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_5)) {
-	        	if(sShotgun == false || weaponState == SUPER_SHOTGUN) {
+	        	if(sShotgun == false || weaponState == SUPER_SHOTGUN && isReloading) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	} else {
 	        		gotSShotgun();
@@ -618,7 +619,7 @@ public class Player {
 	        		ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_6)) {
-	        	if(chaingun == false || weaponState == CHAINGUN) {
+	        	if(chaingun == false || weaponState == CHAINGUN && isReloading) {
 	        		AudioUtil.playAudio(missueNoise, 0);
 	        	} else {
 	        		gotChaingun();
@@ -678,7 +679,7 @@ public class Player {
 	
 	        movementVector = zeroVector;
 	        if(playerCamera.getPos().getY() == toTerrain) {
-		        if(Input.getKeyDown(Input.KEY_W) || Input.getKey(Input.KEY_UP) ||
+		        if(Input.getKeyDown(Input.KEY_W) || Input.getKeyDown(Input.KEY_UP) ||
 		        		Input.getKeyDown(Input.KEY_S) || Input.getKeyDown(Input.KEY_DOWN)
 		        		|| Input.getKeyDown(Input.KEY_A) || Input.getKeyDown(Input.KEY_D)) {
 		        	AudioUtil.playAudio(playerMovement.get(new Random().nextInt(playerMovement.size())), 0);
@@ -739,13 +740,13 @@ public class Player {
     	float movAmt = 0;
     	double time = (double) Time.getTime() / Time.SECOND;
     	if(isAlive) { 
-    		upAmt += (-GRAVITY * 2) * Time.getDelta();
+    		upAmt += (-GRAVITY * 0.2f) * Time.getDelta();
     		movAmt = (float) (moveSpeed * Time.getDelta());
     		toTerrain = PLAYER_TO_GROUND;
     		dy = GUN_OFFSET; 
     		dx = GUN_OFFSET_X;
-    	}else {
-    		upAmt += (-GRAVITY / 4) * Time.getDelta();
+    	} else {
+    		upAmt += (-GRAVITY * 0.1f / 4) * Time.getDelta();
     		toTerrain = 0.15f;
     	}
     	
@@ -804,6 +805,10 @@ public class Player {
         fireBulletLight.setDirection(getCamera().getForward());
         fireShellLight.setPosition(getCamera().getPos());
         fireShellLight.setDirection(getCamera().getForward());
+        if(isAlive && (!isReloading && (!isBulletBased || !isShellBased))) {
+        	renderingEngine.removeLight(fireBulletLight);
+        	renderingEngine.removeLight(fireShellLight);
+        }
         
         healthMaterial = new Material(healthMaterials.get(getHealth()));
         if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
@@ -856,16 +861,15 @@ public class Player {
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial1, shader);
 		        } else if ((double) time < gunTime2) {
+		        	renderingEngine.removeLight(fireBulletLight);
 			        hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
 		        } else {
-		        	renderingEngine.removeLight(fireBulletLight);
 		            hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunMaterial, shader);
 	            	isReloading = false;
 		        }
 			} else {
-				renderingEngine.removeLight(fireBulletLight);
 				hudRenderer.render(crossHairMaterial, shader);
 	        	gunRenderer.render(gunMaterial, shader);
             	isReloading = false;
@@ -881,9 +885,9 @@ public class Player {
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial1, shader);
 		        } else if ((double) time < gunTime2) {
+		        	renderingEngine.removeLight(fireShellLight);
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
-		        	renderingEngine.removeLight(fireShellLight);
 			        AudioUtil.playAudio(gunReload, 0);
 		        } else if ((double) time < gunTime3) {
 		        	hudRenderer.render(crossHairMaterial, shader);
@@ -893,13 +897,11 @@ public class Player {
 		        	hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial4, shader);
 		        } else {
-		        	renderingEngine.removeLight(fireShellLight);
 		        	hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunMaterial, shader);
 		            isReloading = false;
 		        }
 			} else {
-				renderingEngine.removeLight(fireShellLight);
 				hudRenderer.render(crossHairMaterial, shader);
 	        	gunRenderer.render(gunMaterial, shader);
 	            isReloading = false;
@@ -919,8 +921,6 @@ public class Player {
             health = MAX_LIFE;
         }
         if (health <= 0) {
-        	renderingEngine.removeLight(fireBulletLight);
-        	renderingEngine.removeLight(fireShellLight);
         	AudioUtil.playAudio(deathNoise, 0);
         	health = 0;
             bullets = 0;
@@ -961,7 +961,6 @@ public class Player {
         if(isBulletBased) {
         	if (bullets <= 0) {
         		bullets = 0;
-        		renderingEngine.removeLight(fireBulletLight);
         		AudioUtil.playAudio(gunEmptyNoise, 1);
         	}
         }
@@ -987,7 +986,6 @@ public class Player {
         if(isShellBased) {
         	if (shells <= 0) {
         		shells = 0;
-        		renderingEngine.removeLight(fireShellLight);
         		AudioUtil.playAudio(gunEmptyNoise, 1);
         	}
         }
@@ -1124,8 +1122,7 @@ public class Player {
         if (armori <= 0) {
         	armori = 0;
         	armorb = false;
-        }  
-        System.out.println("Armor: "+ armori + "/"+100+".");
+        }
 	}
 
 	/**

@@ -190,7 +190,7 @@ public class Auschwitz implements Game {
 
             m_levelNum += offset;
             
-            switch("1texDetail") {
+            switch("0texDetail") {
             	case "0texDetail":
             		m_material = new Material(new Texture("mapTexture" + m_currentEpisode));
             		break;
@@ -203,7 +203,7 @@ public class Auschwitz implements Game {
             
             m_level = new Level(new Bitmap("level" + m_levelNum).flipX(), m_material, m_renderingEngine);
             
-            switch("1light") {
+            switch("0light") {
 	        	case "0light":
 	        		m_renderingEngine.clearLights();
 	        		break;

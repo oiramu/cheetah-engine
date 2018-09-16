@@ -98,6 +98,45 @@ public class Texture {
 	}
     
     /**
+     * Texture's constructor for a raw or FBO texture.
+     * @param width of the texture.
+     * @param height of the texture.
+     * @param data of the texture.
+     * @param linearFiltering if it uses it.
+     * @param repeatTexture what method of texturing.
+     */
+	public Texture(int width, int height, ByteBuffer data, boolean linearFiltering, boolean repeatTexture) {
+    	this.m_fileName = "";
+		float filter;
+        int wrapMode;
+
+        if(linearFiltering)
+            filter = GL_LINEAR;
+        else
+            filter = GL_NEAREST;
+
+        if(repeatTexture)
+            wrapMode = GL_REPEAT;
+        else
+            wrapMode = GL_NEAREST;
+
+        int texture = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, texture);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode);
+
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        
+        this.m_width = width;
+		this.m_height = height;
+        this.m_FBOId = texture;
+        this.m_FBO = 0;
+	}
+    
+    /**
      * Cleans everything in the GPU and RAM.
      */
     @Override
@@ -123,7 +162,7 @@ public class Texture {
             ByteBuffer buffer = Util.createByteBuffer(image.getHeight() * image.getWidth() * 4);
             boolean hasAlpha = image.getColorModel().hasAlpha();
             for(int y = 0; y < image.getHeight(); y++) {
-            	for(int x = 0; x <image.getWidth(); x++) {
+            	for(int x = 0; x < image.getWidth(); x++) {
             		int pixel = pixels[y * image.getWidth() + x];
             		
             		buffer.put((byte) ((pixel >> 16) & 0xFF));
@@ -146,7 +185,7 @@ public class Texture {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);    
             
-            switch("2filter") {
+            switch("1filter") {
             	case "0filter":
             		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
                     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -233,7 +272,7 @@ public class Texture {
     /**
 	 * Stop binding of the render target in the FBO.
 	 */
-	public static void unbindRenderTarget() {
+	public void unbindRenderTarget() {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0,0,Window.getWidth(),Window.getHeight());
 	}

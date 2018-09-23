@@ -148,7 +148,7 @@ public class Shader {
 	
 	/**
      * Updates all the uniforms of the shading program.
-     * @param transform of the object.
+     * @param MVPMatrix of the object.
      * @param material Material of the object.
      */
 	public void updateUniforms(Matrix4f MVPMatrix, Material material) {

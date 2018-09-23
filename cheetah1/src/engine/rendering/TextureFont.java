@@ -75,6 +75,16 @@ public class TextureFont {
         matrixTranslationFont.initTranslation(position.getX(), position.getY(), 0);
         m_fontMatrix = matrixScaleFont.mul(matrixTranslationFont);
     }
+    
+    /**
+     * Constructor for a font based GUI texture.
+     * @param text to add.
+     * @param position of the text.
+     * @param scale of the text.
+     */
+    public TextureFont(String text, Vector2f position, Vector2f scale) {  	
+    	this(text, new Material(new Texture("font")), position, scale);
+    }
 
     /**
      * Constructor for a font based GUI texture.

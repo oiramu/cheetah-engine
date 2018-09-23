@@ -15,6 +15,7 @@
  */
 package engine.core;
 
+import engine.audio.AudioMaster;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Window;
 
@@ -129,9 +130,8 @@ public class CoreEngine {
 
                 unprocessedTime -= m_frameTime;
 
-                if (Window.isCloseRequested()) {
+                if (Window.isCloseRequested())
                     stop();
-                }
 
                 Time.setDelta(m_frameTime);
 
@@ -141,8 +141,8 @@ public class CoreEngine {
                 m_game.update(m_renderingEngine);
 
                 if (frameCounter >= 1.0) {
-                    System.out.println(frames);
                     frames = 0;
+                    System.out.println(frames);
                     frameCounter = 0;
                 }
             }
@@ -195,6 +195,6 @@ public class CoreEngine {
 	/**
      * Method that cleans everything in the program's window.
      */
-    private void cleanUp() {Window.dispose();}
+    private void cleanUp() {Window.dispose(); AudioMaster.cleanUp();}
 
 }

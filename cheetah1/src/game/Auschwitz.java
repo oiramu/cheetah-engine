@@ -21,6 +21,7 @@ import javax.sound.midi.Sequence;
 
 import static engine.core.CoreEngine.*;
 
+import engine.audio.AudioMaster;
 import engine.audio.AudioUtil;
 import engine.core.*;
 import engine.rendering.*;
@@ -59,6 +60,7 @@ public class Auschwitz implements Game {
         m_levelNum = m_startingLevel - 1;
         m_isRunning = true;
         loadLevel(1);
+    	AudioMaster.init();
     }
     
     /**
@@ -190,7 +192,7 @@ public class Auschwitz implements Game {
 
             m_levelNum += offset;
             
-            switch("0texDetail") {
+            switch("1texDetail") {
             	case "0texDetail":
             		m_material = new Material(new Texture("mapTexture" + m_currentEpisode));
             		break;
@@ -203,7 +205,7 @@ public class Auschwitz implements Game {
             
             m_level = new Level(new Bitmap("level" + m_levelNum).flipX(), m_material, m_renderingEngine);
             
-            switch("0light") {
+            switch("1light") {
 	        	case "0light":
 	        		m_renderingEngine.clearLights();
 	        		break;

@@ -22,6 +22,7 @@ import javax.sound.sampled.Clip;
 
 import org.lwjgl.opengl.Display;
 
+import engine.audio.AudioMaster;
 import engine.audio.AudioUtil;
 import engine.components.Attenuation;
 import engine.components.Camera;
@@ -315,13 +316,11 @@ public class Player {
 			}
     	}
     	
-    	lifeText = new TextureFont("", new Material(new Texture("font")), new Vector2f(-0.9f,-0.8f), new Vector2f(1f,1f));
-    	armorText = new TextureFont("", new Material(new Texture("font")), new Vector2f(-0.9f,-0.7f), new Vector2f(1f,1f));
-    	ammoText = new TextureFont("", new Material(new Texture("font")), new Vector2f(-0.9f,-0.9f), new Vector2f(1f,1f));
+    	lifeText = new TextureFont("", new Vector2f(-0.9f,-0.8f), new Vector2f(1f,1f));
+    	armorText = new TextureFont("", new Vector2f(-0.9f,-0.7f), new Vector2f(1f,1f));
+    	ammoText = new TextureFont("", new Vector2f(-0.9f,-0.9f), new Vector2f(1f,1f));
     	
-    	if(weaponState == null) {
-    		gotPistol();
-    	}
+    	if(weaponState == null) { gotPistol(); }
     	
     	if(painMaterials == null) {
     		painMaterials = new ArrayList<Texture>();
@@ -574,7 +573,6 @@ public class Player {
 	        	} else {
 	        		gotHand();
 	        		AudioUtil.playAudio(moveNoise, 0);
-	        		ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_2)) {
 	        	if(weaponState == PISTOL && isReloading) {
@@ -582,7 +580,6 @@ public class Player {
 	        	} else {
 	        		gotPistol();
 	        		AudioUtil.playAudio(moveNoise, 0);
-	        		ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_3)) {
 	        	if(shotgun == false || weaponState == SHOTGUN && isReloading) {
@@ -590,7 +587,6 @@ public class Player {
 	        	} else {
 	        		gotShotgun();
 	        		AudioUtil.playAudio(moveNoise, 0);
-	        		ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_4)) {
 	        	if(machinegun == false || weaponState == MACHINEGUN && isReloading) {
@@ -598,7 +594,6 @@ public class Player {
 	        	} else {
 	        		gotMachinegun();
 	        		AudioUtil.playAudio(moveNoise, 0);
-	        		ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_5)) {
 	        	if(sShotgun == false || weaponState == SUPER_SHOTGUN && isReloading) {
@@ -606,7 +601,6 @@ public class Player {
 	        	} else {
 	        		gotSShotgun();
 	        		AudioUtil.playAudio(moveNoise, 0);
-	        		ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_6)) {
 	        	if(chaingun == false || weaponState == CHAINGUN && isReloading) {
@@ -614,7 +608,6 @@ public class Player {
 	        	} else {
 	        		gotChaingun();
 	        		AudioUtil.playAudio(moveNoise, 0);
-	        		ammoTime = (double) Time.getTime() / Time.SECOND;
 	        	}
 	        }
 	        
@@ -788,13 +781,15 @@ public class Player {
         gunTransform.setRotation(0, angle + 90, 0);
         hudTransform.setRotation(0, angle + 90, 0);
         
+        AudioMaster.setListenerData(getCamera().getPos());
+        
         sLight.setPosition(getCamera().getPos());
         sLight.setDirection(getCamera().getForward());
         fireBulletLight.setPosition(getCamera().getPos());
         fireBulletLight.setDirection(getCamera().getForward());
         fireShellLight.setPosition(getCamera().getPos());
         fireShellLight.setDirection(getCamera().getForward());
-        if(isAlive && (!isReloading && (!isBulletBased || !isShellBased))) {
+        if(!isReloading && (!isBulletBased || !isShellBased)) {
         	renderingEngine.removeLight(fireBulletLight);
         	renderingEngine.removeLight(fireShellLight);
         }
@@ -814,20 +809,20 @@ public class Player {
     	
     	if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
     	   
-        if((double)time < healthTime + 0.5f)
+        if((double)time < healthTime + 0.5f) {
         	lifeText.setText("Life:"+getHealth());
-        else
+        } else
         	lifeText.setText("Life:"+getHealth());
          
-        if((double)time < ammoTime + 0.5f)
+        if((double)time < ammoTime + 0.5f) {
         	ammoText.setText("Ammo:"+ammo);
-        else
+        } else
         	ammoText.setText("Ammo:"+ammo);
         
         if(armorb) {
-	        if((double)time < armorTime + 0.5f)
+	        if((double)time < armorTime + 0.5f) {
 	        	armorText.setText("Armor:"+getArmori());
-	        else
+	        } else
 	        	armorText.setText("Armor:"+getArmori());
         }
         

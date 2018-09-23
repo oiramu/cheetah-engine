@@ -15,8 +15,6 @@
  */
 package game.powerUp;
 
-import java.util.Random;
-
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
@@ -41,7 +39,7 @@ import game.Level;
 public class Bullet extends GameComponent {
 
 	public final float PICKUP_THRESHHOLD = 0.75f;
-    private static final int AMOUNT = new Random().nextInt(9-1) + 1;
+    private static final int AMOUNT = 9;
     private static final String RES_LOC = "bullet/MEDIA";
     private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
 

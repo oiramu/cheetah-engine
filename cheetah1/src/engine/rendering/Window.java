@@ -49,6 +49,44 @@ public class Window {
 	
 	private static Menu 			m_menu;
 	private final static Sequence 	THEME = AudioUtil.loadMidi("THEME0");
+	
+	/**
+	 * Method that creates the window.
+	 * @param title of the window.
+	 * @param fullscreen If its windowed or full-screen.
+	 */
+	public static void createWindow(int width, int height, String title, boolean fullscreen) {
+		
+		Display.setTitle(title);
+		Display.setIcon(new ByteBuffer[] {
+				loadIcon("/textures/coreDisplay/icon32"),
+		});
+		try {
+			
+			if(fullscreen) {
+				@SuppressWarnings("unused")
+				DisplayMode displayMode = null;
+		        DisplayMode[] modes = Display.getAvailableDisplayModes();
+	
+		         for (int i = 0; i < modes.length; i++) {
+		             if (modes[i].getWidth() == width
+		             && modes[i].getHeight() == height
+		             && modes[i].isFullscreenCapable()) { displayMode = modes[i]; }
+		         }
+			} else {
+				Display.setDisplayMode(new DisplayMode(width, height));
+			}
+			
+			Display.setFullscreen(fullscreen);
+	        Display.create();
+	        Keyboard.create();
+	        Mouse.create();
+
+		} catch(LWJGLException e) {
+			e.printStackTrace();
+			dispose();
+		}
+	}
 
 	/**
 	 * Method that creates the window with menu for the program.
@@ -87,7 +125,7 @@ public class Window {
 			Mouse.setNativeCursor(emptyCursor);
 			AudioUtil.playMidi(THEME);
 			m_menu = new DefaultMenu();
-			
+
 			//SEngineUtil.getInstance().setInputType(InputType.MOUSE); //Default input type
 		} catch(LWJGLException e) {
 			e.printStackTrace();
@@ -116,6 +154,9 @@ public class Window {
         return buffer;
     }
 	
+    /**
+     * Renders the display.
+     */
 	public static void render() {Display.update();}
 	
 	/**

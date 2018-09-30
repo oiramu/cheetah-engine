@@ -15,7 +15,6 @@
  */
 package engine.core;
 
-import engine.audio.AudioMaster;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Window;
 
@@ -141,11 +140,12 @@ public class CoreEngine {
                 m_game.update(m_renderingEngine);
 
                 if (frameCounter >= 1.0) {
+                    System.out.println("FPS: "+frames+ "; " + 1000.0f/frames + "ms.");
                     frames = 0;
-                    System.out.println(frames);
                     frameCounter = 0;
                 }
             }
+            
             if (render) {
                 render();
                 frames++;
@@ -195,6 +195,6 @@ public class CoreEngine {
 	/**
      * Method that cleans everything in the program's window.
      */
-    private void cleanUp() {Window.dispose(); AudioMaster.cleanUp();}
+    private void cleanUp() {Window.dispose();}
 
 }

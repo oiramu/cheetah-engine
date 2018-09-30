@@ -16,12 +16,21 @@
 package engine.core;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.1
+ * @since 2017
+ */
 public class Vector3f {
+	
+	public static final Vector3f UP = new Vector3f(0,1,0);
+	public static final Vector3f DOWN = new Vector3f(0,-1,0);
+	public static final Vector3f LEFT = new Vector3f(-1,0,0);
+	public static final Vector3f RIGHT = new Vector3f(1,0,0);
+	public static final Vector3f FORWARD = new Vector3f(0,0,1);
+	public static final Vector3f BACK = new Vector3f(0,0,-1);
+	public static final Vector3f ZERO = new Vector3f(0,0,0);
+	public static final Vector3f ONE = new Vector3f(1,1,1);
 
     private float m_x;
     private float m_y;

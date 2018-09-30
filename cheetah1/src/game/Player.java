@@ -22,7 +22,6 @@ import javax.sound.sampled.Clip;
 
 import org.lwjgl.opengl.Display;
 
-import engine.audio.AudioMaster;
 import engine.audio.AudioUtil;
 import engine.components.Attenuation;
 import engine.components.Camera;
@@ -183,6 +182,7 @@ public class Player {
     public boolean fires;
     
     public boolean isAlive;
+    public boolean isShooting;
     public boolean isReloading;
     public boolean isMelee;
     public boolean isBulletBased;
@@ -781,15 +781,13 @@ public class Player {
         gunTransform.setRotation(0, angle + 90, 0);
         hudTransform.setRotation(0, angle + 90, 0);
         
-        AudioMaster.setListenerData(getCamera().getPos());
-        
         sLight.setPosition(getCamera().getPos());
         sLight.setDirection(getCamera().getForward());
         fireBulletLight.setPosition(getCamera().getPos());
         fireBulletLight.setDirection(getCamera().getForward());
         fireShellLight.setPosition(getCamera().getPos());
         fireShellLight.setDirection(getCamera().getForward());
-        if(!isReloading && (!isBulletBased || !isShellBased)) {
+        if(!isShooting && (!isBulletBased || !isShellBased)) {
         	renderingEngine.removeLight(fireBulletLight);
         	renderingEngine.removeLight(fireShellLight);
         }
@@ -852,9 +850,9 @@ public class Player {
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial1, shader);
 		        } else if ((double) time < gunTime2) {
-		        	renderingEngine.removeLight(fireBulletLight);
 			        hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
+		        	isShooting = false;
 		        } else {
 		            hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunMaterial, shader);
@@ -876,10 +874,10 @@ public class Player {
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial1, shader);
 		        } else if ((double) time < gunTime2) {
-		        	renderingEngine.removeLight(fireShellLight);
 		        	hudRenderer.render(crossHairAnimationMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial2, shader);
 			        AudioUtil.playAudio(gunReload, 0);
+			        isShooting = false;
 		        } else if ((double) time < gunTime3) {
 		        	hudRenderer.render(crossHairMaterial, shader);
 		        	gunRenderer.render(gunAnimationMaterial3, shader);

@@ -21,7 +21,6 @@ import javax.sound.midi.Sequence;
 
 import static engine.core.CoreEngine.*;
 
-import engine.audio.AudioMaster;
 import engine.audio.AudioUtil;
 import engine.core.*;
 import engine.rendering.*;
@@ -60,7 +59,6 @@ public class Auschwitz implements Game {
         m_levelNum = m_startingLevel - 1;
         m_isRunning = true;
         loadLevel(1);
-    	AudioMaster.init();
     }
     
     /**
@@ -179,6 +177,7 @@ public class Auschwitz implements Game {
                 superShotgunTemp = m_level.getPlayer().getSuperShotgun();
                 chaingunTemp = m_level.getPlayer().getChaingun();
                 weaponStateTemp = m_level.getPlayer().getWeaponState();
+                armorbTemp = m_level.getPlayer().getArmorb();
                 mouseLocktemp = m_level.getPlayer().mouseLocked;
                 m_renderingEngine.clearLights();
             }
@@ -216,8 +215,6 @@ public class Auschwitz implements Game {
             if(m_levelNum % 2 == 2) sector = "B."; else sector = "A.";   
             
             if(m_level.getPlayer().getArmori() == 0) {
-            	if(armoriTemp == 0)
-            		m_level.getPlayer().addArmori(0);
             	m_level.getPlayer().addArmori(armoriTemp);
             }
             if(m_level.getPlayer().getBullets() == 0) {

@@ -105,7 +105,7 @@ public class Texture {
      * @param linearFiltering if it uses it.
      * @param repeatTexture what method of texturing.
      */
-	public Texture(int width, int height, ByteBuffer data, boolean linearFiltering, boolean repeatTexture) {
+	public Texture(int width, int height, int internalFormat, int format, int type, ByteBuffer data, boolean linearFiltering, boolean repeatTexture) {
     	this.m_fileName = "";
 		float filter;
         int wrapMode;
@@ -128,7 +128,8 @@ public class Texture {
 
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
         
         this.m_width = width;
 		this.m_height = height;

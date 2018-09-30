@@ -23,7 +23,6 @@ package engine.core;
  */
 public class Time {
 
-    private static final long OLD_LONG_SECOND = 1000000000L;
     public static final double SECOND = 1.0;
 
     private static double delta;
@@ -33,7 +32,7 @@ public class Time {
      * @return Program's time.
      */
     public static double getTime() {
-        return (double)System.nanoTime()/(double)OLD_LONG_SECOND;
+        return (double)System.nanoTime()/(double)1000000000L;
     }
 
     /**

@@ -500,7 +500,7 @@ public class Level extends GameComponent {
      * @param shader to render
      */
     public void render(Shader shader) {
-    	shader.getRenderingEngine().setMainCamera(player.getCamera());
+    	shader.getRenderingEngine().setMainCamera(Transform.getCamera());
     	meshRenderer.render(shader);
 
     	shader.getRenderingEngine().addListToRenderPipeline(naziSoldiers, shader);

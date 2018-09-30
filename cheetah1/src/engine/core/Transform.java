@@ -94,7 +94,7 @@ public class Transform {
      * @return Orthographic camera matrix.
      */
     public static Matrix4f getOrthographicCameraMatrix() {
-        Matrix4f cameraRotation = new Matrix4f().initCamera(m_camera.getForward(), m_camera.getUp());
+        Matrix4f cameraRotation = m_camera.getRotation().getRotationMatrix();
         Matrix4f cameraTranslation = new Matrix4f().initTranslation(-m_camera.getPos().getX(), -m_camera.getPos().getY(), -m_camera.getPos().getZ());
 
         return getOrthographicMatrix().mul(cameraRotation.mul(cameraTranslation));
@@ -105,7 +105,7 @@ public class Transform {
      * @return Perspective camera matrix.
      */
     public static Matrix4f getPerspectiveCameraMatrix() {
-        Matrix4f cameraRotation = new Matrix4f().initCamera(m_camera.getForward(), m_camera.getUp());
+        Matrix4f cameraRotation = m_camera.getRotation().getRotationMatrix();
         Matrix4f cameraTranslation = new Matrix4f().initTranslation(-m_camera.getPos().getX(), -m_camera.getPos().getY(), -m_camera.getPos().getZ());
 
         return getPerspectiveMatrix().mul(cameraRotation.mul(cameraTranslation));

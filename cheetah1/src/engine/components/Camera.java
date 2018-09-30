@@ -15,6 +15,7 @@
  */
 package engine.components;
 
+import engine.core.Quaternion;
 import engine.core.Vector3f;
 
 /**
@@ -28,8 +29,7 @@ public class Camera {
     public static final Vector3f yAxis = new Vector3f(0, 1, 0);
 
     private Vector3f m_pos;
-    private Vector3f m_forward;
-    private Vector3f m_up;
+    private Quaternion m_rotation;
 
     /**
      * Camera empty constructor.
@@ -38,22 +38,20 @@ public class Camera {
 
     /**
      * Camera constructor on a 3D space.
-     * @param pos Actual position.
+     * @param pos Actual position
      */
     public Camera(Vector3f pos) {
-        this(pos, new Vector3f(0, 0, 1), new Vector3f(0, 1, 0));
+        this(pos, new Quaternion(0,0,0,1));
     }
 
     /**
      * Movable camera constructor on a 3D space.
-     * @param pos Actual position.
-     * @param forward direction.
-     * @param up direction.
+     * @param pos Actual position
+     * @param rotation of the position
      */
-    public Camera(Vector3f pos, Vector3f forward, Vector3f up) {
+    public Camera(Vector3f pos, Quaternion rotation) {
         this.m_pos = pos;
-        this.m_forward = forward.normalized();
-        this.m_up = up.normalized();
+        this.m_rotation = rotation;
     }
 
     /**
@@ -82,43 +80,59 @@ public class Camera {
      * @param dir Direction.
      * @param amt Velocity amount.
      */
-    public void move(Vector3f dir, float amt) {m_pos = m_pos.add(dir.mul(amt));}
-
+    public void move(Vector3f dir, float amt) { m_pos = m_pos.add(dir.mul(amt)); }
+    
     /**
-     * Rotates the camera in the Y axis.
-     * @param angle of rotation.
+     * Rotates the camera in the y axis by an angle.
+     * @param angle to rotate
      */
     public void rotateY(float angle) {
-        Vector3f Haxis = yAxis.cross(m_forward).normalized();
-
-        m_forward = m_forward.rotate(angle, yAxis).normalized();
-
-        m_up = m_forward.cross(Haxis).normalized();
-    }
-
+		Quaternion newRotation = new Quaternion(yAxis, -angle).normalized();
+		
+		m_rotation = m_rotation.mul(newRotation).normalized();
+	}
+	
     /**
-     * Rotates the camera in the X axis.
-     * @param angle of rotation.
+     * Rotates the camera in the x axis by an angle.
+     * @param angle to rotate
      */
-    public void rotateX(float angle) {
-        Vector3f Haxis = yAxis.cross(m_forward).normalized();
+	public void rotateX(float angle) {
+		Quaternion newRotation = new Quaternion(m_rotation.getRight(), -angle).normalized();
+		
+		m_rotation = m_rotation.mul(newRotation).normalized();
+	}
 
-        m_forward = m_forward.rotate(angle, Haxis).normalized();
-
-        m_up = m_forward.cross(Haxis).normalized();
-    }
+	/**
+	 * Rotates the camera by some QUATERNION.
+	 * @param quaternion to rotate
+	 */
+    public void rotate(Quaternion quaternion) {
+		m_rotation = m_rotation.mul(quaternion).normalized();
+	}
 
     /**
      * Returns the left side coordinates of the camera.
      * @return Left coordinates.
      */
-    public Vector3f getLeft() {return m_forward.cross(m_up).normalized();}
+    public Vector3f getLeft() {return m_rotation.getLeft();}
 
     /**
      * Returns the right side coordinates of the camera.
      * @return Right coordinates.
      */
-    public Vector3f getRight() {return m_up.cross(m_forward).normalized();}
+    public Vector3f getRight() {return m_rotation.getRight();}
+	
+    /**
+     * Returns the rotation of the camera.
+     * @return rotation
+     */
+	public Quaternion getRotation() { return m_rotation; }
+	
+	/**
+	 * Sets a rotation for the camera.
+	 * @param rotation to set
+	 */
+	public void setRotation(Quaternion rotation) { this.m_rotation = rotation; }
 
     /**
      * Returns the camera's actual position.
@@ -136,24 +150,6 @@ public class Camera {
      * Returns the forward vector of the actual camera.
      * @return forward vector.
      */
-    public Vector3f getForward() {return m_forward;}
-
-    /**
-     * Returns the forward side coordinates of the camera.
-     * @return Forward coordinates.
-     */
-    public void setForward(Vector3f forward) {this.m_forward = forward;}
-
-    /**
-     * Returns the up side coordinates of the camera.
-     * @return Up coordinates.
-     */
-    public Vector3f getUp() {return m_up;}
-
-    /**
-     * Returns the up side coordinates of the camera.
-     * @return Up coordinates.
-     */
-    public void setUp(Vector3f up) {this.m_up = up;}
+    public Vector3f getForward() {return m_rotation.getForward();}
     
 }

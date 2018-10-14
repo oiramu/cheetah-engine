@@ -18,32 +18,58 @@ package engine.core;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2017
  */
 public class Time {
 
-    public static final double SECOND = 1.0;
+    public static final double SECOND = 1000000000L;
+    private static double m_fps;
+    private static double m_frametime;
 
-    private static double delta;
+    private static double m_delta;
 
     /**
      * Gets the time of compiling.
      * @return Program's time.
      */
     public static double getTime() {
-        return (double)System.nanoTime()/(double)1000000000L;
+        return (double)System.nanoTime();
     }
 
     /**
      * Returns the time's delta.
      * @return delta
      */
-    public static double getDelta() { return delta; }
+    public static double getDelta() { return m_delta; }
 
     /**
      * Sets a delta for the time.
-     * @param delta For time.
+     * @param delta For time
      */
-    public static void setDelta(double delta) { Time.delta = delta; }
+    public static void setDelta(double delta) { Time.m_delta = delta; }
+    
+    /**
+     * Returns the frames per second.
+     * @return FPS
+     */
+    public static double getFPS() { return m_fps; }
+
+    /**
+     * Sets the frames per second.
+     * @param fps.
+     */
+    public static void setFPS(double fps) { Time.m_fps = fps; }
+    
+    /**
+     * Returns the time between frames.
+     * @return frame time
+     */
+    public static double getFrametime() { return m_frametime; }
+
+    /**
+     * Sets the time between frames.
+     * @param frametime
+     */
+    public static void setFrametime(double frametime) { Time.m_frametime = frametime; }
 }

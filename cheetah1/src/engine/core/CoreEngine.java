@@ -120,7 +120,7 @@ public class CoreEngine {
             double passedTime = startTime - lastTime;
             lastTime = startTime;
 
-            unprocessedTime += passedTime;
+            unprocessedTime += passedTime / Time.SECOND;
             frameCounter += passedTime;
 
             while (unprocessedTime > m_frameTime) {
@@ -139,8 +139,9 @@ public class CoreEngine {
                 
                 m_game.update(m_renderingEngine);
 
-                if (frameCounter >= 1.0) {
-                    System.out.println("FPS: "+frames+ "; " + 1000.0f/frames + "ms.");
+                if (frameCounter >= Time.SECOND) {
+                	Time.setFPS(frames);
+                	Time.setFrametime(1000.0f/frames);
                     frames = 0;
                     frameCounter = 0;
                 }

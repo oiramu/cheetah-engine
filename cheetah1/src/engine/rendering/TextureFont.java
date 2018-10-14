@@ -22,6 +22,8 @@ import engine.core.Util;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 
+import static engine.core.CoreEngine.*;
+
 /**
  *
  * @author Carlos Rodriguez
@@ -69,6 +71,7 @@ public class TextureFont {
         m_meshFont = new Mesh(verts, indices, true);
         
         m_shader = new Shader("hud");
+        m_shader.setRenderingEngine(m_renderingEngine);
         Matrix4f matrixScaleFont = new Matrix4f();
         Matrix4f matrixTranslationFont = new Matrix4f();
         matrixScaleFont.initScale(scale.getX(), scale.getY(), 1.5f);
@@ -128,6 +131,7 @@ public class TextureFont {
         m_meshFont = new Mesh(vertArray, Util.toIntArray(intArray));
         
         m_shader = new Shader("hud");
+        m_shader.setRenderingEngine(m_renderingEngine);
         Matrix4f matrixScaleFont = new Matrix4f();
         Matrix4f matrixTranslationFont = new Matrix4f();
         matrixScaleFont.initScale(scale.getX(), scale.getY(), 1.5f);

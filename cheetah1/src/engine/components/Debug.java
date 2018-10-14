@@ -61,7 +61,7 @@ public class Debug {
     	long end = System.nanoTime();
         long totalAvailCPUTime = Runtime.getRuntime().availableProcessors() * (end-System.nanoTime());
         long totalUsedCPUTime = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()-ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();;
-        int cpu = (int) (((float)totalUsedCPUTime*1000)/(float)totalAvailCPUTime);
+        int cpu = (int) (((float)totalUsedCPUTime*10)/(float)totalAvailCPUTime);
         debugText.get("CPU").setText("CPU:"+cpu+"% "+Runtime.getRuntime().availableProcessors()+" cores");
         debugText.get("LWJGL").render();
         debugText.get("OpenGL").render();

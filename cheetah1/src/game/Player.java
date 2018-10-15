@@ -176,7 +176,6 @@ public class Player {
     
     public static boolean mouseLocked;
     public static boolean isOn;
-    public static boolean debug;
     
     public boolean fires;
     
@@ -663,12 +662,12 @@ public class Player {
             	}
             }
 	        
-	        if(debug) {
+	        if(Debug.m_state) {
 				if (Input.getKeyDown(Input.KEY_F3))
-					debug = false;
+					Debug.m_state = false;
             } else {
             	if (Input.getKeyDown(Input.KEY_F3))
-            		debug = true;
+            		Debug.m_state = true;
             }
 	
 	        movementVector = zeroVector;
@@ -814,7 +813,8 @@ public class Player {
     	double gunTime4 = gunTime3 + gunFireAnimationTime;
     	
     	if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
-    	if(debug) Debug.print();
+    	if(Debug.m_state) Debug.print();
+    	Auschwitz.printStats();
     	lifeText.setText("Life:"+getHealth());
     	ammoText.setText("Ammo:"+ammo);
         if(armorb) armorText.setText("Armor:"+getArmori());

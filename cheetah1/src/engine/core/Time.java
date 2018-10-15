@@ -24,10 +24,10 @@ package engine.core;
 public class Time {
 
     public static final double SECOND = 1000000000L;
-    private static double m_fps;
-    private static double m_frametime;
+    private static double 	m_fps;
+    private static double	m_frametime;
 
-    private static double m_delta;
+    private static double 	m_delta;
 
     /**
      * Gets the time of compiling.
@@ -72,4 +72,5 @@ public class Time {
      * @param frametime
      */
     public static void setFrametime(double frametime) { Time.m_frametime = frametime; }
+
 }

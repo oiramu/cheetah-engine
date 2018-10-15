@@ -33,18 +33,20 @@ import engine.rendering.TextureFont;
  */
 public class Debug {
 	
+	public static boolean m_state;
+	
 	private static HashMap<String,TextureFont> debugText = new HashMap<String,TextureFont>();
 	
 	/**
 	 * Defines the hash map of variables to test.
 	 */
 	public static void init() {
-		debugText.put("FPS",new TextureFont("", new Vector2f(0.75f,1.75f), new Vector2f(0.5f,0.5f)));
-		debugText.put("FrameTime",new TextureFont("", new Vector2f(0.75f,1.65f), new Vector2f(0.5f,0.5f)));
-		debugText.put("Memory",new TextureFont("", new Vector2f(0.75f,1.55f), new Vector2f(0.5f,0.5f)));
-		debugText.put("CPU",new TextureFont("", new Vector2f(0.75f,1.45f), new Vector2f(0.5f,0.5f)));
-		debugText.put("LWJGL",new TextureFont("LWJGL:"+getVersion(), new Vector2f(0.75f,1.35f), new Vector2f(0.5f,0.5f)));
-		debugText.put("OpenGL",new TextureFont("OpenGL:"+glGetString(GL_VERSION), new Vector2f(0.75f,1.25f), new Vector2f(0.5f,0.5f)));
+		debugText.put("FPS",new TextureFont("", new Vector2f(0.70f,1.8f), new Vector2f(0.5f,0.5f)));
+		debugText.put("FrameTime",new TextureFont("", new Vector2f(0.70f,1.7f), new Vector2f(0.5f,0.5f)));
+		debugText.put("Memory",new TextureFont("", new Vector2f(0.70f,1.6f), new Vector2f(0.5f,0.5f)));
+		debugText.put("CPU",new TextureFont("", new Vector2f(0.70f,1.5f), new Vector2f(0.5f,0.5f)));
+		debugText.put("LWJGL",new TextureFont("LWJGL:"+getVersion(), new Vector2f(0.70f,1.4f), new Vector2f(0.5f,0.5f)));
+		debugText.put("OpenGL",new TextureFont("OpenGL:"+glGetString(GL_VERSION), new Vector2f(0.70f,1.3f), new Vector2f(0.5f,0.5f)));
 	}
 	
 	/**

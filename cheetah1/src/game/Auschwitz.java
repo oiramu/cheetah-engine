@@ -76,7 +76,7 @@ public class Auschwitz implements Game {
     /**
      * Prints the statistics of the level. 
      */
-    public static void printStats() {
+    private static void printStats() {
     	double time = (double) Time.getTime() / Time.SECOND;
     	if(time<m_stateTime+5.0f) {
 	    	text.get("Level").setText("Level:" + m_levelNum + ";Episode" + m_currentEpisode);
@@ -127,6 +127,7 @@ public class Auschwitz implements Game {
 	public void render(RenderingEngine engine) {
         if (m_isRunning) {
         	engine.render(m_level);
+        	printStats();
         }
     }
 	

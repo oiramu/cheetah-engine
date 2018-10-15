@@ -41,32 +41,34 @@ public class Debug {
 	 * Defines the hash map of variables to test.
 	 */
 	public static void init() {
-		debugText.put("FPS",new TextureFont("", new Vector2f(0.70f,1.8f), new Vector2f(0.5f,0.5f)));
-		debugText.put("FrameTime",new TextureFont("", new Vector2f(0.70f,1.7f), new Vector2f(0.5f,0.5f)));
-		debugText.put("Memory",new TextureFont("", new Vector2f(0.70f,1.6f), new Vector2f(0.5f,0.5f)));
-		debugText.put("CPU",new TextureFont("", new Vector2f(0.70f,1.5f), new Vector2f(0.5f,0.5f)));
-		debugText.put("LWJGL",new TextureFont("LWJGL:"+getVersion(), new Vector2f(0.70f,1.4f), new Vector2f(0.5f,0.5f)));
-		debugText.put("OpenGL",new TextureFont("OpenGL:"+glGetString(GL_VERSION), new Vector2f(0.70f,1.3f), new Vector2f(0.5f,0.5f)));
+		debugText.put("FPS",new TextureFont("", new Vector2f(0.8f,1.8f), new Vector2f(0.5f,0.5f)));
+		debugText.put("FrameTime",new TextureFont("", new Vector2f(0.8f,1.7f), new Vector2f(0.5f,0.5f)));
+		debugText.put("Memory",new TextureFont("", new Vector2f(0.8f,1.6f), new Vector2f(0.5f,0.5f)));
+		debugText.put("CPU",new TextureFont("", new Vector2f(0.8f,1.5f), new Vector2f(0.5f,0.5f)));
+		debugText.put("LWJGL",new TextureFont("LWJGL:"+getVersion(), new Vector2f(0.8f,1.4f), new Vector2f(0.5f,0.5f)));
+		debugText.put("OpenGL",new TextureFont("OpenGL:"+glGetString(GL_VERSION), new Vector2f(0.8f,1.3f), new Vector2f(0.5f,0.5f)));
 	}
 	
 	/**
 	 * Prints the debug stuff to the tester's screen.
 	 */
 	public static void print() {
-		debugText.get("FPS").setText("FPS:"+(int)Time.getFPS());
-		debugText.get("FrameTime").setText("FrameTime:"+(float)Time.getFrametime());
-		int totalMemory = (int)Runtime.getRuntime().totalMemory()/1048576;
-    	int freeMemory = (int)Runtime.getRuntime().freeMemory()/1048576;
-    	int usingMemory = totalMemory - freeMemory;
-    	int mem = (usingMemory*100/totalMemory);
-    	debugText.get("Memory").setText("Mem:"+mem+"% "+usingMemory+"/"+totalMemory+"MB");
-    	long end = System.nanoTime();
-        long totalAvailCPUTime = Runtime.getRuntime().availableProcessors() * (end-System.nanoTime());
-        long totalUsedCPUTime = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()-ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();;
-        int cpu = (int) (((float)totalUsedCPUTime*10)/(float)totalAvailCPUTime);
-        debugText.get("CPU").setText("CPU:"+cpu+"% "+Runtime.getRuntime().availableProcessors()+" cores");
-        debugText.get("LWJGL").render();
-        debugText.get("OpenGL").render();
+		if(m_state) {
+			debugText.get("FPS").setText("FPS:"+(int)Time.getFPS());
+			debugText.get("FrameTime").setText("FrameTime:"+(float)Time.getFrametime());
+			int totalMemory = (int)Runtime.getRuntime().totalMemory()/1048576;
+	    	int freeMemory = (int)Runtime.getRuntime().freeMemory()/1048576;
+	    	int usingMemory = totalMemory - freeMemory;
+	    	int mem = (usingMemory*100/totalMemory);
+	    	debugText.get("Memory").setText("Mem:"+mem+"% "+usingMemory+"/"+totalMemory+"MB");
+	    	long end = System.nanoTime();
+	        long totalAvailCPUTime = Runtime.getRuntime().availableProcessors() * (end-System.nanoTime());
+	        long totalUsedCPUTime = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()-ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();;
+	        int cpu = (int) (((float)totalUsedCPUTime*10)/(float)totalAvailCPUTime);
+	        debugText.get("CPU").setText("CPU:"+cpu+"% "+Runtime.getRuntime().availableProcessors()+" cores");
+	        debugText.get("LWJGL").render();
+	        debugText.get("OpenGL").render();
+		}
 	}
 
 }

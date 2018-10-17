@@ -18,13 +18,13 @@ package engine.core;
 import engine.rendering.RenderingEngine;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2018
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2018
+ */
 public interface Game {
-		
+	
 	public void init();
 	public void input();
 	public void update(RenderingEngine engine);

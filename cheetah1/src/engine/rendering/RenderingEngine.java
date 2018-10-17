@@ -222,7 +222,6 @@ public class RenderingEngine extends MappedValues {
         System.out.println("-OS version: " + System.getProperty("os.version"));
         System.out.println("-LWJGL version: " + org.lwjgl.Sys.getVersion());
         System.out.println("-OpenGL version: " + glGetString(GL_VERSION));
-        System.out.println("\n");
 	}
 	
 	/**

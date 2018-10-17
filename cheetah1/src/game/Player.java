@@ -813,7 +813,7 @@ public class Player {
     	double gunTime4 = gunTime3 + gunFireAnimationTime;
     	
     	if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
-    	Debug.print();
+    	Debug.printToEngine();
     	lifeText.setText("Life:"+getHealth());
     	ammoText.setText("Ammo:"+ammo);
         if(armorb) armorText.setText("Armor:"+getArmori());

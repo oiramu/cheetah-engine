@@ -60,7 +60,7 @@ public class Auschwitz implements Game {
     /**
      * The constructor method of the compiling game.
      */
-    public void init() {
+	public void init() {
     	text.put("Level",new TextureFont("", new Vector2f(-1.25f,1.2f), new Vector2f(0.75f,0.75f)));
         text.put("Enemies",new TextureFont("", new Vector2f(-1.25f,1.1f), new Vector2f(0.75f,0.75f)));
         text.put("Secrets",new TextureFont("", new Vector2f(-1.25f,1.0f), new Vector2f(0.75f,0.75f)));

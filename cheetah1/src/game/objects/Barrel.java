@@ -120,9 +120,10 @@ public class Barrel {
         this.material = new Material(animation.get(0));
         this.state = STATE_IDLE;
         this.transform = transform;
-        this.light = new PointLight(new Vector3f(0.9f,0.7f,0.2f), 0.8f, 
-        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0, 
-        				getTransform().getPosition().getZ()));
+        if(light == null)
+	        this.light = new PointLight(new Vector3f(0.9f,0.7f,0.2f), 0.8f, 
+	        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0, 
+	        				getTransform().getPosition().getZ()));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         this.dead = false;
         this.health = 200;

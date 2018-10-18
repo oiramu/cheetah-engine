@@ -314,10 +314,12 @@ public class Player {
 			}
     	}
     	
-    	lifeText = new TextureFont("", new Vector2f(-0.9f,-0.8f), new Vector2f(1f,1f));
-    	armorText = new TextureFont("", new Vector2f(-0.9f,-0.7f), new Vector2f(1f,1f));
-    	ammoText = new TextureFont("", new Vector2f(-0.9f,-0.9f), new Vector2f(1f,1f));
-    	
+    	if(lifeText == null && armorText == null && ammoText == null) {
+    		lifeText = new TextureFont("", new Vector2f(-0.9f,-0.8f), new Vector2f(1f,1f));
+    		armorText = new TextureFont("", new Vector2f(-0.9f,-0.7f), new Vector2f(1f,1f));
+    		ammoText = new TextureFont("", new Vector2f(-0.9f,-0.9f), new Vector2f(1f,1f));
+    	}
+    		
     	if(weaponState == null) { gotPistol(); }
     	
     	if(painMaterials == null) {

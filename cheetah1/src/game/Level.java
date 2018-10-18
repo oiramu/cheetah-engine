@@ -232,6 +232,7 @@ public class Level extends GameComponent {
         
         generateLevel(engine);
         Transform.setCamera(player.getCamera());
+        engine.setMainCamera(player.getCamera());
     }
 
     Random rand = new Random();
@@ -500,7 +501,6 @@ public class Level extends GameComponent {
      * @param shader to render
      */
     public void render(Shader shader) {
-    	shader.getRenderingEngine().setMainCamera(Transform.getCamera());
     	meshRenderer.render(shader);
 
     	shader.getRenderingEngine().addListToRenderPipeline(naziSoldiers, shader);

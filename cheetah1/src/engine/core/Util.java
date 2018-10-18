@@ -148,4 +148,14 @@ public class Util {
         return result;
     }
     
+    /**
+     * Clamps a variable respect to a maximum number.
+     * @param max value of the variable
+     * @param value to clamp
+     * @return clamped value
+     */
+    public static int clamp(int max, int value) {
+    	return Math.max(0,Math.min(max, value));
+    }
+    
 }

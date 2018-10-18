@@ -101,9 +101,10 @@ public class Lamp extends GameComponent {
         this.material = new Material(animation.get(0));
         this.state = STATE_IDLE;
         this.transform = transform;
-        this.light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
-        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.1f, 
-        				getTransform().getPosition().getZ()));
+        if(light == null)
+	        this.light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
+	        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.1f, 
+	        				getTransform().getPosition().getZ()));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         this.dead = false;
         this.health = 20;

@@ -25,6 +25,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import engine.core.Time;
+import engine.core.Util;
 import engine.core.Vector2f;
 import engine.rendering.TextureFont;
 
@@ -80,7 +81,7 @@ public class Debug {
 	        long totalAvailCPUTime = cpus * (end-System.nanoTime());
 	        long totalUsedCPUTime = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()-ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();;
 	        int cpu = (int) (((float)totalUsedCPUTime*10)/(float)totalAvailCPUTime);
-	        debugText.get("CPU").setText("CPU:"+Math.max(0,Math.min(100, cpu))+"% "+cpus+" cores");
+	        debugText.get("CPU").setText("CPU:"+Util.clamp(100, cpu)+"% "+cpus+" cores");
 	        if(Time.getFPS() >= m_bestFPS) m_bestFPS = (int) Time.getFPS();
 	        m_averageFPS = (m_bestFPS+m_worstFPS)/2;
 	        if(m_worstFPS == -1) m_worstFPS = m_averageFPS; else

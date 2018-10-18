@@ -79,9 +79,10 @@ public class Lantern extends GameComponent {
             m_material = new Material(new Texture(RES_LOC));
         }
         this.m_transform = transform;
-        this.m_light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
-        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.25f, 
-        				getTransform().getPosition().getZ()));
+        if(m_light == null)
+	        this.m_light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
+	        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.25f, 
+	        				getTransform().getPosition().getZ()));
         this.m_meshRenderer = new MeshRenderer(m_mesh, getTransform(), m_material);
     	renderingEngine.addLight(m_light);
     }

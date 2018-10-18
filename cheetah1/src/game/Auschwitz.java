@@ -20,6 +20,8 @@ import java.util.HashMap;
 
 import javax.sound.midi.Sequence;
 
+import org.lwjgl.input.Keyboard;
+
 import static engine.core.CoreEngine.*;
 
 import engine.audio.AudioUtil;
@@ -100,6 +102,10 @@ public class Auschwitz implements Game {
      */
     public void input() {
         m_level.input();
+        
+        if(Keyboard.isKeyDown(Keyboard.KEY_COMMA) && Keyboard.isKeyDown(Keyboard.KEY_Q)
+        		|| Keyboard.isKeyDown(Keyboard.KEY_F4))
+        	System.exit(0);
 
         /**
         if (Input.getKey(Input.KEY_1)) {
@@ -134,7 +140,7 @@ public class Auschwitz implements Game {
 	/**
      * Reloads the last level played.
      */
-	public static void reloadLevel() {loadLevel(m_levelNum-m_levelNum);}
+	public static void reloadLevel() { loadLevel(m_levelNum-m_levelNum); }
 
     /**
      * Load the level and also charges the next level when the last end.
@@ -143,6 +149,10 @@ public class Auschwitz implements Game {
 	@SuppressWarnings("static-access")
 	public static void loadLevel(int offset) {
         try {
+        	m_secrets = 0;
+            m_deadMonsters = 0;
+            m_totalSecrets = 0;
+            m_totalMonsters = 0;
             int bulletTemp = 0;
             int shellTemp = 0;
             int armoriTemp = 0;
@@ -281,6 +291,7 @@ public class Auschwitz implements Game {
             		m_level.getPlayer().gotChaingun();
             	}
             }
+            
         } catch (RuntimeException ex) {
         	ex.printStackTrace();
             m_isRunning = false;

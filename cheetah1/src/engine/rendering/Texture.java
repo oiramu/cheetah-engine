@@ -31,6 +31,7 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+import engine.components.Debug;
 import engine.core.Util;
 import engine.rendering.resourceManagement.TextureResource;
 
@@ -206,6 +207,9 @@ public class Texture {
         						glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
         				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
         						ammount);
+        			} else {
+        				Debug.printErrorMessage("Anisotropic filtering is not supported by the driver.\n"
+        						+ "Try with trilinear filtering.", "Driver error!");
         			}
             		break;
             }

@@ -137,7 +137,7 @@ public class CoreEngine {
                 m_game.input();
                 Input.update();
                 
-                m_game.update(m_renderingEngine);
+                m_game.update();
 
                 if (frameCounter >= Time.SECOND) {
                 	Time.setFPS(frames);
@@ -155,6 +155,7 @@ public class CoreEngine {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    Debug.printErrorMessage(e.getMessage(), "Core Error!");
                 }
             }
         }

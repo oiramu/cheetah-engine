@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package engine.components;
+package engine.core;
 
 import static org.lwjgl.Sys.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -24,9 +24,6 @@ import java.util.HashMap;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
-import engine.core.Time;
-import engine.core.Util;
-import engine.core.Vector2f;
 import engine.rendering.TextureFont;
 
 /**
@@ -79,7 +76,7 @@ public class Debug {
 	    	long end = System.nanoTime();
 	    	int cpus = Runtime.getRuntime().availableProcessors();
 	        long totalAvailCPUTime = cpus * (end-System.nanoTime());
-	        long totalUsedCPUTime = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()-ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();;
+	        long totalUsedCPUTime = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()-ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();
 	        int cpu = (int) (((float)totalUsedCPUTime*10)/(float)totalAvailCPUTime);
 	        debugText.get("CPU").setText("CPU:"+Util.clamp(100, cpu)+"% "+cpus+" cores");
 	        if(Time.getFPS() >= m_bestFPS) m_bestFPS = (int) Time.getFPS();

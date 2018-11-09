@@ -100,13 +100,11 @@ public class Bag extends GameComponent {
 
         m_transform.setRotation(0, angle + 90, 0);
 
-        //Level.getPlayer();
 		if (distance < PICKUP_THRESHHOLD) {
-			/**
-            Level.getPlayer().setMaxBullets(BULLET_AMOUNT);
-            Level.getPlayer().setMaxShells(SHELL_AMOUNT);
-            Level.getPlayer().setMaxArmor(ARMOR_AMOUNT);
-            */
+			Level.getPlayer().setMaxHealth(Level.getPlayer().getMaxHealth()*2);
+            Level.getPlayer().setMaxBullets(Level.getPlayer().getMaxBullets()*2);
+            Level.getPlayer().setMaxShells(Level.getPlayer().getMaxShells()*2);
+            Level.getPlayer().setMaxArmori(Level.getPlayer().getMaxArmori()*2);
             Level.removeBags(this);
             AudioUtil.playAudio(PICKUP_NOISE, 0);
         }

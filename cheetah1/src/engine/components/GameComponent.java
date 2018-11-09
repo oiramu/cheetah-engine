@@ -16,7 +16,6 @@
 package engine.components;
 
 import engine.core.Transform;
-import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 
 /**
@@ -28,7 +27,7 @@ import engine.rendering.Shader;
 public abstract class GameComponent {
 	
 	private Transform m_transform;
-	public void input(RenderingEngine engine) {}
+	public void input() {}
 	public void render(Shader shader) {}
 	public void update() {}
 	public Transform getTransform() {return m_transform;}

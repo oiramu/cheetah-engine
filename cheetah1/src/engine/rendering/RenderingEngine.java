@@ -21,7 +21,6 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import game.enemies.*;
 import engine.components.BaseLight;
 import engine.components.Camera;
 import engine.components.GameComponent;
@@ -93,8 +92,8 @@ public class RenderingEngine extends MappedValues {
 			glDepthMask(false);
 			glDepthFunc(GL_EQUAL);
 			
-			for(int i = 0; i < m_lights.size(); i++) {
-				m_activeLight = m_lights.get(i);
+			for(BaseLight light : m_lights) {
+				m_activeLight = light;
 				component.render(m_activeLight.getShader(this));
 			}
 			
@@ -105,93 +104,6 @@ public class RenderingEngine extends MappedValues {
     		e.printStackTrace();
     		System.exit(0);
     	}
-    }
-    
-    /**
-     * Adds to the render pipeline the lists of objects to render.
-     * @param list of objects.
-     * @param shader to render.
-     */
-    public <E> void addListToRenderPipeline(ArrayList<E> list, Shader shader) {
-    	for (E component : list) ((GameComponent) component).render(shader);
-    }
-    
-    /**
-     * Kills everything on the list of objects.
-     * @param list of objects.
-     */
-    public <E> void updateAndKillToRenderPipeline(ArrayList<E> list) {
-    	for (E component : list) {
-    		((NaziSoldier) component).update();
-    		((NaziSoldier) component).setState(4);
-    	}
-    }
-    
-    /**
-     * Adds to the render pipeline the lists of objects to update.
-     * @param list of objects.
-     */
-    public <E> void updateListToRenderPipeline(ArrayList<E> list) {
-    	for (E component : list) ((GameComponent) component).update();
-    }
-    
-    /**
-     * Removes to the render pipeline the lists of objects to render.
-     * @param list of objects.
-     * @param removeList of objects.
-     */
-    public <E> void removeListToRenderPipeline(ArrayList<E> list, ArrayList<E> removeList) {
-    	for (E component : removeList) list.remove(component);
-    }
-    
-    /**
-     * Sorts the number of components added.
-     * @param list of objects.
-     */
-    public <E> void sortNumberComponents(ArrayList<E> list) {
-    	if (list.size() > 0) {
-    		sortComponents(list, 0, list.size() - 1);
-        }
-    }
-    
-    /**
-     * Sorts all the objects in the level.
-     * @param list of objects.
-     * @param low of the array
-     * @param high of the array
-     */
-    private <E> void sortComponents(ArrayList<E> list, int low, int high) {
-    	int i = low;
-        int j = high;
-
-        E pivot = list.get(low + (high - low) / 2);
-        float pivotDistance = ((GameComponent) pivot).getTransform().getPosition().sub(Transform.getCamera().getPos()).length();
-
-        while (i <= j) {
-            while (((GameComponent) list.get(i)).getTransform().getPosition().sub(Transform.getCamera().getPos()).length() > pivotDistance) {
-                i++;
-            }
-            while (((GameComponent) list.get(j)).getTransform().getPosition().sub(Transform.getCamera().getPos()).length() < pivotDistance) {
-                j--;
-            }
-
-            if (i <= j) {
-            	E temp = list.get(i);
-
-            	list.set(i, list.get(j));
-            	list.set(j, temp);
-
-                i++;
-                j--;
-            }
-        }
-
-        if (low < j) {
-        	sortComponents(list, low, j);
-        }
-        if (i < high) {
-        	sortComponents(list, i, high);
-        }
     }
     
     /**

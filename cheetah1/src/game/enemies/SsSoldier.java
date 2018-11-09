@@ -144,10 +144,9 @@ public class SsSoldier extends GameComponent {
             mesh = new Mesh(verts, indices, true);
         }
         
-        if(light == null) {
+        if(light == null)
         	light = new SpotLight(new Vector3f(0.5f,0.3f,0.1f), 1.6f, 
         	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
-        }
         
         this.transform = transform;
         this.material = new Material(animation.get(0));
@@ -178,9 +177,6 @@ public class SsSoldier extends GameComponent {
 
         Vector3f orientation = playerDistance.normalized();
         float distance = playerDistance.length();
-        
-        light.setPosition(transform.getPosition());
-        light.setDirection(orientation.mul(-1));
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
@@ -291,6 +287,8 @@ public class SsSoldier extends GameComponent {
                     material.setDiffuse(animation.get(6));
                 } else if (timeDecimals <= 0.75f) {
                     if (canAttack) {
+                    	light.setPosition(transform.getPosition());
+                        light.setDirection(orientation.mul(-1));
                     	gunFireTime = (double) Time.getTime() / Time.SECOND;
                         Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
 

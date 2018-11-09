@@ -31,7 +31,7 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
-import engine.components.Debug;
+import engine.core.Debug;
 import engine.core.Util;
 import engine.rendering.resourceManagement.TextureResource;
 
@@ -187,18 +187,22 @@ public class Texture {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);    
             
-            switch("2filter") {
+            switch("3filter") {
             	case "0filter":
             		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
                     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             		break;
             	case "1filter":
+            		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            		break;
+            	case "2filter":
             		glGenerateMipmap(GL_TEXTURE_2D);
                     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -1.0f);
             		break;
-            	case "2filter":
+            	case "3filter":
             		glGenerateMipmap(GL_TEXTURE_2D);
                     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0.0f);

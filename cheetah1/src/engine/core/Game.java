@@ -27,7 +27,7 @@ public interface Game {
 	
 	public void init();
 	public void input();
-	public void update(RenderingEngine engine);
+	public void update();
 	public void render(RenderingEngine engine);
 
 }

@@ -225,9 +225,9 @@ public class Mesh {
 
 		for(int i = 0; i < model.GetPositions().size(); i++) {
 			vertices.add(new Vertex(model.GetPositions().get(i),
-					model.GetTexCoords().get(i),
-					model.GetNormals().get(i),
-					model.GetTangents().get(i)));
+									model.GetTexCoords().get(i),
+									model.GetNormals().get(i),
+									model.GetTangents().get(i)));
 		}
 
 		Vertex[] vertexData = new Vertex[vertices.size()];

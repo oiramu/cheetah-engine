@@ -134,7 +134,7 @@ public class SecretWall extends GameComponent {
 
         opening = true;
         if(opening == true)
-        AudioUtil.playAudio(openNoise, transform.getPosition().sub(Transform.getCamera().getPos()).length());
+        AudioUtil.playAudio(openNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
     }
 
     /**

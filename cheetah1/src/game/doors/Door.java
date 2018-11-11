@@ -138,7 +138,7 @@ public class Door extends GameComponent {
 
         opening = true;
         closing = false;
-        AudioUtil.playAudio(openNoise, transform.getPosition().sub(Transform.getCamera().getPos()).length());
+        AudioUtil.playAudio(openNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
     }
 
     /**
@@ -157,7 +157,7 @@ public class Door extends GameComponent {
                 open = true;
             } else if (time > startCloseTime && time < closeTime) {
                 if (!closing) {
-                    AudioUtil.playAudio(closeNoise, transform.getPosition().sub(Transform.getCamera().getPos()).length());
+                    AudioUtil.playAudio(closeNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
                 }
 
                 closing = true;

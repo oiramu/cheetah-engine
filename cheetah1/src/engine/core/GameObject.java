@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package engine.rendering;
+package engine.core;
 
 import java.util.ArrayList;
 
 import engine.components.GameComponent;
-import engine.core.Transform;
+import engine.rendering.Shader;
+import game.Level;
 import game.enemies.NaziSoldier;
 
 /**
@@ -29,13 +30,13 @@ import game.enemies.NaziSoldier;
  */
 public class GameObject {
 	
-	private ArrayList <GameComponent> m_list;
+	private ArrayList <GameComponent> 	m_list;
 	
 	/**
 	 * Game Object's constructor.
 	 */
 	public GameObject() {
-		if(m_list == null) m_list = new ArrayList<GameComponent>();
+		m_list = new ArrayList<GameComponent>();
 	}
 	
 	/**
@@ -104,13 +105,13 @@ public class GameObject {
         int j = high;
 
         E pivot = list.get(low + (high - low) / 2);
-        float pivotDistance = ((GameComponent) pivot).getTransform().getPosition().sub(Transform.getCamera().getPos()).length();
+        float pivotDistance = ((GameComponent) pivot).getTransform().getPosition().sub(Level.getPlayer().getCamera().getPos()).length();
 
         while (i <= j) {
-            while (((GameComponent) list.get(i)).getTransform().getPosition().sub(Transform.getCamera().getPos()).length() > pivotDistance) {
+            while (((GameComponent) list.get(i)).getTransform().getPosition().sub(Level.getPlayer().getCamera().getPos()).length() > pivotDistance) {
                 i++;
             }
-            while (((GameComponent) list.get(j)).getTransform().getPosition().sub(Transform.getCamera().getPos()).length() < pivotDistance) {
+            while (((GameComponent) list.get(j)).getTransform().getPosition().sub(Level.getPlayer().getCamera().getPos()).length() < pivotDistance) {
                 j--;
             }
 

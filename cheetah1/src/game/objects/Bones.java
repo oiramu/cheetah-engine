@@ -25,6 +25,7 @@ import engine.rendering.Mesh;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
+import game.Level;
 
 /**
  *
@@ -83,8 +84,7 @@ public class Bones extends GameComponent {
      * Updates the object every single frame.
      */
     public void update() {
-        Vector3f playerDistance = transform.getPosition().sub(Transform.getCamera().getPos());
-
+    	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
         Vector3f orientation = playerDistance.normalized();
         @SuppressWarnings("unused")
 		float distance = playerDistance.length();

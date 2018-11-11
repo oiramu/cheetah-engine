@@ -26,6 +26,7 @@ import engine.components.DirectionalLight;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Debug;
+import engine.core.GameObject;
 import engine.core.Input;
 import engine.core.Time;
 import engine.core.Transform;
@@ -34,7 +35,6 @@ import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.physics.PhysicsUtil;
 import engine.rendering.Bitmap;
-import engine.rendering.GameObject;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
 import engine.rendering.RenderingEngine;
@@ -225,7 +225,6 @@ public class Level extends GameComponent {
         m_objects.add(helmets);
         m_objects.add(superShotguns);      
         
-        Transform.setCamera(player.getCamera());
         m_renderingEngine.setMainCamera(player.getCamera());
     }
 

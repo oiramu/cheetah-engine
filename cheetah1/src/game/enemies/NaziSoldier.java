@@ -171,9 +171,8 @@ public class NaziSoldier extends GameComponent {
         
         //Set Height
         transform.setPosition(transform.getPosition().getX(), 0, transform.getPosition().getZ());
-
-        //Face player
-        Vector3f playerDistance = transform.getPosition().sub(Transform.getCamera().getPos());
+        
+        Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
 
         Vector3f orientation = playerDistance.normalized();
         float distance = playerDistance.length();
@@ -398,7 +397,7 @@ public class NaziSoldier extends GameComponent {
 
         if (health > 0) {
         	state = STATE_HIT;
-        	AudioUtil.playAudio(hitNoise, transform.getPosition().sub(Transform.getCamera().getPos()).length());     	
+        	AudioUtil.playAudio(hitNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());     	
         }
     }
 

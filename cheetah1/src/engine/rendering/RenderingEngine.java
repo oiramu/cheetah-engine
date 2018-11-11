@@ -16,7 +16,6 @@
 package engine.rendering;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +23,6 @@ import java.util.HashMap;
 import engine.components.BaseLight;
 import engine.components.Camera;
 import engine.components.GameComponent;
-import engine.core.Transform;
 import engine.core.Vector3f;
 import engine.rendering.resourceManagement.MappedValues;
 
@@ -64,16 +62,8 @@ public class RenderingEngine extends MappedValues {
         glCullFace(GL_BACK);
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
-        glEnable(GL_DEPTH_CLAMP);
 
         glEnable(GL_TEXTURE_2D);
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        
-        Transform.setProjection(70, Window.getWidth(), Window.getHeight(), 0.01f, 1000f);
-		
-        printCompilationStuff();
 	}
 	
 	/**
@@ -81,10 +71,9 @@ public class RenderingEngine extends MappedValues {
      */
     public void render(GameComponent component) {
     	try {
-    		Window.bindAsRenderTarget();
-    		
+    		if (getMainCamera() == null) System.err.println("Error! Main camera not found. This is very very big bug, and game will crash.");
     		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    		
 	        component.render(m_forwardAmbient);
 	        
 	        glEnable(GL_BLEND);
@@ -92,8 +81,8 @@ public class RenderingEngine extends MappedValues {
 			glDepthMask(false);
 			glDepthFunc(GL_EQUAL);
 			
-			for(BaseLight light : m_lights) {
-				m_activeLight = light;
+			for(int i = 0; i < m_lights.size(); i++) {
+				m_activeLight = m_lights.get(i);
 				component.render(m_activeLight.getShader(this));
 			}
 			
@@ -122,20 +111,6 @@ public class RenderingEngine extends MappedValues {
             glDisable(GL_TEXTURE_2D);
         }
     }
-    
-    /**
-	 * Prints the compilation configuration.
-	 */
-	private void printCompilationStuff() {
-		System.out.println("==============================");
-        System.out.println("||CHEETAH ENGINE; BUILD v1.0||");
-        System.out.println("==============================");
-        System.out.println("Compiliation specs: ");
-        System.out.println("-OS name: " + System.getProperty("os.name"));
-        System.out.println("-OS version: " + System.getProperty("os.version"));
-        System.out.println("-LWJGL version: " + org.lwjgl.Sys.getVersion());
-        System.out.println("-OpenGL version: " + glGetString(GL_VERSION));
-	}
 	
 	/**
 	 * Adds a new directional light to the rendering engine.

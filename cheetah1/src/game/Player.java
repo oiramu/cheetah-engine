@@ -42,6 +42,7 @@ import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.TextureFont;
 import engine.rendering.Vertex;
+import engine.rendering.Window;
 
 /**
  *
@@ -192,7 +193,10 @@ public class Player extends GameComponent {
      */
     public Player(Vector3f position, RenderingEngine renderingEngine) {
     	
-    	playerCamera = new Camera(position);
+    	if(playerCamera == null) {
+    		playerCamera = new Camera((float) Math.toRadians(70.0f), (float)Window.getWidth()/(float)Window.getHeight(), 0.01f, 1000f);
+    		playerCamera.setPos(position);
+    	}
     	
     	if(gunsMaterial == null) {
     		gunsMaterial = new ArrayList<Texture>();
@@ -534,7 +538,7 @@ public class Player extends GameComponent {
         
     	if(isAlive) {
 	        if (Input.getKeyDown(Input.KEY_E)) {
-	            Auschwitz.getLevel().openDoors(Transform.getCamera().getPos(), true);
+	            Auschwitz.getLevel().openDoors(playerCamera.getPos(), true);
 	        }
 	        
 	        if (Input.getKeyDown(Input.KEY_1)) {
@@ -719,7 +723,7 @@ public class Player extends GameComponent {
         
         movementVector.setY(0);
 
-        Vector3f oldPos = Transform.getCamera().getPos();
+        Vector3f oldPos = playerCamera.getPos();
         Vector3f newPos = oldPos.add(movementVector.normalized().mul(movAmt));
 
         Vector3f collisionVector = Auschwitz.getLevel().checkCollisions(oldPos, newPos, width, width);
@@ -740,7 +744,7 @@ public class Player extends GameComponent {
         gunTransform.setRotation(gunTransform.getPosition().add(playerCamera.getLeft().normalized().mul(dx)));
         gunTransform.getPosition().setY(gunTransform.getPosition().getY() + dy);
 
-        Vector3f playerDistance = gunTransform.getPosition().sub(Transform.getCamera().getPos());
+        Vector3f playerDistance = gunTransform.getPosition().sub(playerCamera.getPos());
 
         Vector3f orientation = playerDistance.normalized();
 

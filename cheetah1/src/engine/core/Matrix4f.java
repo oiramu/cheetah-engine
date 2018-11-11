@@ -134,22 +134,20 @@ public class Matrix4f {
 	/**
 	 * Starts the projection of the matrix data with a perspective.
 	 * @param fov Field of view.
-	 * @param width Size.
-	 * @param height Size.
+	 * @param aspect of the ratio.
 	 * @param zNear Near Z axis space.
 	 * @param zFar Far Z axis space.
 	 * @return projected matrix.
 	 */
-	public Matrix4f initPerspectiveProjection(float fov, float width, float height, float zNear, float zFar)
+	public Matrix4f initPerspective(float fov, float aspect, float zNear, float zFar)
 	{
-		float ar = width/height;
-		float tanHalfFOV = (float)Math.tan(Math.toRadians(fov / 2));
+		float tanHalfFOV = (float)Math.tan(fov / 2);
 		float zRange = zNear - zFar;
 		
-		m_m[0][0] = 1.0f / (tanHalfFOV * ar);	m_m[0][1] = 0;					m_m[0][2] = 0;	m_m[0][3] = 0;
-		m_m[1][0] = 0;						m_m[1][1] = 1.0f / tanHalfFOV;	m_m[1][2] = 0;	m_m[1][3] = 0;
-		m_m[2][0] = 0;						m_m[2][1] = 0;					m_m[2][2] = (-zNear -zFar)/zRange;	m_m[2][3] = 2 * zFar * zNear / zRange;
-		m_m[3][0] = 0;						m_m[3][1] = 0;					m_m[3][2] = 1;	m_m[3][3] = 0;
+		m_m[0][0] = 1.0f / (tanHalfFOV * aspect);	m_m[0][1] = 0;					m_m[0][2] = 0;	m_m[0][3] = 0;
+		m_m[1][0] = 0;								m_m[1][1] = 1.0f / tanHalfFOV;	m_m[1][2] = 0;	m_m[1][3] = 0;
+		m_m[2][0] = 0;								m_m[2][1] = 0;					m_m[2][2] = (-zNear -zFar)/zRange;	m_m[2][3] = 2 * zFar * zNear / zRange;
+		m_m[3][0] = 0;								m_m[3][1] = 0;					m_m[3][2] = 1;	m_m[3][3] = 0;
 		
 		return this;
 	}
@@ -164,7 +162,7 @@ public class Matrix4f {
 	 * @param far space.
 	 * @return projected matrix.
 	 */
-	public Matrix4f initOrthographicProjection(float left, float right, float top, float bottom, float near, float far)
+	public Matrix4f initOrthographic(float left, float right, float top, float bottom, float near, float far)
 	{
 		m_m[0][0] = 2/(right - left);					m_m[0][1] = 0;								m_m[0][2] = 0;					m_m[0][3] = 0;
 		m_m[1][0] = 0;								m_m[1][1] = 2/(top - bottom);					m_m[1][2] = 0;					m_m[1][3] = 0;

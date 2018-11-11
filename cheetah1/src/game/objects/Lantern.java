@@ -28,6 +28,7 @@ import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
+import game.Level;
 
 /**
  *
@@ -91,8 +92,7 @@ public class Lantern extends GameComponent {
      * Method that updates the object's data.
      */
     public void update() {
-        Vector3f playerDistance = m_transform.getPosition().sub(Transform.getCamera().getPos());
-
+    	Vector3f playerDistance = m_transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
         Vector3f orientation = playerDistance.normalized();
         @SuppressWarnings("unused")
 		float distance = playerDistance.length();

@@ -15,64 +15,41 @@
  */
 package engine.components;
 
+import engine.core.Matrix4f;
 import engine.core.Quaternion;
 import engine.core.Vector3f;
 
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2017
  */
 public class Camera {
 
     public static final Vector3f yAxis = new Vector3f(0, 1, 0);
 
-    private Vector3f m_pos;
-    private Quaternion m_rotation;
-
-    /**
-     * Camera empty constructor.
-     */
-    public Camera() {this(new Vector3f(0, 0, 0));}
-
-    /**
-     * Camera constructor on a 3D space.
-     * @param pos Actual position
-     */
-    public Camera(Vector3f pos) {
-        this(pos, new Quaternion(0,0,0,1));
-    }
+    private Vector3f 	m_pos;
+    private Quaternion 	m_rotation;
+    private Matrix4f	m_projection;
 
     /**
      * Movable camera constructor on a 3D space.
-     * @param pos Actual position
-     * @param rotation of the position
+     * @param fov of the camera
+     * @param aspect ratio
+     * @param zNear point for the camera
+     * @param zFar point for the camera
      */
-    public Camera(Vector3f pos, Quaternion rotation) {
-        this.m_pos = pos;
-        this.m_rotation = rotation;
+    public Camera(float fov, float aspect, float zNear, float zFar) {
+        this.m_pos = new Vector3f(0, 0, 0);
+        this.m_rotation = new Quaternion(0,0,0,1);
+        this.m_projection = new Matrix4f().initPerspective(fov, aspect, zNear, zFar);
     }
 
     /**
      * Input Method (Just in case you only need a camera).
      */
-    public void input() {
-        /**
-        if (Input.getKey(Input.KEY_UP)) {
-            rotateX(-rotAmt);
-        }
-        if (Input.getKey(Input.KEY_DOWN)) {
-            rotateX(rotAmt);
-        }
-        if (Input.getKey(Input.KEY_LEFT)) {
-            rotateY(-rotAmt);
-        }
-        if (Input.getKey(Input.KEY_RIGHT)) {
-            rotateY(rotAmt);
-        }
-        */
-    }
+    public void input() {}
 
     /**
      * Moves the camera into a direction and with an velocity 
@@ -151,5 +128,12 @@ public class Camera {
      * @return forward vector.
      */
     public Vector3f getForward() {return m_rotation.getForward();}
+
+	public Matrix4f getViewProjection() {
+		Matrix4f cameraRotation = getRotation().getRotationMatrix();
+        Matrix4f cameraTranslation = new Matrix4f().initTranslation(-getPos().getX(), -getPos().getY(), -getPos().getZ());
+
+        return m_projection.mul(cameraRotation.mul(cameraTranslation));
+	}
     
 }

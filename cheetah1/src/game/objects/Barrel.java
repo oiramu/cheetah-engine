@@ -21,6 +21,7 @@ import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
 import engine.components.Attenuation;
+import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.components.PointLight;
 import engine.core.Time;
@@ -40,7 +41,7 @@ import game.Level;
  * @version 1.0
  * @since 2018
  */
-public class Barrel {
+public class Barrel extends GameComponent {
 	
 	private static final String RES_LOC = "barrel/";
 	private static final String RES_LOC_2 = "explotion/";
@@ -136,8 +137,7 @@ public class Barrel {
      * Method that updates the object's data.
      */
     public void update() {
-        Vector3f playerDistance = transform.getPosition().sub(Transform.getCamera().getPos());
-
+    	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
         Vector3f orientation = playerDistance.normalized();
 		float distance = playerDistance.length();
 

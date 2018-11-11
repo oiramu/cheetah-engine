@@ -100,7 +100,7 @@ public class Shader {
      */
 	public void updateUniforms(Transform transform, Material material) {
     	Matrix4f worldMatrix = transform.getTransformation();
-		Matrix4f MVPMatrix = transform.getPerspectiveTransformation();
+		Matrix4f MVPMatrix = m_renderingEngine.getMainCamera().getViewProjection().mul(worldMatrix);
     	for(int i = 0; i < m_resource.getUniformNames().size(); i++) {
     		String uniformName = m_resource.getUniformNames().get(i);
     		String uniformType = m_resource.getUniformTypes().get(i);

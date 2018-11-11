@@ -33,6 +33,7 @@ import engine.rendering.Mesh;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
+import game.Level;
 
 /**
  *
@@ -114,9 +115,8 @@ public class Lamp extends GameComponent {
      * Method that updates the object's data.
      */
     public void update() {
-        Vector3f playerDistance = transform.getPosition().sub(Transform.getCamera().getPos());
-
-        Vector3f orientation = playerDistance.normalized();
+    	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
+    	Vector3f orientation = playerDistance.normalized();
 		float distance = playerDistance.length();
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));

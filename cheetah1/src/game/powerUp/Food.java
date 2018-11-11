@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Carlos Rodriguez.
+Level.getPlayer() * Copyright 2017 Carlos Rodriguez.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,8 +88,7 @@ public class Food extends GameComponent {
      * Updates the power-up every single frame.
      */
     public void update() {
-        Vector3f playerDistance = m_transform.getPosition().sub(Transform.getCamera().getPos());
-
+    	Vector3f playerDistance = m_transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
         Vector3f orientation = playerDistance.normalized();
         float distance = playerDistance.length();
 

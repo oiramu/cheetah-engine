@@ -89,8 +89,7 @@ public class Machinegun extends GameComponent {
      * Updates the power-up every single frame.
      */
 	public void update() {
-        Vector3f playerDistance = m_transform.getPosition().sub(Transform.getCamera().getPos());
-
+		Vector3f playerDistance = m_transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
         Vector3f orientation = playerDistance.normalized();
         float distance = playerDistance.length();
 

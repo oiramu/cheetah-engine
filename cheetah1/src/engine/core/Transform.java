@@ -15,23 +15,13 @@
  */
 package engine.core;
 
-import engine.components.Camera;
-
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2017
  */
 public class Transform {
-
-    private static Camera 	m_camera;
-
-    private static float 	m_zNear;
-    private static float 	m_zFar;
-    private static float 	m_width;
-    private static float 	m_height;
-    private static float 	m_fov;
 
     private Vector3f 		m_position;
     private Vector3f 		m_rotation;
@@ -66,81 +56,10 @@ public class Transform {
     }
 
     /**
-     * Returns the perspective transformation data.
-     * @return Perspective transformation.
-     */
-    public Matrix4f getPerspectiveTransformation() {
-        return getPerspectiveCameraMatrix().mul(getTransformation());
-    }
-
-    /**
-     * Returns the orthographic transformation data.
-     * @return Orthographic transformation.
-     */
-    public Matrix4f getOrthographicTransformation() {
-        return getOrthographicCameraMatrix().mul(getTransformation());
-    }
-
-    /**
-     * Returns the orthographic matrix data.
-     * @return Orthographic matrix.
-     */
-    public static Matrix4f getOrthographicMatrix() {
-        return new Matrix4f().initOrthographicProjection(-m_width / 2, m_width / 2, -m_height / 2, m_height / 2, m_zNear, m_zFar);
-    }
-
-    /**
-     * Returns the orthographic camera matrix data.
-     * @return Orthographic camera matrix.
-     */
-    public static Matrix4f getOrthographicCameraMatrix() {
-        Matrix4f cameraRotation = m_camera.getRotation().getRotationMatrix();
-        Matrix4f cameraTranslation = new Matrix4f().initTranslation(-m_camera.getPos().getX(), -m_camera.getPos().getY(), -m_camera.getPos().getZ());
-
-        return getOrthographicMatrix().mul(cameraRotation.mul(cameraTranslation));
-    }
-
-    /**
-     * Returns the perspective camera matrix data.
-     * @return Perspective camera matrix.
-     */
-    public static Matrix4f getPerspectiveCameraMatrix() {
-        Matrix4f cameraRotation = m_camera.getRotation().getRotationMatrix();
-        Matrix4f cameraTranslation = new Matrix4f().initTranslation(-m_camera.getPos().getX(), -m_camera.getPos().getY(), -m_camera.getPos().getZ());
-
-        return getPerspectiveMatrix().mul(cameraRotation.mul(cameraTranslation));
-    }
-
-    /**
-     * Returns the perspective matrix data.
-     * @return Perspective matrix.
-     */
-    public static Matrix4f getPerspectiveMatrix() {
-        return new Matrix4f().initPerspectiveProjection(m_fov, m_width, m_height, m_zNear, m_zFar);
-    }
-
-    /**
      * Returns the 3D position of the transform.
      * @return 3D position of the transform.
      */
     public Vector3f getPosition() {return m_position;}
-
-    /**
-     * Builds a fully 3D camera projection and takes all the perspective
-     * data for the calculations.
-     * @param FOV Field of view.
-     * @param width of the projection(window).
-     * @param height of the projection(window).
-     * @param Z_NEAR The nearest point for rendering.
-     * @param Z_FAR The maximum point to render.
-     */
-    public static void setProjection(final float FOV, float width, float height, final float Z_NEAR, final float Z_FAR) {
-        Transform.m_fov = FOV;
-        Transform.m_width = width;
-        Transform.m_height = height;
-        Transform.m_zNear = Z_NEAR;
-        Transform.m_zFar = Z_FAR;
-    }
 
     /**
      * Sets a new 3D position for the transform into a vector.
@@ -204,17 +123,5 @@ public class Transform {
      * @param amt Amount.
      */
     public void setScale(float amt) {setScale(amt, amt, amt);}
-
-    /**
-     * Returns the main camera.
-     * @return Camera.
-     */
-    public static Camera getCamera() {return m_camera;}
-
-    /**
-     * Sets a new camera for the transform.
-     * @param camera for the transform.
-     */
-    public static void setCamera(Camera camera) {Transform.m_camera = camera;}
     
 }

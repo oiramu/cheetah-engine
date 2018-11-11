@@ -15,6 +15,9 @@
  */
 package engine.core;
 
+import static org.lwjgl.opengl.GL11.GL_VERSION;
+import static org.lwjgl.opengl.GL11.glGetString;
+
 import engine.rendering.RenderingEngine;
 import engine.rendering.Window;
 
@@ -59,6 +62,7 @@ public class CoreEngine {
 		this.m_fullscreen = fullscreen;
 		this.m_title = title;
 		Window.createMenuWindow(m_width, m_height, this.m_title, this.m_fullscreen);
+		printCompilationStuff();
 	}
 	
 	/**
@@ -193,6 +197,20 @@ public class CoreEngine {
 	 * @return Engine instance
 	 */
 	public static CoreEngine getEngine() {return m_engine;}
+	
+	/**
+	 * Prints the compilation configuration.
+	 */
+	private void printCompilationStuff() {
+		System.out.println("==============================");
+        System.out.println("||CHEETAH ENGINE; BUILD v1.0||");
+        System.out.println("==============================");
+        System.out.println("Compiliation specs: ");
+        System.out.println("-OS name: " + System.getProperty("os.name"));
+        System.out.println("-OS version: " + System.getProperty("os.version"));
+        System.out.println("-LWJGL version: " + org.lwjgl.Sys.getVersion());
+        System.out.println("-OpenGL version: " + glGetString(GL_VERSION));
+	}
 	
 	/**
      * Method that cleans everything in the program's window.

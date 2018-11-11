@@ -143,8 +143,9 @@ public class Door extends GameComponent {
 
     /**
      * Refresh the door every single frame.
+     * @param delta of time
      */
-    public void update() {
+    public void update(double delta) {
         if (opening) {
             double time = (double) Time.getTime() / (double) Time.SECOND;
 

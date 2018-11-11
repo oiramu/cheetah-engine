@@ -78,10 +78,11 @@ public class GameObject {
 	/**
 	 * Update method for all the components on
 	 * the list.
+	 * @param delta of time
 	 */
-	public void update() {
+	public void update(double delta) {
 		for(GameComponent component : m_list)
-			component.update();
+			component.update(delta);
 	}
 	
 	/**
@@ -136,7 +137,7 @@ public class GameObject {
     
     /**
      * Removes to the render pipeline the lists of objects to render.
-     * @param removeList of objects.
+     * @param removeList of objects
      */
     public <E> void removeListToRenderPipeline(ArrayList<E> removeList) {
     	for (E component : removeList) 
@@ -146,12 +147,13 @@ public class GameObject {
     
     /**
      * Kills everything on the list of objects.
-     * @param list of objects.
+     * @param list of objects
+     * @param delta of time
      */
-    public <E> void updateAndKillToRenderPipeline(ArrayList<E> list) {
+    public <E> void updateAndKillToRenderPipeline(ArrayList<E> list, double delta) {
     	for (E component : list) {
     		((NaziSoldier) component).setState(4);
-    		((NaziSoldier) component).update();
+    		((NaziSoldier) component).update(delta);
     	}
     }
 	

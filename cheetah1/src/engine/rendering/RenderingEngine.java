@@ -52,7 +52,6 @@ public class RenderingEngine extends MappedValues {
 		m_samplerMap.put("normalMap", 1);
 		m_samplerMap.put("dispMap", 2);
         
-		TextureFont.m_shader.setRenderingEngine(this);
 		m_forwardAmbient = new Shader("forward-ambient");
 		m_forwardAmbient.setRenderingEngine(this);
 		

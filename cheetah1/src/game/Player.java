@@ -699,18 +699,19 @@ public class Player extends GameComponent {
 
     /**
      * Updates the player every single frame.
+     * @param delta of time
      */
-    public void update() {
+    public void update(double delta) {
     	float movAmt = 0;
     	double time = (double) Time.getTime() / Time.SECOND;
     	if(isAlive) { 
-    		upAmt += (-GRAVITY * 0.2f) * Time.getDelta();
-    		movAmt = (float) (moveSpeed * Time.getDelta());
+    		upAmt += (-GRAVITY * 0.2f) * delta;
+    		movAmt = (float) (moveSpeed * delta);
     		toTerrain = PLAYER_TO_GROUND;
     		dy = GUN_OFFSET; 
     		dx = GUN_OFFSET_X;
     	} else {
-    		upAmt += (-GRAVITY * 0.1f / 4) * Time.getDelta();
+    		upAmt += (-GRAVITY * 0.1f / 4) * delta;
     		toTerrain = 0.15f;
     	}
     	

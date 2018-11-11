@@ -113,8 +113,9 @@ public class Lamp extends GameComponent {
 
     /**
      * Method that updates the object's data.
+     * @param delta of time
      */
-    public void update() {
+    public void update(double delta) {
     	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
     	Vector3f orientation = playerDistance.normalized();
 		float distance = playerDistance.length();

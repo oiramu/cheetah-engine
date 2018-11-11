@@ -107,7 +107,7 @@ public class CoreEngine {
     	m_isRunning = true;
 
 		int frames = 0;
-        long frameCounter = 0;
+        double frameCounter = 0;
 
         m_renderingEngine = new RenderingEngine();
         
@@ -124,7 +124,7 @@ public class CoreEngine {
             double passedTime = startTime - lastTime;
             lastTime = startTime;
 
-            unprocessedTime += passedTime / Time.SECOND;
+            unprocessedTime += passedTime / (double) Time.SECOND;
             frameCounter += passedTime;
 
             while (unprocessedTime > m_frameTime) {
@@ -136,12 +136,10 @@ public class CoreEngine {
                 if (Window.isCloseRequested())
                     stop();
 
-                Time.setDelta(m_frameTime);
-
                 m_game.input();
                 Input.update();
                 
-                m_game.update();
+                m_game.update(m_frameTime);
 
                 if (frameCounter >= Time.SECOND) {
                 	Time.setFPS(frames);

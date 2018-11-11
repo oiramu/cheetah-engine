@@ -27,7 +27,7 @@ public interface Game {
 	
 	public void init();
 	public void input();
-	public void update();
+	public void update(double delta);
 	public void render(RenderingEngine engine);
 
 }

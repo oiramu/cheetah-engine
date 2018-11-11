@@ -146,8 +146,9 @@ public class Dog extends GameComponent {
 
     /**
      * Updates the enemy every single frame.
+     * @param delta of time
      */
-    public void update() {
+    public void update(double delta) {
         //Set Height
         transform.setPosition(transform.getPosition().getX(), 0, transform.getPosition().getZ());
         
@@ -209,7 +210,7 @@ public class Dog extends GameComponent {
                     }
                 }
             } else if (state == STATE_CHASE) {
-                if (rand.nextDouble() < 0.5f * Time.getDelta()) {
+                if (rand.nextDouble() < 0.5f * delta) {
                     state = STATE_ATTACK;
                 }
 
@@ -218,7 +219,7 @@ public class Dog extends GameComponent {
                     float moveSpeed = 3f;
 
                     Vector3f oldPos = transform.getPosition();
-                    Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * Time.getDelta())));
+                    Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * delta)));
 
                     Vector3f collisionVector = Auschwitz.getLevel().checkCollisions(oldPos, newPos, DOG_WIDTH, DOG_WIDTH);
 
@@ -231,7 +232,7 @@ public class Dog extends GameComponent {
                     }*/
 
                     if (movementVector.length() > 0) {
-                        transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * Time.getDelta()))));
+                        transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * delta))));
                     }
                 } else {
                     state = STATE_ATTACK;

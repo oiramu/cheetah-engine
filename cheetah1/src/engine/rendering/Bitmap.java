@@ -46,6 +46,7 @@ public class Bitmap {
 			m_pixels = new int[m_width * m_height];
 			image.getRGB(0, 0, m_width, m_height, m_pixels, 0, m_width);
 		} catch(Exception ex) {
+			ex.printStackTrace();
 			throw new RuntimeException();
 		}
 	}

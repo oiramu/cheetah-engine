@@ -108,10 +108,11 @@ public class Auschwitz implements Game {
 
     /**
      * Updates everything renderer every single frame.
+     * @param delta of time
      */
-    public void update() {
+    public void update(double delta) {
         if (m_isRunning) {
-            m_level.update();
+            m_level.update(delta);
         }
     }
 

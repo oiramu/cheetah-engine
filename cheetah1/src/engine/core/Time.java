@@ -23,31 +23,15 @@ package engine.core;
  */
 public class Time {
 
-    public static final double SECOND = 1000000000L;
+    public static final long SECOND = 1000000000L;
     private static double 	m_fps;
     private static double	m_frametime;
-
-    private static double 	m_delta;
 
     /**
      * Gets the time of compiling.
      * @return Program's time.
      */
-    public static double getTime() {
-        return (double)System.nanoTime();
-    }
-
-    /**
-     * Returns the time's delta.
-     * @return delta
-     */
-    public static double getDelta() { return m_delta; }
-
-    /**
-     * Sets a delta for the time.
-     * @param delta For time
-     */
-    public static void setDelta(double delta) { Time.m_delta = delta; }
+    public static double getTime() { return System.nanoTime(); }
     
     /**
      * Returns the frames per second.

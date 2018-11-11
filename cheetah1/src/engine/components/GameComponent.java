@@ -29,6 +29,6 @@ public abstract class GameComponent {
 	private Transform transform;
 	public void input() {}
 	public void render(Shader shader) {}
-	public void update() {}
+	public void update(double delta) {}
 	public Transform getTransform() {return transform;}
 }

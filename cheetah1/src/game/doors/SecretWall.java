@@ -139,8 +139,9 @@ public class SecretWall extends GameComponent {
 
     /**
      * Refresh the secret wall every single frame.
+     * @param delta of time
      */
-    public void update() {
+    public void update(double delta) {
         if (opening) {
             double time = (double) Time.getTime() / (double) Time.SECOND;
 

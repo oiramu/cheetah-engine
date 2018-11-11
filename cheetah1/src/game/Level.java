@@ -421,12 +421,13 @@ public class Level extends GameComponent {
 
     /**
      * Updates everything rendered in the level.
+     * @param delta of time
      */
-    public void update() {
+    public void update(double delta) {
         
-    	m_objects.update();
+    	m_objects.update(delta);
 
-        m_objects.updateAndKillToRenderPipeline(deadNazi);
+        m_objects.updateAndKillToRenderPipeline(deadNazi, delta);
         
         m_objects.removeListToRenderPipeline(removeMedkitList);
         m_objects.removeListToRenderPipeline(removeFoodList);

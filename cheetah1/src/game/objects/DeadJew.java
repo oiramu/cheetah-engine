@@ -115,7 +115,7 @@ public class DeadJew extends GameComponent {
 
         transform.setRotation(0, angle + 90, 0);
         
-        double time = (double) Time.getTime() / Time.SECOND;
+        double time = Time.getTime();
         double timeDecimals = (time - (double) ((int) time));
 
         if(state == STATE_1) {

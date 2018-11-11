@@ -186,7 +186,7 @@ public class NaziSoldier extends GameComponent {
         transform.setRotation(0, angle + 90, 0);
 
         //Action/Animation
-        double time = (double) Time.getTime() / Time.SECOND;
+        double time = Time.getTime();
 
         if (!dead && health <= 0) {
             dead = true;
@@ -288,7 +288,7 @@ public class NaziSoldier extends GameComponent {
                     if (canAttack) {
                     	light.setPosition(transform.getPosition());
                         light.setDirection(orientation.mul(-1));
-                    	gunFireTime = (double) Time.getTime() / Time.SECOND;
+                    	gunFireTime = Time.getTime();
                         Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
 
                         Vector2f lineStart = transform.getPosition().getXZ();
@@ -351,7 +351,7 @@ public class NaziSoldier extends GameComponent {
         if (state == STATE_DEAD) {
         	if(bullet == null)
             	bullet = new Bullet(getTransform());
-        	bullet.update();
+        	bullet.update(delta);
         	material.setDiffuse(animation.get(12));   	
             dead = true;  
             if (distance < bullet.PICKUP_THRESHHOLD) {
@@ -406,7 +406,7 @@ public class NaziSoldier extends GameComponent {
      * @param shader to render
      */
     public void render(Shader shader) {
-    	double time = (double) Time.getTime() / Time.SECOND;
+    	double time = Time.getTime();
     	if((double)time < gunFireTime + 0.2f)
     		shader.getRenderingEngine().addLight(light);
     	else

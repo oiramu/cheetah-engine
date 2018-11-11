@@ -112,7 +112,7 @@ public class LightBeam extends GameComponent {
             angle = 180 + angle;
         }
         
-        double time = (double) Time.getTime() / Time.SECOND;
+        double time = Time.getTime();
         double timeDecimals = (time - (double) ((int) time));
 
         timeDecimals *= 1.25f;

@@ -23,7 +23,7 @@ package engine.core;
  */
 public class Time {
 
-    public static final long SECOND = 1000000000L;
+    private static final long SECOND = 1000000000L;
     private static double 	m_fps;
     private static double	m_frametime;
 
@@ -31,7 +31,7 @@ public class Time {
      * Gets the time of compiling.
      * @return Program's time.
      */
-    public static double getTime() { return System.nanoTime(); }
+    public static double getTime() { return (double) System.nanoTime() / (double) SECOND; }
     
     /**
      * Returns the frames per second.

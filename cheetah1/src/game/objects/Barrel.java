@@ -150,7 +150,7 @@ public class Barrel extends GameComponent {
 
         transform.setRotation(0, angle + 90, 0);
         
-        double time = (double) Time.getTime() / Time.SECOND;
+        double time = Time.getTime();
         
         if(!dead) {
 	        if (state == STATE_IDLE) {
@@ -173,7 +173,7 @@ public class Barrel extends GameComponent {
         		dead = true;
                 material.setDiffuse(animation.get(1));
             } else if (timeDecimals <= 0.5f) {
-            	fireTime = (double) Time.getTime() / Time.SECOND;
+            	fireTime = Time.getTime();
                 material.setDiffuse(animation.get(2));
             } else if (timeDecimals <= 0.75f) {
             	if(distance<1) {
@@ -225,7 +225,7 @@ public class Barrel extends GameComponent {
      * @param shader to render
      */
     public void render(Shader shader) {
-    	double time = (double) Time.getTime() / Time.SECOND;
+    	double time = Time.getTime();
     	if((double)time < fireTime + 1.0f)
     		shader.getRenderingEngine().addLight(light);
     	else

@@ -180,7 +180,7 @@ public class NaziSergeant extends GameComponent {
         transform.setRotation(0, angle + 90, 0);
 
         //Action/Animation
-        double time = (double) Time.getTime() / Time.SECOND;
+        double time = Time.getTime();
 
         if (!dead && health <= 0) {
             dead = true;
@@ -282,7 +282,7 @@ public class NaziSergeant extends GameComponent {
                     if (canAttack) {
                     	light.setPosition(transform.getPosition());
                         light.setDirection(orientation.mul(-1));
-                    	gunFireTime = (double) Time.getTime() / Time.SECOND;
+                    	gunFireTime = (double) Time.getTime();
                         Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
 
                         Vector2f lineStart = transform.getPosition().getXZ();
@@ -338,7 +338,7 @@ public class NaziSergeant extends GameComponent {
         if (state == STATE_DEAD) {
         	if(shotgun == null)
         		shotgun = new Shotgun(getTransform());
-        	shotgun.update();
+        	shotgun.update(delta);
             dead = true;
             material.setDiffuse(animation.get(11));
             if (distance < shotgun.PICKUP_THRESHHOLD) {
@@ -398,7 +398,7 @@ public class NaziSergeant extends GameComponent {
      * @param shader to render
      */
     public void render(Shader shader) {
-    	double time = (double) Time.getTime() / Time.SECOND;
+    	double time = (double) Time.getTime();
     	if((double)time < gunFireTime + 0.2f)
     		shader.getRenderingEngine().addLight(light);
     	else

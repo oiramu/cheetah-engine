@@ -128,7 +128,7 @@ public class Lamp extends GameComponent {
 
         transform.setRotation(0, angle + 90, 0);
         
-        double time = (double) Time.getTime() / Time.SECOND;
+        double time = Time.getTime();
         
         if (!dead && health <= 0) {
             dead = true;
@@ -157,7 +157,7 @@ public class Lamp extends GameComponent {
         }
         
         if (state == STATE_DEAD) {
-        	fireTime = (double) Time.getTime() / Time.SECOND;
+        	fireTime = (double) Time.getTime();
             dead = true;
             material.setDiffuse(animation.get(4));
         }
@@ -169,7 +169,7 @@ public class Lamp extends GameComponent {
      * @param shader to render
      */
     public void render(Shader shader) {
-    	double time = (double) Time.getTime() / Time.SECOND;
+    	double time = (double) Time.getTime();
     	if((double)time < fireTime + 0.1f)
     		shader.getRenderingEngine().removeLight(light);
     	else

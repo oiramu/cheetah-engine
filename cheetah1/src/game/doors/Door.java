@@ -131,10 +131,10 @@ public class Door extends GameComponent {
             return;
         }
 
-        startTime = (double) Time.getTime() / (double) Time.SECOND;
-        openTime = startTime + (double) time;
-        startCloseTime = openTime + (double) delay;
-        closeTime = startCloseTime + (double) time;
+        startTime = Time.getTime();
+        openTime = startTime + time;
+        startCloseTime = openTime + delay;
+        closeTime = startCloseTime + time;
 
         opening = true;
         closing = false;
@@ -147,7 +147,7 @@ public class Door extends GameComponent {
      */
     public void update(double delta) {
         if (opening) {
-            double time = (double) Time.getTime() / (double) Time.SECOND;
+            double time = Time.getTime();
 
             if (time < openTime) {
                 double lerpFactor = (time - startTime) / (openTime - startTime);

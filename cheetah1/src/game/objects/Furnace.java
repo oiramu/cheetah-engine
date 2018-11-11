@@ -122,7 +122,7 @@ public class Furnace extends GameComponent {
 
         transform.setRotation(0, angle + 90, 0);
         
-        double time = (double) Time.getTime() / Time.SECOND;
+        double time = Time.getTime();
         
         if (state == STATE_IDLE) {
         	double timeDecimals = (time - (double) ((int) time));

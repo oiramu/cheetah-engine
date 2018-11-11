@@ -78,7 +78,7 @@ public class Auschwitz implements Game {
      * Prints the statistics of the level. 
      */
     private void printStats() {
-    	double time = (double) Time.getTime() / Time.SECOND;
+    	double time = Time.getTime();
     	if(time<m_stateTime+5.0f) {
 	    	text.get("Level").setText("Level:" + m_levelNum + ";Episode" + m_currentEpisode);
 	    	if(m_displayStats) {
@@ -294,7 +294,7 @@ public class Auschwitz implements Game {
             AudioUtil.playMidi(m_playlist.get(m_track));
 
             while (m_track >= m_playlist.size()) m_track -= m_playlist.size();
-            if(displayText) m_stateTime = (double) Time.getTime() / Time.SECOND;
+            if(displayText) m_stateTime = Time.getTime();
 
             if (m_displayStats) {
             	if(m_level.getPlayer().getWeaponState() == m_level.getPlayer().HAND){

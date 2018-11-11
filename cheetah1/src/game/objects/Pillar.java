@@ -129,7 +129,7 @@ public class Pillar extends GameComponent {
 
         transform.setRotation(0, angle + 90, 0);
         
-        double time = (double) Time.getTime() / Time.SECOND;
+        double time = Time.getTime();
         
         if (!dead && health <= 0) {
             dead = true;

@@ -602,22 +602,19 @@ public class Player extends GameComponent {
 		            Vector2f lineEnd = lineStart.add(shootDirection.mul(1000.0f));
 		
 		            Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, true);
-		            if(isMelee) {
-		            	gunFireTime = (double) Time.getTime() / Time.SECOND;
-		            	AudioUtil.playAudio(gunNoise, 0);
-		            }
+		            
+		            gunFireTime = Time.getTime();
+	            	
 		            if(bullets != 0 && isBulletBased) {
 		            	addBullets(-1);
-		            	gunFireTime = (double) Time.getTime() / Time.SECOND;
 		            	AudioUtil.playAudio(gunNoise, 0);
 		            }
 		            if(shells != 0 && isShellBased) {
+		            	AudioUtil.playAudio(gunNoise, 0);
 		            	if(isDoubleShooter)
 		            		addShells(-2);
 		            	else
 		            		addShells(-1);
-		            	gunFireTime = (double) Time.getTime() / Time.SECOND;
-		            	AudioUtil.playAudio(gunNoise, 0);
 		            }
 	            }
 	        }
@@ -703,7 +700,7 @@ public class Player extends GameComponent {
      */
     public void update(double delta) {
     	float movAmt = 0;
-    	double time = (double) Time.getTime() / Time.SECOND;
+    	double time = Time.getTime();
     	if(isAlive) { 
     		upAmt += (-GRAVITY * 0.2f) * delta;
     		movAmt = (float) (moveSpeed * delta);
@@ -773,7 +770,7 @@ public class Player extends GameComponent {
      */
     public void render(Shader shader) {
     	int ammo = 0;
-    	double time = (double) Time.getTime() / Time.SECOND;
+    	double time = Time.getTime();
     	double gunTime = gunFireTime + gunFireAnimationTime;
     	double gunTime2 = gunTime + gunFireAnimationTime;
     	double gunTime3 = gunTime2 + gunFireAnimationTime;
@@ -866,14 +863,14 @@ public class Player extends GameComponent {
         health += amt;
         if(health>temp) {
 	        playerText.get("Notification").setText("You've got " + amt + " of health!");
-	    	notificationTime = (double) Time.getTime() / Time.SECOND;
+	    	notificationTime = Time.getTime();
         }
         if (health > getMaxHealth()) {
             health = getMaxHealth();
         }
         if (health <= 0) {
         	playerText.get("Notification").setText("You Died! (press e)");
-        	notificationTime = (double) Time.getTime() / Time.SECOND;
+        	notificationTime = Time.getTime();
         	AudioUtil.playAudio(deathNoise, 0);
         	health = 0;
             bullets = 0;
@@ -913,7 +910,7 @@ public class Player extends GameComponent {
     	bullets += amt;
         if(bullets>temp) {
 	        playerText.get("Notification").setText("You've got " + amt + " bullets!");
-	    	notificationTime = (double) Time.getTime() / Time.SECOND;
+	    	notificationTime = Time.getTime();
         }
         if (bullets > getMaxBullets()) {
         	bullets = getMaxBullets();
@@ -922,7 +919,7 @@ public class Player extends GameComponent {
         	if (bullets <= 0) {
         		bullets = 0;
         		playerText.get("Notification").setText("You Need More Bullets!");
-            	notificationTime = (double) Time.getTime() / Time.SECOND;
+            	notificationTime = Time.getTime();
         		AudioUtil.playAudio(gunEmptyNoise, 1);
         	}
         }
@@ -949,7 +946,7 @@ public class Player extends GameComponent {
 		shells += amt;
 		if(shells>temp) {
 			playerText.get("Notification").setText("You've got " + amt + " shotgun shells!");
-			notificationTime = (double) Time.getTime() / Time.SECOND;
+			notificationTime = Time.getTime();
 		}
         if (shells > getMaxShells()) {
         	shells = getMaxShells();
@@ -958,7 +955,7 @@ public class Player extends GameComponent {
         	if (shells <= 0) {
         		shells = 0;
         		playerText.get("Notification").setText("You Need More Shells!");
-            	notificationTime = (double) Time.getTime() / Time.SECOND;
+            	notificationTime = Time.getTime();
         		AudioUtil.playAudio(gunEmptyNoise, 1);
         	}
         }
@@ -975,7 +972,7 @@ public class Player extends GameComponent {
         }
         if(shotgun == true && isAlive && amt != true) {
         	playerText.get("Notification").setText("You've got a shotgun!");
-        	notificationTime = (double) Time.getTime() / Time.SECOND;
+        	notificationTime = Time.getTime();
     	}
     }
     
@@ -996,7 +993,7 @@ public class Player extends GameComponent {
     	}
     	if(machinegun == true && isAlive && amt != true) {
     		playerText.get("Notification").setText("You've got a MP90 Machinegun!");
-        	notificationTime = (double) Time.getTime() / Time.SECOND;
+        	notificationTime = Time.getTime();
     	}
     }
     
@@ -1017,7 +1014,7 @@ public class Player extends GameComponent {
     	}
     	if(sShotgun == true && isAlive && amt != true) {
     		playerText.get("Notification").setText("You've got a double barrel shotgun!");
-        	notificationTime = (double) Time.getTime() / Time.SECOND;
+        	notificationTime = Time.getTime();
     	}
     }
     
@@ -1044,7 +1041,7 @@ public class Player extends GameComponent {
     	}
     	if(chaingun == true && isAlive) {
     		playerText.get("Notification").setText("You've got a Chaingun!");
-        	notificationTime = (double) Time.getTime() / Time.SECOND;
+        	notificationTime = Time.getTime();
     	}
     } 
     
@@ -1108,7 +1105,7 @@ public class Player extends GameComponent {
 		armori += amt;
 		if(armori>temp) {
 			playerText.get("Notification").setText("You've got " + amt + " of armor!");
-	    	notificationTime = (double) Time.getTime() / Time.SECOND;
+	    	notificationTime = Time.getTime();
 		}
 		if (armori > getMaxArmori())
         	armori = getMaxArmori();
@@ -1191,12 +1188,12 @@ public class Player extends GameComponent {
 	 * Gets the player's weapon that currently is using.
 	 * @return the weapon that player is using.
 	 */
-	public String getWeaponState() {return weaponState;}
+	public String getWeaponState() { return weaponState; }
 	
 	/**
 	 * Sets the player's weapon that currently is using.
 	 * @param amt the weapon that player is using.
 	 */
-	public void setWeaponState(String state) {this.weaponState = state;}
+	public void setWeaponState(String state) { this.weaponState = state; }
 
 }

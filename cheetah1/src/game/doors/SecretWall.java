@@ -129,8 +129,8 @@ public class SecretWall extends GameComponent {
             return;
         }
 
-        startTime = (double) Time.getTime() / (double) Time.SECOND;
-        openTime = startTime + (double) time;
+        startTime = Time.getTime();
+        openTime = startTime + time;
 
         opening = true;
         if(opening == true)
@@ -143,7 +143,7 @@ public class SecretWall extends GameComponent {
      */
     public void update(double delta) {
         if (opening) {
-            double time = (double) Time.getTime() / (double) Time.SECOND;
+            double time = Time.getTime();
 
             if (time < openTime) {
                 double lerpFactor = (time - startTime) / (openTime - startTime);

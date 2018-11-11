@@ -23,6 +23,7 @@ import java.util.HashMap;
 import engine.components.BaseLight;
 import engine.components.Camera;
 import engine.components.GameComponent;
+import engine.core.Debug;
 import engine.core.Vector3f;
 import engine.rendering.resourceManagement.MappedValues;
 
@@ -70,7 +71,7 @@ public class RenderingEngine extends MappedValues {
      */
     public void render(GameComponent component) {
     	try {
-    		if (getMainCamera() == null) System.err.println("Error! Main camera not found. This is very very big bug, and game will crash.");
+    		if (getMainCamera() == null) Debug.printErrorMessage("Error! Main camera not found. This is very very big bug, and game will crash.", "No camera in game!");
     		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     		
 	        component.render(m_forwardAmbient);

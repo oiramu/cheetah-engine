@@ -232,7 +232,7 @@ public class Level extends GameComponent {
      * Inputs accessible in the level.
      */
 	public void input() {
-		double time = (double) Time.getTime() / Time.SECOND;
+		double time = Time.getTime();
     	double timeDecimals = (time - (double) ((int) time));
     	
 		if (!player.isAlive) {
@@ -490,7 +490,7 @@ public class Level extends GameComponent {
                 worked = true;
                 secretWall.open(0.5f, 3f);
                 player.playerText.get("Notification").setText("You've found a secret!");
-                player.notificationTime = (double) Time.getTime() / Time.SECOND;
+                player.notificationTime = Time.getTime();
             }
         }
 

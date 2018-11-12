@@ -16,7 +16,6 @@
 package engine.components;
 
 import engine.core.Vector3f;
-import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 
 /**
@@ -45,10 +44,7 @@ public class BaseLight {
 	 * Gets the shader used by the light.
 	 * @return Shader.
 	 */
-	public Shader getShader(RenderingEngine renderingEngine) {
-		m_shader.setRenderingEngine(renderingEngine);
-		return m_shader;
-	}
+	public Shader getShader() { return m_shader; }
 	
 	/**
 	 * Sets a shader for a light.

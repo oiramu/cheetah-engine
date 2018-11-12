@@ -42,7 +42,6 @@ import engine.rendering.resourceManagement.ShaderResource;
 public class Shader {
 
 	private HashMap<String, ShaderResource> m_loadedShaders = new HashMap<String, ShaderResource>();
-    private RenderingEngine 				m_renderingEngine;
     private ShaderResource					m_resource;
     private String							m_fileName;
     public final String 					BASIC = "BASIC/";
@@ -97,16 +96,17 @@ public class Shader {
      * Updates all the uniforms of the shading program.
      * @param transform of the object.
      * @param material Material of the object.
+     * @param renderingEngine to update.
      */
-	public void updateUniforms(Transform transform, Material material) {
+	public void updateUniforms(Transform transform, Material material, RenderingEngine renderingEngine) {
     	Matrix4f worldMatrix = transform.getTransformation();
-		Matrix4f MVPMatrix = m_renderingEngine.getMainCamera().getViewProjection().mul(worldMatrix);
+		Matrix4f MVPMatrix = renderingEngine.getMainCamera().getViewProjection().mul(worldMatrix);
     	for(int i = 0; i < m_resource.getUniformNames().size(); i++) {
     		String uniformName = m_resource.getUniformNames().get(i);
     		String uniformType = m_resource.getUniformTypes().get(i);
     		
     		if(uniformType.equals("sampler2D")) {
-    			int samplerSlot = m_renderingEngine.getSamplerSlot(uniformName);
+    			int samplerSlot = renderingEngine.getSamplerSlot(uniformName);
 				material.getTexture(uniformName).bind(samplerSlot);
 				setUniformi(uniformName, samplerSlot);
 			} else if(uniformName.startsWith("T_")) {
@@ -119,20 +119,20 @@ public class Shader {
     		} else if(uniformName.startsWith("R_")) {
     			String unprefixedUniformName = uniformName.substring(2);
 				if(uniformType.equals("vec3"))
-					setUniform(uniformName, m_renderingEngine.GetVector3f(unprefixedUniformName));
+					setUniform(uniformName, renderingEngine.GetVector3f(unprefixedUniformName));
 				else if(uniformType.equals("float"))
-					setUniformf(uniformName, m_renderingEngine.GetFloat(unprefixedUniformName));
+					setUniformf(uniformName, renderingEngine.GetFloat(unprefixedUniformName));
 				else if(uniformType.equals("DirectionalLight"))
-					setUniformDirectionalLight(uniformName, (DirectionalLight) m_renderingEngine.getActiveLight());
+					setUniformDirectionalLight(uniformName, (DirectionalLight) renderingEngine.getActiveLight());
 				else if(uniformType.equals("PointLight"))
-					setUniformPointLight(uniformName, (PointLight) m_renderingEngine.getActiveLight());
+					setUniformPointLight(uniformName, (PointLight) renderingEngine.getActiveLight());
 				else if(uniformType.equals("SpotLight"))
-					setUniformSpotLight(uniformName, (SpotLight) m_renderingEngine.getActiveLight());
+					setUniformSpotLight(uniformName, (SpotLight) renderingEngine.getActiveLight());
 				else
 					throw new IllegalArgumentException(uniformType + " is not a supported type in RenderingEngine");
     		} else if(uniformName.startsWith("C_")) {
 				if(uniformName.equals("C_eyePos"))
-					setUniform(uniformName, m_renderingEngine.getMainCamera().getPos());
+					setUniform(uniformName, renderingEngine.getMainCamera().getPos());
 				else
 					throw new IllegalArgumentException(uniformName + " is not a valid component of Camera");
 			} else {
@@ -523,17 +523,5 @@ public class Shader {
 		setUniform(uniformName + ".direction", spotLight.getDirection());
 		setUniformf(uniformName + ".cutoff", spotLight.getCutoff());
 	}
-    
-    /**
-     * Sets the rendering engine of the shader.
-     * @param renderingEngine for shader.
-     */
-    public void setRenderingEngine(RenderingEngine renderingEngine) {this.m_renderingEngine = renderingEngine;}
-
-    /**
-     * Returns the rendering engine of the shader.
-     * @return rendering engine.
-     */
-	public RenderingEngine getRenderingEngine() {return m_renderingEngine;}
 
 }

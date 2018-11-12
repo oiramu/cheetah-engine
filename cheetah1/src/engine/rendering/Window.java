@@ -34,10 +34,12 @@ import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.opengl.PNGDecoder;
 
 import engine.audio.AudioUtil;
+import engine.core.CoreEngine;
 import engine.menu.DefaultMenu;
 import engine.menu.Menu;
 import engine.menu.Rendering2DEngine;
 import engine.menu.system.SGameTime;
+import game.Auschwitz;
 
 /**
  *
@@ -81,6 +83,9 @@ public class Window {
 	        Display.create();
 	        Keyboard.create();
 	        Mouse.create();
+	        
+	        Auschwitz.setStartingLevel(1);
+			CoreEngine.getEngine().start();
 
 		} catch(LWJGLException e) {
 			e.printStackTrace();

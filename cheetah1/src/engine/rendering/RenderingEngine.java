@@ -54,7 +54,6 @@ public class RenderingEngine extends MappedValues {
 		m_samplerMap.put("dispMap", 2);
         
 		m_forwardAmbient = new Shader("forward-ambient");
-		m_forwardAmbient.setRenderingEngine(this);
 		
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -74,7 +73,7 @@ public class RenderingEngine extends MappedValues {
     		if (getMainCamera() == null) Debug.printErrorMessage("Error! Main camera not found. This is very very big bug, and game will crash.", "No camera in game!");
     		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     		
-	        component.render(m_forwardAmbient);
+	        component.render(m_forwardAmbient, this);
 	        
 	        glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE);
@@ -83,7 +82,7 @@ public class RenderingEngine extends MappedValues {
 			
 			for(int i = 0; i < m_lights.size(); i++) {
 				m_activeLight = m_lights.get(i);
-				component.render(m_activeLight.getShader(this));
+				component.render(m_activeLight.getShader(), this);
 			}
 			
 			glDepthFunc(GL_LESS);

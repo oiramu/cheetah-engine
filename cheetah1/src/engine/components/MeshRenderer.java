@@ -18,6 +18,7 @@ package engine.components;
 import engine.core.Transform;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 
 /**
@@ -28,19 +29,9 @@ import engine.rendering.Shader;
  */
 public class MeshRenderer {
 	
-	private Mesh 		m_mesh;
 	private Transform 	m_transform;
+	private Mesh 		m_mesh;
 	private Material 	m_material;
-	
-	/**
-	 * Renderer of a mesh with single material to render.
-	 * @param mesh to render.
-	 * @param transform of the mesh.
-	 */
-	public MeshRenderer(Mesh mesh, Transform transform) {
-		this.m_mesh = mesh;
-		this.m_transform = transform;
-	}
 	
 	/**
 	 * Renderer of a mesh with more than one possible material
@@ -57,19 +48,25 @@ public class MeshRenderer {
 	
 	/**
 	 * Render method of the mesh.
+	 * @param shader to render.
+	 * @param renderingEngine to call.
 	 */
-	public void render(Shader shader) {
-		render(m_material, shader);
-	}
-	
-	/**
-	 * Render method of the mesh.
-	 * @param material to render.
-	 */
-	public void render(Material material, Shader shader) {		
+	public void render(Shader shader, RenderingEngine renderingEngine) {
 		shader.bind();
-        shader.updateUniforms(m_transform, material);
+        shader.updateUniforms(m_transform, m_material, renderingEngine);
         m_mesh.draw();
 	}
+
+	/**
+	 * Sets a new mesh for the mesh renderer.
+	 * @param mesh to set
+	 */
+	public void setMesh(Mesh mesh) { this.m_mesh = mesh; }
+
+	/**
+	 * Sets a new material for the mesh renderer.
+	 * @param material to set
+	 */
+	public void setMaterial(Material material) { this.m_material = material; }
 
 }

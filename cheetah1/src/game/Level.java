@@ -457,10 +457,11 @@ public class Level extends GameComponent {
     /**
      * Renders everything in the level.
      * @param shader to render
+     * @param renderingEngine to use
      */
-    public void render(Shader shader) {
-    	m_meshRenderer.render(shader);
-    	m_objects.render(shader);
+    public void render(Shader shader, RenderingEngine renderingEngine) {
+    	m_meshRenderer.render(shader, renderingEngine);
+    	m_objects.render(shader, renderingEngine);
         
     	m_objects.sortNumberComponents(secretWalls);
     	m_objects.sortNumberComponents(naziSoldiers);
@@ -489,7 +490,7 @@ public class Level extends GameComponent {
         	if (Math.abs(secretWall.getTransform().getPosition().sub(position).length()) < 1f) {
                 worked = true;
                 secretWall.open(0.5f, 3f);
-                player.playerText.get("Notification").setText("You've found a secret!");
+                player.playerText.get("Notification").setText("You've found a secret!", m_renderingEngine);
                 player.notificationTime = Time.getTime();
             }
         }

@@ -23,6 +23,7 @@ import javax.sound.midi.Sequence;
 import org.lwjgl.input.Keyboard;
 
 import static engine.core.CoreEngine.*;
+import static engine.core.Constants.*;
 
 import engine.audio.AudioUtil;
 import engine.core.*;
@@ -75,17 +76,18 @@ public class Auschwitz implements Game {
     }
     
     /**
-     * Prints the statistics of the level. 
+     * Prints the statistics of the level.
+     * @param renderingEngine to use.
      */
-    private void printStats() {
+    private void printStats(RenderingEngine renderingEngine) {
     	double time = Time.getTime();
     	if(time<m_stateTime+5.0f) {
-	    	text.get("Level").setText("Level:" + m_levelNum + ";Episode" + m_currentEpisode);
+	    	text.get("Level").setText("Level:" + m_levelNum + ";Episode" + m_currentEpisode, renderingEngine);
 	    	if(m_displayStats) {
 		    	text.get("Enemies").setText("Killed:" + m_deadMonsters + "/" + m_totalMonsters + " Nazis:" +
-		            	(int)(((float) m_deadMonsters / (float) m_totalMonsters) * 100f )+ "%");
+		            	(int)(((float) m_deadMonsters / (float) m_totalMonsters) * 100f )+ "%", renderingEngine);
 		    	text.get("Secrets").setText("Secrets:" + m_secrets + "/" + m_totalSecrets + " Secrets:" +
-		    			(int)(((float) m_secrets / (float) m_totalSecrets) * 100f) + "%");
+		    			(int)(((float) m_secrets / (float) m_totalSecrets) * 100f) + "%",  renderingEngine);
 	    	}
     	}
     }
@@ -122,7 +124,7 @@ public class Auschwitz implements Game {
 	public void render(RenderingEngine engine) {
         if (m_isRunning) {
         	engine.render(m_level);
-        	printStats();
+        	printStats(engine);
         }
     }
 	
@@ -223,11 +225,11 @@ public class Auschwitz implements Game {
 
             m_levelNum += offset;
             
-            switch("1texDetail") {
-            	case "0texDetail":
+            switch(GAME_GRAPHICS) {
+            	case "Low":
             		m_material = new Material(new Texture("mapTexture" + m_currentEpisode));
             		break;
-            	case "1texDetail":
+            	case "High":
             		m_material = new Material(new Texture("mapTexture" + m_currentEpisode), 1, 8, 
             				new Texture("mapTextureNormal" + m_currentEpisode), 
             				new Texture("mapTextureBump" + m_currentEpisode), 0.0004f, -0.75f);
@@ -236,11 +238,11 @@ public class Auschwitz implements Game {
             
             m_level = new Level(new Bitmap("level" + m_levelNum).flipX(), m_material);
             
-            switch("1light") {
-    			case "0light":
+            switch(CLEAR_LIGHTS) {
+    			case "True":
     				m_renderingEngine.clearLights();
     				break;
-    			case "1light":
+    			case "False":
     				break;
             }
             

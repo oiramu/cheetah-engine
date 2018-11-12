@@ -30,6 +30,7 @@ import engine.core.Vector3f;
 import engine.physics.PhysicsUtil;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -352,12 +353,13 @@ public class Dog extends GameComponent {
     /**
      * Method that renders the enemy's mesh.
      * @param shader to render
+     * @param renderingEngine to use
      */
-    public void render(Shader shader) {
+    public void render(Shader shader, RenderingEngine renderingEngine) {
         Vector3f prevPosition = transform.getPosition();
         transform.setPosition(new Vector3f(transform.getPosition().getX() + offsetX, transform.getPosition().getY() + offsetY, transform.getPosition().getZ()));
 
-        meshRenderer.render(shader);
+        meshRenderer.render(shader, renderingEngine);
 
         transform.setPosition(prevPosition);
     }

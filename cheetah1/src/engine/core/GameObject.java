@@ -18,6 +18,7 @@ package engine.core;
 import java.util.ArrayList;
 
 import engine.components.GameComponent;
+import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import game.Level;
 import game.enemies.NaziSoldier;
@@ -69,10 +70,11 @@ public class GameObject {
 	 * Render method for all the components on
 	 * the list.
 	 * @param shader to render
+	 * @param renderingEngine to render
 	 */
-	public void render(Shader shader) {
+	public void render(Shader shader, RenderingEngine renderingEngine) {
 		for(GameComponent component : m_list)
-			component.render(shader);
+			component.render(shader, renderingEngine);
 	}
 	
 	/**

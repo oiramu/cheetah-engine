@@ -32,7 +32,7 @@ public class TextureFont {
 	
 	public static Shader m_shader = new Shader("hud");
 	
-    private Mesh		m_meshFont;
+    private Mesh		m_mesh;
     private String		m_text;
     private Material	m_material;
     private Matrix4f 	m_fontMatrix;
@@ -67,8 +67,8 @@ public class TextureFont {
         int[] indices = new int[]{0, 1, 2,
                                     0, 2, 3};
 
-        if(m_meshFont == null)
-        	m_meshFont = new Mesh(verts, indices);
+        if(m_mesh == null)
+        	m_mesh = new Mesh(verts, indices);
         
         Matrix4f matrixScaleFont = new Matrix4f();
         Matrix4f matrixTranslationFont = new Matrix4f();
@@ -127,30 +127,33 @@ public class TextureFont {
 
         m_material = material;
         
-        if(m_meshFont == null)
-        	m_meshFont = new Mesh(vertArray, Util.toIntArray(intArray));
+        if(m_mesh == null)
+        	m_mesh = new Mesh(vertArray, Util.toIntArray(intArray));
         
         Matrix4f matrixScaleFont = new Matrix4f();
         Matrix4f matrixTranslationFont = new Matrix4f();
         matrixScaleFont.initScale(scale.getX(), scale.getY(), 1.5f);
         matrixTranslationFont.initTranslation(position.getX(), position.getY(), 0);
         m_fontMatrix = matrixScaleFont.mul(matrixTranslationFont);
+
     }
 
     /**
      * Method that renders the text.
+     * @param renderingEngine to use
      */
-    public void render() {
+    public void render(RenderingEngine renderingEngine) {
     	m_shader.bind();
-        m_shader.updateUniforms(m_fontMatrix, m_material);
-        m_meshFont.draw();
+    	m_shader.updateUniforms(m_fontMatrix, m_material);
+    	m_mesh.draw();
     }
     
     /**
      * Method that updates the text.
      * @param text to change.
+     * @param renderingEngine to use.
      */
-    public void setText(String text) {   	
+    public void setText(String text, RenderingEngine renderingEngine) {   	
         ArrayList<Vertex> vertices = new ArrayList<Vertex>(); // ArrayList is a variable length Collection class
         ArrayList<Integer> indices = new ArrayList<Integer>();
         for (int i = 0; i < text.length(); i++) {
@@ -177,16 +180,16 @@ public class TextureFont {
         vertices.toArray(vertArray);
         indices.toArray(intArray);
         
-        m_meshFont = new Mesh(vertArray, Util.toIntArray(intArray));
-    	
-        render();
+        m_mesh = new Mesh(vertArray, Util.toIntArray(intArray));
+
+        render(renderingEngine);
     }
 
 	/**
-	 * Method that updates the meshFont.
+	 * Method that updates the mesh' font.
 	 * @param meshFont to set
 	 */
-	public void setMeshFont(Mesh meshFont) {this.m_meshFont = meshFont;}
+	public void setMeshFont(Mesh meshFont) {this.m_mesh = meshFont;}
 
 	/**
 	 * Method that updates the material.

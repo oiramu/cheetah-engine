@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package engine.components;
-
-import engine.core.Transform;
-import engine.rendering.RenderingEngine;
-import engine.rendering.Shader;
+package engine.core;
 
 /**
  *
- * @author Carlos Rodriguez.
+ * @author Carlos Rodriguez
  * @version 1.0
  * @since 2018
  */
-public abstract class GameComponent {
+public class Constants {
 	
-	private Transform transform;
-	public void input() {}
-	public void render(Shader shader, RenderingEngine renderingEngine) {}
-	public void update(double delta) {}
-	public Transform getTransform() {return transform;}
+	public static final String TEXTURE_FILTER = "Anisotropic";
+	public static final String GAME_GRAPHICS = "High";
+	public static final String CLEAR_LIGHTS = "False";
+
 }

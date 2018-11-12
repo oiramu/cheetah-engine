@@ -22,6 +22,7 @@ import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -39,7 +40,7 @@ public class Kitchen extends GameComponent {
     
     private static Mesh mesh;
     private Material material;
-    private MeshRenderer meshRenderer;
+    private MeshRenderer m_meshRenderer;
     
     private float sizeX;
 
@@ -79,7 +80,7 @@ public class Kitchen extends GameComponent {
         }
         
         this.transform = transform;
-        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
+        this.m_meshRenderer = new MeshRenderer(mesh, getTransform(), material);
     }
 
     /**
@@ -103,10 +104,11 @@ public class Kitchen extends GameComponent {
     }
 
     /**
-     * Method that renders the object's mesh to screen.
+     * Method that renders the object's mesh.
      * @param shader to render
+     * @param renderingEngine to use
      */
-    public void render(Shader shader) {meshRenderer.render(shader);}
+    public void render(Shader shader, RenderingEngine renderingEngine) {m_meshRenderer.render(shader, renderingEngine);}
     
     /**
      * Gets the transform of the object in projection.

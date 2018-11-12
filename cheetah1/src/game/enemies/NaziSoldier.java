@@ -32,6 +32,7 @@ import engine.core.Vector3f;
 import engine.physics.PhysicsUtil;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -404,19 +405,20 @@ public class NaziSoldier extends GameComponent {
     /**
      * Method that renders the enemy's mesh.
      * @param shader to render
+     * @param renderingEngine to use
      */
-    public void render(Shader shader) {
+    public void render(Shader shader, RenderingEngine renderingEngine) {
     	double time = Time.getTime();
     	if((double)time < gunFireTime + 0.2f)
-    		shader.getRenderingEngine().addLight(light);
+    		renderingEngine.addLight(light);
     	else
-    		shader.getRenderingEngine().removeLight(light);
+    		renderingEngine.removeLight(light);
         Vector3f prevPosition = transform.getPosition();
         transform.setPosition(new Vector3f(transform.getPosition().getX() + offsetX, transform.getPosition().getY() + offsetY, transform.getPosition().getZ()));
-        meshRenderer.render(shader);
+        meshRenderer.render(shader, renderingEngine);
         
         if (state == STATE_DEAD) {      	
-        	bullet.render(shader);          
+        	bullet.render(shader, renderingEngine);          
         }
 
         transform.setPosition(prevPosition);

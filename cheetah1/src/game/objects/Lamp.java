@@ -30,6 +30,7 @@ import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -167,14 +168,15 @@ public class Lamp extends GameComponent {
     /**
      * Method that renders the object's mesh to screen.
      * @param shader to render
+     * @param renderingEngine to use
      */
-    public void render(Shader shader) {
+    public void render(Shader shader, RenderingEngine renderingEngine) {
     	double time = (double) Time.getTime();
     	if((double)time < fireTime + 0.1f)
-    		shader.getRenderingEngine().removeLight(light);
+    		renderingEngine.removeLight(light);
     	else
-    		shader.getRenderingEngine().addLight(light);
-    	meshRenderer.render(shader);
+    		renderingEngine.addLight(light);
+    	meshRenderer.render(shader, renderingEngine);
     }
     
     /**

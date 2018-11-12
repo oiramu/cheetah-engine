@@ -44,11 +44,12 @@ public class PointLight extends BaseLight {
 		this.m_attenuation = atten;
 		this.m_position = position;
 		
-		float a = atten.getConstant();
-		float b = atten.getLinear();
-		float c = atten.getExponent() - COLOR_DEPTH * getIntensity() * getColor().max();
+		float a = atten.getExponent();
+        float b = atten.getLinear();
+        float c = atten.getConstant() - COLOR_DEPTH * getIntensity() * getColor().max();
 		
 		this.m_range = (float) (-b + Math.sqrt(b * b - 4 * a * c))/(2 * a);
+		
 		setShader(new Shader("forward-point"));
 	}
 	

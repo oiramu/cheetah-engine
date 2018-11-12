@@ -107,10 +107,11 @@ public class Lantern extends GameComponent {
        }
 
     /**
-     * Method that renders the object's mesh to screen.
+     * Method that renders the object's mesh.
      * @param shader to render
+     * @param renderingEngine to use
      */
-    public void render(Shader shader) {m_meshRenderer.render(shader);}
+    public void render(Shader shader, RenderingEngine renderingEngine) {m_meshRenderer.render(shader, renderingEngine);}
     
     /**
      * Gets the transform of the object in projection.

@@ -30,6 +30,7 @@ import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
@@ -223,14 +224,15 @@ public class Barrel extends GameComponent {
     /**
      * Method that renders the object's mesh to screen.
      * @param shader to render
+     * @param renderingEngine to use
      */
-    public void render(Shader shader) {
+    public void render(Shader shader, RenderingEngine renderingEngine) {
     	double time = Time.getTime();
     	if((double)time < fireTime + 1.0f)
-    		shader.getRenderingEngine().addLight(light);
+    		renderingEngine.addLight(light);
     	else
-    		shader.getRenderingEngine().removeLight(light);
-    	meshRenderer.render(shader);
+    		renderingEngine.removeLight(light);
+    	meshRenderer.render(shader, renderingEngine);
     }
     
     /**

@@ -26,6 +26,7 @@ import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
+import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Vertex;
 import game.Level;
@@ -179,8 +180,9 @@ public class Door extends GameComponent {
     /**
      * Renders the door.
      * @param shader to render
+     * @param renderingEngine to render
      */
-    public void render(Shader shader) {meshRenderer.render(shader);}
+    public void render(Shader shader, RenderingEngine renderingEngine) {meshRenderer.render(shader, renderingEngine);}
 
     /**
      * Checks if the door is open or not.

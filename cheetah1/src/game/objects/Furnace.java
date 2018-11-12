@@ -48,7 +48,7 @@ public class Furnace extends GameComponent {
     
     private static Mesh mesh;
     private Material material;
-    private MeshRenderer meshRenderer;
+    private MeshRenderer m_meshRenderer;
     private PointLight light;
     
     private float sizeX;
@@ -96,7 +96,7 @@ public class Furnace extends GameComponent {
         this.material = new Material(animation.get(0));
         this.state = STATE_IDLE;
         this.transform = transform;
-        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
+        this.m_meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         if(light == null)
 	        this.light = new PointLight(new Vector3f(0.55f,0.34f,0.1f), 0.8f, 
 	        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0, 
@@ -137,10 +137,11 @@ public class Furnace extends GameComponent {
     }
 
     /**
-     * Method that renders the object's mesh to screen.
+     * Method that renders the object's mesh.
      * @param shader to render
+     * @param renderingEngine to use
      */
-    public void render(Shader shader) {meshRenderer.render(shader);}
+    public void render(Shader shader, RenderingEngine renderingEngine) {m_meshRenderer.render(shader, renderingEngine);}
     
     /**
      * Gets the transform of the object in projection.

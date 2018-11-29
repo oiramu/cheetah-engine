@@ -20,8 +20,6 @@ import java.util.HashMap;
 
 import javax.sound.midi.Sequence;
 
-import org.lwjgl.input.Keyboard;
-
 import static engine.core.CoreEngine.*;
 import static engine.core.Constants.*;
 
@@ -74,6 +72,15 @@ public class Auschwitz implements Game {
         m_isRunning = true;
         loadLevel(1, true);
     }
+	
+	/**
+     * Cleans everything in the GPU and RAM.
+     */
+    @Override
+    protected void finalize() {
+    	AudioUtil.stopMidi();
+        System.exit(0);
+    }
     
     /**
      * Prints the statistics of the level.
@@ -82,12 +89,15 @@ public class Auschwitz implements Game {
     private void printStats(RenderingEngine renderingEngine) {
     	double time = Time.getTime();
     	if(time<m_stateTime+5.0f) {
-	    	text.get("Level").setText("Level:" + m_levelNum + ";Episode" + m_currentEpisode, renderingEngine);
+	    	text.get("Level").setText("Level:" + m_levelNum + ";Episode" + m_currentEpisode);
+	    	text.get("Level").render(renderingEngine);
 	    	if(m_displayStats) {
 		    	text.get("Enemies").setText("Killed:" + m_deadMonsters + "/" + m_totalMonsters + " Nazis:" +
-		            	(int)(((float) m_deadMonsters / (float) m_totalMonsters) * 100f )+ "%", renderingEngine);
+		            	(int)(((float) m_deadMonsters / (float) m_totalMonsters) * 100f )+ "%");
+		    	text.get("Enemies").render(renderingEngine);
 		    	text.get("Secrets").setText("Secrets:" + m_secrets + "/" + m_totalSecrets + " Secrets:" +
-		    			(int)(((float) m_secrets / (float) m_totalSecrets) * 100f) + "%",  renderingEngine);
+		    			(int)(((float) m_secrets / (float) m_totalSecrets) * 100f) + "%");
+		    	text.get("Secrets").render(renderingEngine);
 	    	}
     	}
     }
@@ -104,7 +114,7 @@ public class Auschwitz implements Game {
     public void input() {
         m_level.input();
         
-        if(Keyboard.isKeyDown(Keyboard.KEY_F4))
+        if(Input.getKeyDown(Input.KEY_F4))
         	System.exit(0);
     }
 

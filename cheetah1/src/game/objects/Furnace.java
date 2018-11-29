@@ -60,7 +60,6 @@ public class Furnace extends GameComponent {
     /**
      * Constructor of the actual object.
      * @param transform the transform of the object in a 3D space.
-     * @param renderingEngine of the furnace.
      */
     public Furnace(Transform transform, RenderingEngine renderingEngine) {
     	
@@ -111,8 +110,8 @@ public class Furnace extends GameComponent {
     public void update(double delta) {
     	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
     	Vector3f orientation = playerDistance.normalized();
-        @SuppressWarnings("unused")
 		float distance = playerDistance.length();
+		setDistance(distance);
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 

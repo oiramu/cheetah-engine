@@ -227,13 +227,51 @@ public class Level extends GameComponent {
         
         m_renderingEngine.setMainCamera(player.getCamera());
     }
+    
+    /**
+     * Checks the damage of some enemy.
+     * @param array of enemies
+     * @param sound to play
+     * @param times to check patron
+     */
+    private <E> void checkDamage(ArrayList<E> array, Clip sound, int times) {
+    		for (E component : array) {
+    			if(player.isBulletBased) {
+    					if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
+                	if(times == 3)
+                		if(sound != null)
+    	            		AudioUtil.playAudio(sound, 0);
+                	((GameComponent) component).damage(player.getDamage());
+                }
+        	}else if(player.isShellBased) {
+        		if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
+        			if(times == 2 || times == 3)
+                		if(sound != null)
+    	            		AudioUtil.playAudio(sound, 0);
+        			((GameComponent) component).damage(player.getDamage());
+        		}
+        	}else if(player.isMelee) {
+	            if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
+	            	if(times == 1 || times == 3)
+	            		if(sound != null)
+	            			AudioUtil.playAudio(sound, 0);
+	               ((GameComponent) component).damage(player.getDamage());
+	            }
+            }
+        	if(player.isMelee == true && times == 69) {
+  	           if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive) {
+ 	                AudioUtil.playAudio(sound, 0);
+ 	           }
+            }
+        }
+    }
 
     /**
      * Inputs accessible in the level.
      */
 	public void input() {
 		double time = Time.getTime();
-    	double timeDecimals = (time - (double) ((int) time));
+    		double timeDecimals = (time - (double) ((int) time));
     	
 		if (!player.isAlive) {
 	        if(Input.getKeyDown(Input.KEY_E) || Input.getKeyDown(Input.KEY_SPACE)) {
@@ -245,175 +283,25 @@ public class Level extends GameComponent {
         }
 
         if (player.fires && !player.isReloading) {
-            for (NaziSoldier monster : naziSoldiers) {
-            	if(player.isBulletBased) {
-	                if (Math.abs(monster.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
-	                    monster.damage(player.getDamage());
-	                }
-            	}else if(player.isShellBased) {
-            		if (Math.abs(monster.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
-            			monster.damage(player.getDamage());
-            		}
-            	}else if(player.isMelee) {
-    	            if (Math.abs(monster.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
-    	               AudioUtil.playAudio(punchNoise, 0);
-    	               monster.damage(player.getDamage());
-    	            }
-                }
-            }
-            
-            for (Dog dog : dogs) {
-            	if(player.isBulletBased) {
-	                if (Math.abs(dog.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
-	                	dog.damage(player.getDamage());
-	                }
-            	}else if(player.isShellBased) {
-            		if (Math.abs(dog.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
-            			dog.damage(player.getDamage());
-            		}
-            	}else if(player.isMelee) {
-    	            if (Math.abs(dog.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
-    	               AudioUtil.playAudio(punchNoise, 0);
-    	               dog.damage(player.getDamage());
-    	            }
-                }
-            }
-            
-            for (SsSoldier ssSoldier : ssSoldiers) {
-            	if(player.isBulletBased) {
-	                if (Math.abs(ssSoldier.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
-	                	ssSoldier.damage(player.getDamage());
-	                }
-            	}else if(player.isShellBased) {
-            		if (Math.abs(ssSoldier.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
-            			ssSoldier.damage(player.getDamage());
-            		}
-            	}else if(player.isMelee) {
-    	            if (Math.abs(ssSoldier.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
-    	               AudioUtil.playAudio(punchNoise, 0);
-    	               ssSoldier.damage(player.getDamage());
-    	            }
-                }
-            }
-            
-            for (NaziSergeant naziSergeants : naziSeargeants) {
-            	if(player.isBulletBased) {
-	                if (Math.abs(naziSergeants.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
-	                	naziSergeants.damage(player.getDamage());
-	                }
-            	}else if(player.isShellBased) {
-            		if (Math.abs(naziSergeants.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
-            			naziSergeants.damage(player.getDamage());
-            		}
-            	}else if(player.isMelee) {
-    	            if (Math.abs(naziSergeants.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
-    	               AudioUtil.playAudio(punchNoise, 0);
-    	               naziSergeants.damage(player.getDamage());
-    	            }
-                }
-            }
-            
-            for (Ghost ghost : ghosts) {
-            	if(player.isBulletBased) {
-	                if (Math.abs(ghost.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
-	                	ghost.damage(player.getDamage());
-	                }
-            	}else if(player.isShellBased) {
-            		if (Math.abs(ghost.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
-            			ghost.damage(player.getDamage());
-            		}
-            	}else if(player.isMelee) {
-    	            if (Math.abs(ghost.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
-    	               ghost.damage(player.getDamage());
-    	            }
-                }
-            }
-            
-            for (Lamp lamp : lamps) {
-            	if(player.isBulletBased) {
-	                if (Math.abs(lamp.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
-	                	lamp.damage(player.getDamage());
-	                }
-            	}else if(player.isShellBased) {
-            		if (Math.abs(lamp.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
-            			lamp.damage(player.getDamage());
-            		}
-            	}else if(player.isMelee) {
-    	            if (Math.abs(lamp.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
-    	               AudioUtil.playAudio(punchSolidNoise, 0);
-    	               lamp.damage(player.getDamage());
-    	            }
-                }
-            }
-            
-            for (Pillar pillar : pillars) {
-            	if(player.isBulletBased) {
-	                if (Math.abs(pillar.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
-	                	pillar.damage(player.getDamage());
-	                }
-            	}else if(player.isShellBased) {
-            		if (Math.abs(pillar.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
-            			pillar.damage(player.getDamage());
-            		}
-            	}else if(player.isMelee) {
-    	            if (Math.abs(pillar.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
-    	               AudioUtil.playAudio(punchSolidNoise, 0);
-    	               pillar.damage(player.getDamage());
-    	            }
-                }
-            }
-            
-            for (Barrel barrel : barrels) {
-            	if(player.isBulletBased) {
-	                if (Math.abs(barrel.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
-	                	barrel.damage(player.getDamage());
-	                	AudioUtil.playAudio(barrelNoise, 0);
-	                }
-            	}else if(player.isShellBased) {
-            		if (Math.abs(barrel.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
-            			barrel.damage(player.getDamage());
-            			AudioUtil.playAudio(barrelNoise, 0);
-            		}
-            	}else if(player.isMelee) {
-    	            if (Math.abs(barrel.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
-    	               barrel.damage(player.getDamage());
-    	               AudioUtil.playAudio(barrelNoise, 0);
-    	            }
-                }
-            }
-            
-            for (Hanged hanged : hangeds) {
-                if(player.isMelee == true) {
-    	           if (Math.abs(hanged.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive) {
-    	                AudioUtil.playAudio(punchNoise, 0);
-    	           }
-                }
-            }
-            
-            for (Table table : tables) {
-                if(player.isMelee == true) {
-    	           if (Math.abs(table.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive) {
-    	                AudioUtil.playAudio(punchSolidNoise, 0);
-    	           }
-                }
-            }
-            
-            for (Clock clock : clocks) {
-                if(player.isMelee == true) {
-    	           if (Math.abs(clock.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive) {
-    	                AudioUtil.playAudio(punchSolidNoise, 0);
-    	           }
-                }
-            }
-            
-            for (Furnace furnace : furnaces) {
-                if(player.isMelee == true) {
-    	           if (Math.abs(furnace.getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive) {
-    	                AudioUtil.playAudio(punchSolidNoise, 0);
-    	           }
-                }
-            }
-            
+        	
+        	checkDamage(naziSoldiers, punchNoise, 1);
+        	checkDamage(dogs, punchNoise, 1);
+        	checkDamage(ssSoldiers, punchNoise, 1);
+        	checkDamage(naziSeargeants, punchNoise, 1);
+        	checkDamage(ghosts, null, 255);
+        	checkDamage(lamps, punchSolidNoise, 1);
+        	checkDamage(pillars, punchSolidNoise, 1);
+        	checkDamage(barrels, barrelNoise, 3);
+        	checkDamage(hangeds, punchNoise, 69);
+        	checkDamage(doors, punchSolidNoise, 69);
+        	checkDamage(pipes, punchSolidNoise, 69);
+        	checkDamage(tables, punchSolidNoise, 69);
+        	checkDamage(clocks, punchSolidNoise, 69);
+        	checkDamage(furnaces, punchSolidNoise, 69);
+        	checkDamage(clocks, punchSolidNoise, 69);
+        	checkDamage(furnaces, punchSolidNoise, 69);
+        	checkDamage(kitchens, punchSolidNoise, 69);
+ 
         }
 
         player.input();
@@ -463,11 +351,11 @@ public class Level extends GameComponent {
     	m_meshRenderer.render(shader, renderingEngine);
     	m_objects.render(shader, renderingEngine);
         
-    	m_objects.sortNumberComponents(secretWalls);
-    	m_objects.sortNumberComponents(naziSoldiers);
-    	m_objects.sortNumberComponents(dogs);
-    	m_objects.sortNumberComponents(ssSoldiers);
-    	m_objects.sortNumberComponents(naziSeargeants);
+   		m_objects.sortNumberComponents(secretWalls);
+   		m_objects.sortNumberComponents(naziSoldiers);
+   		m_objects.sortNumberComponents(dogs);
+   		m_objects.sortNumberComponents(ssSoldiers);
+   		m_objects.sortNumberComponents(naziSeargeants);
 
     }
     
@@ -487,10 +375,11 @@ public class Level extends GameComponent {
         }
         
         for (SecretWall secretWall : secretWalls) {
-        	if (Math.abs(secretWall.getTransform().getPosition().sub(position).length()) < 1f) {
+        		if (Math.abs(secretWall.getTransform().getPosition().sub(position).length()) < 1f) {
                 worked = true;
                 secretWall.open(0.5f, 3f);
-                player.playerText.get("Notification").setText("You've found a secret!", m_renderingEngine);
+                player.playerText.get("Notification").setText("You've found a secret!");
+                player.playerText.get("Notification").render(m_renderingEngine);
                 player.notificationTime = Time.getTime();
             }
         }

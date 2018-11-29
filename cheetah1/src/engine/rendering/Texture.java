@@ -202,20 +202,20 @@ public class Texture {
             		glGenerateMipmap(GL_TEXTURE_2D);
                     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-        			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -1.0f);
+        			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -MIPMAP_LEVEL);
             		break;
             	case "Trilinear":
             		glGenerateMipmap(GL_TEXTURE_2D);
                     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -1.0f);
+        			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -MIPMAP_LEVEL);
             		break;
             	case "Anisotropic":
             		glGenerateMipmap(GL_TEXTURE_2D);
                     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0.0f);
         			if(getCapabilities().GL_EXT_texture_filter_anisotropic) {
-        				float ammount = Math.min(4,
+        				float ammount = Math.min(ANISOTROPIC_LEVEL,
         						glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
         				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
         						ammount);

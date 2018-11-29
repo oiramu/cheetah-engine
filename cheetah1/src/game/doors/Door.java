@@ -147,6 +147,9 @@ public class Door extends GameComponent {
      * @param delta of time
      */
     public void update(double delta) {
+    	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
+        float distance = playerDistance.length();
+        setDistance(distance);
         if (opening) {
             double time = Time.getTime();
 

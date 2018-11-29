@@ -88,9 +88,7 @@ public class Shader {
     /**
      * Binds the GLSL program(s) to compile.
      */
-    public void bind() {
-        glUseProgram(m_resource.getProgram());
-    }
+    public void bind() { glUseProgram(m_resource.getProgram()); }
 
     /**
      * Updates all the uniforms of the shading program.
@@ -523,5 +521,11 @@ public class Shader {
 		setUniform(uniformName + ".direction", spotLight.getDirection());
 		setUniformf(uniformName + ".cutoff", spotLight.getCutoff());
 	}
+	
+	/**
+	 * Returns the name of the shader thats compiling.
+	 * @return shader's name
+	 */
+	public String getName() { return m_fileName; }
 
 }

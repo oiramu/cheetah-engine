@@ -85,7 +85,7 @@ public class Lantern extends GameComponent {
 	        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.25f, 
 	        				getTransform().getPosition().getZ()));
         this.m_meshRenderer = new MeshRenderer(m_mesh, getTransform(), m_material);
-    	renderingEngine.addLight(m_light);
+        renderingEngine.addLight(m_light);
     }
 
     /**
@@ -95,8 +95,8 @@ public class Lantern extends GameComponent {
     public void update(double delta) {
     	Vector3f playerDistance = m_transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
         Vector3f orientation = playerDistance.normalized();
-        @SuppressWarnings("unused")
 		float distance = playerDistance.length();
+		setDistance(distance);
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 

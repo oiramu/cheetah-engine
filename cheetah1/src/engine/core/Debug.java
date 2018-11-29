@@ -68,24 +68,29 @@ public class Debug {
 	public static void printToEngine(RenderingEngine renderingEngine) {
 		if(m_state) {
 			debugText.get("Engine").render(renderingEngine);
-			debugText.get("FPS").setText("FPS:"+(int)Time.getFPS(), renderingEngine);
-			debugText.get("FrameTime").setText("FrameTime:"+(float)Time.getFrametime()+"ms", renderingEngine);
+			debugText.get("FPS").setText("FPS:"+(int)Time.getFPS());
+			debugText.get("FPS").render(renderingEngine);
+			debugText.get("FrameTime").setText("FrameTime:"+(float)Time.getFrametime()+"ms");
+			debugText.get("FrameTime").render(renderingEngine);
 			int totalMemory = (int)Runtime.getRuntime().totalMemory()/MB;
 	    	int freeMemory = (int)Runtime.getRuntime().freeMemory()/MB;
 	    	int usingMemory = totalMemory - freeMemory;
 	    	int mem = (usingMemory*100/totalMemory);
-	    	debugText.get("Memory").setText("Mem:"+mem+"% "+usingMemory+"/"+totalMemory+"MB", renderingEngine);
+	    	debugText.get("Memory").setText("Mem:"+mem+"% "+usingMemory+"/"+totalMemory+"MB");
+	    	debugText.get("Memory").render(renderingEngine);
 	    	long end = System.nanoTime();
 	    	int cpus = Runtime.getRuntime().availableProcessors();
 	        long totalAvailCPUTime = cpus * (end-System.nanoTime());
 	        long totalUsedCPUTime = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()-ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();
 	        int cpu = (int) (((float)totalUsedCPUTime*10)/(float)totalAvailCPUTime);
-	        debugText.get("CPU").setText("CPU:"+Util.clamp(100, cpu)+"% "+cpus+" cores", renderingEngine);
+	        debugText.get("CPU").setText("CPU:"+Util.clamp(100, cpu)+"% "+cpus+" cores");
+	        debugText.get("CPU").render(renderingEngine);
 	        if(Time.getFPS() >= m_bestFPS) m_bestFPS = (int) Time.getFPS();
 	        m_averageFPS = (m_bestFPS+m_worstFPS)/2;
 	        if(m_worstFPS == -1) m_worstFPS = m_averageFPS; else
 	        if(Time.getFPS() <= m_worstFPS) m_worstFPS = (int) Time.getFPS();
-	        debugText.get("FPSMeasure").setText("wFPS:"+m_worstFPS+" aFPS:"+m_averageFPS+" bFPS:"+m_bestFPS, renderingEngine);
+	        debugText.get("FPSMeasure").setText("wFPS:"+m_worstFPS+" aFPS:"+m_averageFPS+" bFPS:"+m_bestFPS);
+	        debugText.get("FPSMeasure").render(renderingEngine);
 	        debugText.get("OS").render(renderingEngine);
 	        debugText.get("LWJGL").render(renderingEngine);
 	        debugText.get("OpenGL").render(renderingEngine);

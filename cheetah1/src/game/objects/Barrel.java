@@ -142,6 +142,7 @@ public class Barrel extends GameComponent {
     	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
         Vector3f orientation = playerDistance.normalized();
 		float distance = playerDistance.length();
+		setDistance(distance);
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 

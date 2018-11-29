@@ -30,9 +30,8 @@ import engine.core.Vector3f;
  */
 public class TextureFont {
 	
-	public static Shader m_shader = new Shader("hud");
-	
     private Mesh		m_mesh;
+    private Shader		m_shader;
     private String		m_text;
     private Material	m_material;
     private Matrix4f 	m_fontMatrix;
@@ -69,6 +68,8 @@ public class TextureFont {
 
         if(m_mesh == null)
         	m_mesh = new Mesh(verts, indices);
+        if(m_shader == null)
+        	m_shader = new Shader("hud");
         
         Matrix4f matrixScaleFont = new Matrix4f();
         Matrix4f matrixTranslationFont = new Matrix4f();
@@ -129,6 +130,8 @@ public class TextureFont {
         
         if(m_mesh == null)
         	m_mesh = new Mesh(vertArray, Util.toIntArray(intArray));
+        if(m_shader == null)
+        	m_shader = new Shader("hud");
         
         Matrix4f matrixScaleFont = new Matrix4f();
         Matrix4f matrixTranslationFont = new Matrix4f();
@@ -137,10 +140,11 @@ public class TextureFont {
         m_fontMatrix = matrixScaleFont.mul(matrixTranslationFont);
 
     }
-
+    
     /**
      * Method that renders the text.
      * @param renderingEngine to use
+     * @param shader to use
      */
     public void render(RenderingEngine renderingEngine) {
     	m_shader.bind();
@@ -151,9 +155,8 @@ public class TextureFont {
     /**
      * Method that updates the text.
      * @param text to change.
-     * @param renderingEngine to use.
      */
-    public void setText(String text, RenderingEngine renderingEngine) {   	
+    public void setText(String text) {   	
         ArrayList<Vertex> vertices = new ArrayList<Vertex>(); // ArrayList is a variable length Collection class
         ArrayList<Integer> indices = new ArrayList<Integer>();
         for (int i = 0; i < text.length(); i++) {
@@ -182,7 +185,6 @@ public class TextureFont {
         
         m_mesh = new Mesh(vertArray, Util.toIntArray(intArray));
 
-        render(renderingEngine);
     }
 
 	/**

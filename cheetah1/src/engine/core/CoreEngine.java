@@ -18,6 +18,7 @@ package engine.core;
 import static org.lwjgl.opengl.GL11.GL_VERSION;
 import static org.lwjgl.opengl.GL11.glGetString;
 
+import engine.audio.AudioUtil;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Window;
 
@@ -213,6 +214,6 @@ public class CoreEngine {
 	/**
      * Method that cleans everything in the program's window.
      */
-    private void cleanUp() {Window.dispose();}
+    private void cleanUp() {Window.dispose(); AudioUtil.stopMidi();}
 
 }

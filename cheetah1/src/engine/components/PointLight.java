@@ -17,6 +17,7 @@ package engine.components;
 
 import engine.core.Vector3f;
 import engine.rendering.Shader;
+import game.Level;
 
 /**
  *
@@ -88,5 +89,11 @@ public class PointLight extends BaseLight {
 	 * @param Range to set
 	 */
 	public void setRange(float range) {this.m_range = range;}
+	
+	/**
+	 * Returns the point-light's distance to the camera.
+	 * @return point-light's distance
+	 */
+	public float getDistance() {return getPosition().sub(Level.getPlayer().getCamera().getPos()).length();}
 	
 }

@@ -17,6 +17,8 @@ package engine.core;
 
 import java.util.ArrayList;
 
+import static engine.core.Constants.*;
+
 import engine.components.GameComponent;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
@@ -31,7 +33,7 @@ import game.enemies.NaziSoldier;
  */
 public class GameObject {
 	
-	private ArrayList <GameComponent> 	m_list;
+	private ArrayList <GameComponent> m_list;
 	
 	/**
 	 * Game Object's constructor.
@@ -74,7 +76,8 @@ public class GameObject {
 	 */
 	public void render(Shader shader, RenderingEngine renderingEngine) {
 		for(GameComponent component : m_list)
-			component.render(shader, renderingEngine);
+			if(component.getDistance() < POP_IN)
+				component.render(shader, renderingEngine);
 	}
 	
 	/**

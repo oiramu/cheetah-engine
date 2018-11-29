@@ -108,8 +108,8 @@ public class Clock extends GameComponent {
     public void update(double delta) {
     	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
         Vector3f orientation = playerDistance.normalized();
-        @SuppressWarnings("unused")
 		float distance = playerDistance.length();
+		setDistance(distance);
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 

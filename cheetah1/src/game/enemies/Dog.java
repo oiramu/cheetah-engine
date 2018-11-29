@@ -157,6 +157,7 @@ public class Dog extends GameComponent {
 
         Vector3f orientation = playerDistance.normalized();
         float distance = playerDistance.length();
+        setDistance(distance);
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 

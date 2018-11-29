@@ -16,6 +16,7 @@
 package engine.rendering;
 
 import static org.lwjgl.opengl.GL11.*;
+import static engine.core.Constants.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +24,8 @@ import java.util.HashMap;
 import engine.components.BaseLight;
 import engine.components.Camera;
 import engine.components.GameComponent;
+import engine.components.PointLight;
+import engine.components.SpotLight;
 import engine.core.Debug;
 import engine.core.Vector3f;
 import engine.rendering.resourceManagement.MappedValues;
@@ -82,7 +85,19 @@ public class RenderingEngine extends MappedValues {
 			
 			for(int i = 0; i < m_lights.size(); i++) {
 				m_activeLight = m_lights.get(i);
-				component.render(m_activeLight.getShader(), this);
+				switch(m_activeLight.getShader().getName()) {
+					case"forward-directional":
+						component.render(m_activeLight.getShader(), this);
+					break;
+					case"forward-point":
+						if(((PointLight) m_activeLight).getDistance() < LIGHT_POP_IN)
+							component.render(m_activeLight.getShader(), this);
+					break;
+					case"forward-spot":
+						if(((SpotLight) m_activeLight).getDistance() < LIGHT_POP_IN)
+							component.render(m_activeLight.getShader(), this);
+					break;
+				}
 			}
 			
 			glDepthFunc(GL_LESS);
@@ -97,7 +112,7 @@ public class RenderingEngine extends MappedValues {
     /**
 	 * Cleans everything light related.
 	 */
-    public void clearLights() {m_lights.clear();}
+    public void clearLights() { m_lights.clear();}
 
     /**
      * Sets textures to openGL.
@@ -115,13 +130,13 @@ public class RenderingEngine extends MappedValues {
 	 * Adds a new directional light to the rendering engine.
 	 * @param light to add.
 	 */
-	public void addLight(BaseLight light) {m_lights.add(light);}
+	public void addLight(BaseLight light) { m_lights.add(light); }
 	
 	/**
 	 * Removes a new directional light to the rendering engine.
 	 * @param light to remove.
 	 */
-	public void removeLight(BaseLight light) {m_lights.remove(light);}
+	public void removeLight(BaseLight light) { m_lights.remove(light); }
 	
 	/**
 	 * Returns the light that is been used.

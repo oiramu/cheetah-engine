@@ -22,14 +22,21 @@ import engine.rendering.Shader;
 /**
  *
  * @author Carlos Rodriguez.
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
 public abstract class GameComponent {
+	
+	private float distance;
 	
 	private Transform transform;
 	public void input() {}
 	public void render(Shader shader, RenderingEngine renderingEngine) {}
 	public void update(double delta) {}
 	public Transform getTransform() {return transform;}
+	
+	public float getDistance() {return distance;}
+	public void setDistance(float distance) {this.distance = distance;}
+	
+    public void damage(int amt) {}
 }

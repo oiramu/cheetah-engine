@@ -40,7 +40,6 @@ import game.Level;
 public class Machinegun extends GameComponent {
 
     public final float PICKUP_THRESHHOLD = 0.75f;
-    private static final int AMOUNT = 17;
     private static final String WEAPONS_RES_LOC = "weapons/";
     private static final String RES_LOC = "machinegun/MEDIA";
     private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
@@ -118,7 +117,6 @@ public class Machinegun extends GameComponent {
         if (distance < PICKUP_THRESHHOLD) {
         	AudioUtil.playAudio(PICKUP_NOISE, 0);
             Level.getPlayer().setMachinegun(true);
-            Level.getPlayer().addBullets(AMOUNT);
             Level.removeMachineGun(this);
         }
     }

@@ -40,7 +40,6 @@ import game.Level;
 public class SuperShotgun extends GameComponent {
 
     public static final float PICKUP_THRESHHOLD = 0.75f;
-    private static final int AMOUNT = 2;
     private static final String RES_LOC = "superShotgun/MEDIA";
     private static final String WEAPONS_RES_LOC = "weapons/";
     private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
@@ -87,7 +86,7 @@ public class SuperShotgun extends GameComponent {
         }
         this.m_shouldFloat = shouldFloat;
         this.m_transform = transform;
-        this.m_meshRenderer = new MeshRenderer(m_mesh, getTransform(), m_material);
+        this.m_meshRenderer = new MeshRenderer(m_mesh, m_transform, m_material);
     }
 
     /**
@@ -115,9 +114,8 @@ public class SuperShotgun extends GameComponent {
 
         if (distance < PICKUP_THRESHHOLD) {
             Level.getPlayer().setSuperShotgun(true);
-            Level.getPlayer().addShells(AMOUNT);
-            Level.removeSuperShotgun(this);
             AudioUtil.playAudio(PICKUP_NOISE, 0);
+            Level.removeSuperShotgun(this);
         }
     }
 	

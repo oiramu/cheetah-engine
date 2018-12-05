@@ -39,6 +39,7 @@ import engine.rendering.Vertex;
 import game.Auschwitz;
 import game.Level;
 import game.Player;
+import game.powerUp.Shell;
 import game.powerUp.Shotgun;
 
 /**
@@ -79,6 +80,7 @@ public class NaziSergeant extends GameComponent {
     private Material material;
     private MeshRenderer meshRenderer;
     private Shotgun shotgun;
+    private Shell shell;
     private SpotLight light;
 
     private int state;
@@ -347,7 +349,10 @@ public class NaziSergeant extends GameComponent {
         	isQuiet = true;
         	if(shotgun == null)
         		shotgun = new Shotgun(new Transform(getTransform().getPosition()), false);
+        	if(shell == null)
+        		shell = new Shell(new Transform(getTransform().getPosition()), false);
         	shotgun.update(delta);
+        	shell.update(delta);
             dead = true;
             material.setDiffuse(animation.get(11));
             if (distance < shotgun.PICKUP_THRESHHOLD) {
@@ -419,6 +424,11 @@ public class NaziSergeant extends GameComponent {
         transform.setPosition(new Vector3f(transform.getPosition().getX() + offsetX, transform.getPosition().getY() + offsetY, transform.getPosition().getZ()));
 
         meshRenderer.render(shader, renderingEngine);
+        
+        if (state == STATE_DEAD) {
+        	shotgun.render(shader, renderingEngine);
+        	shell.render(shader, renderingEngine);
+        }
 
         transform.setPosition(prevPosition);
     }

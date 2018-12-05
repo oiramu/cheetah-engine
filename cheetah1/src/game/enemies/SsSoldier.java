@@ -39,6 +39,7 @@ import engine.rendering.Vertex;
 import game.Auschwitz;
 import game.Level;
 import game.Player;
+import game.powerUp.Bullet;
 import game.powerUp.Machinegun;
 
 /**
@@ -79,6 +80,7 @@ public class SsSoldier extends GameComponent {
     private Material material;
     private MeshRenderer meshRenderer;
     private Machinegun machineGun;
+    private Bullet bullet;
     private SpotLight light;
 
     private int state;
@@ -359,6 +361,9 @@ public class SsSoldier extends GameComponent {
         	isQuiet = true;
         	if(machineGun == null)
         		machineGun = new Machinegun(new Transform(getTransform().getPosition()), false);
+        	if(bullet == null)
+            	bullet = new Bullet(new Transform(getTransform().getPosition()), false);
+        	bullet.update(delta);
         	machineGun.update(delta);
             dead = true;
             material.setDiffuse(animation.get(15));
@@ -419,8 +424,10 @@ public class SsSoldier extends GameComponent {
         Vector3f prevPosition = transform.getPosition();
         transform.setPosition(new Vector3f(transform.getPosition().getX() + offsetX, transform.getPosition().getY() + offsetY, transform.getPosition().getZ()));
 
-        if (state == STATE_DEAD)
+        if (state == STATE_DEAD) {
         	machineGun.render(shader, renderingEngine);
+        	bullet.render(shader, renderingEngine);
+        }
         
         meshRenderer.render(shader, renderingEngine);
 

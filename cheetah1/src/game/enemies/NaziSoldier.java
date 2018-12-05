@@ -426,11 +426,11 @@ public class NaziSoldier extends GameComponent {
     		renderingEngine.removeLight(light);
         Vector3f prevPosition = transform.getPosition();
         transform.setPosition(new Vector3f(transform.getPosition().getX() + offsetX, transform.getPosition().getY() + offsetY, transform.getPosition().getZ()));
-        meshRenderer.render(shader, renderingEngine);
         
-        if (state == STATE_DEAD) {      	
+        if (state == STATE_DEAD)    	
         	bullet.render(shader, renderingEngine);          
-        }
+        
+        meshRenderer.render(shader, renderingEngine);
 
         transform.setPosition(prevPosition);
     }

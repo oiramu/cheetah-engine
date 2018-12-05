@@ -69,6 +69,7 @@ import game.powerUp.Food;
 import game.powerUp.Helmet;
 import game.powerUp.Machinegun;
 import game.powerUp.Medkit;
+import game.powerUp.Shell;
 import game.powerUp.Shotgun;
 import game.powerUp.SuperShotgun;
 
@@ -104,6 +105,7 @@ public class Level extends GameComponent {
     private static ArrayList<Medkit> removeMedkitList;
     private static ArrayList<Food> removeFoodList;
     private static ArrayList<Bullet> removeBulletList;
+    private static ArrayList<Shell> removeShellList;
     private static ArrayList<Bag> removeBagList;
     private static ArrayList<Shotgun> removeShotgunList;
     private static ArrayList<Machinegun> removeMachineGunList;
@@ -320,6 +322,7 @@ public class Level extends GameComponent {
         m_objects.removeListToRenderPipeline(removeMedkitList);
         m_objects.removeListToRenderPipeline(removeFoodList);
         m_objects.removeListToRenderPipeline(removeBulletList);
+        m_objects.removeListToRenderPipeline(removeShellList);
         m_objects.removeListToRenderPipeline(removeBagList);
         m_objects.removeListToRenderPipeline(removeShotgunList);
         m_objects.removeListToRenderPipeline(removeMachineGunList);
@@ -332,6 +335,7 @@ public class Level extends GameComponent {
         removeMedkitList.clear();
         removeFoodList.clear();
         removeBulletList.clear();
+        removeShellList.clear();
         removeBagList.clear();
         removeShotgunList.clear();
         removeMachineGunList.clear();
@@ -780,6 +784,7 @@ public class Level extends GameComponent {
     	if(removeMedkitList == null) Level.removeMedkitList = new ArrayList<Medkit>();
     	if(removeFoodList == null) Level.removeFoodList = new ArrayList<Food>();
     	if(removeBulletList == null) Level.removeBulletList = new ArrayList<Bullet>();
+    	if(removeShellList == null) Level.removeShellList = new ArrayList<Shell>();
     	if(removeBagList == null) Level.removeBagList = new ArrayList<Bag>();
     	if(removeShotgunList == null) Level.removeShotgunList = new ArrayList<Shotgun>();
     	if(removeMachineGunList == null) Level.removeMachineGunList = new ArrayList<Machinegun>();
@@ -1050,6 +1055,12 @@ public class Level extends GameComponent {
 	 * @param bullet Bullet pack.
 	 */
 	public static void removeBullets(Bullet bullet) {removeBulletList.add(bullet);}
+	
+	/**
+	 * Removes the shell packs when the player grabs it.
+	 * @param shell Shell pack.
+	 */
+	public static void removeShells(Shell shell) {removeShellList.add(shell);}
 	    
 	/**
 	 * Removes the bags when the player grabs it.

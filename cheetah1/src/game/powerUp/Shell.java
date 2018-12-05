@@ -34,15 +34,15 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.2
- * @since 2017
+ * @version 1.0
+ * @since 2018
  */
-public class Shotgun extends GameComponent {
+public class Shell extends GameComponent {
 
-    public final float PICKUP_THRESHHOLD = 0.75f;
-    private static final String RES_LOC = "shotgun/MEDIA";
-    private static final String WEAPONS_RES_LOC = "weapons/";
-    private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
+	public final float PICKUP_THRESHHOLD = 0.75f;
+    private static final int AMOUNT = 6;
+    private static final String RES_LOC = "shell/MEDIA";
+    private static final Clip PICKUP_NOISE = AudioUtil.loadAudio("bullet/MEDIA");
     
     private float			m_temp = 0;
 
@@ -55,14 +55,15 @@ public class Shotgun extends GameComponent {
     /**
      * Constructor of the actual power-up.
      * @param transform the transform of the data.
+     * @param shouldFloat if it does.
      */
-    public Shotgun(Transform transform, boolean shouldFloat) {
+    public Shell(Transform transform, boolean shouldFloat) {
         if (m_mesh == null) {
-            float sizeY = 0.15f;
-            float sizeX = (float) ((double) sizeY / (0.2295081967213115 * (sizeY * 10)));
+        	float sizeY = 0.2f;
+            float sizeX = (float) ((double) sizeY / (1.666666666666667f * 2.0));
 
-            float offsetX = 0.05f;
-            float offsetY = 0.01f;
+            float offsetX = 0.0f;
+            float offsetY = 0.0f;
 
             float texMinX = -offsetX;
             float texMaxX = -1 - offsetX;
@@ -81,9 +82,11 @@ public class Shotgun extends GameComponent {
         }
 
         if (m_material == null) {
-            m_material = new Material(new Texture(WEAPONS_RES_LOC + RES_LOC));
+            m_material = new Material(new Texture(RES_LOC));
         }
-        this.m_shouldFloat = shouldFloat;
+        
+        m_shouldFloat = shouldFloat;
+
         this.m_transform = transform;
         this.m_meshRenderer = new MeshRenderer(m_mesh, this.m_transform, m_material);
     }
@@ -92,8 +95,8 @@ public class Shotgun extends GameComponent {
      * Updates the power-up every single frame.
      * @param delta of time
      */
-	public void update(double delta) {
-		Vector3f playerDistance = m_transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
+    public void update(double delta) {
+    	Vector3f playerDistance = m_transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
         Vector3f orientation = playerDistance.normalized();
         float distance = playerDistance.length();
         setDistance(distance);
@@ -111,19 +114,19 @@ public class Shotgun extends GameComponent {
 	        m_transform.getPosition().setY(0.05f * (float)(Math.sin(m_temp)+1.0/2.0) + 0.025f);
         }
 
-        if (distance < PICKUP_THRESHHOLD) {
+        if (distance < PICKUP_THRESHHOLD && Level.getPlayer().getShells() < Level.getPlayer().getMaxShells()) {
         	AudioUtil.playAudio(PICKUP_NOISE, 0);
-            Level.getPlayer().setShotgun(true);
-            Level.removeShotgun(this);
+            Level.getPlayer().addShells(AMOUNT);
+            Level.removeShells(this);
         }
     }
-	
-	/**
+
+    /**
      * Method that renders the power-up's mesh.
      * @param shader to render
      * @param renderingEngine to use
      */
     public void render(Shader shader, RenderingEngine renderingEngine) {m_meshRenderer.render(shader, renderingEngine);}
     
-
+    
 }

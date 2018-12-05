@@ -43,17 +43,21 @@ public class Bullet extends GameComponent {
     private static final int AMOUNT = 9;
     private static final String RES_LOC = "bullet/MEDIA";
     private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
+    
+    private float			m_temp = 0;
 
     private static Mesh 	m_mesh;
     private static Material m_material;
     private MeshRenderer 	m_meshRenderer;
     private Transform 		m_transform;
+    private boolean			m_shouldFloat;
 
     /**
      * Constructor of the actual power-up.
      * @param transform the transform of the data.
+     * @param shouldFloat if it does.
      */
-    public Bullet(Transform transform) {
+    public Bullet(Transform transform, boolean shouldFloat) {
         if (m_mesh == null) {
         	float sizeY = 0.2f;
             float sizeX = (float) ((double) sizeY / (1.666666666666667f * 2.0));
@@ -80,6 +84,8 @@ public class Bullet extends GameComponent {
         if (m_material == null) {
             m_material = new Material(new Texture(RES_LOC));
         }
+        
+        m_shouldFloat = shouldFloat;
 
         this.m_transform = transform;
         this.m_meshRenderer = new MeshRenderer(m_mesh, this.m_transform, m_material);
@@ -102,6 +108,11 @@ public class Bullet extends GameComponent {
         }
 
         m_transform.setRotation(0, angle + 90, 0);
+        
+        if (m_shouldFloat) {
+	        m_temp += (float) delta; 
+	        m_transform.getPosition().setY(0.05f * (float)(Math.sin(m_temp)+1.0/2.0) + 0.025f);
+        }
 
         if (distance < PICKUP_THRESHHOLD && Level.getPlayer().getBullets() < Level.getPlayer().getMaxBullets()) {
         	AudioUtil.playAudio(PICKUP_NOISE, 0);

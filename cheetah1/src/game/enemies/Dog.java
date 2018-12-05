@@ -61,12 +61,12 @@ public class Dog extends GameComponent {
     
     private static final String RES_LOC = "dog/";
 
-    private static final Clip seeNoise = AudioUtil.loadAudio(RES_LOC + "SSSSIT");
-    private static final Clip shootNoise = AudioUtil.loadAudio(RES_LOC + "SSHOTGN");
-    private static final Clip hitNoise = AudioUtil.loadAudio(RES_LOC + "SPOPAIN");
-    private static final Clip deathNoise = AudioUtil.loadAudio(RES_LOC + "SSSDTH");
+    private static final Clip seeNoise = AudioUtil.loadAudio(RES_LOC + "dgsit");
+    private static final Clip hitNoise = AudioUtil.loadAudio(RES_LOC + "dgpain");
+    private static final Clip deathNoise = AudioUtil.loadAudio(RES_LOC + "dgdth");
 
     private static ArrayList<Texture> animation;
+    private static ArrayList<Clip> atackSound;
     private static Mesh mesh;
     private static Random rand;
 
@@ -94,19 +94,31 @@ public class Dog extends GameComponent {
         if (animation == null) {
             animation = new ArrayList<Texture>();
 
-            animation.add(new Texture(RES_LOC + "SSWVA1"));
-            animation.add(new Texture(RES_LOC + "SSWVB1"));
-            animation.add(new Texture(RES_LOC + "SSWVC1"));
-            animation.add(new Texture(RES_LOC + "SSWVD1"));
-
-            animation.add(new Texture(RES_LOC + "SSWVE0"));
-            animation.add(new Texture(RES_LOC + "SSWVF0"));
-            animation.add(new Texture(RES_LOC + "SSWVG0"));
-
-            animation.add(new Texture(RES_LOC + "SSWVH0"));
-            animation.add(new Texture(RES_LOC + "SSWVI0"));
-            
-            animation.add(new Texture(RES_LOC + "SSWVJ0"));
+            //Chase
+            animation.add(new Texture(RES_LOC + "DOGSA1"));
+            animation.add(new Texture(RES_LOC + "DOGSB1"));
+            animation.add(new Texture(RES_LOC + "DOGSC1"));
+            animation.add(new Texture(RES_LOC + "DOGSD1"));
+            animation.add(new Texture(RES_LOC + "DOGSE1"));
+            //Atack
+            animation.add(new Texture(RES_LOC + "DOGSF1"));
+            animation.add(new Texture(RES_LOC + "DOGSG1"));
+            animation.add(new Texture(RES_LOC + "DOGSH1"));
+            //Dying
+            animation.add(new Texture(RES_LOC + "DOGSI0"));       
+            animation.add(new Texture(RES_LOC + "DOGSJ0"));
+            animation.add(new Texture(RES_LOC + "DOGSK0"));
+            animation.add(new Texture(RES_LOC + "DOGSL0"));
+            animation.add(new Texture(RES_LOC + "DOGSM0"));
+            //Dead
+            animation.add(new Texture(RES_LOC + "DOGSN0"));
+        }
+        
+        if(atackSound == null) {
+        	atackSound = new ArrayList<Clip>();
+        	
+        	atackSound.add(AudioUtil.loadAudio(RES_LOC + "dgact"));
+        	atackSound.add(AudioUtil.loadAudio(RES_LOC + "dgatk"));
         }
 
         if (mesh == null) {
@@ -176,7 +188,6 @@ public class Dog extends GameComponent {
             deathTime = time;
             state = STATE_DYING;
             seeNoise.stop();
-            shootNoise.stop();
             hitNoise.stop();
             AudioUtil.playAudio(deathNoise, distance);
         }
@@ -254,13 +265,15 @@ public class Dog extends GameComponent {
                     timeDecimals *= 1.5f;
 
                     if (timeDecimals <= 0.25f) {
-                        material.setDiffuse(animation.get(2));
-                    } else if (timeDecimals <= 0.5f) {
                         material.setDiffuse(animation.get(0));
-                    } else if (timeDecimals <= 0.75f) {
+                    } else if (timeDecimals <= 0.5f) {
                         material.setDiffuse(animation.get(1));
-                    } else {
+                    } else if (timeDecimals <= 0.75f) {
+                        material.setDiffuse(animation.get(2));
+                    } else if (timeDecimals <= 1.0f) {
                         material.setDiffuse(animation.get(3));
+                    } else {
+                        material.setDiffuse(animation.get(4));
                     }
                 }
             }
@@ -270,11 +283,9 @@ public class Dog extends GameComponent {
                 double timeDecimals = (time - (double) ((int) time));
 
                 if (timeDecimals <= 0.25f) {
-                    material.setDiffuse(animation.get(4));
-                } else if (timeDecimals <= 0.5f) {
                     material.setDiffuse(animation.get(5));
-                } else if (timeDecimals <= 0.7f) {
-                    if (canAttack) {
+                } else if (timeDecimals <= 0.5f) {
+                	if (canAttack) {
                         Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
 
                         Vector2f lineStart = transform.getPosition().getXZ();
@@ -292,7 +303,7 @@ public class Dog extends GameComponent {
                             if(player.getHealth() <= 0) {
                             	damage = 0;
                             	state = STATE_DONE;
-                            }else {
+                            } else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
                             	if(player.getArmorb() == false) {
                             		player.addHealth((int) -damage);
@@ -301,10 +312,12 @@ public class Dog extends GameComponent {
                             	}
                             }
                         }
-                        AudioUtil.playAudio(shootNoise, distance);
+                        AudioUtil.playAudio(atackSound.get(new Random().nextInt(atackSound.size())), distance);
                     }
 
                     material.setDiffuse(animation.get(6));
+                } else if (timeDecimals <= 0.7f) {
+                	material.setDiffuse(animation.get(7));
                 } else {
                     canAttack = true;
                     material.setDiffuse(animation.get(5));
@@ -320,13 +333,20 @@ public class Dog extends GameComponent {
             final float time1 = 0.1f;
             final float time2 = 0.3f;
             final float time3 = 0.45f;
+            final float time4 = 0.6f;
+            final float time5 = 0.75f;
 
             if (time <= deathTime + 0.2f) {
-                material.setDiffuse(animation.get(7));
-            } else if (time > deathTime + time1 && time <= deathTime + time2) {
                 material.setDiffuse(animation.get(8));
-                offsetX = -0.1f;
-            } else if (time > deathTime + time3) {
+            } else if (time > deathTime + time1 && time <= deathTime + time2) {
+                material.setDiffuse(animation.get(9));
+            } else if (time > deathTime + time2 && time <= deathTime + time3) {
+                material.setDiffuse(animation.get(10));
+            } else if (time > deathTime + time3 && time <= deathTime + time4) {
+                material.setDiffuse(animation.get(11));
+            } else if (time > deathTime + time4 && time <= deathTime + time5) {
+                material.setDiffuse(animation.get(12));
+            } else if (time > deathTime + time5) {
                 state = STATE_DEAD;
             }
         }
@@ -334,7 +354,7 @@ public class Dog extends GameComponent {
         if (state == STATE_DEAD) {
         	isQuiet = true;
             dead = true;
-            material.setDiffuse(animation.get(9));
+            material.setDiffuse(animation.get(13));
         }
         
         if (state == STATE_DONE) {

@@ -15,9 +15,9 @@
  */
 package engine.core;
 
-import java.util.ArrayList;
+import static engine.components.Constants.*;
 
-import static engine.core.Constants.*;
+import java.util.ArrayList;
 
 import engine.components.GameComponent;
 import engine.rendering.RenderingEngine;

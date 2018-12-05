@@ -411,7 +411,7 @@ public class Player extends GameComponent {
     	gunMaterial = new Material(gunsMaterial.get(1));
     	gunAnimationMaterial1 = new Material(gunsAnimationMaterial1.get(1));
     	gunAnimationMaterial2 = new Material(gunsAnimationMaterial2.get(1));
-    	gunLightColor = new Vector3f(0.5f,0.3f,0.1f);
+    	gunLightColor = new Vector3f(1.0f,0.6f,0.2f);
         gunNoise = gunsNoiseSounds.get(1);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(1);
         gunFireAnimationTime = 0.1f;
@@ -437,14 +437,14 @@ public class Player extends GameComponent {
     	gunAnimationMaterial2 = new Material(gunsAnimationMaterial2.get(2));
     	gunAnimationMaterial3 = new Material(gunsAnimationMaterial3.get(2));
     	gunAnimationMaterial4 = new Material(gunsAnimationMaterial4.get(2));
-    	gunLightColor = new Vector3f(0.45f,0.35f,0.1f);
+    	gunLightColor = new Vector3f(0.9f,0.7f,0.2f);
         gunNoise = gunsNoiseSounds.get(2);
         gunReload = gunsReloadSounds.get(2);
         gunClipp = gunsClippingSounds.get(2);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(2);
         gunFireAnimationTime = 0.175f;   
-        damageMin = 60f;
-        damageRange = 60f;
+        damageMin = 50f;
+        damageRange = 50f;
         moveSpeed = 4f;
         attenuation = 0.1f;
         isMelee = false;
@@ -463,12 +463,12 @@ public class Player extends GameComponent {
     	gunMaterial = new Material(gunsMaterial.get(3));
     	gunAnimationMaterial1 = new Material(gunsAnimationMaterial1.get(3));
     	gunAnimationMaterial2 = new Material(gunsAnimationMaterial2.get(3));
-    	gunLightColor = new Vector3f(0.5f,0.3f,0.1f);
+    	gunLightColor = new Vector3f(1.0f,0.6f,0.2f);
         gunNoise = gunsNoiseSounds.get(3);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(3);
         gunFireAnimationTime = 0.05f;   
         damageMin = 25f;
-        damageRange = 60f;
+        damageRange = 30f;
         moveSpeed = 4.5f;
         attenuation = 0.175f;
         isMelee = false;
@@ -489,14 +489,14 @@ public class Player extends GameComponent {
     	gunAnimationMaterial2 = new Material(gunsAnimationMaterial2.get(4));
     	gunAnimationMaterial3 = new Material(gunsAnimationMaterial3.get(4));
     	gunAnimationMaterial4 = new Material(gunsAnimationMaterial4.get(4));
-    	gunLightColor = new Vector3f(0.45f,0.35f,0.1f);
+    	gunLightColor = new Vector3f(0.9f,0.7f,0.2f);
         gunNoise = gunsNoiseSounds.get(4);
         gunReload = gunsReloadSounds.get(4);
         gunClipp = gunsClippingSounds.get(4);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(4);
         gunFireAnimationTime = 0.2f;   
-        damageMin = 120f;
-        damageRange = 60f;
+        damageMin = 100f;
+        damageRange = 50f;
         moveSpeed = 4f;
         attenuation = 0.05f;
         isMelee = false;
@@ -515,12 +515,12 @@ public class Player extends GameComponent {
     	gunMaterial = new Material(gunsMaterial.get(5));
     	gunAnimationMaterial1 = new Material(gunsAnimationMaterial1.get(5));
     	gunAnimationMaterial2 = new Material(gunsAnimationMaterial2.get(5));
-    	gunLightColor = new Vector3f(0.45f,0.35f,0.1f);
+    	gunLightColor = new Vector3f(1.0f,0.7f,0.2f);
         gunNoise = gunsNoiseSounds.get(3);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(3);
         gunFireAnimationTime = 0.05f;   
         damageMin = 25f;
-        damageRange = 120f;
+        damageRange = 60f;
         moveSpeed = 4.5f;
         attenuation = 0.025f;
         isMelee = false;
@@ -611,15 +611,17 @@ public class Player extends GameComponent {
 		            Vector2f lineEnd = lineStart.add(shootDirection.mul(1000.0f));
 		
 		            Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, true);
-		            
-		            gunFireTime = Time.getTime();
 	            	
-		            if(bullets != 0 && isBulletBased) {
+		            if(isMelee) {
+		            	AudioUtil.playAudio(gunNoise, 0);
+		            	gunFireTime = Time.getTime();
+		            } else if(bullets != 0 && isBulletBased) {
+		            	AudioUtil.playAudio(gunNoise, 0);
 		            	addBullets(-1);
+		            	gunFireTime = Time.getTime();
+		            } else if(shells != 0 && isShellBased) {
 		            	AudioUtil.playAudio(gunNoise, 0);
-		            }
-		            if(shells != 0 && isShellBased) {
-		            	AudioUtil.playAudio(gunNoise, 0);
+		            	gunFireTime = Time.getTime();
 		            	if(isDoubleShooter)
 		            		addShells(-2);
 		            	else
@@ -781,6 +783,55 @@ public class Player extends GameComponent {
         }
         fireLight.setPosition(new Vector3f(getCamera().getPos().getX(), 0, getCamera().getPos().getZ()));
         fireLight.setDirection(getCamera().getForward());
+        
+        double gunTime = gunFireTime + gunFireAnimationTime;
+    	double gunTime2 = gunTime + gunFireAnimationTime;
+    	double gunTime3 = gunTime2 + gunFireAnimationTime;
+    	double gunTime4 = gunTime3 + gunFireAnimationTime;
+        
+		if(isMelee) {
+	        if ((double) time < gunTime) {
+	        	isReloading = true;
+	        	gunRenderer.setMaterial(gunAnimationMaterial1);
+	        } else if ((double) time < gunTime2) {
+	        	gunRenderer.setMaterial(gunAnimationMaterial2);
+	        } else {
+	        	gunRenderer.setMaterial(gunMaterial);
+	            isReloading = false;
+	        }
+        }
+		if(isBulletBased) {
+	        if ((double) time < gunTime) {
+	        	isReloading = true;
+	        	m_renderingEngine.addLight(fireLight);
+	        	gunRenderer.setMaterial(gunAnimationMaterial1);
+	        } else if ((double) time < gunTime2) {
+	        	gunRenderer.setMaterial(gunAnimationMaterial2);
+	        	isShooting = false;
+	        } else {
+	        	gunRenderer.setMaterial(gunMaterial);
+            	isReloading = false;
+	        }
+		}
+		if(isShellBased) {
+	        if ((double) time < gunTime) {
+	        	isReloading = true;
+	        	m_renderingEngine.addLight(fireLight);
+	        	gunRenderer.setMaterial(gunAnimationMaterial1);
+	        } else if ((double) time < gunTime2) {
+	        	AudioUtil.playAudio(gunReload, 0);
+	        	gunRenderer.setMaterial(gunAnimationMaterial2);
+		        isShooting = false;
+	        } else if ((double) time < gunTime3) {
+	        	AudioUtil.playAudio(gunClipp, 0);
+	        	gunRenderer.setMaterial(gunAnimationMaterial3);
+	        } else if ((double) time < gunTime4) {
+	        	gunRenderer.setMaterial(gunAnimationMaterial4);
+	        } else {
+	        	gunRenderer.setMaterial(gunMaterial);
+	            isReloading = false;
+	        }
+		} 
     }
 
     /**
@@ -791,10 +842,6 @@ public class Player extends GameComponent {
     public void render(Shader shader, RenderingEngine renderingEngine) {
     	int ammo = 0;
     	double time = Time.getTime();
-    	double gunTime = gunFireTime + gunFireAnimationTime;
-    	double gunTime2 = gunTime + gunFireAnimationTime;
-    	double gunTime3 = gunTime2 + gunFireAnimationTime;
-    	double gunTime4 = gunTime3 + gunFireAnimationTime;
     	
     	if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
     	Debug.printToEngine(renderingEngine);
@@ -809,72 +856,7 @@ public class Player extends GameComponent {
         }
         if(time < notificationTime + 2.5f) playerText.get("Notification").render(renderingEngine);
         
-		if(isMelee) {
-	        if ((double) time < gunTime) {
-	        	isReloading = true;
-	        	gunRenderer.setMaterial(gunAnimationMaterial1);
-	        	gunRenderer.render(shader, renderingEngine); 
-	        } else if ((double) time < gunTime2) {
-	        	gunRenderer.setMaterial(gunAnimationMaterial2);
-	        	gunRenderer.render(shader, renderingEngine); 
-	        } else {
-	        	gunRenderer.setMaterial(gunMaterial);
-	            gunRenderer.render(shader, renderingEngine);
-	            isReloading = false;
-	        }
-        }
-		if(isBulletBased) {
-			if(bullets != 0) {
-		        if ((double) time < gunTime) {
-		        	isReloading = true;
-		        	m_renderingEngine.addLight(fireLight);
-		        	gunRenderer.setMaterial(gunAnimationMaterial1);
-		        	gunRenderer.render(shader, renderingEngine); 
-		        } else if ((double) time < gunTime2) {
-		        	gunRenderer.setMaterial(gunAnimationMaterial2);
-		        	gunRenderer.render(shader, renderingEngine);
-		        	isShooting = false;
-		        } else {
-		        	gunRenderer.setMaterial(gunMaterial);
-	            	gunRenderer.render(shader, renderingEngine);
-	            	isReloading = false;
-		        }
-			} else {
-				gunRenderer.setMaterial(gunMaterial);
-            	gunRenderer.render(shader, renderingEngine);
-            	isReloading = false;
-			}
-		}
-		if(isShellBased) {
-			if(shells != 0) {
-		        if ((double) time < gunTime) {
-		        	isReloading = true;
-		        	m_renderingEngine.addLight(fireLight);
-		        	gunRenderer.setMaterial(gunAnimationMaterial1);
-		        	gunRenderer.render(shader, renderingEngine); 
-		        } else if ((double) time < gunTime2) {
-		        	gunRenderer.setMaterial(gunAnimationMaterial2);
-			        gunRenderer.render(shader, renderingEngine);
-			        AudioUtil.playAudio(gunReload, 0);
-			        isShooting = false;
-		        } else if ((double) time < gunTime3) {
-		        	gunRenderer.setMaterial(gunAnimationMaterial3);
-			        gunRenderer.render(shader, renderingEngine); 
-			        AudioUtil.playAudio(gunClipp, 0);
-		        } else if ((double) time < gunTime4) {
-		        	gunRenderer.setMaterial(gunAnimationMaterial4);
-		        	gunRenderer.render(shader, renderingEngine); 
-		        } else {
-		        	gunRenderer.setMaterial(gunMaterial);
-		            gunRenderer.render(shader, renderingEngine);
-		            isReloading = false;
-		        }
-			} else {
-				gunRenderer.setMaterial(gunMaterial);
-	            gunRenderer.render(shader, renderingEngine);
-	            isReloading = false;
-			}
-		} 
+        gunRenderer.render(shader, renderingEngine);   
     }
     
     /**
@@ -951,7 +933,7 @@ public class Player extends GameComponent {
         	bullets = getMaxBullets();
         }    
         if(isBulletBased) {
-        	if (bullets <= 0) {
+        	if (bullets < 0) {
         		bullets = 0;
         		playerText.get("Notification").setText("You Need More Bullets!");
             	notificationTime = Time.getTime();
@@ -987,7 +969,7 @@ public class Player extends GameComponent {
         	shells = getMaxShells();
         }
         if(isShellBased) {
-        	if (shells <= 0) {
+        	if (shells < 0) {
         		shells = 0;
         		playerText.get("Notification").setText("You Need More Shells!");
             	notificationTime = Time.getTime();
@@ -1145,7 +1127,7 @@ public class Player extends GameComponent {
 		if (armori > getMaxArmori())
         	armori = getMaxArmori();
         
-        if (armori <= 0) {
+        if (armori < 0) {
         	armori = 0;
         	armorb = false;
         }

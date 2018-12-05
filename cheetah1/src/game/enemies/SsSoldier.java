@@ -51,8 +51,8 @@ public class SsSoldier extends GameComponent {
 
     private static final float MAX_HEALTH = 200f;
     private static final float SHOT_ANGLE = 20.0f;
-    private static final float DAMAGE_MIN = 20f;//2
-    private static final float DAMAGE_RANGE = 60f;//1
+    private static final float DAMAGE_MIN = 20f;
+    private static final float DAMAGE_RANGE = 30f;
     private static final float NAZI_WIDTH = 0.5f;
 
     private static final int STATE_IDLE = 0;
@@ -358,7 +358,7 @@ public class SsSoldier extends GameComponent {
         if (state == STATE_DEAD) {
         	isQuiet = true;
         	if(machineGun == null)
-        		machineGun = new Machinegun(new Transform(getTransform().getPosition()));
+        		machineGun = new Machinegun(new Transform(getTransform().getPosition()), false);
         	machineGun.update(delta);
             dead = true;
             material.setDiffuse(animation.get(15));

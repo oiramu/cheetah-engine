@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package engine.core;
+package engine.components;
 
 /**
  *
@@ -26,9 +26,9 @@ public class Constants {
 	public static final String TEXTURE_FILTER = "Anisotropic";
 	public static final String GAME_GRAPHICS = "High";
 	public static final String CLEAR_LIGHTS = "False";
-	public static final short MIPMAP_LEVEL = 1;
-	public static final short ANISOTROPIC_LEVEL = 4;
-	public static final short POP_IN = 15;
-	public static final short LIGHT_POP_IN = 10;
+	public static final float MIPMAP_LEVEL = 0.4f;
+	public static final float ANISOTROPIC_LEVEL = 4;
+	public static final float POP_IN = 15;
+	public static final float LIGHT_POP_IN = 10;
 	
 }

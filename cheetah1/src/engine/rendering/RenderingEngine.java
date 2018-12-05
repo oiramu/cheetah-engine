@@ -15,8 +15,8 @@
  */
 package engine.rendering;
 
+import static engine.components.Constants.*;
 import static org.lwjgl.opengl.GL11.*;
-import static engine.core.Constants.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

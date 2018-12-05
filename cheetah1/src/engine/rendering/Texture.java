@@ -20,10 +20,9 @@ import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL14.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL32.glFramebufferTexture;
+import static engine.components.Constants.*;
 import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.*;
 import static org.lwjgl.opengl.GLContext.*;
-
-import static engine.core.Constants.*;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

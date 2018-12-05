@@ -49,10 +49,10 @@ import game.powerUp.Shotgun;
  */
 public class NaziSergeant extends GameComponent {
 
-    private static final float MAX_HEALTH = 180f;
+    private static final float MAX_HEALTH = 175f;
     private static final float SHOT_ANGLE = 10.0f;
-    private static final float DAMAGE_MIN = 60f;
-    private static final float DAMAGE_RANGE = 60f;
+    private static final float DAMAGE_MIN = 37.5f;
+    private static final float DAMAGE_RANGE = 37.5f;
     private static final float NAZI_WIDTH = 0.4f;
 
     private static final int STATE_IDLE = 0;
@@ -346,7 +346,7 @@ public class NaziSergeant extends GameComponent {
         if (state == STATE_DEAD) {
         	isQuiet = true;
         	if(shotgun == null)
-        		shotgun = new Shotgun(new Transform(getTransform().getPosition()));
+        		shotgun = new Shotgun(new Transform(getTransform().getPosition()), false);
         	shotgun.update(delta);
             dead = true;
             material.setDiffuse(animation.get(11));

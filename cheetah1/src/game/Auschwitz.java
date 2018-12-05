@@ -20,8 +20,8 @@ import java.util.HashMap;
 
 import javax.sound.midi.Sequence;
 
+import static engine.components.Constants.*;
 import static engine.core.CoreEngine.*;
-import static engine.core.Constants.*;
 
 import engine.audio.AudioUtil;
 import engine.core.*;

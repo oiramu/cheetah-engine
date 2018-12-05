@@ -51,8 +51,8 @@ public class NaziSoldier extends GameComponent {
 
     private static final float MAX_HEALTH = 100f;
     private static final float SHOT_ANGLE = 10.0f;
-    private static final float DAMAGE_MIN = 20f;
-    private static final float DAMAGE_RANGE = 30f;
+    private static final float DAMAGE_MIN = 18.75f;
+    private static final float DAMAGE_RANGE = 22.5f;
     private static final float NAZI_WIDTH = 0.4f;
 
     private static final int STATE_IDLE = 0;
@@ -359,7 +359,7 @@ public class NaziSoldier extends GameComponent {
         if (state == STATE_DEAD) {
         	isQuiet = true;
         	if(bullet == null)
-            	bullet = new Bullet(new Transform(getTransform().getPosition()));
+            	bullet = new Bullet(new Transform(getTransform().getPosition()), false);
         	bullet.update(delta);
         	material.setDiffuse(animation.get(12));   	
             dead = true;  

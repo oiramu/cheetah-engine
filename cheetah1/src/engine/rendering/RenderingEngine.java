@@ -84,19 +84,21 @@ public class RenderingEngine extends MappedValues {
 			glDepthFunc(GL_EQUAL);
 			
 			for(int i = 0; i < m_lights.size(); i++) {
-				m_activeLight = m_lights.get(i);
-				switch(m_activeLight.getShader().getName()) {
-					case"forward-directional":
-						component.render(m_activeLight.getShader(), this);
-					break;
-					case"forward-point":
-						if(((PointLight) m_activeLight).getDistance() < LIGHT_POP_IN)
+				if(m_lights.get(i).getIntensity() > 0) {
+					m_activeLight = m_lights.get(i);
+					switch(m_activeLight.getShader().getName()) {
+						case"forward-directional":
 							component.render(m_activeLight.getShader(), this);
-					break;
-					case"forward-spot":
-						if(((SpotLight) m_activeLight).getDistance() < LIGHT_POP_IN)
-							component.render(m_activeLight.getShader(), this);
-					break;
+						break;
+						case"forward-point":
+							if(((PointLight) m_activeLight).getDistance() < LIGHT_POP_IN)
+								component.render(m_activeLight.getShader(), this);
+						break;
+						case"forward-spot":
+							if(((SpotLight) m_activeLight).getDistance() < LIGHT_POP_IN)
+								component.render(m_activeLight.getShader(), this);
+						break;
+					}
 				}
 			}
 			

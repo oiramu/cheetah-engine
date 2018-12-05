@@ -82,6 +82,7 @@ public class NaziSergeant extends GameComponent {
     private SpotLight light;
 
     private int state;
+    public boolean isQuiet;
     private boolean canAttack;
     private boolean canLook;
     private boolean dead;
@@ -202,6 +203,7 @@ public class NaziSergeant extends GameComponent {
                             new Vector3f(player.getSize().getX(), 0, player.getSize().getY()).mul(0.5f))).getXZ().normalized();
 
             if (state == STATE_IDLE) {
+            	isQuiet = true;
                 double timeDecimals = (time - (double) ((int) time));
 
                 if (timeDecimals >= 0.5) {
@@ -226,13 +228,14 @@ public class NaziSergeant extends GameComponent {
                     }
                 }
             } else if (state == STATE_CHASE) {
+            	isQuiet = false;
                 if (rand.nextDouble() < 0.5f * delta) {
                     state = STATE_ATTACK;
                 }
 
                 if (distance > 1.20f) {
                     orientation.setY(0);
-                    float moveSpeed = 1.20f;
+                    float moveSpeed = 2f;
 
                     Vector3f oldPos = transform.getPosition();
                     Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * delta)));
@@ -253,6 +256,7 @@ public class NaziSergeant extends GameComponent {
                 }
 
                 if (state == STATE_CHASE) {
+                	isQuiet = false;
                     double timeDecimals = (time - (double) ((int) time));
 
                     while (timeDecimals > 0.5) {
@@ -274,6 +278,7 @@ public class NaziSergeant extends GameComponent {
             }
 
             if (state == STATE_ATTACK) {
+            	isQuiet = true;
                 double timeDecimals = (time - (double) ((int) time));
 
                 if (timeDecimals <= 0.25f) {
@@ -323,6 +328,7 @@ public class NaziSergeant extends GameComponent {
         }
 
         if (state == STATE_DYING) {
+        	isQuiet = true;
             dead = true;
 
             final float time1 = 0.1f;
@@ -338,8 +344,9 @@ public class NaziSergeant extends GameComponent {
         }
 
         if (state == STATE_DEAD) {
+        	isQuiet = true;
         	if(shotgun == null)
-        		shotgun = new Shotgun(getTransform());
+        		shotgun = new Shotgun(new Transform(getTransform().getPosition()));
         	shotgun.update(delta);
             dead = true;
             material.setDiffuse(animation.get(11));
@@ -349,10 +356,12 @@ public class NaziSergeant extends GameComponent {
         }
         
         if (state == STATE_POST_DEATH) {
+        	isQuiet = true;
             material.setDiffuse(animation.get(11));
         }
         
         if (state == STATE_DONE) {
+        	isQuiet = true;
         	double timeDecimals = (time - (double) ((int) time));
 
         	timeDecimals *= 1.5f;

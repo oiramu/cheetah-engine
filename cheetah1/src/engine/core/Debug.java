@@ -38,11 +38,15 @@ public class Debug {
 	private static final float X_MARGIN = 0.5f;
 	private static final int MB = 1048576;
 	
-	private static int m_worstFPS = -1;
-	private static int m_averageFPS;
-	private static int m_bestFPS;
+	private static int 		m_worstFPS = -1;
+	private static int 		m_averageFPS;
+	private static int 		m_bestFPS;
 	
-	public static boolean m_state;
+	private static int 		m_totalMemory = 0;
+	private static int 		m_freeMemory = 0;
+	private static int 		m_cpu = 0;
+	
+	public static boolean 	m_state;
 	
 	private static HashMap<String,TextureFont> debugText = new HashMap<String,TextureFont>();
 	
@@ -72,18 +76,18 @@ public class Debug {
 			debugText.get("FPS").render(renderingEngine);
 			debugText.get("FrameTime").setText("FrameTime:"+(float)Time.getFrametime()+"ms");
 			debugText.get("FrameTime").render(renderingEngine);
-			int totalMemory = (int)Runtime.getRuntime().totalMemory()/MB;
-	    	int freeMemory = (int)Runtime.getRuntime().freeMemory()/MB;
-	    	int usingMemory = totalMemory - freeMemory;
-	    	int mem = (usingMemory*100/totalMemory);
-	    	debugText.get("Memory").setText("Mem:"+mem+"% "+usingMemory+"/"+totalMemory+"MB");
+			m_totalMemory = (int)Runtime.getRuntime().totalMemory()/MB;
+	    	m_freeMemory = (int)Runtime.getRuntime().freeMemory()/MB;
+	    	int usingMemory = m_totalMemory - m_freeMemory;
+	    	int mem = (usingMemory*100/m_totalMemory);
+	    	debugText.get("Memory").setText("Mem:"+mem+"% "+usingMemory+"/"+m_totalMemory+"MB");
 	    	debugText.get("Memory").render(renderingEngine);
 	    	long end = System.nanoTime();
 	    	int cpus = Runtime.getRuntime().availableProcessors();
 	        long totalAvailCPUTime = cpus * (end-System.nanoTime());
 	        long totalUsedCPUTime = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()-ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();
-	        int cpu = (int) (((float)totalUsedCPUTime*10)/(float)totalAvailCPUTime);
-	        debugText.get("CPU").setText("CPU:"+Util.clamp(100, cpu)+"% "+cpus+" cores");
+	        m_cpu = (int) (((float)totalUsedCPUTime*10)/(float)totalAvailCPUTime);
+	        debugText.get("CPU").setText("CPU:"+Util.clamp(100, m_cpu)+"% "+cpus+" cores");
 	        debugText.get("CPU").render(renderingEngine);
 	        if(Time.getFPS() >= m_bestFPS) m_bestFPS = (int) Time.getFPS();
 	        m_averageFPS = (m_bestFPS+m_worstFPS)/2;

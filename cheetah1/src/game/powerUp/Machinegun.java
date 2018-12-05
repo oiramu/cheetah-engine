@@ -105,10 +105,10 @@ public class Machinegun extends GameComponent {
         m_transform.setRotation(0, angle + 90, 0);
 
         if (distance < PICKUP_THRESHHOLD) {
+        	AudioUtil.playAudio(PICKUP_NOISE, 0);
             Level.getPlayer().setMachinegun(true);
             Level.getPlayer().addBullets(AMOUNT);
             Level.removeMachineGun(this);
-            AudioUtil.playAudio(PICKUP_NOISE, 0);
         }
     }
 	

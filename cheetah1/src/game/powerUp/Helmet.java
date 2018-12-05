@@ -44,6 +44,8 @@ public class Helmet extends GameComponent {
     private static final int AMOUNT = 25;
 	private static final String RES_LOC = "helmet/MEDIA";
 	private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
+	
+	private float			m_temp = 0;
 
     private static Mesh 	m_mesh;
     private static Material m_material;
@@ -103,6 +105,10 @@ public class Helmet extends GameComponent {
         }
 
         m_transform.setRotation(0, angle + 90, 0);
+        if (!(distance < PICKUP_THRESHHOLD)) {
+	        m_temp += (float) delta; 
+	        m_transform.getPosition().setY(0.05f * (float)(Math.sin(m_temp)+1.0/2.0) + 0.025f);
+        }
         
 		if (distance < PICKUP_THRESHHOLD) {
             Level.getPlayer().setArmorb(STATE);

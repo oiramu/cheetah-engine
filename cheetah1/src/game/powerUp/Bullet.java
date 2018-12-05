@@ -103,10 +103,10 @@ public class Bullet extends GameComponent {
 
         m_transform.setRotation(0, angle + 90, 0);
 
-        if (distance < PICKUP_THRESHHOLD && Level.getPlayer().getBullets() < 100) {
+        if (distance < PICKUP_THRESHHOLD && Level.getPlayer().getBullets() < Level.getPlayer().getMaxBullets()) {
+        	AudioUtil.playAudio(PICKUP_NOISE, 0);
             Level.getPlayer().addBullets(AMOUNT);
             Level.removeBullets(this);
-            AudioUtil.playAudio(PICKUP_NOISE, 0);
         }
     }
 

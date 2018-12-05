@@ -105,10 +105,10 @@ public class Shotgun extends GameComponent {
         m_transform.setRotation(0, angle + 90, 0);
 
         if (distance < PICKUP_THRESHHOLD) {
+        	AudioUtil.playAudio(PICKUP_NOISE, 0);
             Level.getPlayer().setShotgun(true);
             Level.getPlayer().addShells(AMOUNT);
             Level.removeShotgun(this);
-            AudioUtil.playAudio(PICKUP_NOISE, 0);
         }
     }
 	

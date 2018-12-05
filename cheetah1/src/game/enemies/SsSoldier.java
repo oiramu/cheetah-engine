@@ -82,6 +82,7 @@ public class SsSoldier extends GameComponent {
     private SpotLight light;
 
     private int state;
+    public boolean isQuiet;
     private boolean canAttack;
     private boolean canLook;
     private boolean dead;
@@ -208,6 +209,7 @@ public class SsSoldier extends GameComponent {
                             new Vector3f(player.getSize().getX(), 0, player.getSize().getY()).mul(0.5f))).getXZ().normalized();
 
             if (state == STATE_IDLE) {
+            	isQuiet = true;
                 double timeDecimals = (time - (double) ((int) time));
 
                 if (timeDecimals >= 0.5) {
@@ -232,13 +234,14 @@ public class SsSoldier extends GameComponent {
                     }
                 }
             } else if (state == STATE_CHASE) {
+            	isQuiet = false;
                 if (rand.nextDouble() < 0.5f * delta) {
                     state = STATE_ATTACK;
                 }
 
                 if (distance > 1.25f) {
                     orientation.setY(0);
-                    float moveSpeed = 1.25f;
+                    float moveSpeed = 1.20f;
 
                     Vector3f oldPos = transform.getPosition();
                     Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * delta)));
@@ -259,6 +262,7 @@ public class SsSoldier extends GameComponent {
                 }
 
                 if (state == STATE_CHASE) {
+                	isQuiet = false;
                     double timeDecimals = (time - (double) ((int) time));
 
                     while (timeDecimals > 0.5) {
@@ -280,6 +284,7 @@ public class SsSoldier extends GameComponent {
             }
 
             if (state == STATE_ATTACK) {
+            	isQuiet = true;
                 double timeDecimals = (time - (double) ((int) time));
 
                 if (timeDecimals <= 0.25f) {
@@ -329,6 +334,7 @@ public class SsSoldier extends GameComponent {
         }
 
         if (state == STATE_DYING) {
+        	isQuiet = true;
             dead = true;
 
             final float time1 = 0.1f;
@@ -350,8 +356,9 @@ public class SsSoldier extends GameComponent {
         }
 
         if (state == STATE_DEAD) {
+        	isQuiet = true;
         	if(machineGun == null)
-        		machineGun = new Machinegun(getTransform());
+        		machineGun = new Machinegun(new Transform(getTransform().getPosition()));
         	machineGun.update(delta);
             dead = true;
             material.setDiffuse(animation.get(15));
@@ -361,14 +368,17 @@ public class SsSoldier extends GameComponent {
         }
         
         if (state == STATE_POST_DEATH) {
+        	isQuiet = true;
             material.setDiffuse(animation.get(15));
         }
         
         if (state == STATE_DONE) {
+        	isQuiet = true;
         	material.setDiffuse(animation.get(0));
         }
         
         if (state == STATE_HIT) {
+        	isQuiet = true;
         	double timeDecimals = (time - (double) ((int) time));
             if (timeDecimals <= 0.5f) {
                 material.setDiffuse(animation.get(9));

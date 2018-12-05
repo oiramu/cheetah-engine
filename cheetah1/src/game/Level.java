@@ -431,19 +431,23 @@ public class Level extends GameComponent {
             
             for (SecretWall secretWall : secretWalls)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, secretWall.getTransform().getPosition().getXZ(), secretWall.getSize()));
-            /**
+            
             for (NaziSoldier monster : naziSoldiers)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, monster.getTransform().getPosition().getXZ(), monster.getSize()));
+            	if(monster.isQuiet)
+            		collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, monster.getTransform().getPosition().getXZ(), monster.getSize()));
             
             for (SsSoldier ssSoldier : ssSoldiers)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, ssSoldier.getTransform().getPosition().getXZ(), ssSoldier.getSize()));
+            	if(ssSoldier.isQuiet)
+            		collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, ssSoldier.getTransform().getPosition().getXZ(), ssSoldier.getSize()));
             
             for (Dog dog : dogs)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, dog.getTransform().getPosition().getXZ(), dog.getSize()));
+            	if(dog.isQuiet)
+            		collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, dog.getTransform().getPosition().getXZ(), dog.getSize()));
             
             for (NaziSergeant naziSergeants : naziSeargeants)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, naziSergeants.getTransform().getPosition().getXZ(), naziSergeants.getSize()));
-            */
+            	if(naziSergeants.isQuiet)
+            		collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, naziSergeants.getTransform().getPosition().getXZ(), naziSergeants.getSize()));
+           
             for (Bones bone : bones)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, bone.getTransform().getPosition().getXZ(), bone.getSize()));
             
@@ -863,10 +867,10 @@ public class Level extends GameComponent {
                         }
 
                         if (ySecretWall) {
-                            wallTransform.setPosition(i, 0, j);
+                            wallTransform.setPosition(i, 0, j + SPOT_LENGTH);
                             secretWalls.add(new SecretWall(wallTransform, m_material, wallTransform.getPosition().add(new Vector3f(-0.9f, 0, 0))));
                         } else if (xSecretWall) {
-                            wallTransform.setPosition((i+ (SPOT_LENGTH / 2)*2), 0, j);
+                            wallTransform.setPosition(i + SPOT_LENGTH, 0, j);
                             wallTransform.setRotation(0, 90, 0);
                             secretWalls.add(new SecretWall(wallTransform, m_material, wallTransform.getPosition().add(new Vector3f(0, 0, -0.9f))));
                         }

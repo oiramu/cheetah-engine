@@ -819,8 +819,8 @@ public class Player extends GameComponent {
 	        	gunRenderer.render(shader, renderingEngine); 
 	        } else {
 	        	gunRenderer.setMaterial(gunMaterial);
+	            gunRenderer.render(shader, renderingEngine);
 	            isReloading = false;
-	            gunRenderer.render(shader, renderingEngine); 
 	        }
         }
 		if(isBulletBased) {
@@ -832,17 +832,17 @@ public class Player extends GameComponent {
 		        	gunRenderer.render(shader, renderingEngine); 
 		        } else if ((double) time < gunTime2) {
 		        	gunRenderer.setMaterial(gunAnimationMaterial2);
+		        	gunRenderer.render(shader, renderingEngine);
 		        	isShooting = false;
-		        	gunRenderer.render(shader, renderingEngine); 
 		        } else {
 		        	gunRenderer.setMaterial(gunMaterial);
+	            	gunRenderer.render(shader, renderingEngine);
 	            	isReloading = false;
-	            	gunRenderer.render(shader, renderingEngine); 
 		        }
 			} else {
 				gunRenderer.setMaterial(gunMaterial);
+            	gunRenderer.render(shader, renderingEngine);
             	isReloading = false;
-            	gunRenderer.render(shader, renderingEngine); 
 			}
 		}
 		if(isShellBased) {
@@ -854,25 +854,25 @@ public class Player extends GameComponent {
 		        	gunRenderer.render(shader, renderingEngine); 
 		        } else if ((double) time < gunTime2) {
 		        	gunRenderer.setMaterial(gunAnimationMaterial2);
+			        gunRenderer.render(shader, renderingEngine);
 			        AudioUtil.playAudio(gunReload, 0);
 			        isShooting = false;
-			        gunRenderer.render(shader, renderingEngine); 
 		        } else if ((double) time < gunTime3) {
 		        	gunRenderer.setMaterial(gunAnimationMaterial3);
-			        AudioUtil.playAudio(gunClipp, 0);
 			        gunRenderer.render(shader, renderingEngine); 
+			        AudioUtil.playAudio(gunClipp, 0);
 		        } else if ((double) time < gunTime4) {
 		        	gunRenderer.setMaterial(gunAnimationMaterial4);
 		        	gunRenderer.render(shader, renderingEngine); 
 		        } else {
 		        	gunRenderer.setMaterial(gunMaterial);
+		            gunRenderer.render(shader, renderingEngine);
 		            isReloading = false;
-		            gunRenderer.render(shader, renderingEngine); 
 		        }
 			} else {
 				gunRenderer.setMaterial(gunMaterial);
+	            gunRenderer.render(shader, renderingEngine);
 	            isReloading = false;
-	            gunRenderer.render(shader, renderingEngine); 
 			}
 		} 
     }
@@ -881,7 +881,7 @@ public class Player extends GameComponent {
      * Gets the player's actual health.
      * @return player's health.
      */
-    public int getHealth() {return health;}
+    public int getHealth() { return health; }
     
     /**
 	 * Sets the amount of health for the player to have.

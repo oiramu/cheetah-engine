@@ -42,6 +42,8 @@ public class Bag extends GameComponent {
     private static final float PICKUP_THRESHHOLD = 0.75f;
 	private static final String RES_LOC = "bag/MEDIA";
 	private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
+	
+	private float			m_temp = 0;
 
     private static Mesh 	m_mesh;
     private static Material m_material;
@@ -101,14 +103,18 @@ public class Bag extends GameComponent {
         }
 
         m_transform.setRotation(0, angle + 90, 0);
+        if (!(distance < PICKUP_THRESHHOLD)) {
+	        m_temp += (float) delta; 
+	        m_transform.getPosition().setY(0.05f * (float)(Math.sin(m_temp)+1.0/2.0) + 0.025f);
+        }
 
 		if (distance < PICKUP_THRESHHOLD) {
+			AudioUtil.playAudio(PICKUP_NOISE, 0);
 			Level.getPlayer().setMaxHealth(Level.getPlayer().getMaxHealth()*2);
             Level.getPlayer().setMaxBullets(Level.getPlayer().getMaxBullets()*2);
             Level.getPlayer().setMaxShells(Level.getPlayer().getMaxShells()*2);
             Level.getPlayer().setMaxArmori(Level.getPlayer().getMaxArmori()*2);
             Level.removeBags(this);
-            AudioUtil.playAudio(PICKUP_NOISE, 0);
         }
     }
 

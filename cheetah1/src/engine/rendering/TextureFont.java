@@ -138,7 +138,6 @@ public class TextureFont {
         matrixScaleFont.initScale(scale.getX(), scale.getY(), 1.5f);
         matrixTranslationFont.initTranslation(position.getX(), position.getY(), 0);
         m_fontMatrix = matrixScaleFont.mul(matrixTranslationFont);
-
     }
     
     /**
@@ -146,7 +145,7 @@ public class TextureFont {
      * @param renderingEngine to use
      * @param shader to use
      */
-    public void render(RenderingEngine renderingEngine) {
+    public void render(RenderingEngine renderingEngine, Shader shader) {
     	m_shader.bind();
     	m_shader.updateUniforms(m_fontMatrix, m_material);
     	m_mesh.draw();

@@ -90,14 +90,14 @@ public class Auschwitz implements Game {
     	double time = Time.getTime();
     	if(time<m_stateTime+5.0f) {
 	    	text.get("Level").setText("Level:" + m_levelNum + ";Episode" + m_currentEpisode);
-	    	text.get("Level").render(renderingEngine);
+	    	//text.get("Level").render(renderingEngine);
 	    	if(m_displayStats) {
 		    	text.get("Enemies").setText("Killed:" + m_deadMonsters + "/" + m_totalMonsters + " Nazis:" +
 		            	(int)(((float) m_deadMonsters / (float) m_totalMonsters) * 100f )+ "%");
-		    	text.get("Enemies").render(renderingEngine);
+		    	//text.get("Enemies").render(renderingEngine);
 		    	text.get("Secrets").setText("Secrets:" + m_secrets + "/" + m_totalSecrets + " Secrets:" +
 		    			(int)(((float) m_secrets / (float) m_totalSecrets) * 100f) + "%");
-		    	text.get("Secrets").render(renderingEngine);
+		    	//text.get("Secrets").render(renderingEngine);
 	    	}
     	}
     }

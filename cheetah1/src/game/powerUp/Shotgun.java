@@ -111,7 +111,7 @@ public class Shotgun extends GameComponent {
 	        m_transform.getPosition().setY(0.05f * (float)(Math.sin(m_temp)+1.0/2.0) + 0.025f);
         }
 
-        if (distance < PICKUP_THRESHHOLD) {
+        if (distance < PICKUP_THRESHHOLD && Level.getPlayer().getShotgun() == false) {
         	AudioUtil.playAudio(PICKUP_NOISE, 0);
             Level.getPlayer().setShotgun(true);
             Level.removeShotgun(this);

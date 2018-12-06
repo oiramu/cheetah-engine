@@ -25,6 +25,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import engine.rendering.RenderingEngine;
+import engine.rendering.Shader;
 import engine.rendering.TextureFont;
 
 /**
@@ -69,35 +70,35 @@ public class Debug {
 	 * Prints the debug stuff to the tester's screen.
 	 * @param renderingEngine to use
 	 */
-	public static void printToEngine(RenderingEngine renderingEngine) {
+	public static void printToEngine(RenderingEngine renderingEngine, Shader shader) {
 		if(m_state) {
-			debugText.get("Engine").render(renderingEngine);
+			debugText.get("Engine").render(renderingEngine, shader);
 			debugText.get("FPS").setText("FPS:"+(int)Time.getFPS());
-			debugText.get("FPS").render(renderingEngine);
+			debugText.get("FPS").render(renderingEngine, shader);
 			debugText.get("FrameTime").setText("FrameTime:"+(float)Time.getFrametime()+"ms");
-			debugText.get("FrameTime").render(renderingEngine);
+			debugText.get("FrameTime").render(renderingEngine, shader);
 			m_totalMemory = (int)Runtime.getRuntime().totalMemory()/MB;
 	    	m_freeMemory = (int)Runtime.getRuntime().freeMemory()/MB;
 	    	int usingMemory = m_totalMemory - m_freeMemory;
 	    	int mem = (usingMemory*100/m_totalMemory);
 	    	debugText.get("Memory").setText("Mem:"+mem+"% "+usingMemory+"/"+m_totalMemory+"MB");
-	    	debugText.get("Memory").render(renderingEngine);
+	    	debugText.get("Memory").render(renderingEngine, shader);
 	    	long end = System.nanoTime();
 	    	int cpus = Runtime.getRuntime().availableProcessors();
 	        long totalAvailCPUTime = cpus * (end-System.nanoTime());
 	        long totalUsedCPUTime = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime()-ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();
 	        m_cpu = (int) (((float)totalUsedCPUTime*10)/(float)totalAvailCPUTime);
 	        debugText.get("CPU").setText("CPU:"+Util.clamp(100, m_cpu)+"% "+cpus+" cores");
-	        debugText.get("CPU").render(renderingEngine);
+	        debugText.get("CPU").render(renderingEngine, shader);
 	        if(Time.getFPS() >= m_bestFPS) m_bestFPS = (int) Time.getFPS();
 	        m_averageFPS = (m_bestFPS+m_worstFPS)/2;
 	        if(m_worstFPS == -1) m_worstFPS = m_averageFPS; else
 	        if(Time.getFPS() <= m_worstFPS) m_worstFPS = (int) Time.getFPS();
 	        debugText.get("FPSMeasure").setText("wFPS:"+m_worstFPS+" aFPS:"+m_averageFPS+" bFPS:"+m_bestFPS);
-	        debugText.get("FPSMeasure").render(renderingEngine);
-	        debugText.get("OS").render(renderingEngine);
-	        debugText.get("LWJGL").render(renderingEngine);
-	        debugText.get("OpenGL").render(renderingEngine);
+	        debugText.get("FPSMeasure").render(renderingEngine, shader);
+	        debugText.get("OS").render(renderingEngine, shader);
+	        debugText.get("LWJGL").render(renderingEngine, shader);
+	        debugText.get("OpenGL").render(renderingEngine, shader);
 		}
 	}
 	

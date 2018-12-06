@@ -347,11 +347,9 @@ public class NaziSergeant extends GameComponent {
 
         if (state == STATE_DEAD) {
         	isQuiet = true;
-        	if(Level.getPlayer().getShotgun() == false) {
-        		if(shotgun == null)
-        			shotgun = new Shotgun(new Transform(getTransform().getPosition()), false);
-        		shotgun.update(delta);
-        	}
+        	if(shotgun == null)
+        		shotgun = new Shotgun(new Transform(getTransform().getPosition()), false);
+        	shotgun.update(delta);
         	if(shell == null)
         		shell = new Shell(new Transform(getTransform().getPosition()), false);
         	shell.update(delta);
@@ -428,8 +426,7 @@ public class NaziSergeant extends GameComponent {
         meshRenderer.render(shader, renderingEngine);
         
         if (state == STATE_DEAD) {
-        	if(Level.getPlayer().getShotgun() == false)
-        		shotgun.render(shader, renderingEngine);
+        	shotgun.render(shader, renderingEngine);
         	shell.render(shader, renderingEngine);
         }
 

@@ -359,11 +359,9 @@ public class SsSoldier extends GameComponent {
 
         if (state == STATE_DEAD) {
         	isQuiet = true;
-        	if(Level.getPlayer().getMachinegun() == false) {
-        		if(machineGun == null)
-        			machineGun = new Machinegun(new Transform(getTransform().getPosition()), false);
-        		machineGun.update(delta);
-        	}
+        	if(machineGun == null)
+        		machineGun = new Machinegun(new Transform(getTransform().getPosition()), false);
+        	machineGun.update(delta);
         	if(bullet == null)
             	bullet = new Bullet(new Transform(getTransform().getPosition()), false);
         	bullet.update(delta);
@@ -427,8 +425,7 @@ public class SsSoldier extends GameComponent {
         transform.setPosition(new Vector3f(transform.getPosition().getX() + offsetX, transform.getPosition().getY() + offsetY, transform.getPosition().getZ()));
 
         if (state == STATE_DEAD) {
-        	if(Level.getPlayer().getMachinegun() == false)
-        		machineGun.render(shader, renderingEngine);
+        	machineGun.render(shader, renderingEngine);
         	bullet.render(shader, renderingEngine);
         }
         

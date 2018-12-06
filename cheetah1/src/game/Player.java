@@ -844,17 +844,17 @@ public class Player extends GameComponent {
     	double time = Time.getTime();
     	
     	if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
-    	Debug.printToEngine(renderingEngine);
-    	playerText.get("CrossHair").render(renderingEngine);
+    	Debug.printToEngine(renderingEngine, shader);
+    	playerText.get("CrossHair").render(renderingEngine, shader);
     	playerText.get("Life").setText("Life:"+getHealth());
-    	playerText.get("Life").render(renderingEngine);
+    	playerText.get("Life").render(renderingEngine, shader);
     	playerText.get("Ammo").setText("Ammo:"+ammo);
-    	playerText.get("Ammo").render(renderingEngine);
+    	playerText.get("Ammo").render(renderingEngine, shader);
         if(armorb) { 
         	playerText.get("Armor").setText("Armor:"+getArmori());
-        	playerText.get("Armor").render(renderingEngine);
+        	playerText.get("Armor").render(renderingEngine, shader);
         }
-        if(time < notificationTime + 2.5f) playerText.get("Notification").render(renderingEngine);
+        if(time < notificationTime + 2.5f) playerText.get("Notification").render(renderingEngine, shader);
         
         gunRenderer.render(shader, renderingEngine);   
     }

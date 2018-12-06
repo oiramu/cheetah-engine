@@ -26,11 +26,11 @@ public class Transform {
     private Vector3f 		m_position;
     private Vector3f 		m_rotation;
     private Vector3f 		m_scale;
-
+    
     /**
      * Basic constructor for a transform.
      */
-    public Transform() {this(new Vector3f(0, 0, 0));}
+    public Transform() { this(new Vector3f(0, 0, 0)); }
 
     /**
      * The main transform constructor of an object in a 3D space.

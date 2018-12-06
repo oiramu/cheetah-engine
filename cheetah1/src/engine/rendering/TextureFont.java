@@ -143,9 +143,8 @@ public class TextureFont {
     /**
      * Method that renders the text.
      * @param renderingEngine to use
-     * @param shader to use
      */
-    public void render(RenderingEngine renderingEngine, Shader shader) {
+    public void render(RenderingEngine renderingEngine) {
     	m_shader.bind();
     	m_shader.updateUniforms(m_fontMatrix, m_material);
     	m_mesh.draw();

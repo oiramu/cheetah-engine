@@ -111,8 +111,8 @@ public class Armor extends GameComponent {
         }
         
 		if (distance < PICKUP_THRESHHOLD) {
-            Level.getPlayer().setArmorb(STATE);
-            Level.getPlayer().addArmori(AMOUNT);
+            Level.getPlayer().setArmor(STATE);
+            Level.getPlayer().addArmor(AMOUNT);
             Level.removeArmor(this);
             AudioUtil.playAudio(PICKUP_NOISE, 0);
         }

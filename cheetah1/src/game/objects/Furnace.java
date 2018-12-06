@@ -21,6 +21,7 @@ import engine.components.Attenuation;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.components.PointLight;
+import engine.core.CoreEngine;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -49,6 +50,7 @@ public class Furnace extends GameComponent {
     private static Mesh mesh;
     private Material material;
     private MeshRenderer m_meshRenderer;
+    private RenderingEngine m_renderingEngine;
     private PointLight light;
     
     private float sizeX;
@@ -61,7 +63,7 @@ public class Furnace extends GameComponent {
      * Constructor of the actual object.
      * @param transform the transform of the object in a 3D space.
      */
-    public Furnace(Transform transform, RenderingEngine renderingEngine) {
+    public Furnace(Transform transform) {
     	
     	if (animation == null) {
             animation = new ArrayList<Texture>();
@@ -96,11 +98,15 @@ public class Furnace extends GameComponent {
         this.state = STATE_IDLE;
         this.transform = transform;
         this.m_meshRenderer = new MeshRenderer(mesh, getTransform(), material);
-        if(light == null)
-	        this.light = new PointLight(new Vector3f(0.55f,0.34f,0.1f), 0.8f, 
-	        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0, 
+        
+        if(m_renderingEngine == null) m_renderingEngine = CoreEngine.m_renderingEngine;
+        
+        if(light == null) {
+	        this.light = new PointLight(new Vector3f(1.0f,0.5f,0.2f), 0.8f, 
+	        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.25f, 
 	        				getTransform().getPosition().getZ()));
-        renderingEngine.addLight(light);
+	        m_renderingEngine.addLight(light);
+    	}
     }
 
     /**

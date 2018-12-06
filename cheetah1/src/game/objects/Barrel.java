@@ -180,10 +180,10 @@ public class Barrel extends GameComponent {
             } else if (timeDecimals <= 0.75f) {
             	if(distance<1) {
                 	damage = 200;
-                	if(!Level.getPlayer().getArmorb())
-                		Level.getPlayer().addHealth(-damage);
+                	if(!Level.getPlayer().isArmorb())
+                		Level.getPlayer().addHealth(-damage, "Barrel's explotion");
                 	else
-                		Level.getPlayer().addArmori(-damage);
+                		Level.getPlayer().addArmor(-damage);
                 }
                 material.setDiffuse(animation.get(3));
             } else if (timeDecimals <= 1f) {

@@ -25,6 +25,7 @@ import static engine.core.CoreEngine.*;
 
 import engine.audio.AudioUtil;
 import engine.core.*;
+import engine.menu.DefaultMenu;
 import engine.rendering.*;
 import game.doors.SecretWall;
 import game.enemies.*;
@@ -90,14 +91,14 @@ public class Auschwitz implements Game {
     	double time = Time.getTime();
     	if(time<m_stateTime+5.0f) {
 	    	text.get("Level").setText("Level:" + m_levelNum + ";Episode" + m_currentEpisode);
-	    	//text.get("Level").render(renderingEngine);
+	    	text.get("Level").render(renderingEngine);
 	    	if(m_displayStats) {
 		    	text.get("Enemies").setText("Killed:" + m_deadMonsters + "/" + m_totalMonsters + " Nazis:" +
 		            	(int)(((float) m_deadMonsters / (float) m_totalMonsters) * 100f )+ "%");
-		    	//text.get("Enemies").render(renderingEngine);
+		    	text.get("Enemies").render(renderingEngine);
 		    	text.get("Secrets").setText("Secrets:" + m_secrets + "/" + m_totalSecrets + " Secrets:" +
 		    			(int)(((float) m_secrets / (float) m_totalSecrets) * 100f) + "%");
-		    	//text.get("Secrets").render(renderingEngine);
+		    	text.get("Secrets").render(renderingEngine);
 	    	}
     	}
     }
@@ -216,12 +217,12 @@ public class Auschwitz implements Game {
                 maxBulletTemp = m_level.getPlayer().getMaxBullets();
                 maxShellTemp = m_level.getPlayer().getMaxShells();
                 maxArmoriTemp = m_level.getPlayer().getMaxArmori();
-                shotgunTemp = m_level.getPlayer().getShotgun();
-                machinegunTemp = m_level.getPlayer().getMachinegun();
-                superShotgunTemp = m_level.getPlayer().getSuperShotgun();
-                chaingunTemp = m_level.getPlayer().getChaingun();
+                shotgunTemp = m_level.getPlayer().isShotgun();
+                machinegunTemp = m_level.getPlayer().isMachinegun();
+                superShotgunTemp = m_level.getPlayer().isSuperShotgun();
+                chaingunTemp = m_level.getPlayer().isChaingun();
                 weaponStateTemp = m_level.getPlayer().getWeaponState();
-                armorbTemp = m_level.getPlayer().getArmorb();
+                armorbTemp = m_level.getPlayer().isArmorb();
                 mouseLocktemp = m_level.getPlayer().mouseLocked;
                 m_renderingEngine.clearLights();
             }
@@ -297,7 +298,7 @@ public class Auschwitz implements Game {
             m_level.getPlayer().setMachinegun(machinegunTemp);
             m_level.getPlayer().setSuperShotgun(superShotgunTemp);
             m_level.getPlayer().setChaingun(chaingunTemp);
-            m_level.getPlayer().setArmorb(armorbTemp);
+            m_level.getPlayer().setArmor(armorbTemp);
             m_level.getPlayer().setWeaponState(weaponStateTemp);
             m_level.getPlayer().mouseLocked = mouseLocktemp;
             
@@ -327,10 +328,10 @@ public class Auschwitz implements Game {
         } catch (RuntimeException ex) {
         	ex.printStackTrace();
             m_isRunning = false;
-            Debug.printErrorMessage(ex.getMessage(), "GAME OVER!");
+            //Debug.printErrorMessage(ex.getMessage(), "GAME OVER!");
             System.out.println("GAME OVER!");
             AudioUtil.stopMidi();
-            System.exit(0);
+            new DefaultMenu();
         }
 
     }

@@ -305,10 +305,10 @@ public class Dog extends GameComponent {
                             	state = STATE_DONE;
                             } else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
-                            	if(player.getArmorb() == false) {
-                            		player.addHealth((int) -damage);
+                            	if(player.isArmorb() == false) {
+                            		player.addHealth((int) -damage, "Dog");
                             	}else {
-                            		player.addArmori((int) -damage);
+                            		player.addArmor((int) -damage);
                             	}
                             }
                         }

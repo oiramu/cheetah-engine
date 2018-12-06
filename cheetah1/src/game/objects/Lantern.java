@@ -19,6 +19,7 @@ import engine.components.Attenuation;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.components.PointLight;
+import engine.core.CoreEngine;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
@@ -41,6 +42,7 @@ public class Lantern extends GameComponent {
     private static Mesh 	m_mesh;
     private Material 		m_material;
     private MeshRenderer 	m_meshRenderer;
+    private RenderingEngine m_renderingEngine;
     private PointLight 		m_light;
     private float 			m_sizeX;
     
@@ -52,7 +54,7 @@ public class Lantern extends GameComponent {
      * Constructor of the actual object.
      * @param transform the transform of the object in a 3D space.
      */
-    public Lantern(Transform transform, RenderingEngine renderingEngine) {
+    public Lantern(Transform transform) {
         if (m_mesh == null) {
             float sizeY = 0.3f;
             m_sizeX = (float) ((double) sizeY / (1.5f * 2.0));
@@ -79,13 +81,18 @@ public class Lantern extends GameComponent {
         if (m_material == null) {
             m_material = new Material(new Texture(RES_LOC));
         }
+        
+        if(m_renderingEngine == null) m_renderingEngine = CoreEngine.m_renderingEngine;
+        
         this.m_transform = transform;
-        if(m_light == null)
+        this.m_meshRenderer = new MeshRenderer(m_mesh, getTransform(), m_material);
+        
+        if(m_light == null) {
 	        this.m_light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
 	        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.25f, 
 	        				getTransform().getPosition().getZ()));
-        this.m_meshRenderer = new MeshRenderer(m_mesh, getTransform(), m_material);
-        renderingEngine.addLight(m_light);
+	        m_renderingEngine.addLight(m_light);
+    	}
     }
 
     /**

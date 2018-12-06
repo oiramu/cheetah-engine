@@ -25,6 +25,7 @@ import engine.components.Attenuation;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.components.SpotLight;
+import engine.core.CoreEngine;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -79,6 +80,7 @@ public class NaziSergeant extends GameComponent {
     private Transform transform;
     private Material material;
     private MeshRenderer meshRenderer;
+    private RenderingEngine renderingEngine;
     private Shotgun shotgun;
     private Shell shell;
     private SpotLight light;
@@ -90,7 +92,6 @@ public class NaziSergeant extends GameComponent {
     private boolean dead;
     private double deathTime;
     private double health;
-    private double gunFireTime;
 
     /**
      * Constructor of the actual enemy.
@@ -141,22 +142,22 @@ public class NaziSergeant extends GameComponent {
                                         0, 2, 3};
 
             mesh = new Mesh(verts, indices, true);
-        }
+        }   
         
-        if(light == null)
-        	light = new SpotLight(new Vector3f(0.45f,0.35f,0.1f), 1.6f, 
-        	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
+        if(this.renderingEngine == null) this.renderingEngine = CoreEngine.m_renderingEngine;
         
         this.transform = transform;
         this.material = new Material(animation.get(0));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
+        if(light == null)
+        	light = new SpotLight(new Vector3f(0.45f,0.35f,0.1f), 1.6f, 
+        	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
         this.state = 0;
         this.canAttack = true;
         this.canLook = true;
         this.dead = false;
         this.deathTime = 0.0;
         this.health = MAX_HEALTH;
-        this.gunFireTime = 0;
     }
 
     float offsetX = 0;
@@ -195,6 +196,7 @@ public class NaziSergeant extends GameComponent {
             shootNoise.stop();
             hitNoise.stop();
             AudioUtil.playAudio(deathNoise, distance);
+            renderingEngine.removeLight(light);
         }
 
         if (!dead) {
@@ -291,7 +293,7 @@ public class NaziSergeant extends GameComponent {
                     if (canAttack) {
                     	light.setPosition(transform.getPosition());
                         light.setDirection(orientation.mul(-1));
-                    	gunFireTime = (double) Time.getTime();
+                        renderingEngine.addLight(light);
                         Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
 
                         Vector2f lineStart = transform.getPosition().getXZ();
@@ -308,12 +310,13 @@ public class NaziSergeant extends GameComponent {
                         	float damage;
                             if(player.getHealth() <= 0) {
                             	state = STATE_DONE;
+                            	renderingEngine.removeLight(light);
                             }else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
-                            	if(player.getArmorb() == false) {
-                            		player.addHealth((int) -damage);
+                            	if(player.isArmorb() == false) {
+                            		player.addHealth((int) -damage, "Schutzstaffel Sergeant");
                             	}else {
-                            		player.addArmori((int) -damage);
+                            		player.addArmor((int) -damage);
                             	}
                             }
                             
@@ -322,8 +325,9 @@ public class NaziSergeant extends GameComponent {
                     }
                     material.setDiffuse(animation.get(6));
                 } else {
+                	renderingEngine.removeLight(light);
                     canAttack = true;
-                    material.setDiffuse(animation.get(6));
+                    material.setDiffuse(animation.get(5));
                     state = STATE_CHASE;
                 }
             }
@@ -347,11 +351,13 @@ public class NaziSergeant extends GameComponent {
 
         if (state == STATE_DEAD) {
         	isQuiet = true;
-        	if(shotgun == null)
-        		shotgun = new Shotgun(new Transform(getTransform().getPosition()), false);
+        	if(shotgun == null) {
+        		shotgun = new Shotgun(new Transform(transform.getPosition().add(-0.001f)), false);
+        	}
         	shotgun.update(delta);
-        	if(shell == null)
-        		shell = new Shell(new Transform(getTransform().getPosition()), false);
+        	if(shell == null) {
+        		shell = new Shell(new Transform(shotgun.getTransform().getPosition().add(-0.002f)), false);
+        	}
         	shell.update(delta);
             dead = true;
             material.setDiffuse(animation.get(11));
@@ -415,11 +421,6 @@ public class NaziSergeant extends GameComponent {
      * @param renderingEngine to use
      */
     public void render(Shader shader, RenderingEngine renderingEngine) {
-    	double time = (double) Time.getTime();
-    	if((double)time < gunFireTime + 0.2f)
-    		renderingEngine.addLight(light);
-    	else
-    		renderingEngine.removeLight(light);
         Vector3f prevPosition = transform.getPosition();
         transform.setPosition(new Vector3f(transform.getPosition().getX() + offsetX, transform.getPosition().getY() + offsetY, transform.getPosition().getZ()));
 

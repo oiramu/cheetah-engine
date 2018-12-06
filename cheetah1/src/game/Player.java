@@ -159,6 +159,8 @@ public class Player extends GameComponent {
     private int maxArmori;
     private int maxBullets;
     private int maxShells;
+    private boolean goldkey;
+    private boolean bronzekey;
     private boolean armorb;
     private boolean shotgun;
     private boolean machinegun;
@@ -183,9 +185,8 @@ public class Player extends GameComponent {
     /**
      * Constructor of the main player.
      * @param position the position in the 3D space.
-     * @param renderingEngine of the player.
      */
-    public Player(Vector3f position, RenderingEngine renderingEngine) {
+    public Player(Vector3f position) {
     	
     	if(playerCamera == null) {
     		playerCamera = new Camera((float) Math.toRadians(70.0f), (float)Window.getWidth()/(float)Window.getHeight(), 0.01f, 1000f);
@@ -316,7 +317,7 @@ public class Player extends GameComponent {
     		playerText.put("Life", new TextureFont("", new Vector2f(-0.9f,-0.8f), new Vector2f(1f,1f)));
     		playerText.put("Armor", new TextureFont("", new Vector2f(-0.9f,-0.7f), new Vector2f(1f,1f)));
     		playerText.put("Ammo", new TextureFont("", new Vector2f(-0.9f,-0.9f), new Vector2f(1f,1f)));
-    		playerText.put("Notification", new TextureFont("", new Vector2f(-1.25f,1.2f), new Vector2f(0.75f,0.75f)));
+    		playerText.put("Notification", new TextureFont("", new Vector2f(-1.3f,1.25f), new Vector2f(0.7f,0.7f)));
     		playerText.put("CrossHair", new TextureFont("+", new Vector2f(0,0), new Vector2f(1f,1f)));
     	}
     		
@@ -364,7 +365,6 @@ public class Player extends GameComponent {
     		fireLight = new SpotLight(gunLightColor, 1.6f, 
             		new Attenuation(attenuation,0,attenuation), getCamera().getPos(), new Vector3f(1,1,1), 0.7f);
     	}
-        if(m_renderingEngine == null) this.m_renderingEngine = renderingEngine;
         gunFireTime = 0;
         notificationTime = 0;
         mouseLocked = false;
@@ -376,6 +376,8 @@ public class Player extends GameComponent {
         width = PLAYER_WIDTH;
         rand = new Random();
         Debug.init();
+        goldkey = false;
+        bronzekey = false;
     }
 
     private float upAngle = 0;
@@ -779,7 +781,7 @@ public class Player extends GameComponent {
 	        sLight.setDirection(getCamera().getForward());
         }
         if(!isShooting && (!isBulletBased || !isShellBased)) {
-        	m_renderingEngine.removeLight(fireLight);
+        	if(m_renderingEngine != null)m_renderingEngine.removeLight(fireLight);
         }
         fireLight.setPosition(new Vector3f(getCamera().getPos().getX(), 0, getCamera().getPos().getZ()));
         fireLight.setDirection(getCamera().getForward());
@@ -788,6 +790,14 @@ public class Player extends GameComponent {
     	double gunTime2 = gunTime + gunFireAnimationTime;
     	double gunTime3 = gunTime2 + gunFireAnimationTime;
     	double gunTime4 = gunTime3 + gunFireAnimationTime;
+    	int ammo = 0;
+    	
+    	if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
+    	playerText.get("Life").setText("Life:"+getHealth());
+    	playerText.get("Ammo").setText("Ammo:"+ammo);
+        if(armorb) { 
+        	playerText.get("Armor").setText("Armor:"+getArmori());
+        }
         
 		if(isMelee) {
 	        if ((double) time < gunTime) {
@@ -840,21 +850,22 @@ public class Player extends GameComponent {
      * @param renderingEngine to use
      */
     public void render(Shader shader, RenderingEngine renderingEngine) {
+    	if(m_renderingEngine == null) this.m_renderingEngine = renderingEngine;
     	int ammo = 0;
     	double time = Time.getTime();
     	
     	if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
-    	Debug.printToEngine(renderingEngine, shader);
-    	playerText.get("CrossHair").render(renderingEngine, shader);
+    	Debug.printToEngine(renderingEngine);
+    	playerText.get("CrossHair").render(renderingEngine);
     	playerText.get("Life").setText("Life:"+getHealth());
-    	playerText.get("Life").render(renderingEngine, shader);
+    	playerText.get("Life").render(renderingEngine);
     	playerText.get("Ammo").setText("Ammo:"+ammo);
-    	playerText.get("Ammo").render(renderingEngine, shader);
+    	playerText.get("Ammo").render(renderingEngine);
         if(armorb) { 
         	playerText.get("Armor").setText("Armor:"+getArmori());
-        	playerText.get("Armor").render(renderingEngine, shader);
+        	playerText.get("Armor").render(renderingEngine);
         }
-        if(time < notificationTime + 2.5f) playerText.get("Notification").render(renderingEngine, shader);
+        if(time < notificationTime + 2.5f) playerText.get("Notification").render(renderingEngine);
         
         gunRenderer.render(shader, renderingEngine);   
     }
@@ -874,8 +885,9 @@ public class Player extends GameComponent {
     /**
      * Method that sets an amount of health if player get some, or lose some.
      * @param amt amount.
+     * @param provider of the adding.
      */
-    public void addHealth(int amt) {
+    public void addHealth(int amt, String provider) {
     	int temp = health;
         health += amt;
         if(health>temp) {
@@ -886,7 +898,7 @@ public class Player extends GameComponent {
             health = getMaxHealth();
         }
         if (health <= 0) {
-        	playerText.get("Notification").setText("You Died! (press e)");
+        	playerText.get("Notification").setText("You've killed by " + provider + "!");
         	notificationTime = Time.getTime();
         	AudioUtil.playAudio(playerNoises.get(3), 0);
         	health = 0;
@@ -997,7 +1009,7 @@ public class Player extends GameComponent {
      * Method that returns if the player have or not a shotgun on 
      * he's bag.
      */
-    public boolean getShotgun() {return shotgun;}
+    public boolean isShotgun() {return shotgun;}
     
     /**
      * Method that assigns the machine-gun to the player object.
@@ -1018,7 +1030,7 @@ public class Player extends GameComponent {
      * Method that returns if the player have or not a machine-gun 
      * on he's bag.
      */
-    public boolean getMachinegun() {return machinegun;}
+    public boolean isMachinegun() {return machinegun;}
     
     /**
      * Method that assigns the super shotgun to the player object.
@@ -1039,13 +1051,13 @@ public class Player extends GameComponent {
      * Method that returns if the player have or not a super shotgun 
      * on he's bag.
      */
-    public boolean getSuperShotgun() {return sShotgun;}
+    public boolean isSuperShotgun() {return sShotgun;}
     
     /**
      * Method that returns if the player have or not a chain-gun
      * on he's bag.
      */
-    public boolean getChaingun() {return chaingun;}
+    public boolean isChaingun() {return chaingun;}
     
     /**
      * Method that assigns the chain-gun to the player object.
@@ -1066,13 +1078,13 @@ public class Player extends GameComponent {
      * Method that assigns the armor to the player object.
      * @param amt amount.
      */
-    public void setArmorb(boolean amt) {armorb = amt;}
+    public void setArmor(boolean amt) {armorb = amt;}
     
     /**
      * Method that returns if the player have or not an armor
      * on he's bag.
      */
-    public boolean getArmorb() {return armorb;}
+    public boolean isArmorb() {return armorb;}
 
     /**
      * Returns the in game camera.
@@ -1117,7 +1129,7 @@ public class Player extends GameComponent {
      * Method that sets an amount of armor if player get some, or lose some.
      * @param amt amount of armor to set.
      */
-	public void addArmori(int amt) {
+	public void addArmor(int amt) {
 		int temp = armori;
 		armori += amt;
 		if(armori>temp) {
@@ -1212,5 +1224,29 @@ public class Player extends GameComponent {
 	 * @param amt the weapon that player is using.
 	 */
 	public void setWeaponState(String state) { this.weaponState = state; }
+
+	/**
+	 * Returns if the player haves the gold key.
+	 * @return gold key
+	 */
+	public boolean isGoldkey() { return goldkey; }
+
+	/**
+	 * Sets the state of the gold key.
+	 * @param goldkey to set
+	 */
+	public void setGoldkey(boolean goldkey) { this.goldkey = goldkey; }
+	
+	/**
+	 * Returns if the player haves the bronze key.
+	 * @return bronze key
+	 */
+	public boolean isBronzekey() { return bronzekey; }
+
+	/**
+	 * Sets the state of the bronze key.
+	 * @param bronzekey to set
+	 */
+	public void setBronzekey(boolean bronzekey) { this.bronzekey = bronzekey; }
 
 }

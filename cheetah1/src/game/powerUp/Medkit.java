@@ -110,7 +110,7 @@ public class Medkit extends GameComponent {
         }
 
         if (distance < PICKUP_THRESHHOLD && Level.getPlayer().getHealth() < 100) {
-            Level.getPlayer().addHealth(HEAL_AMOUNT);
+            Level.getPlayer().addHealth(HEAL_AMOUNT, "Medkit");
             Level.removeMedkit(this);
             AudioUtil.playAudio(PICKUP_NOISE, 0);
         }

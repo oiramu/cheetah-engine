@@ -15,8 +15,6 @@
  */
 package game;
 
-import static engine.core.CoreEngine.*;
-
 import java.util.ArrayList;
 
 import javax.sound.sampled.Clip;
@@ -25,6 +23,7 @@ import engine.audio.AudioUtil;
 import engine.components.DirectionalLight;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
+import engine.core.CoreEngine;
 import engine.core.Debug;
 import engine.core.GameObject;
 import engine.core.Input;
@@ -170,6 +169,7 @@ public class Level extends GameComponent {
     private Material m_material;
     private Transform m_transform;
     private MeshRenderer m_meshRenderer;
+    private RenderingEngine m_renderingEngine;
     private GameObject m_objects;
 
     /**
@@ -186,8 +186,9 @@ public class Level extends GameComponent {
         if(m_transform == null) this.m_transform = new Transform();
         if(collisionPosStart == null) this.collisionPosStart = new ArrayList<Vector2f>();
         if(collisionPosEnd == null) this.collisionPosEnd = new ArrayList<Vector2f>();
+    	if(m_renderingEngine == null) m_renderingEngine = CoreEngine.m_renderingEngine;
         
-        generateLevel(m_renderingEngine);
+        generateLevel();
         
         //Player
         m_objects.add(player);
@@ -381,7 +382,7 @@ public class Level extends GameComponent {
         for (SecretWall secretWall : secretWalls) {
         		if (Math.abs(secretWall.getTransform().getPosition().sub(position).length()) < 1f) {
                 worked = true;
-                secretWall.open(0.9f, 3f);
+                secretWall.open(1.0f, 3f);
                 player.playerText.get("Notification").setText("You've found a secret!");
                 player.notificationTime = Time.getTime();
             }
@@ -775,7 +776,7 @@ public class Level extends GameComponent {
      * Method that generates the level for the game.
      * @param engine of the level.
      */
-    private void generateLevel(RenderingEngine engine) {
+    private void generateLevel() {
         ArrayList<Vertex> vertices = new ArrayList<Vertex>();
         ArrayList<Integer> indices = new ArrayList<Integer>();
         
@@ -881,13 +882,13 @@ public class Level extends GameComponent {
                     } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 128) {
                     	naziSoldiers.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 1) {
-                        player = new Player(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.4375f, (j + 0.5f) * SPOT_LENGTH), engine);
+                        player = new Player(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.4375f, (j + 0.5f) * SPOT_LENGTH));
                     } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 192) {
                         medkits.add(new Medkit(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 100) {
                         trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 50) {
-                    	flares.add(new Lantern(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, LEVEL_HEIGHT * 0.75f, (j + 0.5f) * SPOT_LENGTH)), engine));
+                    	flares.add(new Lantern(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, LEVEL_HEIGHT * 0.75f, (j + 0.5f) * SPOT_LENGTH))));
                     	//lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 51) {
                     	//lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
@@ -907,7 +908,7 @@ public class Level extends GameComponent {
                     } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 120) {
                     	tables.add(new Table(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 121) {
-                    	furnaces.add(new Furnace(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), engine));
+                    	furnaces.add(new Furnace(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                 	} else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 122) {
                     	kitchens.add(new Kitchen(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         foods.add(new Food(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
@@ -993,11 +994,11 @@ public class Level extends GameComponent {
         if(m_meshRenderer == null)
         	m_meshRenderer = new MeshRenderer(m_geometry, m_transform, m_material);
         
-        engine.setFogDensity(0.07f);
-        engine.setFogGradient(1.5f);
-        engine.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
-        engine.setAmbientLight(new Vector3f(0.75f,0.75f,0.75f));
-        engine.addLight(new DirectionalLight(new Vector3f(0.75f,0.75f,0.75f), 
+        m_renderingEngine.setFogDensity(0.07f);
+        m_renderingEngine.setFogGradient(1.5f);
+        m_renderingEngine.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
+        m_renderingEngine.setAmbientLight(new Vector3f(0.75f,0.75f,0.75f));
+        m_renderingEngine.addLight(new DirectionalLight(new Vector3f(0.75f,0.75f,0.75f), 
         		1f, new Vector3f(m_bitmap.getWidth()/2,10,m_bitmap.getHeight()/2)));
     }
 	

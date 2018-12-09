@@ -55,8 +55,9 @@ public class GameObject {
 	 * @param list to add
 	 */
 	public <E> void add(ArrayList<E> list) {
-		for(E component : list)
-			m_list.add((GameComponent) component);
+		list.stream().forEach(object -> {
+			m_list.add((GameComponent) object);
+		});
 	}
 	
 	/**
@@ -64,8 +65,9 @@ public class GameObject {
 	 * the list.
 	 */
 	public void input() {
-		for(GameComponent component : m_list)
-			component.input();
+		m_list.stream().forEach(object -> {
+			object.input();
+		});
 	}
 	
 	/**
@@ -75,9 +77,10 @@ public class GameObject {
 	 * @param renderingEngine to render
 	 */
 	public void render(Shader shader, RenderingEngine renderingEngine) {
-		for(GameComponent component : m_list)
-			if(component.getDistance() < POP_IN)
-				component.render(shader, renderingEngine);
+		m_list.stream().forEach(object -> {
+			if(object.getDistance() < POP_IN)
+				object.render(shader, renderingEngine);
+		});
 	}
 	
 	/**
@@ -86,8 +89,9 @@ public class GameObject {
 	 * @param delta of time
 	 */
 	public void update(double delta) {
-		for(GameComponent component : m_list)
-			component.update(delta);
+		m_list.stream().forEach(object -> {
+			object.update(delta);
+		});
 	}
 	
 	/**

@@ -26,7 +26,7 @@ import engine.rendering.Shader;
  */
 public class DirectionalLight extends BaseLight {
 	
-	private Vector3f m_direction;
+	private Vector3f direction;
 	
 	/**
 	 * Constructor of the directional light.
@@ -36,7 +36,7 @@ public class DirectionalLight extends BaseLight {
 	 */
 	public DirectionalLight(Vector3f color, float intensity, Vector3f direction) {
 		super(color, intensity);
-		this.m_direction = direction.normalized();
+		this.direction = direction.normalized();
 		setShader(new Shader("forward-directional"));
 	}
 
@@ -44,12 +44,12 @@ public class DirectionalLight extends BaseLight {
 	 * Returns the direction the directional light.
 	 * @return Direction the directional light.
 	 */
-	public Vector3f getDirection() {return m_direction;}
+	public Vector3f getDirection() {return direction;}
 
 	/**
 	 * Sets a new direction for the directional light.
 	 * @param direction
 	 */
-	public void setDirection(Vector3f direction) {this.m_direction = direction.normalized();}
+	public void setDirection(Vector3f direction) {this.direction = direction.normalized();}
 	
 }

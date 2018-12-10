@@ -49,7 +49,7 @@ import game.Auschwitz;
  */
 public class Window {
 	
-	private static Menu 			m_menu;
+	private static Menu 			menu;
 	private final static Sequence 	THEME = AudioUtil.loadMidi("THEME0");
 	
 	/**
@@ -129,7 +129,7 @@ public class Window {
 			Cursor emptyCursor = new Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null);
 			Mouse.setNativeCursor(emptyCursor);
 			AudioUtil.playMidi(THEME);
-			m_menu = new DefaultMenu();
+			menu = new DefaultMenu();
 
 			//SEngineUtil.getInstance().setInputType(InputType.MOUSE); //Default input type
 		} catch(LWJGLException e) {
@@ -183,7 +183,7 @@ public class Window {
 		*/
 		//Update objects
 		render();
-		m_menu.update();
+		menu.update();
 	}
 	
 	/**
@@ -193,14 +193,14 @@ public class Window {
 		Rendering2DEngine.restore();	
 		//2D
 		Rendering2DEngine.context2D();
-		m_menu.draw2D();
+		menu.draw2D();
 	}
 	
 	/**
 	 * Gets the menu that is showing.
 	 * @return
 	 */
-	public static Menu getMenu() {return m_menu;}
+	public static Menu getMenu() {return menu;}
 	
 	/**
      * Removes everything when the program closes

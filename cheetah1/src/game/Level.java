@@ -186,7 +186,7 @@ public class Level extends GameComponent {
         if(m_transform == null) this.m_transform = new Transform();
         if(collisionPosStart == null) this.collisionPosStart = new ArrayList<Vector2f>();
         if(collisionPosEnd == null) this.collisionPosEnd = new ArrayList<Vector2f>();
-    	if(m_renderingEngine == null) m_renderingEngine = CoreEngine.m_renderingEngine;
+    	if(m_renderingEngine == null) m_renderingEngine = CoreEngine.renderingEngine;
         
         generateLevel();
         

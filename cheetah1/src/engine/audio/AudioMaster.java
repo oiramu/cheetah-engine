@@ -35,7 +35,7 @@ import static org.lwjgl.openal.AL11.*;
  */
 public class AudioMaster {
 	
-	private static List<Integer> m_buffers = new ArrayList<Integer>();
+	private static List<Integer> buffers = new ArrayList<Integer>();
 	
 	/**
 	 * Initializes the audio master system.
@@ -65,7 +65,7 @@ public class AudioMaster {
 	 */
 	public static int loadSound(String file) {
 		int buffer = alGenBuffers();
-		m_buffers.add(buffer);
+		buffers.add(buffer);
 		WaveData waveFile = WaveData.create(file);
 		alBufferData(buffer, waveFile.format, waveFile.data, waveFile.samplerate);
 		waveFile.dispose();
@@ -76,7 +76,7 @@ public class AudioMaster {
 	 * Cleans up everything when closes.
 	 */
 	public static void cleanUp() {
-		for(int buffer : m_buffers)
+		for(int buffer : buffers)
 			alDeleteBuffers(buffer);
 		destroy();
 	}

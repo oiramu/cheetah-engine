@@ -23,14 +23,14 @@ package engine.core;
 */
 public class Matrix4f {
 	
-	private float[][] m_m;
+	private float[][] m;
 	
 	/**
 	 * Constructor of a basic 4 by 4 matrix.
 	 */
 	public Matrix4f()
 	{
-		m_m = new float[4][4];
+		m = new float[4][4];
 	}
 	
 	/**
@@ -43,7 +43,7 @@ public class Matrix4f {
 			new Exception().printStackTrace();
 			System.exit(1);
 		}
-		this.m_m = m;
+		this.m = m;
 	}
 
 	/**
@@ -52,10 +52,10 @@ public class Matrix4f {
 	 */
 	public Matrix4f initIdentity()
 	{
-		m_m[0][0] = 1;	m_m[0][1] = 0;	m_m[0][2] = 0;	m_m[0][3] = 0;
-		m_m[1][0] = 0;	m_m[1][1] = 1;	m_m[1][2] = 0;	m_m[1][3] = 0;
-		m_m[2][0] = 0;	m_m[2][1] = 0;	m_m[2][2] = 1;	m_m[2][3] = 0;
-		m_m[3][0] = 0;	m_m[3][1] = 0;	m_m[3][2] = 0;	m_m[3][3] = 1;
+		m[0][0] = 1;	m[0][1] = 0;	m[0][2] = 0;	m[0][3] = 0;
+		m[1][0] = 0;	m[1][1] = 1;	m[1][2] = 0;	m[1][3] = 0;
+		m[2][0] = 0;	m[2][1] = 0;	m[2][2] = 1;	m[2][3] = 0;
+		m[3][0] = 0;	m[3][1] = 0;	m[3][2] = 0;	m[3][3] = 1;
 		
 		return this;
 	}
@@ -69,10 +69,10 @@ public class Matrix4f {
 	 */
 	public Matrix4f initTranslation(float x, float y, float z)
 	{
-		m_m[0][0] = 1;	m_m[0][1] = 0;	m_m[0][2] = 0;	m_m[0][3] = x;
-		m_m[1][0] = 0;	m_m[1][1] = 1;	m_m[1][2] = 0;	m_m[1][3] = y;
-		m_m[2][0] = 0;	m_m[2][1] = 0;	m_m[2][2] = 1;	m_m[2][3] = z;
-		m_m[3][0] = 0;	m_m[3][1] = 0;	m_m[3][2] = 0;	m_m[3][3] = 1;
+		m[0][0] = 1;	m[0][1] = 0;	m[0][2] = 0;	m[0][3] = x;
+		m[1][0] = 0;	m[1][1] = 1;	m[1][2] = 0;	m[1][3] = y;
+		m[2][0] = 0;	m[2][1] = 0;	m[2][2] = 1;	m[2][3] = z;
+		m[3][0] = 0;	m[3][1] = 0;	m[3][2] = 0;	m[3][3] = 1;
 		
 		return this;
 	}
@@ -94,22 +94,22 @@ public class Matrix4f {
 		y = (float)Math.toRadians(y);
 		z = (float)Math.toRadians(z);
 		
-		rz.m_m[0][0] = (float)Math.cos(z);rz.m_m[0][1] = -(float)Math.sin(z);rz.m_m[0][2] = 0;				rz.m_m[0][3] = 0;
-		rz.m_m[1][0] = (float)Math.sin(z);rz.m_m[1][1] = (float)Math.cos(z);rz.m_m[1][2] = 0;					rz.m_m[1][3] = 0;
-		rz.m_m[2][0] = 0;					rz.m_m[2][1] = 0;					rz.m_m[2][2] = 1;					rz.m_m[2][3] = 0;
-		rz.m_m[3][0] = 0;					rz.m_m[3][1] = 0;					rz.m_m[3][2] = 0;					rz.m_m[3][3] = 1;
+		rz.m[0][0] = (float)Math.cos(z);rz.m[0][1] = -(float)Math.sin(z);rz.m[0][2] = 0;				rz.m[0][3] = 0;
+		rz.m[1][0] = (float)Math.sin(z);rz.m[1][1] = (float)Math.cos(z);rz.m[1][2] = 0;					rz.m[1][3] = 0;
+		rz.m[2][0] = 0;					rz.m[2][1] = 0;					rz.m[2][2] = 1;					rz.m[2][3] = 0;
+		rz.m[3][0] = 0;					rz.m[3][1] = 0;					rz.m[3][2] = 0;					rz.m[3][3] = 1;
 		
-		rx.m_m[0][0] = 1;					rx.m_m[0][1] = 0;					rx.m_m[0][2] = 0;					rx.m_m[0][3] = 0;
-		rx.m_m[1][0] = 0;					rx.m_m[1][1] = (float)Math.cos(x);rx.m_m[1][2] = -(float)Math.sin(x);rx.m_m[1][3] = 0;
-		rx.m_m[2][0] = 0;					rx.m_m[2][1] = (float)Math.sin(x);rx.m_m[2][2] = (float)Math.cos(x);rx.m_m[2][3] = 0;
-		rx.m_m[3][0] = 0;					rx.m_m[3][1] = 0;					rx.m_m[3][2] = 0;					rx.m_m[3][3] = 1;
+		rx.m[0][0] = 1;					rx.m[0][1] = 0;					rx.m[0][2] = 0;					rx.m[0][3] = 0;
+		rx.m[1][0] = 0;					rx.m[1][1] = (float)Math.cos(x);rx.m[1][2] = -(float)Math.sin(x);rx.m[1][3] = 0;
+		rx.m[2][0] = 0;					rx.m[2][1] = (float)Math.sin(x);rx.m[2][2] = (float)Math.cos(x);rx.m[2][3] = 0;
+		rx.m[3][0] = 0;					rx.m[3][1] = 0;					rx.m[3][2] = 0;					rx.m[3][3] = 1;
 		
-		ry.m_m[0][0] = (float)Math.cos(y);ry.m_m[0][1] = 0;					ry.m_m[0][2] = -(float)Math.sin(y);ry.m_m[0][3] = 0;
-		ry.m_m[1][0] = 0;					ry.m_m[1][1] = 1;					ry.m_m[1][2] = 0;					ry.m_m[1][3] = 0;
-		ry.m_m[2][0] = (float)Math.sin(y);ry.m_m[2][1] = 0;					ry.m_m[2][2] = (float)Math.cos(y);ry.m_m[2][3] = 0;
-		ry.m_m[3][0] = 0;					ry.m_m[3][1] = 0;					ry.m_m[3][2] = 0;					ry.m_m[3][3] = 1;
+		ry.m[0][0] = (float)Math.cos(y);ry.m[0][1] = 0;					ry.m[0][2] = -(float)Math.sin(y);ry.m[0][3] = 0;
+		ry.m[1][0] = 0;					ry.m[1][1] = 1;					ry.m[1][2] = 0;					ry.m[1][3] = 0;
+		ry.m[2][0] = (float)Math.sin(y);ry.m[2][1] = 0;					ry.m[2][2] = (float)Math.cos(y);ry.m[2][3] = 0;
+		ry.m[3][0] = 0;					ry.m[3][1] = 0;					ry.m[3][2] = 0;					ry.m[3][3] = 1;
 		
-		m_m = rz.mul(ry.mul(rx)).getM();
+		m = rz.mul(ry.mul(rx)).getM();
 		
 		return this;
 	}
@@ -123,10 +123,10 @@ public class Matrix4f {
 	 */
 	public Matrix4f initScale(float x, float y, float z)
 	{
-		m_m[0][0] = x;	m_m[0][1] = 0;	m_m[0][2] = 0;	m_m[0][3] = 0;
-		m_m[1][0] = 0;	m_m[1][1] = y;	m_m[1][2] = 0;	m_m[1][3] = 0;
-		m_m[2][0] = 0;	m_m[2][1] = 0;	m_m[2][2] = z;	m_m[2][3] = 0;
-		m_m[3][0] = 0;	m_m[3][1] = 0;	m_m[3][2] = 0;	m_m[3][3] = 1;
+		m[0][0] = x;	m[0][1] = 0;	m[0][2] = 0;	m[0][3] = 0;
+		m[1][0] = 0;	m[1][1] = y;	m[1][2] = 0;	m[1][3] = 0;
+		m[2][0] = 0;	m[2][1] = 0;	m[2][2] = z;	m[2][3] = 0;
+		m[3][0] = 0;	m[3][1] = 0;	m[3][2] = 0;	m[3][3] = 1;
 		
 		return this;
 	}
@@ -144,10 +144,10 @@ public class Matrix4f {
 		float tanHalfFOV = (float)Math.tan(fov / 2);
 		float zRange = zNear - zFar;
 		
-		m_m[0][0] = 1.0f / (tanHalfFOV * aspect);	m_m[0][1] = 0;					m_m[0][2] = 0;	m_m[0][3] = 0;
-		m_m[1][0] = 0;								m_m[1][1] = 1.0f / tanHalfFOV;	m_m[1][2] = 0;	m_m[1][3] = 0;
-		m_m[2][0] = 0;								m_m[2][1] = 0;					m_m[2][2] = (-zNear -zFar)/zRange;	m_m[2][3] = 2 * zFar * zNear / zRange;
-		m_m[3][0] = 0;								m_m[3][1] = 0;					m_m[3][2] = 1;	m_m[3][3] = 0;
+		m[0][0] = 1.0f / (tanHalfFOV * aspect);	m[0][1] = 0;					m[0][2] = 0;	m[0][3] = 0;
+		m[1][0] = 0;								m[1][1] = 1.0f / tanHalfFOV;	m[1][2] = 0;	m[1][3] = 0;
+		m[2][0] = 0;								m[2][1] = 0;					m[2][2] = (-zNear -zFar)/zRange;	m[2][3] = 2 * zFar * zNear / zRange;
+		m[3][0] = 0;								m[3][1] = 0;					m[3][2] = 1;	m[3][3] = 0;
 		
 		return this;
 	}
@@ -164,10 +164,10 @@ public class Matrix4f {
 	 */
 	public Matrix4f initOrthographic(float left, float right, float top, float bottom, float near, float far)
 	{
-		m_m[0][0] = 2/(right - left);					m_m[0][1] = 0;								m_m[0][2] = 0;					m_m[0][3] = 0;
-		m_m[1][0] = 0;								m_m[1][1] = 2/(top - bottom);					m_m[1][2] = 0;					m_m[1][3] = 0;
-		m_m[2][0] = 0;								m_m[2][1] = 0;								m_m[2][2] = -1/(far - near);		m_m[2][3] = 0;
-		m_m[3][0] = -(right + left)/(right - left);	m_m[3][1] = -(top + bottom)/(top - bottom);	m_m[3][2] = -near/(far - near);	m_m[3][3] = 1;
+		m[0][0] = 2/(right - left);					m[0][1] = 0;								m[0][2] = 0;					m[0][3] = 0;
+		m[1][0] = 0;								m[1][1] = 2/(top - bottom);					m[1][2] = 0;					m[1][3] = 0;
+		m[2][0] = 0;								m[2][1] = 0;								m[2][2] = -1/(far - near);		m[2][3] = 0;
+		m[3][0] = -(right + left)/(right - left);	m[3][1] = -(top + bottom)/(top - bottom);	m[3][2] = -near/(far - near);	m[3][3] = 1;
 		
 		return this;
 	}
@@ -201,10 +201,10 @@ public class Matrix4f {
 		Vector3f r = right;
 		Vector3f u = up;
 
-		m_m[0][0] = r.getX();	m_m[0][1] = r.getY();	m_m[0][2] = r.getZ();	m_m[0][3] = 0;
-		m_m[1][0] = u.getX();	m_m[1][1] = u.getY();	m_m[1][2] = u.getZ();	m_m[1][3] = 0;
-		m_m[2][0] = f.getX();	m_m[2][1] = f.getY();	m_m[2][2] = f.getZ();	m_m[2][3] = 0;
-		m_m[3][0] = 0;		m_m[3][1] = 0;		m_m[3][2] = 0;		m_m[3][3] = 1;
+		m[0][0] = r.getX();	m[0][1] = r.getY();	m[0][2] = r.getZ();	m[0][3] = 0;
+		m[1][0] = u.getX();	m[1][1] = u.getY();	m[1][2] = u.getZ();	m[1][3] = 0;
+		m[2][0] = f.getX();	m[2][1] = f.getY();	m[2][2] = f.getZ();	m[2][3] = 0;
+		m[3][0] = 0;		m[3][1] = 0;		m[3][2] = 0;		m[3][3] = 1;
 
 		return this;
 	}
@@ -214,7 +214,7 @@ public class Matrix4f {
 	 * @return QUATERNION
 	 */
 	public Quaternion toQuaternion() {
-		float trace = m_m[0][0] + m_m[1][1] + m_m[2][2];
+		float trace = m[0][0] + m[1][1] + m[2][2];
 		
 		float w = 1;
 		float x = 0;
@@ -224,34 +224,34 @@ public class Matrix4f {
 		  {// I changed M_EPSILON to 0
 		    float s = 0.5f / (float)Math.sqrt(trace+ 1.0f);
 		    w = 0.25f / s;
-		    x = ( m_m[1][2] - m_m[2][1] ) * s;
-		    y = ( m_m[2][0] - m_m[0][2] ) * s;
-		    z = ( m_m[0][1] - m_m[1][0] ) * s;
+		    x = ( m[1][2] - m[2][1] ) * s;
+		    y = ( m[2][0] - m[0][2] ) * s;
+		    z = ( m[0][1] - m[1][0] ) * s;
 		  } 
 		  else 
 		  {
-		    if ( m_m[0][0] > m_m[1][1] && m_m[0][0] > m_m[2][2] ) 
+		    if ( m[0][0] > m[1][1] && m[0][0] > m[2][2] ) 
 		    {
-		      float s = 2.0f * (float)Math.sqrt( 1.0f + m_m[0][0] - m_m[1][1] - m_m[2][2]);
-		      w = (m_m[1][2] - m_m[2][1] ) / s;
+		      float s = 2.0f * (float)Math.sqrt( 1.0f + m[0][0] - m[1][1] - m[2][2]);
+		      w = (m[1][2] - m[2][1] ) / s;
 		      x = 0.25f * s;
-		      y = (m_m[1][0] + m_m[0][1] ) / s;
-		     z = (m_m[2][0] + m_m[0][2] ) / s;
+		      y = (m[1][0] + m[0][1] ) / s;
+		     z = (m[2][0] + m[0][2] ) / s;
 		    } 
-		    else if (m_m[1][1] > m_m[2][2]) 
+		    else if (m[1][1] > m[2][2]) 
 		    {
-		      float s = 2.0f * (float)Math.sqrt( 1.0f + m_m[1][1] - m_m[0][0] - m_m[2][2]);
-		      w = (m_m[2][0] - m_m[0][2] ) / s;
-		      x = (m_m[1][0] + m_m[0][1] ) / s;
+		      float s = 2.0f * (float)Math.sqrt( 1.0f + m[1][1] - m[0][0] - m[2][2]);
+		      w = (m[2][0] - m[0][2] ) / s;
+		      x = (m[1][0] + m[0][1] ) / s;
 		      y = 0.25f * s;
-		      z = (m_m[2][1] + m_m[1][2] ) / s;
+		      z = (m[2][1] + m[1][2] ) / s;
 		    } 
 		    else 
 		    {
-		      float s = 2.0f * (float)Math.sqrt( 1.0f + m_m[2][2] - m_m[0][0] - m_m[1][1] );
-		      w = (m_m[0][1] - m_m[1][0] ) / s;
-		      x = (m_m[2][0] + m_m[0][2] ) / s;
-		      y = (m_m[1][2] + m_m[2][1] ) / s;
+		      float s = 2.0f * (float)Math.sqrt( 1.0f + m[2][2] - m[0][0] - m[1][1] );
+		      w = (m[0][1] - m[1][0] ) / s;
+		      x = (m[2][0] + m[0][2] ) / s;
+		      y = (m[1][2] + m[2][1] ) / s;
 		      z = 0.25f * s;
 		    }
 		  }
@@ -261,11 +261,11 @@ public class Matrix4f {
 	
 	public Quaternion toQuaternionBasic()
 	{
-		float w = (float)(Math.sqrt(1.0 + m_m[0][0] + m_m[1][1] + m_m[2][2]) / 2.0);
+		float w = (float)(Math.sqrt(1.0 + m[0][0] + m[1][1] + m[2][2]) / 2.0);
 		float w4 = (4.0f * w);
-		float x = (m_m[1][2] - m_m[2][1]) / w4 ;
-		float y = (m_m[2][0] - m_m[0][2]) / w4 ;
-		float z = (m_m[0][1] - m_m[1][0]) / w4 ;
+		float x = (m[1][2] - m[2][1]) / w4 ;
+		float y = (m[2][0] - m[0][2]) / w4 ;
+		float z = (m[0][1] - m[1][0]) / w4 ;
 		
 		return new Quaternion(x,y,z,w);
 	}
@@ -276,9 +276,9 @@ public class Matrix4f {
 	 * @return Transform.
 	 */
 	public Vector3f transform(Vector3f r) {
-		return new Vector3f(m_m[0][0] * r.getX() + m_m[0][1] * r.getY() + m_m[0][2] * r.getZ() + m_m[0][3],
-		                    m_m[1][0] * r.getX() + m_m[1][1] * r.getY() + m_m[1][2] * r.getZ() + m_m[1][3],
-		                    m_m[2][0] * r.getX() + m_m[2][1] * r.getY() + m_m[2][2] * r.getZ() + m_m[2][3]);
+		return new Vector3f(m[0][0] * r.getX() + m[0][1] * r.getY() + m[0][2] * r.getZ() + m[0][3],
+		                    m[1][0] * r.getX() + m[1][1] * r.getY() + m[1][2] * r.getZ() + m[1][3],
+		                    m[2][0] * r.getX() + m[2][1] * r.getY() + m[2][2] * r.getZ() + m[2][3]);
 	}
 	
 	/**
@@ -295,10 +295,10 @@ public class Matrix4f {
 		
 		Vector3f u = f.cross(r);
 		
-		m_m[0][0] = r.getX();	m_m[0][1] = r.getY();	m_m[0][2] = r.getZ();	m_m[0][3] = 0;
-		m_m[1][0] = u.getX();	m_m[1][1] = u.getY();	m_m[1][2] = u.getZ();	m_m[1][3] = 0;
-		m_m[2][0] = f.getX();	m_m[2][1] = f.getY();	m_m[2][2] = f.getZ();	m_m[2][3] = 0;
-		m_m[3][0] = 0;		m_m[3][1] = 0;		m_m[3][2] = 0;		m_m[3][3] = 1;
+		m[0][0] = r.getX();	m[0][1] = r.getY();	m[0][2] = r.getZ();	m[0][3] = 0;
+		m[1][0] = u.getX();	m[1][1] = u.getY();	m[1][2] = u.getZ();	m[1][3] = 0;
+		m[2][0] = f.getX();	m[2][1] = f.getY();	m[2][2] = f.getZ();	m[2][3] = 0;
+		m[3][0] = 0;		m[3][1] = 0;		m[3][2] = 0;		m[3][3] = 1;
 		
 		return this;
 	}
@@ -313,10 +313,10 @@ public class Matrix4f {
 		
 		for(int i = 0; i < 4; i++) {
 			for(int j = 0; j < 4; j++) {
-				res.set(i, j, m_m[i][0] * r.get(0, j) +
-							  m_m[i][1] * r.get(1, j) +
-							  m_m[i][2] * r.get(2, j) +
-							  m_m[i][3] * r.get(3, j));
+				res.set(i, j, m[i][0] * r.get(0, j) +
+							  m[i][1] * r.get(1, j) +
+							  m[i][2] * r.get(2, j) +
+							  m[i][3] * r.get(3, j));
 			}
 		}
 		
@@ -332,7 +332,7 @@ public class Matrix4f {
 		
 		for(int i = 0; i < 4; i++)
 			for(int j = 0; j < 4; j++)
-				res[i][j] = m_m[i][j];
+				res[i][j] = m[i][j];
 		
 		return res;
 	}
@@ -343,13 +343,13 @@ public class Matrix4f {
 	 * @param y component.
 	 * @return x and y component of the matrix.
 	 */
-	public float get(int x, int y) {return m_m[x][y];}
+	public float get(int x, int y) {return m[x][y];}
 
 	/**
 	 * Sets a new matrix for the main matrix.
 	 * @param m new matrix.
 	 */
-	public void setM(float[][] m) {this.m_m = m;}
+	public void setM(float[][] m) {this.m = m;}
 	
 	/**
 	 * Sets the x and y part of matrix with a value.
@@ -357,6 +357,6 @@ public class Matrix4f {
 	 * @param y index of the matrix.
 	 * @param value to set.
 	 */
-	public void set(int x, int y, float value) {m_m[x][y] = value;}
+	public void set(int x, int y, float value) {m[x][y] = value;}
 	
 }

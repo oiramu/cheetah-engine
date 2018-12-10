@@ -23,9 +23,9 @@ package engine.core;
  */
 public class Transform {
 
-    private Vector3f 		m_position;
-    private Vector3f 		m_rotation;
-    private Vector3f 		m_scale;
+    private Vector3f 		position;
+    private Vector3f 		rotation;
+    private Vector3f 		scale;
     
     /**
      * Basic constructor for a transform.
@@ -37,9 +37,9 @@ public class Transform {
      * @param position of the object.
      */
     public Transform(Vector3f position) {
-        this.m_position = position;
-        this.m_rotation = new Vector3f(0, 0, 0);
-        this.m_scale = new Vector3f(1, 1, 1);
+        this.position = position;
+        this.rotation = new Vector3f(0, 0, 0);
+        this.scale = new Vector3f(1, 1, 1);
     }
     
     /**
@@ -48,9 +48,9 @@ public class Transform {
      * @return Transformation.
      */
     public Matrix4f getTransformation() {
-        Matrix4f translationMatrix = new Matrix4f().initTranslation(m_position.getX(), m_position.getY(), m_position.getZ());
-        Matrix4f rotationMatrix = new Matrix4f().initRotation(m_rotation.getX(), m_rotation.getY(), m_rotation.getZ());
-        Matrix4f scaleMatrix = new Matrix4f().initScale(m_scale.getX(), m_scale.getY(), m_scale.getZ());
+        Matrix4f translationMatrix = new Matrix4f().initTranslation(position.getX(), position.getY(), position.getZ());
+        Matrix4f rotationMatrix = new Matrix4f().initRotation(rotation.getX(), rotation.getY(), rotation.getZ());
+        Matrix4f scaleMatrix = new Matrix4f().initScale(scale.getX(), scale.getY(), scale.getZ());
 
         return translationMatrix.mul(rotationMatrix.mul(scaleMatrix));
     }
@@ -59,13 +59,13 @@ public class Transform {
      * Returns the 3D position of the transform.
      * @return 3D position of the transform.
      */
-    public Vector3f getPosition() {return m_position;}
+    public Vector3f getPosition() {return position;}
 
     /**
      * Sets a new 3D position for the transform into a vector.
      * @param position in a 3D space.
      */
-    public void setPosition(Vector3f position) {this.m_position = position;}
+    public void setPosition(Vector3f position) {this.position = position;}
 
     /**
      * Sets a new 3D position for the transform into a vector but
@@ -74,19 +74,19 @@ public class Transform {
      * @param y axis.
      * @param z axis.
      */
-    public void setPosition(float x, float y, float z) {this.m_position = new Vector3f(x, y, z);}
+    public void setPosition(float x, float y, float z) {this.position = new Vector3f(x, y, z);}
 
     /**
      * Returns the 3D rotation of the transform.
      * @return 3D rotation of the transform.
      */
-    public Vector3f getRotation() {return m_rotation;}
+    public Vector3f getRotation() {return rotation;}
     
     /**
      * Sets a new 3D rotation for the transform into a vector.
      * @param rotation to set.
      */
-    public void setRotation(Vector3f rotation) {this.m_rotation = rotation;}
+    public void setRotation(Vector3f rotation) {this.rotation = rotation;}
 
     /**
      * Sets a new 3D rotation for the transform into a vector but
@@ -95,19 +95,19 @@ public class Transform {
      * @param y axis.
      * @param z axis.
      */
-    public void setRotation(float x, float y, float z) {this.m_rotation = new Vector3f(x, y, z);}
+    public void setRotation(float x, float y, float z) {this.rotation = new Vector3f(x, y, z);}
 
     /**
      * Gets the scale of the transform
      * @return scale.
      */
-    public Vector3f getScale() {return m_scale;}
+    public Vector3f getScale() {return scale;}
 
     /**
      * Sets a new scale for the transform into a vector.
      * @param scale vector data.
      */
-    public void setScale(Vector3f scale) {this.m_scale = scale;}
+    public void setScale(Vector3f scale) {this.scale = scale;}
 
     /**
      * Sets a new scale for the transform into a vector but
@@ -116,7 +116,7 @@ public class Transform {
      * @param y axis.
      * @param z axis.
      */
-    public void setScale(float x, float y, float z) {this.m_scale = new Vector3f(x, y, z);}
+    public void setScale(float x, float y, float z) {this.scale = new Vector3f(x, y, z);}
 
     /**
      * Sets a linear scaling for the transform.

@@ -29,9 +29,9 @@ public class PointLight extends BaseLight {
 	
 	private static final int COLOR_DEPTH = 256;
 
-	private Attenuation m_attenuation;
-	private Vector3f 	m_position;
-	private float 		m_range;
+	private Attenuation attenuation;
+	private Vector3f 	position;
+	private float 		range;
 	
 	/**
 	 * Point of light object instance.
@@ -42,14 +42,14 @@ public class PointLight extends BaseLight {
 	 */
 	public PointLight(Vector3f color, float intensity, Attenuation atten, Vector3f position) {
 		super(color, intensity);
-		this.m_attenuation = atten;
-		this.m_position = position;
+		this.attenuation = atten;
+		this.position = position;
 		
 		float a = atten.getExponent();
         float b = atten.getLinear();
         float c = atten.getConstant() - COLOR_DEPTH * getIntensity() * getColor().max();
 		
-		this.m_range = (float) (-b + Math.sqrt(b * b - 4 * a * c))/(2 * a);
+		this.range = (float) (-b + Math.sqrt(b * b - 4 * a * c))/(2 * a);
 		
 		setShader(new Shader("forward-point"));
 	}
@@ -58,37 +58,37 @@ public class PointLight extends BaseLight {
 	 * Returns the attenuation of the point-light.
 	 * @return Attenuation
 	 */
-	public Attenuation getAtten() { return m_attenuation;}
+	public Attenuation getAtten() { return attenuation;}
 	
 	/**
 	 * Sets a new attenuation to the point-light.
 	 * @param Attenuation to set
 	 */
-	public void setAtten(Attenuation atten) {this.m_attenuation = atten;}
+	public void setAtten(Attenuation atten) {this.attenuation = atten;}
 	
 	/**
 	 * Returns the position of the point-light.
 	 * @return Position
 	 */
-	public Vector3f getPosition() {return m_position;}
+	public Vector3f getPosition() {return position;}
 	
 	/**
 	 * Sets a new position to the point-light.
 	 * @param Position to set
 	 */
-	public void setPosition(Vector3f position) {this.m_position = position;}
+	public void setPosition(Vector3f position) {this.position = position;}
 
 	/**
 	 * Returns the range of the point-light.
 	 * @return Range
 	 */
-	public float getRange() {return m_range;}
+	public float getRange() {return range;}
 	
 	/**
 	 * Sets a new range to the point-light.
 	 * @param Range to set
 	 */
-	public void setRange(float range) {this.m_range = range;}
+	public void setRange(float range) {this.range = range;}
 	
 	/**
 	 * Returns the point-light's distance to the camera.

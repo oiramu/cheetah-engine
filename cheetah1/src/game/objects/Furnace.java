@@ -99,7 +99,7 @@ public class Furnace extends GameComponent {
         this.transform = transform;
         this.m_meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         
-        if(m_renderingEngine == null) m_renderingEngine = CoreEngine.m_renderingEngine;
+        if(m_renderingEngine == null) m_renderingEngine = CoreEngine.renderingEngine;
         
         if(light == null) {
 	        this.light = new PointLight(new Vector3f(1.0f,0.5f,0.2f), 0.8f, 

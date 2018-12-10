@@ -33,13 +33,13 @@ import game.enemies.NaziSoldier;
  */
 public class GameObject {
 	
-	private ArrayList <GameComponent> m_list;
+	private ArrayList <GameComponent> list;
 	
 	/**
 	 * Game Object's constructor.
 	 */
 	public GameObject() {
-		m_list = new ArrayList<GameComponent>();
+		list = new ArrayList<GameComponent>();
 	}
 	
 	/**
@@ -47,7 +47,7 @@ public class GameObject {
 	 * @param component to add
 	 */
 	public <E> void add(E component) {
-		m_list.add((GameComponent) component);
+		list.add((GameComponent) component);
 	}
 	
 	/**
@@ -56,7 +56,7 @@ public class GameObject {
 	 */
 	public <E> void add(ArrayList<E> list) {
 		list.stream().forEach(object -> {
-			m_list.add((GameComponent) object);
+			this.list.add((GameComponent) object);
 		});
 	}
 	
@@ -65,7 +65,7 @@ public class GameObject {
 	 * the list.
 	 */
 	public void input() {
-		m_list.stream().forEach(object -> {
+		list.stream().forEach(object -> {
 			object.input();
 		});
 	}
@@ -77,7 +77,7 @@ public class GameObject {
 	 * @param renderingEngine to render
 	 */
 	public void render(Shader shader, RenderingEngine renderingEngine) {
-		m_list.stream().forEach(object -> {
+		list.stream().forEach(object -> {
 			if(object.getDistance() < POP_IN)
 				object.render(shader, renderingEngine);
 		});
@@ -89,7 +89,7 @@ public class GameObject {
 	 * @param delta of time
 	 */
 	public void update(double delta) {
-		m_list.stream().forEach(object -> {
+		list.stream().forEach(object -> {
 			object.update(delta);
 		});
 	}
@@ -150,7 +150,7 @@ public class GameObject {
      */
     public <E> void removeListToRenderPipeline(ArrayList<E> removeList) {
     	for (E component : removeList) 
-    		m_list.remove(component);
+    		list.remove(component);
     	
     }
     

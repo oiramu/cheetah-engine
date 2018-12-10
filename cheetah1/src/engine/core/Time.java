@@ -23,9 +23,9 @@ package engine.core;
  */
 public class Time {
 
-    private static final long SECOND = 1000000000L;
-    private static double 	m_fps;
-    private static double	m_frametime;
+    private static final long 	SECOND = 1000000000L;
+    private static double 		fps;
+    private static double		frametime;
 
     /**
      * Gets the time of compiling.
@@ -37,24 +37,24 @@ public class Time {
      * Returns the frames per second.
      * @return FPS
      */
-    public static double getFPS() { return m_fps; }
+    public static double getFPS() { return fps; }
 
     /**
      * Sets the frames per second.
      * @param fps.
      */
-    public static void setFPS(double fps) { Time.m_fps = fps; }
+    public static void setFPS(double fps) { Time.fps = fps; }
     
     /**
      * Returns the time between frames.
      * @return frame time
      */
-    public static double getFrametime() { return m_frametime; }
+    public static double getFrametime() { return frametime; }
 
     /**
      * Sets the time between frames.
      * @param frametime
      */
-    public static void setFrametime(double frametime) { Time.m_frametime = frametime; }
+    public static void setFrametime(double frametime) { Time.frametime = frametime; }
 
 }

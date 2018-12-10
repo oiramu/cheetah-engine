@@ -646,12 +646,12 @@ public class Player extends GameComponent {
             	}
             }
 	        
-	        if(Debug.m_state) {
+	        if(Debug.state) {
 				if (Input.getKeyDown(Input.KEY_F3))
-					Debug.m_state = false;
+					Debug.state = false;
             } else {
             	if (Input.getKeyDown(Input.KEY_F3))
-            		Debug.m_state = true;
+            		Debug.state = true;
             }
 	
 	        movementVector = zeroVector;

@@ -29,9 +29,9 @@ import engine.rendering.Shader;
  */
 public class MeshRenderer {
 	
-	private Transform 	m_transform;
-	private Mesh 		m_mesh;
-	private Material 	m_material;
+	private Transform 	transform;
+	private Mesh 		mesh;
+	private Material 	material;
 	
 	/**
 	 * Renderer of a mesh with more than one possible material
@@ -41,9 +41,9 @@ public class MeshRenderer {
 	 * @param material of the mesh.
 	 */
 	public MeshRenderer(Mesh mesh, Transform transform, Material material) {
-		this.m_mesh = mesh;
-		this.m_transform = transform;
-		this.m_material = material;		
+		this.mesh = mesh;
+		this.transform = transform;
+		this.material = material;		
 	}
 	
 	/**
@@ -53,20 +53,20 @@ public class MeshRenderer {
 	 */
 	public void render(Shader shader, RenderingEngine renderingEngine) {
 		shader.bind();
-        shader.updateUniforms(m_transform, m_material, renderingEngine);
-        m_mesh.draw();
+        shader.updateUniforms(transform, material, renderingEngine);
+        mesh.draw();
 	}
 
 	/**
 	 * Sets a new mesh for the mesh renderer.
 	 * @param mesh to set
 	 */
-	public void setMesh(Mesh mesh) { this.m_mesh = mesh; }
+	public void setMesh(Mesh mesh) { this.mesh = mesh; }
 
 	/**
 	 * Sets a new material for the mesh renderer.
 	 * @param material to set
 	 */
-	public void setMaterial(Material material) { this.m_material = material; }
+	public void setMaterial(Material material) { this.material = material; }
 
 }

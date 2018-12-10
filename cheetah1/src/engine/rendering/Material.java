@@ -27,7 +27,7 @@ import engine.rendering.resourceManagement.MappedValues;
  */
 public class Material extends MappedValues {
 
-	private HashMap<String, Texture> m_textureHashMap;
+	private HashMap<String, Texture> textureHashMap;
 
     /**
      * Constructor of the texture material of a mesh.
@@ -62,8 +62,8 @@ public class Material extends MappedValues {
     public Material(Texture diffuse, float specularIntensity, float specularPower, Texture normal,
             Texture dispMap, float dispMapScale, float dispMapOffset){
     	super();
-    	if(m_textureHashMap == null)
-    		m_textureHashMap = new HashMap<String, Texture>();
+    	if(textureHashMap == null)
+    		textureHashMap = new HashMap<String, Texture>();
     	AddTexture("diffuse", diffuse);
 		AddFloat("specularIntensity", specularIntensity);
 		AddFloat("specularPower", specularPower);
@@ -80,14 +80,14 @@ public class Material extends MappedValues {
      * @param name of the texture.
      * @param texture to add.
      */
-    public void AddTexture(String name, Texture texture) { m_textureHashMap.put(name, texture); }
+    public void AddTexture(String name, Texture texture) { textureHashMap.put(name, texture); }
 
     /**
      * Returns the diffuse texture of the material.
      * @return Diffuse texture.
      */
     public Texture getTexture(String texture) {
-    	Texture result = m_textureHashMap.get(texture);
+    	Texture result = textureHashMap.get(texture);
     	if(result != null)
 			return result;
     	return new Texture("default_"+texture);

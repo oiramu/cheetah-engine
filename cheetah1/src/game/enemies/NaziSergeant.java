@@ -144,7 +144,7 @@ public class NaziSergeant extends GameComponent {
             mesh = new Mesh(verts, indices, true);
         }   
         
-        if(this.renderingEngine == null) this.renderingEngine = CoreEngine.m_renderingEngine;
+        if(this.renderingEngine == null) this.renderingEngine = CoreEngine.renderingEngine;
         
         this.transform = transform;
         this.material = new Material(animation.get(0));

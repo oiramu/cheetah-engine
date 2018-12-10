@@ -38,25 +38,25 @@ import engine.rendering.resourceManagement.MappedValues;
  */
 public class RenderingEngine extends MappedValues {
 	
-	private Camera 						m_mainCamera;
-	private BaseLight 					m_activeLight;
-	private Shader 						m_forwardAmbient;
+	private Camera 						mainCamera;
+	private BaseLight 					activeLight;
+	private Shader 						forwardAmbient;
 	
-	private static ArrayList<BaseLight> m_lights;
-	private HashMap<String, Integer> 	m_samplerMap;
+	private static ArrayList<BaseLight> lights;
+	private HashMap<String, Integer> 	samplerMap;
 	
 	/**
 	 * Constructor for the rendering engine.
 	 */
 	public RenderingEngine() {
 		super();
-        m_lights = new ArrayList<BaseLight>();
-        m_samplerMap = new HashMap<String, Integer>();
-		m_samplerMap.put("diffuse", 0);
-		m_samplerMap.put("normalMap", 1);
-		m_samplerMap.put("dispMap", 2);
+        lights = new ArrayList<BaseLight>();
+        samplerMap = new HashMap<String, Integer>();
+		samplerMap.put("diffuse", 0);
+		samplerMap.put("normalMap", 1);
+		samplerMap.put("dispMap", 2);
         
-		m_forwardAmbient = new Shader("forward-ambient");
+		forwardAmbient = new Shader("forward-ambient");
 		
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -76,27 +76,27 @@ public class RenderingEngine extends MappedValues {
     		if (getMainCamera() == null) Debug.printErrorMessage("Error! Main camera not found. This is very very big bug, and game will crash.", "No camera in game!");
     		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     		
-	        component.render(m_forwardAmbient, this);
+	        component.render(forwardAmbient, this);
 	        
 	        glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE);
 			glDepthMask(false);
 			glDepthFunc(GL_EQUAL);
 			
-			m_lights.stream().forEach(f -> {
-				if(f.getIntensity() > 0) {
-					m_activeLight = f;
-					switch(m_activeLight.getShader().getName()) {
+			lights.stream().forEach(light -> {
+				if(light.getIntensity() > 0) {
+					activeLight = light;
+					switch(activeLight.getShader().getName()) {
 						case"forward-directional":
-							component.render(m_activeLight.getShader(), this);
+							component.render(activeLight.getShader(), this);
 						break;
 						case"forward-point":
-							if(((PointLight) m_activeLight).getDistance() < LIGHT_POP_IN)
-								component.render(m_activeLight.getShader(), this);
+							if(((PointLight) activeLight).getDistance() < LIGHT_POP_IN)
+								component.render(activeLight.getShader(), this);
 						break;
 						case"forward-spot":
-							if(((SpotLight) m_activeLight).getDistance() < LIGHT_POP_IN)
-								component.render(m_activeLight.getShader(), this);
+							if(((SpotLight) activeLight).getDistance() < LIGHT_POP_IN)
+								component.render(activeLight.getShader(), this);
 						break;
 					}
 				}
@@ -113,7 +113,7 @@ public class RenderingEngine extends MappedValues {
     /**
 	 * Cleans everything light related.
 	 */
-    public void clearLights() { m_lights.clear();}
+    public void clearLights() { lights.clear();}
 
     /**
      * Sets textures to openGL.
@@ -131,19 +131,19 @@ public class RenderingEngine extends MappedValues {
 	 * Adds a new directional light to the rendering engine.
 	 * @param light to add.
 	 */
-	public void addLight(BaseLight light) { m_lights.add(light); }
+	public void addLight(BaseLight light) { lights.add(light); }
 	
 	/**
 	 * Removes a new directional light to the rendering engine.
 	 * @param light to remove.
 	 */
-	public void removeLight(BaseLight light) { m_lights.remove(light); }
+	public void removeLight(BaseLight light) { lights.remove(light); }
 	
 	/**
 	 * Returns the light that is been used.
 	 * @return Active light.
 	 */
-	public BaseLight getActiveLight() {return m_activeLight;}
+	public BaseLight getActiveLight() {return activeLight;}
 
 	/**
 	 * Sets a new color for the fog.
@@ -168,7 +168,7 @@ public class RenderingEngine extends MappedValues {
 	 * @param samplerName of the texture.
 	 * @return Texture's slot.
 	 */
-	public int getSamplerSlot(String samplerName) { return m_samplerMap.get(samplerName); }
+	public int getSamplerSlot(String samplerName) { return samplerMap.get(samplerName); }
 
 	/**
      * Bind the textures to openGL.
@@ -192,13 +192,13 @@ public class RenderingEngine extends MappedValues {
      * Returns the main camera in game.
      * @return camera.
      */
-    public Camera getMainCamera() {return m_mainCamera;}
+    public Camera getMainCamera() { return mainCamera; }
 
     /**
      * Sets the main camera of all the game to the rendering
      * engine.
      * @param mainCamera of the game.
      */
-	public void setMainCamera(Camera mainCamera) {this.m_mainCamera = mainCamera;}
+	public void setMainCamera(Camera mainCamera) { this.mainCamera = mainCamera; }
 
 }

@@ -32,9 +32,9 @@ public class Vector3f {
 	public static final Vector3f ZERO = new Vector3f(0,0,0);
 	public static final Vector3f ONE = new Vector3f(1,1,1);
 
-    private float m_x;
-    private float m_y;
-    private float m_z;
+    private float x;
+    private float y;
+    private float z;
 
     /**
      * Constructor of the float vector.
@@ -43,9 +43,9 @@ public class Vector3f {
      * @param z data.
      */
     public Vector3f(float x, float y, float z) {
-        this.m_x = x;
-        this.m_y = y;
-        this.m_z = z;
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     /**
@@ -53,14 +53,14 @@ public class Vector3f {
      * @return Vector's length.
      */
     public float length() {
-        return (float) Math.sqrt(m_x * m_x + m_y * m_y + m_z * m_z);
+        return (float) Math.sqrt(x * x + y * y + z * z);
     }
     
     /**
      * Gets the maximum between two numbers.
      * @return The maximum number.
      */
-    public float max() { return Math.max(m_x, Math.max(m_y, m_z)); }
+    public float max() { return Math.max(x, Math.max(y, z)); }
 
     /**
      * Dot vector.
@@ -68,7 +68,7 @@ public class Vector3f {
      * @return Vector
      */
     public float dot(Vector3f r) {
-        return m_x * r.getX() + m_y * r.getY() + m_z * r.getZ();
+        return x * r.getX() + y * r.getY() + z * r.getZ();
     }
 
     /**
@@ -77,9 +77,9 @@ public class Vector3f {
      * @return Vector
      */
     public Vector3f cross(Vector3f r) {
-        float x_ = m_y * r.getZ() - m_z * r.getY();
-        float y_ = m_z * r.getX() - m_x * r.getZ();
-        float z_ = m_x * r.getY() - m_y * r.getX();
+        float x_ = y * r.getZ() - z * r.getY();
+        float y_ = z * r.getX() - x * r.getZ();
+        float z_ = x * r.getY() - y * r.getX();
 
         return new Vector3f(x_, y_, z_);
     }
@@ -91,7 +91,7 @@ public class Vector3f {
     public Vector3f normalized() {
         float length = length();
 
-        return new Vector3f(m_x / length, m_y / length, m_z / length);
+        return new Vector3f(x / length, y / length, z / length);
     }
 
     /**
@@ -123,7 +123,7 @@ public class Vector3f {
      * @return Vector with more data.
      */
     public Vector3f add(Vector3f r) {
-        return new Vector3f(m_x + r.getX(), m_y + r.getY(), m_z + r.getZ());
+        return new Vector3f(x + r.getX(), y + r.getY(), z + r.getZ());
     }
 
     /**
@@ -132,7 +132,7 @@ public class Vector3f {
      * @return Vector with more data.
      */
     public Vector3f add(float r) {
-        return new Vector3f(m_x + r, m_y + r, m_z + r);
+        return new Vector3f(x + r, y + r, z + r);
     }
 
     /**
@@ -141,7 +141,7 @@ public class Vector3f {
      * @return Vector subtracted.
      */
     public Vector3f sub(Vector3f r) {
-        return new Vector3f(m_x - r.getX(), m_y - r.getY(), m_z - r.getZ());
+        return new Vector3f(x - r.getX(), y - r.getY(), z - r.getZ());
     }
 
     /**
@@ -150,7 +150,7 @@ public class Vector3f {
      * @return Vector subtracted.
      */
     public Vector3f sub(float r) {
-        return new Vector3f(m_x - r, m_y - r, m_z - r);
+        return new Vector3f(x - r, y - r, z - r);
     }
 
     /**
@@ -159,7 +159,7 @@ public class Vector3f {
      * @return Vector multiplied.
      */
     public Vector3f mul(Vector3f r) {
-        return new Vector3f(m_x * r.getX(), m_y * r.getY(), m_z * r.getZ());
+        return new Vector3f(x * r.getX(), y * r.getY(), z * r.getZ());
     }
 
     /**
@@ -168,7 +168,7 @@ public class Vector3f {
      * @return Vector multiplied.
      */
     public Vector3f mul(float r) {
-        return new Vector3f(m_x * r, m_y * r, m_z * r);
+        return new Vector3f(x * r, y * r, z * r);
     }
 
     /**
@@ -177,7 +177,7 @@ public class Vector3f {
      * @return Vector divided.
      */
     public Vector3f div(Vector3f r) {
-        return new Vector3f(m_x / r.getX(), m_y / r.getY(), m_z / r.getZ());
+        return new Vector3f(x / r.getX(), y / r.getY(), z / r.getZ());
     }
 
     /**
@@ -186,7 +186,7 @@ public class Vector3f {
      * @return Vector divided.
      */
     public Vector3f div(float r) {
-        return new Vector3f(m_x / r, m_y / r, m_z / r);
+        return new Vector3f(x / r, y / r, z / r);
     }
 
     /**
@@ -194,7 +194,7 @@ public class Vector3f {
      * @return Absolute value of the vector's data.
      */
     public Vector3f abs() {
-        return new Vector3f(Math.abs(m_x), Math.abs(m_y), Math.abs(m_z));
+        return new Vector3f(Math.abs(x), Math.abs(y), Math.abs(z));
     }
 
     /**
@@ -214,7 +214,7 @@ public class Vector3f {
      * @param y value.
      * @return The vector.
      */
-    public Vector3f set(float x, float y, float z) { this.m_x = x; this.m_y = y; this.m_z = z; return this; }
+    public Vector3f set(float x, float y, float z) { this.x = x; this.y = y; this.z = z; return this; }
     
     /**
      * Sets float values to an existing vector of 3.
@@ -228,7 +228,7 @@ public class Vector3f {
      * @return Data in string.
      */
     public String toString() {
-        return "(" + m_x + " " + m_y + " " + m_z + ")";
+        return "(" + x + " " + y + " " + z + ")";
     }
 
     /**
@@ -237,7 +237,7 @@ public class Vector3f {
      * @return A boolean state.
      */
     public boolean equals(Vector3f r) {
-        return r.getX() == m_x && r.getY() == m_y && r.getZ() == m_z;
+        return r.getX() == x && r.getY() == y && r.getZ() == z;
     }
 
     /**
@@ -245,7 +245,7 @@ public class Vector3f {
      * @return XY's value.
      */
     public Vector2f getXY() {
-        return new Vector2f(m_x, m_y);
+        return new Vector2f(x, y);
     }
 
     /**
@@ -253,7 +253,7 @@ public class Vector3f {
      * @return XZ's value.
      */
     public Vector2f getXZ() {
-        return new Vector2f(m_x, m_z);
+        return new Vector2f(x, z);
     }
 
     /**
@@ -261,7 +261,7 @@ public class Vector3f {
      * @return YZ's value.
      */
     public Vector2f getYZ() {
-        return new Vector2f(m_y, m_z);
+        return new Vector2f(y, z);
     }
 
     /**
@@ -269,7 +269,7 @@ public class Vector3f {
      * @return YX's value.
      */
     public Vector2f getYX() {
-        return new Vector2f(m_y, m_x);
+        return new Vector2f(y, x);
     }
 
     /**
@@ -277,7 +277,7 @@ public class Vector3f {
      * @return ZX's value.
      */
     public Vector2f getZX() {
-        return new Vector2f(m_z, m_x);
+        return new Vector2f(z, x);
     }
     
     /**
@@ -285,43 +285,43 @@ public class Vector3f {
      * @return ZY's value.
      */
     public Vector2f getZY() {
-        return new Vector2f(m_z, m_y);
+        return new Vector2f(z, y);
     }
 
     /**
      * Gets the x value in vector.
      * @return X's value.
      */
-    public float getX() { return m_x; }
+    public float getX() { return x; }
 
     /**
      * Sets the data in x part of the vector.
      * @param x Data to the vector.
      */
-    public void setX(float x) { this.m_x = x; }
+    public void setX(float x) { this.x = x; }
 
     /**
      * Gets the y value in vector.
      * @return Y's value.
      */
-    public float getY() { return m_y; }
+    public float getY() { return y; }
 
     /**
      * Sets the data in y part of the vector.
      * @param y Data to the vector.
      */
-    public void setY(float y) { this.m_y = y; }
+    public void setY(float y) { this.y = y; }
 
     /**
      * Gets the z value in vector.
      * @return Z's value.
      */
-    public float getZ() { return m_z; }
+    public float getZ() { return z; }
 
     /**
      * Sets the data in z part of the vector.
      * @param z Data to the vector.
      */
-    public void setZ(float z) { this.m_z = z; }
+    public void setZ(float z) { this.z = z; }
     
 }

@@ -27,16 +27,16 @@ import static org.lwjgl.openal.AL10.*;
  */
 public class Source {
 	
-	private int m_sourceId;
+	private int sourceId;
 	
 	/**
 	 * Constructor for a sound source.
 	 */
 	public Source() {
-		m_sourceId = alGenSources();
-		alSourcef(m_sourceId, AL_ROLLOFF_FACTOR, 1);
-		alSourcef(m_sourceId, AL_REFERENCE_DISTANCE, 6);
-		alSourcef(m_sourceId, AL_MAX_DISTANCE, 25);
+		sourceId = alGenSources();
+		alSourcef(sourceId, AL_ROLLOFF_FACTOR, 1);
+		alSourcef(sourceId, AL_REFERENCE_DISTANCE, 6);
+		alSourcef(sourceId, AL_MAX_DISTANCE, 25);
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class Source {
 	 */
 	public void play(int buffer) {
 		stop();
-		alSourcei(m_sourceId, AL_BUFFER, buffer);
+		alSourcei(sourceId, AL_BUFFER, buffer);
 		continuePlaying();
 	}
 	
@@ -53,20 +53,20 @@ public class Source {
 	 * Sets the volume of the sound source.
 	 * @param volume to set
 	 */
-	public void setVolume(int volume) { alSourcef(m_sourceId, AL_GAIN, volume); }
+	public void setVolume(int volume) { alSourcef(sourceId, AL_GAIN, volume); }
 	
 	/**
 	 * Sets the pitch of the sound source.
 	 * @param pitch to set
 	 */
-	public void setPitch(int pitch) { alSourcef(m_sourceId, AL_PITCH, pitch); }
+	public void setPitch(int pitch) { alSourcef(sourceId, AL_PITCH, pitch); }
 	
 	/**
 	 * Sets the position of the sound source.
 	 * @param position to set
 	 */
 	public void setPosition(Vector3f position) {
-		alSource3f(m_sourceId, AL_POSITION, position.getX(), position.getY(), position.getZ());
+		alSource3f(sourceId, AL_POSITION, position.getX(), position.getY(), position.getZ());
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public class Source {
 	 * @param velocity to set
 	 */
 	public void setVelocity(Vector3f velocity) {
-		alSource3f(m_sourceId, AL_VELOCITY, velocity.getX(), velocity.getY(), velocity.getZ());
+		alSource3f(sourceId, AL_VELOCITY, velocity.getX(), velocity.getY(), velocity.getZ());
 	}
 	
 	/**
@@ -82,7 +82,7 @@ public class Source {
 	 * @param loop to set
 	 */
 	public void setLooping(boolean loop) {
-		alSourcei(m_sourceId, AL_LOOPING, loop ? AL_TRUE : AL_FALSE);
+		alSourcei(sourceId, AL_LOOPING, loop ? AL_TRUE : AL_FALSE);
 	}
 	
 	/**
@@ -90,27 +90,27 @@ public class Source {
 	 * @return playing state
 	 */
 	public boolean isPlaying() {
-		return alGetBufferi(m_sourceId, AL_SOURCE_STATE) == AL_PLAYING;
+		return alGetBufferi(sourceId, AL_SOURCE_STATE) == AL_PLAYING;
 	}
 	
 	/**
 	 * Deletes the source when it needed.
 	 */
-	public void delete() { stop(); alDeleteSources(m_sourceId); }
+	public void delete() { stop(); alDeleteSources(sourceId); }
 	
 	/**
 	 * Pauses the sound playing.
 	 */
-	public void pause() { alSourcePause(m_sourceId); }
+	public void pause() { alSourcePause(sourceId); }
 	
 	/**
 	 * Continues the sound that is been paused.
 	 */
-	public void continuePlaying() { alSourcePlay(m_sourceId); }
+	public void continuePlaying() { alSourcePlay(sourceId); }
 	
 	/**
 	 * Stops the sound that is been played.
 	 */
-	public void stop() { alSourceStop(m_sourceId); }
+	public void stop() { alSourceStop(sourceId); }
 	
 }

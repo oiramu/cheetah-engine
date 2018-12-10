@@ -28,9 +28,9 @@ import javax.imageio.ImageIO;
  */
 public class Bitmap {
 
-    private final int 	m_width;
-    private final int 	m_height;
-    private int[] 		m_pixels;
+    private final int 	width;
+    private final int 	height;
+    private int[] 		pixels;
     
     /**
      * Constructor of the bitmap object with a file.
@@ -40,11 +40,11 @@ public class Bitmap {
 		try {
 			BufferedImage image = ImageIO.read(new File("./res/bitmaps/" + fileName + ".png"));
 			
-			m_width = image.getWidth();
-			m_height = image.getHeight();
+			width = image.getWidth();
+			height = image.getHeight();
 			
-			m_pixels = new int[m_width * m_height];
-			image.getRGB(0, 0, m_width, m_height, m_pixels, 0, m_width);
+			pixels = new int[width * height];
+			image.getRGB(0, 0, width, height, pixels, 0, width);
 		} catch(Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException();
@@ -57,9 +57,9 @@ public class Bitmap {
      * @param height Of the bitmap.
      */
     public Bitmap(int width, int height) {
-        this.m_width = width;
-        this.m_height = height;
-        m_pixels = new int[width * height];
+        this.width = width;
+        this.height = height;
+        pixels = new int[width * height];
     }
 
     /**
@@ -69,23 +69,23 @@ public class Bitmap {
      * @param yOffset Y searcher.
      */
     public void draw(Bitmap render, int xOffset, int yOffset) {
-        for (int y = 0; y < render.m_height; y++) {
+        for (int y = 0; y < render.height; y++) {
             int yPix = y + yOffset;
 
-            if (yPix < 0 || yPix >= m_height) {
+            if (yPix < 0 || yPix >= height) {
                 continue;
             }
 
-            for (int x = 0; x < render.m_width; x++) {
+            for (int x = 0; x < render.width; x++) {
                 int xPix = x + xOffset;
 
-                if (xPix < 0 || xPix >= m_width) {
+                if (xPix < 0 || xPix >= width) {
                     continue;
                 }
 
-                int alpha = render.m_pixels[x + y * render.m_width];
+                int alpha = render.pixels[x + y * render.width];
 
-                m_pixels[xPix + yPix * m_width] = alpha;
+                pixels[xPix + yPix * width] = alpha;
             }
         }
     }
@@ -95,16 +95,16 @@ public class Bitmap {
      * @return The flip bitmap.
      */
     public Bitmap flipX() {
-        int[] temp = new int[m_pixels.length];
+        int[] temp = new int[pixels.length];
 
-        for (int i = 0; i < m_width; i++) {
-            for (int j = 0; j < m_height; j++) {
-                temp[i + j * m_width] = m_pixels[(m_width - i - 1) + j * m_width];
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                temp[i + j * width] = pixels[(width - i - 1) + j * width];
                 //temp.setPixel(i, j, level.getPixel(level.getWidth() - i - 1, j));
             }
         }
 
-        m_pixels = temp;
+        pixels = temp;
 
         return this;
     }
@@ -113,19 +113,19 @@ public class Bitmap {
      * Returns the width of the bitmap.
      * @return Width.
      */
-    public int getWidth() {return m_width;}
+    public int getWidth() {return width;}
 
     /**
      * Returns the height of the bitmap.
      * @return Height.
      */
-    public int getHeight() {return m_height;}
+    public int getHeight() {return height;}
 
     /**
      * Returns all the pixel color data to an integer array.
      * @return Pixel.
      */
-    public int[] getPixels() {return m_pixels;}
+    public int[] getPixels() {return pixels;}
     
     /**
      * Return the specific pixels in the bitmap.
@@ -133,7 +133,7 @@ public class Bitmap {
      * @param y Pixel coordinates.
      * @return Pixel.
      */
-    public int getPixel(int x, int y) {return m_pixels[x + y * m_width];}
+    public int getPixel(int x, int y) {return pixels[x + y * width];}
 
     /**
      * Sets the pixel color in a specific space.
@@ -141,6 +141,6 @@ public class Bitmap {
      * @param y Pixel coordinates.
      * @param value of the color.
      */
-    public void setPixel(int x, int y, int value) {m_pixels[x + y * m_width] = value;}
+    public void setPixel(int x, int y, int value) {pixels[x + y * width] = value;}
     
 }

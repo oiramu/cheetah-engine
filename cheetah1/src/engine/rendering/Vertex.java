@@ -28,10 +28,10 @@ public class Vertex {
 
     public static final int SIZE = 11;
 
-    private Vector3f m_pos;
-    private Vector2f m_texCoord;
-    private Vector3f m_normal;
-    private Vector3f m_tangent;
+    private Vector3f pos;
+    private Vector2f texCoord;
+    private Vector3f normal;
+    private Vector3f tangent;
     
     /**
      * Constructor of the vertex object (stores his data into a
@@ -73,58 +73,58 @@ public class Vertex {
      * @param tangent space of the mesh.
      */
 	public Vertex(Vector3f pos, Vector2f texCoord, Vector3f normal, Vector3f tangent) {
-		this.m_pos = pos;
-		this.m_texCoord = texCoord;
-		this.m_normal = normal;
-		this.m_tangent = tangent;
+		this.pos = pos;
+		this.texCoord = texCoord;
+		this.normal = normal;
+		this.tangent = tangent;
 	}
 
 	/**
 	 * Returns the tangent space of the vertex.
 	 * @return Tangent space.
 	 */
-	public Vector3f getTangent() { return m_tangent; }
+	public Vector3f getTangent() { return tangent; }
 
 	/**
 	 * Sets a new tangent space for the vertex.
 	 * @param tangent to set.
 	 */
-	public void setTangent(Vector3f tangent) { this.m_tangent = tangent; }
+	public void setTangent(Vector3f tangent) { this.tangent = tangent; }
 
     /**
      * Returns the vertex position.
      * @return Position.
      */
-    public Vector3f getPos() { return m_pos; }
+    public Vector3f getPos() { return pos; }
     
     /**
      * Sets a new position for the vertex.
      * @param pos New position.
      */
-    public void setPos(Vector3f pos) { this.m_pos = pos; }
+    public void setPos(Vector3f pos) { this.pos = pos; }
 
     /**
      * Returns the texture' coordinates.
      * @return Coordinates.
      */
-    public Vector2f getTexCoord() { return m_texCoord; }
+    public Vector2f getTexCoord() { return texCoord; }
 
     /**
      * Sets a new coordinates for the texture.
      * @param texCoord New coordinates.
      */
-    public void setTexCoord(Vector2f texCoord) { this.m_texCoord = texCoord; }
+    public void setTexCoord(Vector2f texCoord) { this.texCoord = texCoord; }
 
     /**
      * Returns the normals' coordinates.
      * @return Normals.
      */
-	public Vector3f getNormal() { return m_normal;}
+	public Vector3f getNormal() { return normal;}
 
     /**
      * Sets a new normals for the vertex.
      * @param normal New normals.
      */
-	public void setNormal(Vector3f normal) { this.m_normal = normal; }
+	public void setNormal(Vector3f normal) { this.normal = normal; }
 	
 }

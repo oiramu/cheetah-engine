@@ -30,13 +30,13 @@ import engine.core.Vector3f;
  */
 public class TextureFont {
 	
-    private Mesh		m_mesh;
-    private Shader		m_shader;
-    private String		m_text;
-    private Material	m_material;
-    private Matrix4f 	m_fontMatrix;
-    private Vector2f 	m_position;
-    private Vector2f 	m_scale;
+    private Mesh		mesh;
+    private Shader		shader;
+    private String		text;
+    private Material	material;
+    private Matrix4f 	fontMatrix;
+    private Vector2f 	position;
+    private Vector2f 	scale;
     
     /**
      * Constructor for a HUD based GUI texture.
@@ -45,8 +45,8 @@ public class TextureFont {
      * @param scale of the text.
      */
     public TextureFont(Material material, Vector2f position, Vector2f scale) {
-    	if(m_position == null) m_position = position;
-    	if(m_scale == null) m_scale = scale;
+    	if(this.position == null) this.position = position;
+    	if(this.scale == null) this.scale = scale;
         final float sizeY = 1.0f;
         final float sizeX = (float) ((double) sizeY / (sizeY * 2.0));
 
@@ -65,17 +65,19 @@ public class TextureFont {
 
         int[] indices = new int[]{0, 1, 2,
                                     0, 2, 3};
+        
+        this.material = material;
 
-        if(m_mesh == null)
-        	m_mesh = new Mesh(verts, indices);
-        if(m_shader == null)
-        	m_shader = new Shader("hud");
+        if(mesh == null)
+        	mesh = new Mesh(verts, indices);
+        if(shader == null)
+        	shader = new Shader("hud");
         
         Matrix4f matrixScaleFont = new Matrix4f();
         Matrix4f matrixTranslationFont = new Matrix4f();
         matrixScaleFont.initScale(scale.getX(), scale.getY(), 1.5f);
         matrixTranslationFont.initTranslation(position.getX(), position.getY(), 0);
-        m_fontMatrix = matrixScaleFont.mul(matrixTranslationFont);
+        fontMatrix = matrixScaleFont.mul(matrixTranslationFont);
     }
     
     /**
@@ -97,13 +99,13 @@ public class TextureFont {
      */
     public TextureFont(String text, Material material, Vector2f position, Vector2f scale) {
     	
-    	if(m_text == null) m_text = text;
-    	if(m_position == null) m_position = position;
-    	if(m_scale == null) m_scale = scale;
+    	if(this.text == null) this.text = text;
+    	if(this.position == null) this.position = position;
+    	if(this.scale == null) this.scale = scale;
         ArrayList<Vertex> vertices = new ArrayList<Vertex>(); // ArrayList is a variable length Collection class
         ArrayList<Integer> indices = new ArrayList<Integer>();
-        for (int i = 0; i < m_text.length(); i++) {
-            int c = m_text.charAt(i);
+        for (int i = 0; i < text.length(); i++) {
+            int c = text.charAt(i);
             float u = (c % 16) / 16.0f;
             float v = (c / 16) / 16.0f;
             float w = (1 / 16.0f);
@@ -126,18 +128,18 @@ public class TextureFont {
         vertices.toArray(vertArray);
         indices.toArray(intArray);
 
-        m_material = material;
+        this.material = material;
         
-        if(m_mesh == null)
-        	m_mesh = new Mesh(vertArray, Util.toIntArray(intArray));
-        if(m_shader == null)
-        	m_shader = new Shader("hud");
+        if(mesh == null)
+        	mesh = new Mesh(vertArray, Util.toIntArray(intArray));
+        if(shader == null)
+        	shader = new Shader("hud");
         
         Matrix4f matrixScaleFont = new Matrix4f();
         Matrix4f matrixTranslationFont = new Matrix4f();
         matrixScaleFont.initScale(scale.getX(), scale.getY(), 1.5f);
         matrixTranslationFont.initTranslation(position.getX(), position.getY(), 0);
-        m_fontMatrix = matrixScaleFont.mul(matrixTranslationFont);
+        fontMatrix = matrixScaleFont.mul(matrixTranslationFont);
     }
     
     /**
@@ -145,9 +147,9 @@ public class TextureFont {
      * @param renderingEngine to use
      */
     public void render(RenderingEngine renderingEngine) {
-    	m_shader.bind();
-    	m_shader.updateUniforms(m_fontMatrix, m_material);
-    	m_mesh.draw();
+    	shader.bind();
+    	shader.updateUniforms(fontMatrix, material);
+    	mesh.draw();
     }
     
     /**
@@ -181,32 +183,31 @@ public class TextureFont {
         vertices.toArray(vertArray);
         indices.toArray(intArray);
         
-        m_mesh = new Mesh(vertArray, Util.toIntArray(intArray));
-
+        mesh = new Mesh(vertArray, Util.toIntArray(intArray));
     }
 
 	/**
 	 * Method that updates the mesh' font.
 	 * @param meshFont to set
 	 */
-	public void setMeshFont(Mesh meshFont) {this.m_mesh = meshFont;}
+	public void setMeshFont(Mesh meshFont) {this.mesh = meshFont;}
 
 	/**
 	 * Method that updates the material.
 	 * @param material to set
 	 */
-	public void setMaterial(Material material) {this.m_material = material;}
+	public void setMaterial(Material material) {this.material = material;}
 
 	/**
 	 * Method that updates the position.
 	 * @param position to set
 	 */
-	public void setPosition(Vector2f position) {this.m_position = position;}
+	public void setPosition(Vector2f position) {this.position = position;}
 
 	/**
 	 * Method that updates the scale.
 	 * @param scale to set
 	 */
-	public void setScale(Vector2f scale) {this.m_scale = scale;}
+	public void setScale(Vector2f scale) {this.scale = scale;}
 
 }

@@ -44,28 +44,28 @@ import engine.rendering.resourceManagement.TextureResource;
  */
 public class Texture {
 
-	private static HashMap<String, TextureResource> m_loadedTextures = new HashMap<String, TextureResource>();
-	private String 									m_fileName;
-    private TextureResource 						m_resource;
-    private int										m_height;
-    private int										m_width;
-    private int										m_FBOId;
-    private int 									m_FBO;
-    private static int 								m_lastWriteBind = 0;
+	private static HashMap<String, TextureResource> loadedTextures = new HashMap<String, TextureResource>();
+	private String 									fileName;
+    private TextureResource 						resource;
+    private int										height;
+    private int										width;
+    private int										FBOID;
+    private int 									FBO;
+    private static int 								lastWriteBind = 0;
     
     /**
      * Texture's constructor with a file.
      * @param fileName of the texture.
      */
     public Texture(String fileName) {
-    	this.m_fileName = fileName;
-    	TextureResource oldResource = m_loadedTextures.get(fileName);
+    	this.fileName = fileName;
+    	TextureResource oldResource = loadedTextures.get(fileName);
     	if(oldResource != null) {
-    		m_resource = oldResource;
-    		m_resource.addReferece();
+    		resource = oldResource;
+    		resource.addReferece();
     	} else {
-    		m_resource = loadTexture(fileName);
-    		m_loadedTextures.put(fileName, m_resource);
+    		resource = loadTexture(fileName);
+    		loadedTextures.put(fileName, resource);
     	}
     }
     
@@ -78,7 +78,7 @@ public class Texture {
      * @param wrapMode if it should repeat or not.
      */
     public Texture(int width, int height, FloatBuffer data, int filter, int wrapMode) {
-    	this.m_fileName = "";
+    	this.fileName = "";
 		int textureID = glGenTextures(); // Generate texture ID
 		glBindTexture(GL_TEXTURE_2D, textureID); // Bind texture ID
 		
@@ -93,10 +93,10 @@ public class Texture {
 		// Send texture to graphics card
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, data);
 
-		this.m_FBOId = textureID;
-		this.m_FBO = 0;
-		this.m_width = width;
-		this.m_height = height;
+		this.FBOID = textureID;
+		this.FBO = 0;
+		this.width = width;
+		this.height = height;
 	}
     
     /**
@@ -108,7 +108,7 @@ public class Texture {
      * @param repeatTexture what method of texturing.
      */
 	public Texture(int width, int height, int internalFormat, int format, int type, ByteBuffer data, boolean linearFiltering, boolean repeatTexture) {
-    	this.m_fileName = "";
+    	this.fileName = "";
 		float filter;
         int wrapMode;
 
@@ -133,10 +133,10 @@ public class Texture {
         //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
         
-        this.m_width = width;
-		this.m_height = height;
-        this.m_FBOId = texture;
-        this.m_FBO = 0;
+        this.width = width;
+		this.height = height;
+        this.FBOID = texture;
+        this.FBO = 0;
 	}
     
     /**
@@ -144,8 +144,8 @@ public class Texture {
      */
     @Override
     protected void finalize() {
-    	if(m_resource.removeReference() && !m_fileName.isEmpty())
-    		m_loadedTextures.remove(m_fileName);
+    	if(resource.removeReference() && !fileName.isEmpty())
+    		loadedTextures.remove(fileName);
     }
     
     /**
@@ -240,9 +240,9 @@ public class Texture {
 	 * @param bind if it should.
 	 */
 	public void initRenderTarget(int attachment, boolean bind) {
-		m_FBO = glGenFramebuffers();
-		glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
-		glFramebufferTexture(GL_FRAMEBUFFER, attachment, m_FBOId, 0);
+		FBO = glGenFramebuffers();
+		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+		glFramebufferTexture(GL_FRAMEBUFFER, attachment, FBOID, 0);
 		
 		if(attachment == GL_DEPTH_ATTACHMENT)
 			glDrawBuffer(GL_NONE);
@@ -253,11 +253,11 @@ public class Texture {
 		}
 		
 		if(bind) {
-			m_lastWriteBind = m_FBO;
-			glViewport(0,0,m_width,m_height);
+			lastWriteBind = FBO;
+			glViewport(0,0,width,height);
 		}
 		else
-			glBindFramebuffer(GL_FRAMEBUFFER, m_lastWriteBind);
+			glBindFramebuffer(GL_FRAMEBUFFER, lastWriteBind);
 	}
 	
     /**
@@ -265,23 +265,23 @@ public class Texture {
      */
     public void bind(int sampler) {
     	glActiveTexture(GL_TEXTURE0 + sampler);
-        glBindTexture(GL_TEXTURE_2D, m_resource.getId());
+        glBindTexture(GL_TEXTURE_2D, resource.getId());
     }
 
     /**
      * Returns the texture index.
      * @return Index.
      */
-    public int getID() {return m_resource.getId();}
+    public int getID() {return resource.getId();}
     
     /**
 	 * Binds a render target in the FBO.
 	 */
     public void bindAsRenderTarget() {
-		if(m_lastWriteBind != m_FBO) {
-			glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
-			m_lastWriteBind = m_FBO;
-			glViewport(0,0,m_width,m_height);
+		if(lastWriteBind != FBO) {
+			glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+			lastWriteBind = FBO;
+			glViewport(0,0,width,height);
 		}
 	}
 	

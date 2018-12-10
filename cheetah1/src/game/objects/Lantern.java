@@ -39,25 +39,25 @@ import game.Level;
  */
 public class Lantern extends GameComponent {
     
-    private static Mesh 	m_mesh;
-    private Material 		m_material;
-    private MeshRenderer 	m_meshRenderer;
-    private RenderingEngine m_renderingEngine;
-    private PointLight 		m_light;
-    private float 			m_sizeX;
+    private Mesh 			mesh;
+    private Material 		material;
+    private MeshRenderer 	meshRenderer;
+    private RenderingEngine renderingEngine;
+    private PointLight 		light;
+    private float 			sizeX;
     
     private static final String RES_LOC = "lantern/MEDIA";
 
-    private Transform 		m_transform;
+    private Transform 		transform;
 
     /**
      * Constructor of the actual object.
      * @param transform the transform of the object in a 3D space.
      */
     public Lantern(Transform transform) {
-        if (m_mesh == null) {
+        if (mesh == null) {
             float sizeY = 0.3f;
-            m_sizeX = (float) ((double) sizeY / (1.5f * 2.0));
+            sizeX = (float) ((double) sizeY / (1.5f * 2.0));
 
             float offsetX = 0.0f;
             float offsetY = 0.0f;
@@ -67,31 +67,31 @@ public class Lantern extends GameComponent {
             float texMinY = -offsetY;
             float texMaxY = 1 - offsetY;
 
-            Vertex[] verts = new Vertex[]{new Vertex(new Vector3f(-m_sizeX, 0, 0), new Vector2f(texMaxX, texMaxY)),
-                new Vertex(new Vector3f(-m_sizeX, sizeY, 0), new Vector2f(texMaxX, texMinY)),
-                new Vertex(new Vector3f(m_sizeX, sizeY, 0), new Vector2f(texMinX, texMinY)),
-                new Vertex(new Vector3f(m_sizeX, 0, 0), new Vector2f(texMinX, texMaxY))};
+            Vertex[] verts = new Vertex[]{new Vertex(new Vector3f(-sizeX, 0, 0), new Vector2f(texMaxX, texMaxY)),
+                new Vertex(new Vector3f(-sizeX, sizeY, 0), new Vector2f(texMaxX, texMinY)),
+                new Vertex(new Vector3f(sizeX, sizeY, 0), new Vector2f(texMinX, texMinY)),
+                new Vertex(new Vector3f(sizeX, 0, 0), new Vector2f(texMinX, texMaxY))};
 
             int[] indices = new int[]{0, 1, 2,
                                     0, 2, 3};
 
-            m_mesh = new Mesh(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
 
-        if (m_material == null) {
-            m_material = new Material(new Texture(RES_LOC));
+        if (material == null) {
+            material = new Material(new Texture(RES_LOC));
         }
         
-        if(m_renderingEngine == null) m_renderingEngine = CoreEngine.m_renderingEngine;
+        if(renderingEngine == null) renderingEngine = CoreEngine.renderingEngine;
         
-        this.m_transform = transform;
-        this.m_meshRenderer = new MeshRenderer(m_mesh, getTransform(), m_material);
+        this.transform = transform;
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         
-        if(m_light == null) {
-	        this.m_light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
+        if(light == null) {
+	        this.light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
 	        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.25f, 
 	        				getTransform().getPosition().getZ()));
-	        m_renderingEngine.addLight(m_light);
+	        renderingEngine.addLight(light);
     	}
     }
 
@@ -100,7 +100,7 @@ public class Lantern extends GameComponent {
      * @param delta of time
      */
     public void update(double delta) {
-    	Vector3f playerDistance = m_transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
+    	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
         Vector3f orientation = playerDistance.normalized();
 		float distance = playerDistance.length();
 		setDistance(distance);
@@ -110,7 +110,7 @@ public class Lantern extends GameComponent {
         if (orientation.getX() > 0) {
             angle = 180 + angle;
         }
-        m_transform.setRotation(0, angle + 90, 0);
+        transform.setRotation(0, angle + 90, 0);
        }
 
     /**
@@ -118,18 +118,18 @@ public class Lantern extends GameComponent {
      * @param shader to render
      * @param renderingEngine to use
      */
-    public void render(Shader shader, RenderingEngine renderingEngine) {m_meshRenderer.render(shader, renderingEngine);}
+    public void render(Shader shader, RenderingEngine renderingEngine) {meshRenderer.render(shader, renderingEngine);}
     
     /**
      * Gets the transform of the object in projection.
      * @return transform.
      */
-	public Transform getTransform() {return m_transform;}
+	public Transform getTransform() {return transform;}
 	
 	/**
 	 * Gets the size of the object in the 3D space and saves it on a vector.
 	 * @return the vector size.
 	 */
-    public Vector2f getSize() {return new Vector2f(m_sizeX, m_sizeX);}
+    public Vector2f getSize() {return new Vector2f(sizeX, sizeX);}
     
 }

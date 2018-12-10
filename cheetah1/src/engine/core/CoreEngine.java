@@ -30,15 +30,15 @@ import engine.rendering.Window;
  */
 public class CoreEngine {
 	
-	private int 					m_width;
-	private int 					m_height;
-	private double 					m_frameTime;
-	private boolean 				m_fullscreen;
-	private boolean 				m_isRunning;
-	private String 					m_title;
-	private Game 					m_game;
-	public static RenderingEngine 	m_renderingEngine;
-	private static CoreEngine 		m_engine;
+	private int 					width;
+	private int 					height;
+	private double 					frameTime;
+	private boolean 				fullscreen;
+	private boolean 				isRunning;
+	private String 					title;
+	private Game 					game;
+	public static RenderingEngine 	renderingEngine;
+	private static CoreEngine 		coreEngine;
 	
 	/**
 	 * Constructor for the engine display.
@@ -47,11 +47,11 @@ public class CoreEngine {
 	 * @param framerate of the display.
 	 */
 	public CoreEngine(int width, int height, double framerate, Game game) {
-		this.m_width = width;
-		this.m_height = height;
-		this.m_frameTime = 1.0/framerate;
-		this.m_game = game;
-		m_engine = this;
+		this.width = width;
+		this.height = height;
+		this.frameTime = 1.0/framerate;
+		this.game = game;
+		coreEngine = this;
 	}
 	
 	/**
@@ -60,9 +60,9 @@ public class CoreEngine {
 	 * @param fullscreen If its windowed or full-screen.
 	 */
 	public void createWindow(String title, boolean fullscreen) {
-		this.m_fullscreen = fullscreen;
-		this.m_title = title;
-		Window.createMenuWindow(m_width, m_height, this.m_title, this.m_fullscreen);
+		this.fullscreen = fullscreen;
+		this.title = title;
+		Window.createMenuWindow(width, height, this.title, this.fullscreen);
 		printCompilationStuff();
 	}
 	
@@ -70,8 +70,8 @@ public class CoreEngine {
      * Constructor for the core of the game to compile.
      */
     public CoreEngine init() {
-        m_isRunning = false;
-        return m_engine;
+        isRunning = false;
+        return coreEngine;
     }
 
     /**
@@ -79,7 +79,7 @@ public class CoreEngine {
      */
     public void start() {
 
-        if (m_isRunning) {
+        if (isRunning) {
             return;
         }
         
@@ -91,11 +91,11 @@ public class CoreEngine {
      */
     public void stop() {
 
-        if (!m_isRunning) {
+        if (!isRunning) {
             return;
         }
 
-        m_isRunning = false;
+        isRunning = false;
     }
 
     /**
@@ -105,19 +105,19 @@ public class CoreEngine {
      */
     private void runGame() {
     	
-    	m_isRunning = true;
+    	isRunning = true;
 
 		int frames = 0;
         double frameCounter = 0;
 
-        m_renderingEngine = new RenderingEngine();
+        renderingEngine = new RenderingEngine();
         
-        m_game.init();
+        game.init();
         
         double lastTime = Time.getTime();
         double unprocessedTime = 0;
 
-        while (m_isRunning) {
+        while (isRunning) {
 
             boolean render = false;
 
@@ -128,19 +128,19 @@ public class CoreEngine {
             unprocessedTime += passedTime;
             frameCounter += passedTime;
 
-            while (unprocessedTime > m_frameTime) {
+            while (unprocessedTime > frameTime) {
 
                 render = true;
 
-                unprocessedTime -= m_frameTime;
+                unprocessedTime -= frameTime;
 
                 if (Window.isCloseRequested())
                     stop();
 
-                m_game.input();
+                game.input();
                 Input.update();
                 
-                m_game.update(m_frameTime);
+                game.update(frameTime);
 
                 if (frameCounter >= 1.0) {
                 	Time.setFPS(frames);
@@ -170,7 +170,7 @@ public class CoreEngine {
      * Method that renders everything to render.
      */
     private void render() {
-        m_game.render(m_renderingEngine);       
+        game.render(renderingEngine);       
         Window.render();
     }
 	
@@ -189,13 +189,13 @@ public class CoreEngine {
 	 * Returns the main game.
 	 * @return Game
 	 */
-	public Game getGame() {return m_game;}
+	public Game getGame() {return game;}
 	
 	/**
 	 * Returns the main engine instance.
 	 * @return Engine instance
 	 */
-	public static CoreEngine getEngine() {return m_engine;}
+	public static CoreEngine getEngine() {return coreEngine;}
 	
 	/**
 	 * Prints the compilation configuration.

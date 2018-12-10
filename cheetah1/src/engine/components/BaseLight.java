@@ -19,16 +19,16 @@ import engine.core.Vector3f;
 import engine.rendering.Shader;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2018
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2018
+ */
 public class BaseLight {
 	
-	private Vector3f 	m_color;
-	private float 		m_intensity;
-	private Shader 		m_shader;
+	private Vector3f 	color;
+	private float 		intensity;
+	private Shader 		shader;
 	
 	/**
 	 * Constructor of a basic light-point.
@@ -36,44 +36,44 @@ public class BaseLight {
 	 * @param intensity of the light.
 	 */
 	public BaseLight(Vector3f color, float intensity) {	
-		this.m_color = color;
-		this.m_intensity = intensity;
+		this.color = color;
+		this.intensity = intensity;
 	}
 	
 	/**
 	 * Gets the shader used by the light.
 	 * @return Shader.
 	 */
-	public Shader getShader() { return m_shader; }
+	public Shader getShader() { return shader; }
 	
 	/**
 	 * Sets a shader for a light.
 	 * @param shader to set.
 	 */
-	public void setShader(Shader shader) {this.m_shader = shader;}
+	public void setShader(Shader shader) {this.shader = shader;}
 
 	/**
 	 * Returns the color of the light.
 	 * @return Color of the light.
 	 */
-	public Vector3f getColor() {return m_color;}
+	public Vector3f getColor() {return color;}
 
 	/**
 	 * Sets a new color for the light-point.
 	 * @param color of the light.
 	 */
-	public void setColor(Vector3f color) {this.m_color = color;}
+	public void setColor(Vector3f color) {this.color = color;}
 
 	/**
 	 * Returns the light-point's intensity.
 	 * @return Light-point's intensity.
 	 */
-	public float getIntensity() {return m_intensity;}
+	public float getIntensity() {return intensity;}
 
 	/**
 	 * Sets a new intensity for the light-point.
 	 * @param intensity of the light-point.
 	 */
-	public void setIntensity(float intensity) {this.m_intensity = intensity;}
+	public void setIntensity(float intensity) {this.intensity = intensity;}
 	
 }

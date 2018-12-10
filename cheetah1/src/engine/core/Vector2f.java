@@ -23,8 +23,8 @@ package engine.core;
 */
 public class Vector2f {
 
-    private float m_x;
-    private float m_y;
+    private float x;
+    private float y;
 
     /**
      * Constructor of the float vector.
@@ -32,8 +32,8 @@ public class Vector2f {
      * @param y data.
      */
     public Vector2f(float x, float y) {
-        this.m_x = x;
-        this.m_y = y;
+        this.x = x;
+        this.y = y;
     }
 
     /**
@@ -41,14 +41,14 @@ public class Vector2f {
      * @return Vector's length.
      */
     public float length() {
-        return (float) Math.sqrt(m_x * m_x + m_y * m_y);
+        return (float) Math.sqrt(x * x + y * y);
     }
     
     /**
      * Gets the maximum between two numbers.
      * @return The maximum number.
      */
-    public float max() { return Math.max(m_x, m_y); }
+    public float max() { return Math.max(x, y); }
 
     /**
      * Dot vector.
@@ -56,7 +56,7 @@ public class Vector2f {
      * @return Vector
      */
     public float dot(Vector2f r) {
-        return m_x * r.getX() + m_y * r.getY();
+        return x * r.getX() + y * r.getY();
     }
 
     /**
@@ -65,7 +65,7 @@ public class Vector2f {
      * @return Vector
      */
     public float cross(Vector2f r) {
-        return m_x * r.getY() - m_y * r.getX();
+        return x * r.getY() - y * r.getX();
     }
 
     /**
@@ -75,7 +75,7 @@ public class Vector2f {
     public Vector2f normalized() {
         float length = length();
 
-        return new Vector2f(m_x / length, m_y / length);
+        return new Vector2f(x / length, y / length);
     }
 
     /**
@@ -88,7 +88,7 @@ public class Vector2f {
         double cos = Math.cos(rad);
         double sin = Math.sin(rad);
 
-        return new Vector2f((float) (m_x * cos - m_y * sin), (float) (m_x * sin + m_y * cos));
+        return new Vector2f((float) (x * cos - y * sin), (float) (x * sin + y * cos));
     }
 
     /**
@@ -97,7 +97,7 @@ public class Vector2f {
      * @return Vector with more data.
      */
     public Vector2f add(Vector2f r) {
-        return new Vector2f(m_x + r.getX(), m_y + r.getY());
+        return new Vector2f(x + r.getX(), y + r.getY());
     }
 
     /**
@@ -106,7 +106,7 @@ public class Vector2f {
      * @return Vector with more data.
      */
     public Vector2f add(float r) {
-        return new Vector2f(m_x + r, m_y + r);
+        return new Vector2f(x + r, y + r);
     }
 
     /**
@@ -115,7 +115,7 @@ public class Vector2f {
      * @return Vector subtracted.
      */
     public Vector2f sub(Vector2f r) {
-        return new Vector2f(m_x - r.getX(), m_y - r.getY());
+        return new Vector2f(x - r.getX(), y - r.getY());
     }
 
     /**
@@ -124,7 +124,7 @@ public class Vector2f {
      * @return Vector subtracted.
      */
     public Vector2f sub(float r) {
-        return new Vector2f(m_x - r, m_y - r);
+        return new Vector2f(x - r, y - r);
     }
 
     /**
@@ -133,7 +133,7 @@ public class Vector2f {
      * @return Vector multiplied.
      */
     public Vector2f mul(Vector2f r) {
-        return new Vector2f(m_x * r.getX(), m_y * r.getY());
+        return new Vector2f(x * r.getX(), y * r.getY());
     }
 
     /**
@@ -142,7 +142,7 @@ public class Vector2f {
      * @return Vector multiplied.
      */
     public Vector2f mul(float r) {
-        return new Vector2f(m_x * r, m_y * r);
+        return new Vector2f(x * r, y * r);
     }
 
     /**
@@ -151,7 +151,7 @@ public class Vector2f {
      * @return Vector divided.
      */
     public Vector2f div(Vector2f r) {
-        return new Vector2f(m_x / r.getX(), m_y / r.getY());
+        return new Vector2f(x / r.getX(), y / r.getY());
     }
 
     /**
@@ -160,7 +160,7 @@ public class Vector2f {
      * @return Vector divided.
      */
     public Vector2f div(float r) {
-        return new Vector2f(m_x / r, m_y / r);
+        return new Vector2f(x / r, y / r);
     }
 
     /**
@@ -168,7 +168,7 @@ public class Vector2f {
      * @return Absolute value of the vector's data.
      */
     public Vector2f abs() {
-        return new Vector2f(Math.abs(m_x), Math.abs(m_y));
+        return new Vector2f(Math.abs(x), Math.abs(y));
     }
 
     /**
@@ -187,7 +187,7 @@ public class Vector2f {
      * @return Data in string.
      */
     public String toString() {
-        return "(" + m_x + " " + m_y + ")";
+        return "(" + x + " " + y + ")";
     }
 
     /**
@@ -196,7 +196,7 @@ public class Vector2f {
      * @return A boolean state.
      */
     public boolean equals(Vector2f r) {
-        return r.getX() == m_x && r.getY() == m_y;
+        return r.getX() == x && r.getY() == y;
     }
 
     /**
@@ -204,7 +204,7 @@ public class Vector2f {
      * @return X's value.
      */
     public float getX() {
-        return m_x;
+        return x;
     }
 
     /**
@@ -212,7 +212,7 @@ public class Vector2f {
      * @param x Data to the vector.
      */
     public void setX(float x) {
-        this.m_x = x;
+        this.x = x;
     }
 
     /**
@@ -220,7 +220,7 @@ public class Vector2f {
      * @return Y's value.
      */
     public float getY() {
-        return m_y;
+        return y;
     }
 
     /**
@@ -228,6 +228,6 @@ public class Vector2f {
      * @param y Data to the vector.
      */
     public void setY(float y) {
-        this.m_y = y;
+        this.y = y;
     }
 }

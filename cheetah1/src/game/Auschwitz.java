@@ -224,7 +224,7 @@ public class Auschwitz implements Game {
                 weaponStateTemp = m_level.getPlayer().getWeaponState();
                 armorbTemp = m_level.getPlayer().isArmorb();
                 mouseLocktemp = m_level.getPlayer().mouseLocked;
-                m_renderingEngine.clearLights();
+                renderingEngine.clearLights();
             }
 
             if(m_levelNum > 9)
@@ -251,7 +251,7 @@ public class Auschwitz implements Game {
             
             switch(CLEAR_LIGHTS) {
     			case "True":
-    				m_renderingEngine.clearLights();
+    				renderingEngine.clearLights();
     				break;
     			case "False":
     				break;

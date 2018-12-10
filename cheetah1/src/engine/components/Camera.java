@@ -29,9 +29,9 @@ public class Camera {
 
     public static final Vector3f yAxis = new Vector3f(0, 1, 0);
 
-    private Vector3f 	m_pos;
-    private Quaternion 	m_rotation;
-    private Matrix4f	m_projection;
+    private Vector3f 	pos;
+    private Quaternion 	rotation;
+    private Matrix4f	projection;
 
     /**
      * Movable camera constructor on a 3D space.
@@ -41,9 +41,9 @@ public class Camera {
      * @param zFar point for the camera
      */
     public Camera(float fov, float aspect, float zNear, float zFar) {
-        this.m_pos = new Vector3f(0, 0, 0);
-        this.m_rotation = new Quaternion(0,0,0,1);
-        this.m_projection = new Matrix4f().initPerspective(fov, aspect, zNear, zFar);
+        this.pos = new Vector3f(0, 0, 0);
+        this.rotation = new Quaternion(0,0,0,1);
+        this.projection = new Matrix4f().initPerspective(fov, aspect, zNear, zFar);
     }
 
     /**
@@ -57,7 +57,7 @@ public class Camera {
      * @param dir Direction.
      * @param amt Velocity amount.
      */
-    public void move(Vector3f dir, float amt) { m_pos = m_pos.add(dir.mul(amt)); }
+    public void move(Vector3f dir, float amt) { pos = pos.add(dir.mul(amt)); }
     
     /**
      * Rotates the camera in the y axis by an angle.
@@ -66,7 +66,7 @@ public class Camera {
     public void rotateY(float angle) {
 		Quaternion newRotation = new Quaternion(yAxis, -angle).normalized();
 		
-		m_rotation = m_rotation.mul(newRotation).normalized();
+		rotation = rotation.mul(newRotation).normalized();
 	}
 	
     /**
@@ -74,9 +74,9 @@ public class Camera {
      * @param angle to rotate
      */
 	public void rotateX(float angle) {
-		Quaternion newRotation = new Quaternion(m_rotation.getRight(), -angle).normalized();
+		Quaternion newRotation = new Quaternion(rotation.getRight(), -angle).normalized();
 		
-		m_rotation = m_rotation.mul(newRotation).normalized();
+		rotation = rotation.mul(newRotation).normalized();
 	}
 
 	/**
@@ -84,56 +84,56 @@ public class Camera {
 	 * @param quaternion to rotate
 	 */
     public void rotate(Quaternion quaternion) {
-		m_rotation = m_rotation.mul(quaternion).normalized();
+		rotation = rotation.mul(quaternion).normalized();
 	}
 
     /**
      * Returns the left side coordinates of the camera.
      * @return Left coordinates.
      */
-    public Vector3f getLeft() {return m_rotation.getLeft();}
+    public Vector3f getLeft() {return rotation.getLeft();}
 
     /**
      * Returns the right side coordinates of the camera.
      * @return Right coordinates.
      */
-    public Vector3f getRight() {return m_rotation.getRight();}
+    public Vector3f getRight() {return rotation.getRight();}
 	
     /**
      * Returns the rotation of the camera.
      * @return rotation
      */
-	public Quaternion getRotation() { return m_rotation; }
+	public Quaternion getRotation() { return rotation; }
 	
 	/**
 	 * Sets a rotation for the camera.
 	 * @param rotation to set
 	 */
-	public void setRotation(Quaternion rotation) { this.m_rotation = rotation; }
+	public void setRotation(Quaternion rotation) { this.rotation = rotation; }
 
     /**
      * Returns the camera's actual position.
      * @return Position Coordinates.
      */
-    public Vector3f getPos() {return m_pos;}
+    public Vector3f getPos() {return pos;}
 
     /**
      * Sets the camera to a new position.
      * @param pos New position Coordinates.
      */
-    public void setPos(Vector3f pos) {this.m_pos = pos;}
+    public void setPos(Vector3f pos) {this.pos = pos;}
 
     /**
      * Returns the forward vector of the actual camera.
      * @return forward vector.
      */
-    public Vector3f getForward() {return m_rotation.getForward();}
+    public Vector3f getForward() {return rotation.getForward();}
 
 	public Matrix4f getViewProjection() {
 		Matrix4f cameraRotation = getRotation().getRotationMatrix();
         Matrix4f cameraTranslation = new Matrix4f().initTranslation(-getPos().getX(), -getPos().getY(), -getPos().getZ());
 
-        return m_projection.mul(cameraRotation.mul(cameraTranslation));
+        return projection.mul(cameraRotation.mul(cameraTranslation));
 	}
     
 }

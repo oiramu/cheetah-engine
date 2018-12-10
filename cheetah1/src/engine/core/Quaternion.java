@@ -23,10 +23,10 @@ package engine.core;
  */
 public class Quaternion {
 
-    private float m_x;
-    private float m_y;
-    private float m_z;
-    private float m_w;
+    private float x;
+    private float y;
+    private float z;
+    private float w;
 
     /**
      * Constructor of a QUATERNION calculation.
@@ -36,10 +36,10 @@ public class Quaternion {
      * @param w axis.
      */
     public Quaternion(float x, float y, float z, float w) {
-        this.m_x = x;
-        this.m_y = y;
-        this.m_z = z;
-        this.m_w = w;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.w = w;
     }
     
     /**
@@ -48,10 +48,10 @@ public class Quaternion {
      */
     public Quaternion(Vector3f direction) {
 		Quaternion res = new Matrix4f().initRotation(direction, Vector3f.UP).toQuaternion().normalized();
-		m_x = res.getX();
-		m_y = res.getY();
-		m_z = res.getZ();
-		m_w = res.getW();
+		x = res.getX();
+		y = res.getY();
+		z = res.getZ();
+		w = res.getW();
 	}
 	
     /**
@@ -62,10 +62,10 @@ public class Quaternion {
 	public Quaternion(Vector3f from, Vector3f to) {
 	     Vector3f H = from.add(to).normalized();
 
-	     m_w = from.dot(H);
-	     m_x = from.getY()*H.getZ() - from.getZ()*H.getY();
-	     m_y = from.getZ()*H.getX() - from.getX()*H.getZ();
-	     m_z = from.getX()*H.getY() - from.getY()*H.getX();
+	     w = from.dot(H);
+	     x = from.getY()*H.getZ() - from.getZ()*H.getY();
+	     y = from.getZ()*H.getX() - from.getX()*H.getZ();
+	     z = from.getX()*H.getY() - from.getY()*H.getX();
 	}
 	
 	/**
@@ -81,10 +81,10 @@ public class Quaternion {
 		float sin = (float)Math.sin(halfAngle);
 		float cos = (float)Math.cos(halfAngle);
 		
-		m_x = axis.getX() * sin;
-		m_y = axis.getY() * sin;
-		m_z = axis.getZ() * sin;
-		m_w = cos;
+		x = axis.getX() * sin;
+		y = axis.getY() * sin;
+		z = axis.getZ() * sin;
+		w = cos;
 	}
 	
 	//From Ken Shoemake's "Quaternion Calculus and Fast Animation" article
@@ -98,37 +98,37 @@ public class Quaternion {
 
 		if(trace > 0) {
 			float s = 0.5f / (float)Math.sqrt(trace+ 1.0f);
-			m_w = 0.25f / s;
-			m_x = (rot.get(1, 2) - rot.get(2, 1)) * s;
-			m_y = (rot.get(2, 0) - rot.get(0, 2)) * s;
-			m_z = (rot.get(0, 1) - rot.get(1, 0)) * s;
+			w = 0.25f / s;
+			x = (rot.get(1, 2) - rot.get(2, 1)) * s;
+			y = (rot.get(2, 0) - rot.get(0, 2)) * s;
+			z = (rot.get(0, 1) - rot.get(1, 0)) * s;
 		} else {
 			if(rot.get(0, 0) > rot.get(1, 1) && rot.get(0, 0) > rot.get(2, 2)) {
 				float s = 2.0f * (float)Math.sqrt(1.0f + rot.get(0, 0) - rot.get(1, 1) - rot.get(2, 2));
-				m_w = (rot.get(1, 2) - rot.get(2, 1)) / s;
-				m_x = 0.25f * s;
-				m_y = (rot.get(1, 0) + rot.get(0, 1)) / s;
-				m_z = (rot.get(2, 0) + rot.get(0, 2)) / s;
+				w = (rot.get(1, 2) - rot.get(2, 1)) / s;
+				x = 0.25f * s;
+				y = (rot.get(1, 0) + rot.get(0, 1)) / s;
+				z = (rot.get(2, 0) + rot.get(0, 2)) / s;
 			} else if(rot.get(1, 1) > rot.get(2, 2)) {
 				float s = 2.0f * (float)Math.sqrt(1.0f + rot.get(1, 1) - rot.get(0, 0) - rot.get(2, 2));
-				m_w = (rot.get(2, 0) - rot.get(0, 2)) / s;
-				m_x = (rot.get(1, 0) + rot.get(0, 1)) / s;
-				m_y = 0.25f * s;
-				m_z = (rot.get(2, 1) + rot.get(1, 2)) / s;
+				w = (rot.get(2, 0) - rot.get(0, 2)) / s;
+				x = (rot.get(1, 0) + rot.get(0, 1)) / s;
+				y = 0.25f * s;
+				z = (rot.get(2, 1) + rot.get(1, 2)) / s;
 			} else {
 				float s = 2.0f * (float)Math.sqrt(1.0f + rot.get(2, 2) - rot.get(0, 0) - rot.get(1, 1));
-				m_w = (rot.get(0, 1) - rot.get(1, 0) ) / s;
-				m_x = (rot.get(2, 0) + rot.get(0, 2) ) / s;
-				m_y = (rot.get(1, 2) + rot.get(2, 1) ) / s;
-				m_z = 0.25f * s;
+				w = (rot.get(0, 1) - rot.get(1, 0) ) / s;
+				x = (rot.get(2, 0) + rot.get(0, 2) ) / s;
+				y = (rot.get(1, 2) + rot.get(2, 1) ) / s;
+				z = 0.25f * s;
 			}
 		}
 
-		float length = (float)Math.sqrt(m_x * m_x + m_y * m_y + m_z * m_z + m_w * m_w);
-		m_x /= length;
-		m_y /= length;
-		m_z /= length;
-		m_w /= length;
+		float length = (float)Math.sqrt(x * x + y * y + z * z + w * w);
+		x /= length;
+		y /= length;
+		z /= length;
+		w /= length;
 	}
 
     /**
@@ -136,7 +136,7 @@ public class Quaternion {
      * @return Length.
      */
     public float length() {
-        return (float) Math.sqrt(m_x * m_x + m_y * m_y + m_z * m_z + m_w * m_w);
+        return (float) Math.sqrt(x * x + y * y + z * z + w * w);
     }
 
     /**
@@ -146,7 +146,7 @@ public class Quaternion {
     public Quaternion normalized() {
         float length = length();
 
-        return new Quaternion(m_x / length, m_y / length, m_z / length, m_w / length);
+        return new Quaternion(x / length, y / length, z / length, w / length);
     }
 
     /**
@@ -154,7 +154,7 @@ public class Quaternion {
      * @return CONJUGATED.
      */
     public Quaternion conjugated() {
-        return new Quaternion(-m_x, -m_y, -m_z, m_w);
+        return new Quaternion(-x, -y, -z, w);
     }
     
     /**
@@ -163,7 +163,7 @@ public class Quaternion {
      * @return Multiplied QUATERNION.
      */
     public Quaternion mul(float r) {
-		return new Quaternion(m_x * r, m_y * r, m_z * r, m_w * r);
+		return new Quaternion(x * r, y * r, z * r, w * r);
 	}
 
     /**
@@ -172,10 +172,10 @@ public class Quaternion {
 	 * @return Multiplied QUATERNION.
 	 */
     public Quaternion mul(Quaternion r) {
-        float w_ = m_w * r.getW() - m_x * r.getX() - m_y * r.getY() - m_z * r.getZ();
-        float x_ = m_x * r.getW() + m_w * r.getX() + m_y * r.getZ() - m_z * r.getY();
-        float y_ = m_y * r.getW() + m_w * r.getY() + m_z * r.getX() - m_x * r.getZ();
-        float z_ = m_z * r.getW() + m_w * r.getZ() + m_x * r.getY() - m_y * r.getX();
+        float w_ = w * r.getW() - x * r.getX() - y * r.getY() - z * r.getZ();
+        float x_ = x * r.getW() + w * r.getX() + y * r.getZ() - z * r.getY();
+        float y_ = y * r.getW() + w * r.getY() + z * r.getX() - x * r.getZ();
+        float z_ = z * r.getW() + w * r.getZ() + x * r.getY() - y * r.getX();
 
         return new Quaternion(x_, y_, z_, w_);
     }
@@ -186,10 +186,10 @@ public class Quaternion {
 	 * @return Multiplied QUATERNION.
 	 */
     public Quaternion mul(Vector3f r) {
-        float w_ = -m_x * r.getX() - m_y * r.getY() - m_z * r.getZ();
-        float x_ = m_w * r.getX() + m_y * r.getZ() - m_z * r.getY();
-        float y_ = m_w * r.getY() + m_z * r.getX() - m_x * r.getZ();
-        float z_ = m_w * r.getZ() + m_x * r.getY() - m_y * r.getX();
+        float w_ = -x * r.getX() - y * r.getY() - z * r.getZ();
+        float x_ = w * r.getX() + y * r.getZ() - z * r.getY();
+        float y_ = w * r.getY() + z * r.getX() - x * r.getZ();
+        float z_ = w * r.getZ() + x * r.getY() - y * r.getX();
 
         return new Quaternion(x_, y_, z_, w_);
     }
@@ -200,7 +200,7 @@ public class Quaternion {
      * @return subtracted QUATERNION
      */
     public Quaternion Sub(Quaternion r) {
-		return new Quaternion(m_x - r.getX(), m_y - r.getY(), m_z - r.getZ(), m_w - r.getW());
+		return new Quaternion(x - r.getX(), y - r.getY(), z - r.getZ(), w - r.getW());
 	}
 
     /**
@@ -209,7 +209,7 @@ public class Quaternion {
      * @return added QUATERNION
      */
 	public Quaternion Add(Quaternion r) {
-		return new Quaternion(m_x + r.getX(), m_y + r.getY(), m_z + r.getZ(), m_w + r.getW());
+		return new Quaternion(x + r.getX(), y + r.getY(), z + r.getZ(), w + r.getW());
 	}
 
 	/**
@@ -217,9 +217,9 @@ public class Quaternion {
 	 * @return QUATERNION to matrix.
 	 */
 	public Matrix4f ToRotationMatrix() {
-		Vector3f forward =  new Vector3f(2.0f * (m_x * m_z - m_w * m_y), 2.0f * (m_y * m_z + m_w * m_x), 1.0f - 2.0f * (m_x * m_x + m_y * m_y));
-		Vector3f up = new Vector3f(2.0f * (m_x * m_y + m_w * m_z), 1.0f - 2.0f * (m_x * m_x + m_z * m_z), 2.0f * (m_y * m_z - m_w * m_x));
-		Vector3f right = new Vector3f(1.0f - 2.0f * (m_y * m_y + m_z * m_z), 2.0f * (m_x * m_y - m_w * m_z), 2.0f * (m_x * m_z + m_w * m_y));
+		Vector3f forward =  new Vector3f(2.0f * (x * z - w * y), 2.0f * (y * z + w * x), 1.0f - 2.0f * (x * x + y * y));
+		Vector3f up = new Vector3f(2.0f * (x * y + w * z), 1.0f - 2.0f * (x * x + z * z), 2.0f * (y * z - w * x));
+		Vector3f right = new Vector3f(1.0f - 2.0f * (y * y + z * z), 2.0f * (x * y - w * z), 2.0f * (x * z + w * y));
 
 		return new Matrix4f().initRotation(forward, up, right);
 	}
@@ -230,7 +230,7 @@ public class Quaternion {
 	 * @return Dot product.
 	 */
 	public float Dot(Quaternion r) {
-		return m_x * r.getX() + m_y * r.getY() + m_z * r.getZ() + m_w * r.getW();
+		return x * r.getX() + y * r.getY() + z * r.getZ() + w * r.getW();
 	}
 
 	/**
@@ -281,7 +281,7 @@ public class Quaternion {
 	}
 
 	//Setters
-	public Quaternion Set(float x, float y, float z, float w) { this.m_x = x; this.m_y = y; this.m_z = z; this.m_w = w; return this; }
+	public Quaternion Set(float x, float y, float z, float w) { this.x = x; this.y = y; this.z = z; this.w = w; return this; }
 	public Quaternion Set(Quaternion r) { Set(r.getX(), r.getY(), r.getZ(), r.getW()); return this; }
 	
 	/**
@@ -289,12 +289,12 @@ public class Quaternion {
 	 * @return euler angle
 	 */
 	public Vector3f getEulerAngles() {
-		float sqx = m_x * m_x;
-		float sqy = m_y * m_y;
-		float sqz = m_z * m_z;
-		float sqw = m_w * m_w;
+		float sqx = x * x;
+		float sqy = y * y;
+		float sqz = z * z;
+		float sqw = w * w;
 		float unit = sqx + sqy + sqz + sqw;
-		float test = m_x * m_y + m_z * m_w;
+		float test = x * y + z * w;
 		
 		float heading = 0;
 		float attitude = 0;
@@ -302,21 +302,21 @@ public class Quaternion {
 		
 		if (test > 0.499f * unit)
 		{ // singularity at north pole
-			heading = 2.0f * (float)Math.atan2(m_x, m_w);
+			heading = 2.0f * (float)Math.atan2(x, w);
 			attitude = (float)Math.PI / 2.0f;
 			bank = 0.0f;
 		}
 		else if (test < -0.499 * unit)
 		{ // singularity at south pole
-			heading = -2.0f * (float)Math.atan2(m_x, m_w);
+			heading = -2.0f * (float)Math.atan2(x, w);
 			attitude = -(float)Math.PI / 2.0f;
 			bank = 0.0f;
 		}
 		else
 		{
-			heading = (float)Math.atan2(2.0f * m_y * m_w - 2.0f * m_x * m_z, sqx - sqy - sqz + sqw);
+			heading = (float)Math.atan2(2.0f * y * w - 2.0f * x * z, sqx - sqy - sqz + sqw);
 			attitude = (float)Math.asin(2.0f * test / unit);
-			bank = (float)Math.atan2(2.0f * m_x * m_w - 2.0f * m_y * m_z, -sqx + sqy - sqz + sqw);
+			bank = (float)Math.atan2(2.0f * x * w - 2.0f * y * z, -sqx + sqy - sqz + sqw);
 		}
 		
 		return new Vector3f((float)Math.toDegrees(bank), (float)Math.toDegrees(heading), (float)Math.toDegrees(attitude));
@@ -343,7 +343,7 @@ public class Quaternion {
 	 * @return forward vector
 	 */
 	public Vector3f getForward() {
-		return new Vector3f(2.0f * (m_x*m_z - m_w*m_y), 2.0f * (m_y * m_z + m_w * m_x), 1.0f - 2.0f * (m_x * m_x + m_y * m_y));
+		return new Vector3f(2.0f * (x*z - w*y), 2.0f * (y * z + w * x), 1.0f - 2.0f * (x * x + y * y));
 	}
 	
 	/**
@@ -351,7 +351,7 @@ public class Quaternion {
 	 * @return back vector
 	 */
 	public Vector3f getBack() {
-		return new Vector3f(-2.0f * (m_x*m_z - m_w*m_y), -2.0f * (m_y * m_z + m_w * m_x), -(1.0f - 2.0f * (m_x * m_x + m_y * m_y)));
+		return new Vector3f(-2.0f * (x*z - w*y), -2.0f * (y * z + w * x), -(1.0f - 2.0f * (x * x + y * y)));
 	}
 	
 	/**
@@ -359,7 +359,7 @@ public class Quaternion {
 	 * @return up vector
 	 */
 	public Vector3f getUp() {
-		return new Vector3f(2.0f * (m_x*m_y + m_w*m_z), 1.0f - 2.0f * (m_x*m_x + m_z*m_z), 2.0f * (m_y*m_z - m_w*m_x));
+		return new Vector3f(2.0f * (x*y + w*z), 1.0f - 2.0f * (x*x + z*z), 2.0f * (y*z - w*x));
 	}
 		
 	/**
@@ -367,7 +367,7 @@ public class Quaternion {
 	 * @return down vector
 	 */
 	public Vector3f getDown() {
-		return new Vector3f(-2.0f * (m_x*m_y + m_w*m_z), -(1.0f - 2.0f * (m_x*m_x + m_z*m_z)), -2.0f * (m_y*m_z - m_w*m_x));
+		return new Vector3f(-2.0f * (x*y + w*z), -(1.0f - 2.0f * (x*x + z*z)), -2.0f * (y*z - w*x));
 	}
 	
 	/**
@@ -375,7 +375,7 @@ public class Quaternion {
 	 * @return right vector
 	 */
 	public Vector3f getRight() {
-		return new Vector3f(1.0f - 2.0f * (m_y*m_y + m_z*m_z), 2.0f * (m_x*m_y - m_w*m_z), 2.0f * (m_x*m_z + m_w*m_y));
+		return new Vector3f(1.0f - 2.0f * (y*y + z*z), 2.0f * (x*y - w*z), 2.0f * (x*z + w*y));
 	}
 	
 	/**
@@ -383,55 +383,55 @@ public class Quaternion {
 	 * @return left vector
 	 */
 	public Vector3f getLeft() {
-		return new Vector3f(-(1.0f - 2.0f * (m_y*m_y + m_z*m_z)), -2.0f * (m_x*m_y - m_w*m_z), -2.0f * (m_x*m_z + m_w*m_y));
+		return new Vector3f(-(1.0f - 2.0f * (y*y + z*z)), -2.0f * (x*y - w*z), -2.0f * (x*z + w*y));
 	}
 
     /**
      * Returns the x axis.
      * @return x axis.
      */
-    public float getX() {return m_x;}
+    public float getX() {return x;}
 
     /**
      * Sets data to x axis.
      * @param x data.
      */
-    public void setX(float x) {this.m_x = x;}
+    public void setX(float x) {this.x = x;}
 
     /**
      * Returns the y axis.
      * @return y axis.
      */
-    public float getY() {return m_y;}
+    public float getY() {return y;}
 
     /**
      * Sets data to y axis.
      * @param y data.
      */
-    public void setY(float y) {this.m_y = y;}
+    public void setY(float y) {this.y = y;}
 
     /**
      * Returns the z axis.
      * @return z axis.
      */
-    public float getZ() {return m_z;}
+    public float getZ() {return z;}
 
     /**
      * Sets data to z axis.
      * @param z data.
      */
-    public void setZ(float z) {this.m_z = z;}
+    public void setZ(float z) {this.z = z;}
 
     /**
      * Returns the w axis.
      * @return w axis.
      */
-    public float getW() {return m_w;}
+    public float getW() {return w;}
 
     /**
      * Sets data to w axis.
      * @param w data.
      */
-    public void setW(float w) {this.m_w = w;}
+    public void setW(float w) {this.w = w;}
     
 }

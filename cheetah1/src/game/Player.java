@@ -53,15 +53,15 @@ import engine.rendering.Window;
 public class Player extends GameComponent {
 
     private static final float GUN_SIZE = 0.1f; 
-    private static final float GUN_OFFSET = -0.077f;
+    private static final float GUN_OFFSET = -0.0877f;
     private static final float GUN_OFFSET_X = 0f;
-    private static final float GUN_TRANSFORM_MUL = 0.105f;
     private static final float MOUSE_SENSITIVITY = 0.25f;
     private static final float MAX_LOOK_ANGLE = 30;//45
     private static final float MIN_LOOK_ANGLE = -17;//-45
     private static final float PLAYER_WIDTH = 0.2f;
     private static final float GRAVITY = 9.8f;
     
+    private static float gunTransformMultiplicator;
     private static float moveSpeed;
     private static float gunFireAnimationTime;
     
@@ -363,6 +363,7 @@ public class Player extends GameComponent {
     		fireLight = new SpotLight(gunLightColor, 1.6f, 
             		new Attenuation(attenuation,0,attenuation), getCamera().getPos(), new Vector3f(1,1,1), 0.7f);
     	}
+
         toTerrain = gunTransform.getPosition().getY();
         gunFireTime = 0;
         notificationTime = 0;
@@ -595,6 +596,11 @@ public class Player extends GameComponent {
 	        	}
 	        }
 	        
+	        if(Input.getMouse(1))
+	        	gunTransformMultiplicator = 0.080f;
+	        else
+	        	gunTransformMultiplicator = 0.0933f;
+	        
 	        if (Input.getKey(Input.KEY_ESCAPE)) {
 	            Input.setCursor(true);
 	            mouseLocked = false;
@@ -751,7 +757,7 @@ public class Player extends GameComponent {
 
         //Gun movement
         gunTransform.setScale(1,1,1);
-		gunTransform.setPosition(playerCamera.getPos().add(playerCamera.getForward().normalized().mul(GUN_TRANSFORM_MUL)));
+		gunTransform.setPosition(playerCamera.getPos().add(playerCamera.getForward().normalized().mul(gunTransformMultiplicator)));
 		gunTransform.getPosition().setX(gunTransform.getPosition().getX() + dx);
 		gunTransform.getPosition().setY(gunTransform.getPosition().getY() + dy);
 
@@ -843,21 +849,17 @@ public class Player extends GameComponent {
      */
     public void render(Shader shader, RenderingEngine renderingEngine) {
     	if(this.renderingEngine == null) this.renderingEngine = renderingEngine;
-    	int ammo = 0;
     	double time = Time.getTime();
-    	
-    	if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
-    	Debug.printToEngine(renderingEngine);
-    	playerText.get("CrossHair").render(renderingEngine);
-    	playerText.get("Life").setText("Life:"+getHealth());
-    	playerText.get("Life").render(renderingEngine);
-    	playerText.get("Ammo").setText("Ammo:"+ammo);
-    	playerText.get("Ammo").render(renderingEngine);
-        if(armorb) { 
-        	playerText.get("Armor").setText("Armor:"+getArmor());
-        	playerText.get("Armor").render(renderingEngine);
-        }
-        if(time < notificationTime + 2.5f) playerText.get("Notification").render(renderingEngine);
+
+    	if(shader.getName() == "forward-ambient") {
+	    	Debug.printToEngine(renderingEngine);
+	    	playerText.get("CrossHair").render(renderingEngine);
+	    	playerText.get("Life").render(renderingEngine);
+	    	playerText.get("Ammo").render(renderingEngine);
+	        if(armorb) 
+	        	playerText.get("Armor").render(renderingEngine);
+	        if(time < notificationTime + 2.5f) playerText.get("Notification").render(renderingEngine);
+    	}
         
         gunRenderer.render(shader, renderingEngine);   
     }
@@ -881,7 +883,7 @@ public class Player extends GameComponent {
      */
     public void addHealth(int amt, String provider) {
     	int temp = health;
-        health += amt;
+    	setHealth(amt);
         if(health>temp) {
 	        playerText.get("Notification").setText("You've got " + amt + " of health!");
 	    	notificationTime = Time.getTime();
@@ -928,7 +930,7 @@ public class Player extends GameComponent {
      */
     public void addBullets(int amt) {
     	int temp = bullets;
-    	bullets += amt;
+    	setBullets(amt);
         if(bullets>temp) {
 	        playerText.get("Notification").setText("You've got " + amt + " bullets!");
 	    	notificationTime = Time.getTime();
@@ -964,7 +966,7 @@ public class Player extends GameComponent {
      */
 	public void addShells(int amt) {
 		int temp = shells;
-		shells += amt;
+		setShells(amt);
 		if(shells>temp) {
 			playerText.get("Notification").setText("You've got " + amt + " shotgun shells!");
 			notificationTime = Time.getTime();
@@ -1123,7 +1125,7 @@ public class Player extends GameComponent {
      */
 	public void addArmor(int amt) {
 		int temp = armori;
-		armori += amt;
+		setArmori(amt);
 		if(armori>temp) {
 			playerText.get("Notification").setText("You've got " + amt + " of armor!");
 	    	notificationTime = Time.getTime();

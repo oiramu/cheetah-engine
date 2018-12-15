@@ -142,7 +142,7 @@ public class Shader {
 					throw new IllegalArgumentException(uniformType + " is not a supported type in Material");
 			}
     	}
-    }
+	}
 	
 	/**
      * Updates all the uniforms of the shading program.

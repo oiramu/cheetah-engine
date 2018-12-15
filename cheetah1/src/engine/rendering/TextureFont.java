@@ -50,8 +50,8 @@ public class TextureFont {
         final float sizeY = 1.0f;
         final float sizeX = (float) ((double) sizeY / (sizeY * 2.0));
 
-        final float offsetX = 0.05f;
-        final float offsetY = 0.01f;
+        final float offsetX = 0.00f;
+        final float offsetY = 0.00f;
 
         final float texMinX = -offsetX;
         final float texMaxX = -1 - offsetX;

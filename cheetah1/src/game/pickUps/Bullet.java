@@ -1,5 +1,5 @@
 /*
-Level.getPlayer() * Copyright 2017 Carlos Rodriguez.
+ * Copyright 2017 Carlos Rodriguez.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@ Level.getPlayer() * Copyright 2017 Carlos Rodriguez.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package game.powerUp;
+package game.pickUps;
 
 import javax.sound.sampled.Clip;
 
@@ -37,11 +37,11 @@ import game.Level;
  * @version 1.2
  * @since 2017
  */
-public class Food extends GameComponent {
+public class Bullet extends GameComponent {
 
-    private static final float PICKUP_THRESHHOLD = 0.75f;
-    private static final int HEAL_AMOUNT = 25;
-    private static final String RES_LOC = "food/MEDIA";
+	public final float PICKUP_THRESHHOLD = 0.75f;
+    private static final int AMOUNT = 9;
+    private static final String RES_LOC = "bullet/MEDIA";
     private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
     
     private float			m_temp = 0;
@@ -50,18 +50,20 @@ public class Food extends GameComponent {
     private static Material m_material;
     private MeshRenderer 	m_meshRenderer;
     private Transform 		m_transform;
+    private boolean			m_shouldFloat;
 
     /**
      * Constructor of the actual power-up.
      * @param transform the transform of the data.
+     * @param shouldFloat if it does.
      */
-    public Food(Transform transform) {
+    public Bullet(Transform transform, boolean shouldFloat) {
         if (m_mesh == null) {
-            float sizeY = 0.4f;
-            float sizeX = (float) ((double) sizeY / (0.67857142857142857142857142857143 * 4.0));
+        	float sizeY = 0.2f;
+            float sizeX = (float) ((double) sizeY / (1.666666666666667f * 2.0));
 
             float offsetX = 0.0f;
-            float offsetY = 0.00f;
+            float offsetY = 0.0f;
 
             float texMinX = -offsetX;
             float texMaxX = -1 - offsetX;
@@ -74,7 +76,7 @@ public class Food extends GameComponent {
                 new Vertex(new Vector3f(sizeX, 0, 0), new Vector2f(texMinX, texMaxY))};
 
             int[] indices = new int[]{0, 1, 2,
-                0, 2, 3};
+            						0, 2, 3};
 
             m_mesh = new Mesh(verts, indices, true);
         }
@@ -82,6 +84,8 @@ public class Food extends GameComponent {
         if (m_material == null) {
             m_material = new Material(new Texture(RES_LOC));
         }
+        
+        m_shouldFloat = shouldFloat;
 
         this.m_transform = transform;
         this.m_meshRenderer = new MeshRenderer(m_mesh, this.m_transform, m_material);
@@ -104,16 +108,16 @@ public class Food extends GameComponent {
         }
 
         m_transform.setRotation(0, angle + 90, 0);
-        if (!(distance < PICKUP_THRESHHOLD)) {
+        
+        if (m_shouldFloat) {
 	        m_temp += (float) delta; 
 	        m_transform.getPosition().setY(0.05f * (float)(Math.sin(m_temp)+1.0/2.0) + 0.025f);
         }
-        m_transform.setScale(1.7f, 0.5f, 1);
 
-        if (distance < PICKUP_THRESHHOLD && Level.getPlayer().getHealth() < 100) {
-            Level.getPlayer().addHealth(HEAL_AMOUNT, "Food");
-            Level.removeFood(this);
-            AudioUtil.playAudio(PICKUP_NOISE, 0);
+        if (distance < PICKUP_THRESHHOLD && Level.getPlayer().getBullets() < Level.getPlayer().getMaxBullets()) {
+        	AudioUtil.playAudio(PICKUP_NOISE, 0);
+            Level.getPlayer().addBullets(AMOUNT);
+            Level.removeBullets(this);
         }
     }
 
@@ -123,5 +127,6 @@ public class Food extends GameComponent {
      * @param renderingEngine to use
      */
     public void render(Shader shader, RenderingEngine renderingEngine) {m_meshRenderer.render(shader, renderingEngine);}
+    
     
 }

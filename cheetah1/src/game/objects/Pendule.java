@@ -143,7 +143,7 @@ public class Pendule extends GameComponent {
             } else if (timeDecimals <= 1.5f) {
                 material.setDiffuse(animation.get(0));
                 if(distance<1f) {
-                	if(!Level.getPlayer().isArmorb())
+                	if(!Level.getPlayer().isArmor())
                 		Level.getPlayer().addHealth(DAMAGE, "Pedule's pike");
                 	else
                 		Level.getPlayer().addArmor(DAMAGE);

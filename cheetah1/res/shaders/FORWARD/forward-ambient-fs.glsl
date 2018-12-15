@@ -26,7 +26,7 @@ void main() {
 
 	vec3 directionToEye = normalize(C_eyePos - worldPos0);
 	vec2 texCoords = CalcParallaxTexCoords(dispMap, tbnMatrix, directionToEye, texCoord0, dispMapScale, dispMapBias);
-	vec4 textureColor = texture2D(diffuse, texCoord0); if(textureColor.a < 0.725) {discard;}
+	vec4 textureColor = texture2D(diffuse, texCoord0); if(textureColor.a < 0.775) {discard;}
     
     gl_FragColor = textureColor * vec4(R_ambient, 1);
 	gl_FragColor = mix(vec4(R_fogColor,1.0), gl_FragColor, visibility);

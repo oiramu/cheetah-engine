@@ -16,10 +16,10 @@
 package game.objects;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
-import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
@@ -39,22 +39,17 @@ import game.Level;
  */
 public class DeadJew extends GameComponent {
 	
-	private static final String RES_LOC = "deadJew/";
-	private static final int STATE_1 = 0;
-	private static final int STATE_2 = 1;
+	private static final String RES_LOC = "Dead/";
+    private static Mesh 		mesh;
+    private static Material 	material;
+    private MeshRenderer 		meshRenderer;
     
-    private static Mesh mesh;
-    private static Material material;
-    private MeshRenderer m_meshRenderer;
-    
-    private int state;
-    
-    private float sizeY;
-    private float sizeX;
+    private float 				sizeY;
+    private float 				sizeX;
 
-    private Transform transform;
+    private Transform 			transform;
     
-    private ArrayList<Texture> animation;
+    private ArrayList<Texture> 	animation;
 
     /**
      * Constructor of the actual object.
@@ -63,7 +58,7 @@ public class DeadJew extends GameComponent {
     public DeadJew(Transform transform) {
         if (mesh == null) {
             sizeY = 0.3095238095238095f;
-            sizeX = (float) ((double) sizeY / (3.230769230769231 / 4));
+            sizeX = (float) ((double) sizeY / (3.530769230769231 / 4));
 
             float offsetX = 0.0f;
             float offsetY = 0.0f;
@@ -87,16 +82,21 @@ public class DeadJew extends GameComponent {
         if(animation == null) {
         	animation = new ArrayList<Texture>();
         	
-        	animation.add(new Texture(RES_LOC+"CMPGG0"));
-        	animation.add(new Texture(RES_LOC+"CMPGH0"));
+        	animation.add(new Texture(RES_LOC+"CBEDA0"));
+        	animation.add(new Texture(RES_LOC+"CBEDB0"));
+        	animation.add(new Texture(RES_LOC+"CBEDC0"));
+        	animation.add(new Texture(RES_LOC+"CBEDD0"));
+        	//animation.add(new Texture(RES_LOC+"CBEDE0"));
+        	//animation.add(new Texture(RES_LOC+"CBEDF0"));
+        	//animation.add(new Texture(RES_LOC+"CBEDG0"));
+        	animation.add(new Texture(RES_LOC+"CBEDH0"));
+        	//animation.add(new Texture(RES_LOC+"CBEDI0"));
         }
 
-        if (material == null) {
-			material = new Material(animation.get(1));
-        }
-        this.state = STATE_1;
+        if (material == null)
+			material = new Material(animation.get(new Random().nextInt(animation.size())));
         this.transform = transform;
-        this.m_meshRenderer = new MeshRenderer(mesh, getTransform(), material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
     }
 
     /**
@@ -116,17 +116,7 @@ public class DeadJew extends GameComponent {
         }
 
         transform.setRotation(0, angle + 90, 0);
-        
-        double time = Time.getTime();
-        double timeDecimals = (time - (double) ((int) time));
-
-        if(state == STATE_1) {
-        	material.setDiffuse(animation.get(0));
-        	if(distance<1.25f && timeDecimals <= 0.25f) state = STATE_2;
-        } else if(state == STATE_2) {
-        	material.setDiffuse(animation.get(1));
-        	if(distance>1.25f && timeDecimals <= 0.25f) state = STATE_1;
-        } 
+   
     }
 
     /**
@@ -134,7 +124,7 @@ public class DeadJew extends GameComponent {
      * @param shader to render
      * @param renderingEngine to use
      */
-    public void render(Shader shader, RenderingEngine renderingEngine) {m_meshRenderer.render(shader, renderingEngine);}
+    public void render(Shader shader, RenderingEngine renderingEngine) {meshRenderer.render(shader, renderingEngine);}
     
     /**
      * Gets the transform of the object in projection.

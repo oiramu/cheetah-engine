@@ -55,14 +55,12 @@ public class Player extends GameComponent {
     private static final float GUN_SIZE = 0.1f; 
     private static final float GUN_OFFSET = -0.077f;
     private static final float GUN_OFFSET_X = 0f;
-    private static final float GUN_TRANSFORM_MUL = 0.101f;
+    private static final float GUN_TRANSFORM_MUL = 0.105f;
     private static final float MOUSE_SENSITIVITY = 0.25f;
-    private static final float MAX_LOOK_ANGLE = 45;//45
-    private static final float MIN_LOOK_ANGLE = -5;//-45
+    private static final float MAX_LOOK_ANGLE = 30;//45
+    private static final float MIN_LOOK_ANGLE = -17;//-45
     private static final float PLAYER_WIDTH = 0.2f;
     private static final float GRAVITY = 9.8f;
-    
-    private static final float PLAYER_TO_GROUND = 0.4375f;
     
     private static float moveSpeed;
     private static float gunFireAnimationTime;
@@ -136,7 +134,7 @@ public class Player extends GameComponent {
     private Material gunAnimationMaterial4;
     private Transform gunTransform;
     private MeshRenderer gunRenderer;
-    private RenderingEngine m_renderingEngine;
+    private RenderingEngine renderingEngine;
 
     private Camera playerCamera;
     private Random rand;
@@ -365,6 +363,7 @@ public class Player extends GameComponent {
     		fireLight = new SpotLight(gunLightColor, 1.6f, 
             		new Attenuation(attenuation,0,attenuation), getCamera().getPos(), new Vector3f(1,1,1), 0.7f);
     	}
+        toTerrain = gunTransform.getPosition().getY();
         gunFireTime = 0;
         notificationTime = 0;
         mouseLocked = false;
@@ -634,14 +633,14 @@ public class Player extends GameComponent {
 
 	        if(isOn) {
 				if (Input.getKeyDown(Input.KEY_F)) {
-					m_renderingEngine.removeLight(sLight);
+					renderingEngine.removeLight(sLight);
 					AudioUtil.playAudio(flashLightNoises.get(1), 0);
 					isOn = false;
 				}
             } else {
             	if (Input.getKeyDown(Input.KEY_F)) {
             		AudioUtil.playAudio(flashLightNoises.get(0), 0);
-            		m_renderingEngine.addLight(sLight);
+            		renderingEngine.addLight(sLight);
 	            	isOn = true;
             	}
             }
@@ -717,17 +716,12 @@ public class Player extends GameComponent {
     public void update(double delta) {
     	float movAmt = 0;
     	double time = Time.getTime();
-    	float dy = 0;
-        float dx = 0;
+    	float dy = GUN_OFFSET; 
+		float dx = GUN_OFFSET_X;
     	if(isAlive) { 
     		upAmt += (-GRAVITY * 0.2f) * delta;
     		movAmt = (float) (moveSpeed * delta);
-    		toTerrain = PLAYER_TO_GROUND;
-    		dy = GUN_OFFSET; 
-    		dx = GUN_OFFSET_X;
     	} else {
-    		dy = GUN_OFFSET; 
-    		dx = GUN_OFFSET_X;
     		upAmt += (-GRAVITY * 0.1f / 4) * delta;
     		toTerrain = 0.15f;
     	}
@@ -751,16 +745,15 @@ public class Player extends GameComponent {
         if (movementVector.length() > 0) {
         	float bobOscillate = (float) Math.sin(time * moveSpeed * (2 * Math.PI));
         	dy += bobOscillate * movAmt/20;
-            dx += (bobOscillate * movAmt/20) * 5;
+            dx += bobOscillate * movAmt/50;
             playerCamera.move(movementVector, movAmt);
         }
 
         //Gun movement
-        gunTransform.setScale(1, 1, 1);
-        gunTransform.setPosition(playerCamera.getPos().add(playerCamera.getForward().normalized().mul(GUN_TRANSFORM_MUL)));
-        gunTransform.setPosition(gunTransform.getPosition().add(playerCamera.getLeft().normalized().mul(GUN_OFFSET_X)));
-        gunTransform.setRotation(gunTransform.getPosition().add(playerCamera.getLeft().normalized().mul(dx)));
-        gunTransform.getPosition().setY(gunTransform.getPosition().getY() + dy);
+        gunTransform.setScale(1,1,1);
+		gunTransform.setPosition(playerCamera.getPos().add(playerCamera.getForward().normalized().mul(GUN_TRANSFORM_MUL)));
+		gunTransform.getPosition().setX(gunTransform.getPosition().getX() + dx);
+		gunTransform.getPosition().setY(gunTransform.getPosition().getY() + dy);
 
         Vector3f playerDistance = gunTransform.getPosition().sub(playerCamera.getPos());
 
@@ -770,9 +763,8 @@ public class Player extends GameComponent {
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
-        if (orientation.getX() >= 0) {
+        if (orientation.getX() >= 0)
             angle = 180 + angle;
-        }
 
         gunTransform.setRotation(0, angle + 90, 0);
         
@@ -781,7 +773,7 @@ public class Player extends GameComponent {
 	        sLight.setDirection(getCamera().getForward());
         }
         if(!isShooting && (!isBulletBased || !isShellBased)) {
-        	if(m_renderingEngine != null)m_renderingEngine.removeLight(fireLight);
+        	if(renderingEngine != null)renderingEngine.removeLight(fireLight);
         }
         fireLight.setPosition(new Vector3f(getCamera().getPos().getX(), 0, getCamera().getPos().getZ()));
         fireLight.setDirection(getCamera().getForward());
@@ -796,7 +788,7 @@ public class Player extends GameComponent {
     	playerText.get("Life").setText("Life:"+getHealth());
     	playerText.get("Ammo").setText("Ammo:"+ammo);
         if(armorb) { 
-        	playerText.get("Armor").setText("Armor:"+getArmori());
+        	playerText.get("Armor").setText("Armor:"+getArmor());
         }
         
 		if(isMelee) {
@@ -813,7 +805,7 @@ public class Player extends GameComponent {
 		if(isBulletBased) {
 	        if ((double) time < gunTime) {
 	        	isReloading = true;
-	        	m_renderingEngine.addLight(fireLight);
+	        	renderingEngine.addLight(fireLight);
 	        	gunRenderer.setMaterial(gunAnimationMaterial1);
 	        } else if ((double) time < gunTime2) {
 	        	gunRenderer.setMaterial(gunAnimationMaterial2);
@@ -826,7 +818,7 @@ public class Player extends GameComponent {
 		if(isShellBased) {
 	        if ((double) time < gunTime) {
 	        	isReloading = true;
-	        	m_renderingEngine.addLight(fireLight);
+	        	renderingEngine.addLight(fireLight);
 	        	gunRenderer.setMaterial(gunAnimationMaterial1);
 	        } else if ((double) time < gunTime2) {
 	        	AudioUtil.playAudio(gunReload, 0);
@@ -850,7 +842,7 @@ public class Player extends GameComponent {
      * @param renderingEngine to use
      */
     public void render(Shader shader, RenderingEngine renderingEngine) {
-    	if(m_renderingEngine == null) this.m_renderingEngine = renderingEngine;
+    	if(this.renderingEngine == null) this.renderingEngine = renderingEngine;
     	int ammo = 0;
     	double time = Time.getTime();
     	
@@ -862,7 +854,7 @@ public class Player extends GameComponent {
     	playerText.get("Ammo").setText("Ammo:"+ammo);
     	playerText.get("Ammo").render(renderingEngine);
         if(armorb) { 
-        	playerText.get("Armor").setText("Armor:"+getArmori());
+        	playerText.get("Armor").setText("Armor:"+getArmor());
         	playerText.get("Armor").render(renderingEngine);
         }
         if(time < notificationTime + 2.5f) playerText.get("Notification").render(renderingEngine);
@@ -1084,7 +1076,7 @@ public class Player extends GameComponent {
      * Method that returns if the player have or not an armor
      * on he's bag.
      */
-    public boolean isArmorb() {return armorb;}
+    public boolean isArmor() {return armorb;}
 
     /**
      * Returns the in game camera.
@@ -1117,7 +1109,7 @@ public class Player extends GameComponent {
 	 * Gets the player's actual armor.
 	 * @return player's armor.
 	 */
-	public int getArmori() {return armori;}
+	public int getArmor() {return armori;}
 	
 	/**
 	 * Sets the amount of armor for the player to have.
@@ -1136,8 +1128,8 @@ public class Player extends GameComponent {
 			playerText.get("Notification").setText("You've got " + amt + " of armor!");
 	    	notificationTime = Time.getTime();
 		}
-		if (armori > getMaxArmori())
-        	armori = getMaxArmori();
+		if (armori > getMaxArmor())
+        	armori = getMaxArmor();
         
         if (armori < 0) {
         	armori = 0;
@@ -1167,14 +1159,14 @@ public class Player extends GameComponent {
 	 * handle.
 	 * @return maximum of armor
 	 */
-	public int getMaxArmori() { return maxArmori; }
+	public int getMaxArmor() { return maxArmori; }
 	
 	/**
 	 * Sets a new maximum amount of armor that the player
 	 * can handle.
 	 * @param amt amount of armor
 	 */
-	public void setMaxArmori(int amt) {
+	public void setMaxArmor(int amt) {
 		this.maxArmori += amt;
 		if(maxArmori > 200) maxArmori = 200;
 	}
@@ -1235,7 +1227,11 @@ public class Player extends GameComponent {
 	 * Sets the state of the gold key.
 	 * @param goldkey to set
 	 */
-	public void setGoldkey(boolean goldkey) { this.goldkey = goldkey; }
+	public void setGoldkey(boolean goldkey) {
+		this.goldkey = goldkey;
+		playerText.get("Notification").setText("You've got the gold key!");
+    	notificationTime = Time.getTime();
+	}
 	
 	/**
 	 * Returns if the player haves the bronze key.
@@ -1247,6 +1243,10 @@ public class Player extends GameComponent {
 	 * Sets the state of the bronze key.
 	 * @param bronzekey to set
 	 */
-	public void setBronzekey(boolean bronzekey) { this.bronzekey = bronzekey; }
+	public void setBronzekey(boolean bronzekey) {
+		this.bronzekey = bronzekey;
+		playerText.get("Notification").setText("You've got the bronze key!");
+    	notificationTime = Time.getTime();
+	}
 
 }

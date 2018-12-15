@@ -40,8 +40,8 @@ import engine.rendering.Vertex;
 import game.Auschwitz;
 import game.Level;
 import game.Player;
-import game.powerUp.Bullet;
-import game.powerUp.Machinegun;
+import game.pickUps.Bullet;
+import game.pickUps.Machinegun;
 
 /**
  *
@@ -239,6 +239,7 @@ public class SsSoldier extends GameComponent {
                 }
             } else if (state == STATE_CHASE) {
             	isQuiet = false;
+            	renderingEngine.removeLight(light);
                 if (rand.nextDouble() < 0.5f * delta) {
                     state = STATE_ATTACK;
                 }
@@ -267,6 +268,7 @@ public class SsSoldier extends GameComponent {
 
                 if (state == STATE_CHASE) {
                 	isQuiet = false;
+                	renderingEngine.removeLight(light);
                     double timeDecimals = (time - (double) ((int) time));
 
                     while (timeDecimals > 0.5) {
@@ -319,7 +321,7 @@ public class SsSoldier extends GameComponent {
                             	renderingEngine.removeLight(light);
                             }else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
-                            	if(player.isArmorb() == false) {
+                            	if(player.isArmor() == false) {
                             		player.addHealth((int) -damage, "Schutzstaffel Soldier");
                             	}else {
                             		player.addArmor((int) -damage);

@@ -36,15 +36,15 @@ import game.Level;
  */
 public class Table extends GameComponent {
     
-    private static Mesh mesh;
-    private static Material material;
-    private MeshRenderer m_meshRenderer;
+    private static Mesh			mesh;
+    private static Material 	material;
+    private MeshRenderer 		meshRenderer;
     
-    private float sizeX;
+    private float 				sizeX;
     
     private static final String RES_LOC = "table/MEDIA";
     
-    private Transform transform;
+    private Transform 			transform;
 
     /**
      * Constructor of the actual object.
@@ -52,7 +52,7 @@ public class Table extends GameComponent {
      */
     public Table(Transform transform) {
         if (mesh == null) {
-            float sizeY = 1;
+            float sizeY = 0.9f;
             sizeX = 0.5f;
 
             float offsetX = 0.0f;
@@ -79,7 +79,7 @@ public class Table extends GameComponent {
         }
 
         this.transform = transform;
-        this.m_meshRenderer = new MeshRenderer(mesh, getTransform(), material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
     }
 
     /**
@@ -107,7 +107,7 @@ public class Table extends GameComponent {
      * @param shader to render
      * @param renderingEngine to use
      */
-    public void render(Shader shader, RenderingEngine renderingEngine) {m_meshRenderer.render(shader, renderingEngine);}
+    public void render(Shader shader, RenderingEngine renderingEngine) {meshRenderer.render(shader, renderingEngine);}
     
     /**
      * Gets the transform of the object in projection.

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package game.powerUp;
+package game.pickUps;
 
 import javax.sound.sampled.Clip;
 
@@ -34,15 +34,15 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
- * @since 2018
+ * @version 1.3
+ * @since 2017
  */
-public class Shell extends GameComponent {
+public class Machinegun extends GameComponent {
 
-	public final float PICKUP_THRESHHOLD = 0.75f;
-    private static final int AMOUNT = 6;
-    private static final String RES_LOC = "shell/MEDIA";
-    private static final Clip PICKUP_NOISE = AudioUtil.loadAudio("bullet/MEDIA");
+    public final float PICKUP_THRESHHOLD = 0.75f;
+    private static final String WEAPONS_RES_LOC = "weapons/";
+    private static final String RES_LOC = "machinegun/MEDIA";
+    private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
     
     private float			m_temp = 0;
 
@@ -57,10 +57,10 @@ public class Shell extends GameComponent {
      * @param transform the transform of the data.
      * @param shouldFloat if it does.
      */
-    public Shell(Transform transform, boolean shouldFloat) {
+    public Machinegun(Transform transform, boolean shouldFloat) {
         if (m_mesh == null) {
-        	float sizeY = 0.2f;
-            float sizeX = (float) ((double) sizeY / (1.666666666666667f * 2.0));
+            float sizeY = 0.2f;
+            float sizeX = (float) ((double) sizeY / (0.3974358974358974f * (sizeY * 10)));
 
             float offsetX = 0.0f;
             float offsetY = 0.0f;
@@ -82,7 +82,7 @@ public class Shell extends GameComponent {
         }
 
         if (m_material == null) {
-            m_material = new Material(new Texture(RES_LOC));
+            m_material = new Material(new Texture(WEAPONS_RES_LOC + RES_LOC));
         }
         
         m_shouldFloat = shouldFloat;
@@ -95,8 +95,8 @@ public class Shell extends GameComponent {
      * Updates the power-up every single frame.
      * @param delta of time
      */
-    public void update(double delta) {
-    	Vector3f playerDistance = m_transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
+	public void update(double delta) {
+		Vector3f playerDistance = m_transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
         Vector3f orientation = playerDistance.normalized();
         float distance = playerDistance.length();
         setDistance(distance);
@@ -114,19 +114,19 @@ public class Shell extends GameComponent {
 	        m_transform.getPosition().setY(0.05f * (float)(Math.sin(m_temp)+1.0/2.0) + 0.025f);
         }
 
-        if (distance < PICKUP_THRESHHOLD && Level.getPlayer().getShells() < Level.getPlayer().getMaxShells()) {
+        if (distance < PICKUP_THRESHHOLD && Level.getPlayer().isMachinegun() == false) {
         	AudioUtil.playAudio(PICKUP_NOISE, 0);
-            Level.getPlayer().addShells(AMOUNT);
-            Level.removeShells(this);
+            Level.getPlayer().setMachinegun(true);
+            Level.removeMachineGun(this);
         }
     }
-
-    /**
+	
+	/**
      * Method that renders the power-up's mesh.
      * @param shader to render
      * @param renderingEngine to use
      */
     public void render(Shader shader, RenderingEngine renderingEngine) {m_meshRenderer.render(shader, renderingEngine);}
     
-    
+
 }

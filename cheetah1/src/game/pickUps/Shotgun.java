@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package game.powerUp;
+package game.pickUps;
 
 import javax.sound.sampled.Clip;
 
@@ -37,31 +37,32 @@ import game.Level;
  * @version 1.2
  * @since 2017
  */
-public class Medkit extends GameComponent {
+public class Shotgun extends GameComponent {
 
-    private static final float PICKUP_THRESHHOLD = 0.75f;
-    private static final int HEAL_AMOUNT = 50;
-    private static final String RES_LOC = "medkit/MEDIA";
+    public final float PICKUP_THRESHHOLD = 0.75f;
+    private static final String RES_LOC = "shotgun/MEDIA";
+    private static final String WEAPONS_RES_LOC = "weapons/";
     private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
     
-    private float			m_temp = 0;
+    private float			temp = 0;
 
-    private static Mesh 	m_mesh;
-    private static Material m_material;
-    private MeshRenderer 	m_meshRenderer;
-    private Transform 		m_transform;
+    private static Mesh 	mesh;
+    private static Material material;
+    private MeshRenderer 	meshRenderer;
+    private Transform 		transform;
+    private boolean			shouldFloat;
 
     /**
      * Constructor of the actual power-up.
      * @param transform the transform of the data.
      */
-    public Medkit(Transform transform) {
-        if (m_mesh == null) {
-            float sizeY = 0.3f;
-            float sizeX = 0.15f;
+    public Shotgun(Transform transform, boolean shouldFloat) {
+        if (mesh == null) {
+            float sizeY = 0.15f;
+            float sizeX = (float) ((double) sizeY / (0.2295081967213115 * (sizeY * 10)));
 
-            float offsetX = 0.0f;
-            float offsetY = 0.0f;
+            float offsetX = 0.05f;
+            float offsetY = 0.01f;
 
             float texMinX = -offsetX;
             float texMaxX = -1 - offsetX;
@@ -76,23 +77,23 @@ public class Medkit extends GameComponent {
             int[] indices = new int[]{0, 1, 2,
             						0, 2, 3};
 
-            m_mesh = new Mesh(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
 
-        if (m_material == null) {
-            m_material = new Material(new Texture(RES_LOC));
+        if (material == null) {
+            material = new Material(new Texture(WEAPONS_RES_LOC + RES_LOC));
         }
-
-        this.m_transform = transform;
-        this.m_meshRenderer = new MeshRenderer(m_mesh, this.m_transform, m_material);
+        this.shouldFloat = shouldFloat;
+        this.transform = transform;
+        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
     }
 
     /**
      * Updates the power-up every single frame.
      * @param delta of time
      */
-    public void update(double delta) {
-    	Vector3f playerDistance = m_transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
+	public void update(double delta) {
+		Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
         Vector3f orientation = playerDistance.normalized();
         float distance = playerDistance.length();
         setDistance(distance);
@@ -103,25 +104,26 @@ public class Medkit extends GameComponent {
             angle = 180 + angle;
         }
 
-        m_transform.setRotation(0, angle + 90, 0);
-        if (!(distance < PICKUP_THRESHHOLD)) {
-	        m_temp += (float) delta; 
-	        m_transform.getPosition().setY(0.05f * (float)(Math.sin(m_temp)+1.0/2.0) + 0.025f);
+        transform.setRotation(0, angle + 90, 0);
+        
+        if (shouldFloat) {
+	        temp += (float) delta; 
+	        transform.getPosition().setY(0.05f * (float)(Math.sin(temp)+1.0/2.0) + 0.025f);
         }
 
-        if (distance < PICKUP_THRESHHOLD && Level.getPlayer().getHealth() < 100) {
-            Level.getPlayer().addHealth(HEAL_AMOUNT, "Medkit");
-            Level.removeMedkit(this);
-            AudioUtil.playAudio(PICKUP_NOISE, 0);
+        if (distance < PICKUP_THRESHHOLD && Level.getPlayer().isShotgun() == false) {
+        	AudioUtil.playAudio(PICKUP_NOISE, 0);
+            Level.getPlayer().setShotgun(true);
+            Level.removeShotgun(this);
         }
     }
-
-    /**
+	
+	/**
      * Method that renders the power-up's mesh.
      * @param shader to render
      * @param renderingEngine to use
      */
-    public void render(Shader shader, RenderingEngine renderingEngine) {m_meshRenderer.render(shader, renderingEngine);}
+    public void render(Shader shader, RenderingEngine renderingEngine) {meshRenderer.render(shader, renderingEngine);}
     
 
 }

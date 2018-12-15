@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package game.powerUp;
+package game.pickUps;
 
 import javax.sound.sampled.Clip;
 

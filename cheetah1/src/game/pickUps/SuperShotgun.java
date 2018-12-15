@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package game.powerUp;
+package game.pickUps;
 
 import javax.sound.sampled.Clip;
 
@@ -37,29 +37,30 @@ import game.Level;
  * @version 1.0
  * @since 2018
  */
-public class Armor extends GameComponent {
+public class SuperShotgun extends GameComponent {
 
-    private static final float PICKUP_THRESHHOLD = 0.75f;
-    private static final boolean STATE = true;
-    private static final int AMOUNT = 100;
-	private static final String RES_LOC = "armor/MEDIA";
-	private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
-	
-	private float 			m_temp = 0;
+    public static final float PICKUP_THRESHHOLD = 0.75f;
+    private static final String RES_LOC = "superShotgun/MEDIA";
+    private static final String WEAPONS_RES_LOC = "weapons/";
+    private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
+    
+    private float			m_temp = 0;
 
     private static Mesh 	m_mesh;
-    private static Material	m_material;
+    private static Material m_material;
     private MeshRenderer 	m_meshRenderer;
     private Transform 		m_transform;
+    private boolean			m_shouldFloat;
 
     /**
      * Constructor of the actual power-up.
      * @param transform the transform of the data.
+     * @param shouldFloat if it does.
      */
-    public Armor(Transform transform) {
+    public SuperShotgun(Transform transform, boolean shouldFloat) {
         if (m_mesh == null) {
-            final float sizeY = 0.4f;
-            final float sizeX = (float) ((double) sizeY / (sizeY * 4.0));
+            float sizeY = 0.3142857142857143f;
+            float sizeX = (float) ((double) sizeY / (0.2295081967213115 * (sizeY * 10)));
 
             float offsetX = 0.0f;
             float offsetY = 0.0f;
@@ -81,19 +82,19 @@ public class Armor extends GameComponent {
         }
 
         if (m_material == null) {
-            m_material = new Material(new Texture(RES_LOC));
+            m_material = new Material(new Texture(WEAPONS_RES_LOC + RES_LOC));
         }
-
+        this.m_shouldFloat = shouldFloat;
         this.m_transform = transform;
-        this.m_meshRenderer = new MeshRenderer(m_mesh, this.m_transform, m_material);
+        this.m_meshRenderer = new MeshRenderer(m_mesh, m_transform, m_material);
     }
-    
+
     /**
      * Updates the power-up every single frame.
      * @param delta of time
      */
-    public void update(double delta) {
-    	Vector3f playerDistance = m_transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
+	public void update(double delta) {
+		Vector3f playerDistance = m_transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
         Vector3f orientation = playerDistance.normalized();
         float distance = playerDistance.length();
         setDistance(distance);
@@ -105,24 +106,25 @@ public class Armor extends GameComponent {
         }
 
         m_transform.setRotation(0, angle + 90, 0);
-        if (!(distance < PICKUP_THRESHHOLD)) {
+        
+        if (m_shouldFloat) {
 	        m_temp += (float) delta; 
 	        m_transform.getPosition().setY(0.05f * (float)(Math.sin(m_temp)+1.0/2.0) + 0.025f);
         }
-        
-		if (distance < PICKUP_THRESHHOLD) {
-            Level.getPlayer().setArmor(STATE);
-            Level.getPlayer().addArmor(AMOUNT);
-            Level.removeArmor(this);
+
+        if (distance < PICKUP_THRESHHOLD) {
+            Level.getPlayer().setSuperShotgun(true);
             AudioUtil.playAudio(PICKUP_NOISE, 0);
+            Level.removeSuperShotgun(this);
         }
     }
-
-    /**
+	
+	/**
      * Method that renders the power-up's mesh.
      * @param shader to render
      * @param renderingEngine to use
      */
     public void render(Shader shader, RenderingEngine renderingEngine) {m_meshRenderer.render(shader, renderingEngine);}
+    
     
 }

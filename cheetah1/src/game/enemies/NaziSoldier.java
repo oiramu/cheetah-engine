@@ -40,7 +40,7 @@ import engine.rendering.Vertex;
 import game.Auschwitz;
 import game.Level;
 import game.Player;
-import game.powerUp.Bullet;
+import game.pickUps.Bullet;
 
 /**
  *
@@ -238,6 +238,7 @@ public class NaziSoldier extends GameComponent {
                     }
                 }
             } else if (state == STATE_CHASE) {
+            	renderingEngine.removeLight(light);
             	isQuiet = false;
                 if (rand.nextDouble() < 0.5f * delta) {
                     state = STATE_ATTACK;
@@ -266,6 +267,7 @@ public class NaziSoldier extends GameComponent {
                 }
 
                 if (state == STATE_CHASE) {
+                	renderingEngine.removeLight(light);
                 	isQuiet = false;
                     double timeDecimals = (time - (double) ((int) time));
 
@@ -319,7 +321,7 @@ public class NaziSoldier extends GameComponent {
                             	renderingEngine.removeLight(light);
                             } else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
-                            	if(player.isArmorb() == false) {
+                            	if(player.isArmor() == false) {
                             		player.addHealth((int) -damage, "German Soldier");
                             	}else {
                             		player.addArmor((int) -damage);

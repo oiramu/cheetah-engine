@@ -40,8 +40,8 @@ import engine.rendering.Vertex;
 import game.Auschwitz;
 import game.Level;
 import game.Player;
-import game.powerUp.Shell;
-import game.powerUp.Shotgun;
+import game.pickUps.Shell;
+import game.pickUps.Shotgun;
 
 /**
  *
@@ -116,6 +116,7 @@ public class NaziSergeant extends GameComponent {
 
             animation.add(new Texture(RES_LOC + "TRANH0"));
             animation.add(new Texture(RES_LOC + "TRANH1"));
+            animation.add(new Texture(RES_LOC + "TRANH2"));
             animation.add(new Texture(RES_LOC + "TRANI0"));
             animation.add(new Texture(RES_LOC + "TRANJ0"));
             animation.add(new Texture(RES_LOC + "TRANK0"));
@@ -232,6 +233,7 @@ public class NaziSergeant extends GameComponent {
                     }
                 }
             } else if (state == STATE_CHASE) {
+            	renderingEngine.removeLight(light);
             	isQuiet = false;
                 if (rand.nextDouble() < 0.5f * delta) {
                     state = STATE_ATTACK;
@@ -260,6 +262,7 @@ public class NaziSergeant extends GameComponent {
                 }
 
                 if (state == STATE_CHASE) {
+                	renderingEngine.removeLight(light);
                 	isQuiet = false;
                     double timeDecimals = (time - (double) ((int) time));
 
@@ -313,7 +316,7 @@ public class NaziSergeant extends GameComponent {
                             	renderingEngine.removeLight(light);
                             }else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
-                            	if(player.isArmorb() == false) {
+                            	if(player.isArmor() == false) {
                             		player.addHealth((int) -damage, "Schutzstaffel Sergeant");
                             	}else {
                             		player.addArmor((int) -damage);
@@ -339,28 +342,29 @@ public class NaziSergeant extends GameComponent {
 
             final float time1 = 0.1f;
             final float time2 = 0.3f;
+            final float time3 = 0.5f;
 
             if (time <= deathTime + 0.2f) {
                 material.setDiffuse(animation.get(9));
             } else if (time > deathTime + time1 && time <= deathTime + time2) {
                 material.setDiffuse(animation.get(10));
-            } else if (time > deathTime + time2) {
+            }else if (time > deathTime + time2 && time <= deathTime + time3) {
+                material.setDiffuse(animation.get(11));
+            } else if (time > deathTime + time3) {
                 state = STATE_DEAD;
             }
         }
 
         if (state == STATE_DEAD) {
         	isQuiet = true;
-        	if(shotgun == null) {
+        	if(shotgun == null)
         		shotgun = new Shotgun(new Transform(transform.getPosition().add(-0.001f)), false);
-        	}
         	shotgun.update(delta);
-        	if(shell == null) {
-        		shell = new Shell(new Transform(shotgun.getTransform().getPosition().add(-0.002f)), false);
-        	}
+        	if(shell == null)
+        		shell = new Shell(new Transform(transform.getPosition().add(-0.002f)), false);
         	shell.update(delta);
             dead = true;
-            material.setDiffuse(animation.get(11));
+            material.setDiffuse(animation.get(12));
             if (distance < shotgun.PICKUP_THRESHHOLD) {
             	state = STATE_POST_DEATH;
             }
@@ -368,7 +372,7 @@ public class NaziSergeant extends GameComponent {
         
         if (state == STATE_POST_DEATH) {
         	isQuiet = true;
-            material.setDiffuse(animation.get(11));
+            material.setDiffuse(animation.get(12));
         }
         
         if (state == STATE_DONE) {

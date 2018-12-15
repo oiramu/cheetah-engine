@@ -97,6 +97,6 @@ public class Material extends MappedValues {
      * Sets the diffuse texture to the material.
      * @param diffuse texture for the material.
      */
-    public void setDiffuse(Texture diffuse) {AddTexture("diffuse", diffuse);}
+    public void setDiffuse(Texture diffuse) { AddTexture("diffuse", diffuse); }
 	
 }

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
+import engine.components.BaseLight;
 import engine.components.DirectionalLight;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
@@ -40,6 +41,7 @@ import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Vertex;
 import game.doors.Door;
+import game.doors.LockedDoor;
 import game.doors.SecretWall;
 import game.enemies.Dog;
 import game.enemies.Ghost;
@@ -61,16 +63,17 @@ import game.objects.Pillar;
 import game.objects.Pipe;
 import game.objects.Table;
 import game.objects.Tree;
-import game.powerUp.Armor;
-import game.powerUp.Bag;
-import game.powerUp.Bullet;
-import game.powerUp.Food;
-import game.powerUp.Helmet;
-import game.powerUp.Machinegun;
-import game.powerUp.Medkit;
-import game.powerUp.Shell;
-import game.powerUp.Shotgun;
-import game.powerUp.SuperShotgun;
+import game.pickUps.Armor;
+import game.pickUps.Bag;
+import game.pickUps.Bullet;
+import game.pickUps.Food;
+import game.pickUps.Helmet;
+import game.pickUps.Key;
+import game.pickUps.Machinegun;
+import game.pickUps.Medkit;
+import game.pickUps.Shell;
+import game.pickUps.Shotgun;
+import game.pickUps.SuperShotgun;
 
 /**
  *
@@ -113,6 +116,7 @@ public class Level extends GameComponent {
     private static ArrayList<SuperShotgun> removeSuperShotgunList;
     private static ArrayList<Helmet> removeHelmets;
     private static ArrayList<Barrel> removeBarrels;
+    private static ArrayList<Key> removeKeys;
     
     //Player
     private static Player player;
@@ -126,8 +130,9 @@ public class Level extends GameComponent {
     //Doors
     private ArrayList<Door> doors;
     private ArrayList<SecretWall> secretWalls;
+    private ArrayList<LockedDoor> lockedDoors;
     
-    //Power-Ups
+    //Pick-Ups
     private ArrayList<Shotgun> shotguns;
     private ArrayList<Medkit> medkits;
     private ArrayList<Food> foods;
@@ -137,6 +142,7 @@ public class Level extends GameComponent {
     private ArrayList<Armor> armors;
     private ArrayList<SuperShotgun> superShotguns;
     private ArrayList<Helmet> helmets;
+    private ArrayList<Key> keys;
     
     //Static objects
     private ArrayList<Tree> trees;
@@ -164,13 +170,14 @@ public class Level extends GameComponent {
     private ArrayList<Ghost> ghosts;
 
     //Level
-    private Mesh m_geometry;
-    private Bitmap m_bitmap;
-    private Material m_material;
-    private Transform m_transform;
-    private MeshRenderer m_meshRenderer;
-    private RenderingEngine m_renderingEngine;
-    private GameObject m_objects;
+    private Mesh geometry;
+    private Bitmap bitmap;
+    private Material material;
+    private Transform transform;
+    private MeshRenderer meshRenderer;
+    private RenderingEngine renderingEngine;
+    private BaseLight directionalLight;
+    private GameObject objects;
 
     /**
      * Constructor of the level in the game.
@@ -178,57 +185,59 @@ public class Level extends GameComponent {
      * @param material to load and use.
      */
     public Level(Bitmap bitmap, Material material) {	
-        if(m_objects == null) this.m_objects = new GameObject();
+        if(objects == null) this.objects = new GameObject();
         
         //Level stuff
-        if(m_bitmap == null) this.m_bitmap = bitmap;
-        if(m_material == null) this.m_material = material;
-        if(m_transform == null) this.m_transform = new Transform();
+        if(this.bitmap == null) this.bitmap = bitmap;
+        if(this.material == null) this.material = material;
+        if(transform == null) this.transform = new Transform();
         if(collisionPosStart == null) this.collisionPosStart = new ArrayList<Vector2f>();
         if(collisionPosEnd == null) this.collisionPosEnd = new ArrayList<Vector2f>();
-    	if(m_renderingEngine == null) m_renderingEngine = CoreEngine.renderingEngine;
+    	if(renderingEngine == null) renderingEngine = CoreEngine.renderingEngine;
         
         generateLevel();
         
         //Player
-        m_objects.add(player);
+        objects.add(player);
         //Enemies
-        m_objects.add(naziSoldiers);
-        m_objects.add(ssSoldiers);
-        m_objects.add(naziSeargeants);
-        m_objects.add(dogs);
-        m_objects.add(ghosts);
+        objects.add(naziSoldiers);
+        objects.add(ssSoldiers);
+        objects.add(naziSeargeants);
+        objects.add(dogs);
+        objects.add(ghosts);
         //Objects
-        m_objects.add(doors);
-        m_objects.add(secretWalls);
-        m_objects.add(trees);
-        m_objects.add(flares);
-        m_objects.add(lightPoints);
-        m_objects.add(bones);
-        m_objects.add(tables);
-        m_objects.add(deadNazi);
-        m_objects.add(deadJews);
-        m_objects.add(pipes);
-        m_objects.add(pendules);
-        m_objects.add(lamps);
-        m_objects.add(hangeds);
-        m_objects.add(pillars);
-        m_objects.add(clocks);
-        m_objects.add(furnaces);
-        m_objects.add(kitchens);
-        m_objects.add(barrels);
+        objects.add(doors);
+        objects.add(secretWalls);
+        objects.add(trees);
+        objects.add(flares);
+        objects.add(lightPoints);
+        objects.add(bones);
+        objects.add(tables);
+        objects.add(deadNazi);
+        objects.add(deadJews);
+        objects.add(pipes);
+        objects.add(pendules);
+        objects.add(lamps);
+        objects.add(hangeds);
+        objects.add(pillars);
+        objects.add(clocks);
+        objects.add(furnaces);
+        objects.add(kitchens);
+        objects.add(barrels);
+        objects.add(lockedDoors);
         //Power-ups
-        m_objects.add(medkits);
-        m_objects.add(foods);
-        m_objects.add(bullets);
-        m_objects.add(bags);
-        m_objects.add(shotguns);
-        m_objects.add(machineguns);
-        m_objects.add(armors);
-        m_objects.add(helmets);
-        m_objects.add(superShotguns);      
+        objects.add(medkits);
+        objects.add(foods);
+        objects.add(bullets);
+        objects.add(bags);
+        objects.add(shotguns);
+        objects.add(machineguns);
+        objects.add(armors);
+        objects.add(helmets);
+        objects.add(superShotguns); 
+        objects.add(keys);
         
-        m_renderingEngine.setMainCamera(player.getCamera());
+        renderingEngine.setMainCamera(player.getCamera());
     }
     
     /**
@@ -304,6 +313,7 @@ public class Level extends GameComponent {
         	checkDamage(clocks, punchSolidNoise, 69);
         	checkDamage(furnaces, punchSolidNoise, 69);
         	checkDamage(kitchens, punchSolidNoise, 69);
+        	checkDamage(lockedDoors, punchSolidNoise, 69);
  
         }
 
@@ -316,22 +326,23 @@ public class Level extends GameComponent {
      */
     public void update(double delta) {
         
-    	m_objects.update(delta);
+    	objects.update(delta);
 
-        m_objects.updateAndKillToRenderPipeline(deadNazi, delta);
+        objects.updateAndKillToRenderPipeline(deadNazi, delta);
         
-        m_objects.removeListToRenderPipeline(removeMedkitList);
-        m_objects.removeListToRenderPipeline(removeFoodList);
-        m_objects.removeListToRenderPipeline(removeBulletList);
-        m_objects.removeListToRenderPipeline(removeShellList);
-        m_objects.removeListToRenderPipeline(removeBagList);
-        m_objects.removeListToRenderPipeline(removeShotgunList);
-        m_objects.removeListToRenderPipeline(removeMachineGunList);
-        m_objects.removeListToRenderPipeline(removeGhostList);
-        m_objects.removeListToRenderPipeline(removeArmorList);
-        m_objects.removeListToRenderPipeline(removeHelmets);
-        m_objects.removeListToRenderPipeline(removeSuperShotgunList);
-        m_objects.removeListToRenderPipeline(removeBarrels);
+        objects.removeListToRenderPipeline(removeMedkitList);
+        objects.removeListToRenderPipeline(removeFoodList);
+        objects.removeListToRenderPipeline(removeBulletList);
+        objects.removeListToRenderPipeline(removeShellList);
+        objects.removeListToRenderPipeline(removeBagList);
+        objects.removeListToRenderPipeline(removeShotgunList);
+        objects.removeListToRenderPipeline(removeMachineGunList);
+        objects.removeListToRenderPipeline(removeGhostList);
+        objects.removeListToRenderPipeline(removeArmorList);
+        objects.removeListToRenderPipeline(removeHelmets);
+        objects.removeListToRenderPipeline(removeSuperShotgunList);
+        objects.removeListToRenderPipeline(removeBarrels);
+        objects.removeListToRenderPipeline(removeKeys);
         
         removeMedkitList.clear();
         removeFoodList.clear();
@@ -345,6 +356,7 @@ public class Level extends GameComponent {
         removeSuperShotgunList.clear();
         removeHelmets.clear();
         removeBarrels.clear();
+        removeKeys.clear();
     }
 
     /**
@@ -353,14 +365,14 @@ public class Level extends GameComponent {
      * @param renderingEngine to use
      */
     public void render(Shader shader, RenderingEngine renderingEngine) {
-    	m_meshRenderer.render(shader, renderingEngine);
-    	m_objects.render(shader, renderingEngine);
+    	meshRenderer.render(shader, renderingEngine);
+    	objects.render(shader, renderingEngine);
         
-   		m_objects.sortNumberComponents(secretWalls);
-   		m_objects.sortNumberComponents(naziSoldiers);
-   		m_objects.sortNumberComponents(dogs);
-   		m_objects.sortNumberComponents(ssSoldiers);
-   		m_objects.sortNumberComponents(naziSeargeants);
+   		objects.sortNumberComponents(secretWalls);
+   		objects.sortNumberComponents(naziSoldiers);
+   		objects.sortNumberComponents(dogs);
+   		objects.sortNumberComponents(ssSoldiers);
+   		objects.sortNumberComponents(naziSeargeants);
 
     }
     
@@ -379,6 +391,30 @@ public class Level extends GameComponent {
             }
         }
         
+        for (LockedDoor lockedDoor : lockedDoors) {
+        	if(lockedDoor.isGoldKey) {
+	            if (Math.abs(lockedDoor.getTransform().getPosition().sub(position).length()) < 1f) {
+	            	if(player.isGoldkey()) {
+	            		worked = true;
+	                	lockedDoor.open(0.5f, 3f);
+	            	} else {
+	            		player.playerText.get("Notification").setText("You need to find the gold key");
+		                player.notificationTime = Time.getTime();
+	            	}
+	            }
+        	} else {
+        		if (Math.abs(lockedDoor.getTransform().getPosition().sub(position).length()) < 1f) {
+	                if(player.isBronzekey()) {
+	                	worked = true;
+	                	lockedDoor.open(0.5f, 3f);
+        			}else {
+		            	player.playerText.get("Notification").setText("You need to find the bronze key");
+		                player.notificationTime = Time.getTime();
+		            }
+	            }
+        	}
+        }
+        
         for (SecretWall secretWall : secretWalls) {
         		if (Math.abs(secretWall.getTransform().getPosition().sub(position).length()) < 1f) {
                 worked = true;
@@ -391,7 +427,7 @@ public class Level extends GameComponent {
         if (playSound) {
             for (int i = 0; i < exitPoints.size(); i++) {
                 if (Math.abs(exitPoints.get(i).sub(position).length()) < 1f) {
-                    Auschwitz.loadLevel(exitOffsets.get(i), true);
+                	Auschwitz.loadLevel(exitOffsets.get(i), true);
                 }
             }
         }
@@ -421,9 +457,9 @@ public class Level extends GameComponent {
             Vector2f oldPos2 = new Vector2f(oldPos.getX(), oldPos.getZ());
             Vector2f newPos2 = new Vector2f(newPos.getX(), newPos.getZ());
 
-            for (int i = 0; i < m_bitmap.getWidth(); i++) {
-                for (int j = 0; j < m_bitmap.getHeight(); j++) {
-                    if ((m_bitmap.getPixel(i, j) & 0xFFFFFF) == 0) // If it's a black (wall) pixel
+            for (int i = 0; i < bitmap.getWidth(); i++) {
+                for (int j = 0; j < bitmap.getHeight(); j++) {
+                    if ((bitmap.getPixel(i, j) & 0xFFFFFF) == 0) // If it's a black (wall) pixel
                     {
                         collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, blockSize.mul(new Vector2f(i, j)), blockSize));
                     }
@@ -490,6 +526,9 @@ public class Level extends GameComponent {
             
             for (Barrel barrel : barrels)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, barrel.getTransform().getPosition().getXZ(), barrel.getSize()));
+            
+            for (LockedDoor lockedDoor : lockedDoors)
+                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, lockedDoor.getTransform().getPosition().getXZ(), lockedDoor.getSize()));
             
         }
 
@@ -793,8 +832,10 @@ public class Level extends GameComponent {
     	if(removeSuperShotgunList == null) Level.removeSuperShotgunList = new ArrayList<SuperShotgun>();
     	if(removeHelmets == null) Level.removeHelmets = new ArrayList<Helmet>();
     	if(removeBarrels == null) Level.removeBarrels = new ArrayList<Barrel>();
+    	if(removeKeys == null) Level.removeKeys = new ArrayList<Key>();
         //Doors and stuff
         if(doors == null) this.doors = new ArrayList<Door>();
+        if(lockedDoors == null) this.lockedDoors = new ArrayList<LockedDoor>();
         if(secretWalls == null) this.secretWalls = new ArrayList<SecretWall>();
         if(exitOffsets == null) this.exitOffsets = new ArrayList<Integer>();
         if(exitPoints == null) this.exitPoints = new ArrayList<Vector3f>();
@@ -814,6 +855,7 @@ public class Level extends GameComponent {
         if(armors == null) this.armors = new ArrayList<Armor>();
         if(superShotguns == null) this.superShotguns = new ArrayList<SuperShotgun>();
         if(helmets == null) this.helmets = new ArrayList<Helmet>();
+        if(keys == null) this.keys = new ArrayList<Key>();
         //Objects
         if(trees == null) this.trees = new ArrayList<Tree>();
         if(flares == null) this.flares = new ArrayList<Lantern>();
@@ -832,16 +874,16 @@ public class Level extends GameComponent {
         if(kitchens == null) this.kitchens = new ArrayList<Kitchen>();
         if(barrels == null) this.barrels = new ArrayList<Barrel>();
 
-        for (int i = 1; i < m_bitmap.getWidth() - 1; i++) {
-            for (int j = 1; j < m_bitmap.getHeight() - 1; j++) {
-                if ((m_bitmap.getPixel(i, j) & 0xFFFFFF) == 0) // If it isn't a black (wall) pixel
+        for (int i = 1; i < bitmap.getWidth() - 1; i++) {
+            for (int j = 1; j < bitmap.getHeight() - 1; j++) {
+                if ((bitmap.getPixel(i, j) & 0xFFFFFF) == 0) // If it isn't a black (wall) pixel
                 	continue;
                 	//LEVEL_HEIGHT = level.getPixel(i, j) & 0x0000FF;
-                    if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 16) {
+                    if ((bitmap.getPixel(i, j) & 0x0000FF) == 16) {
                         Transform doorTransform = new Transform();
 
-                        boolean xDoor = (m_bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0 && (m_bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0;
-                        boolean yDoor = (m_bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (m_bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
+                        boolean xDoor = (bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0 && (bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0;
+                        boolean yDoor = (bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
 
                         if ((yDoor && xDoor) || !(yDoor || xDoor)) {
                             System.err.println("Level Generation Error at (" + i + ", " + j + "): Doors must be between two solid walls.");
@@ -852,17 +894,17 @@ public class Level extends GameComponent {
 
                         if (yDoor) {
                             doorTransform.setPosition(i, 0,j + SPOT_LENGTH / 2);
-                            doors.add(new Door(doorTransform, m_material, doorTransform.getPosition().add(new Vector3f(-0.9f, 0, 0))));
+                            doors.add(new Door(doorTransform, material, doorTransform.getPosition().add(new Vector3f(-0.9f, 0, 0))));
                         } else if (xDoor) {
                             doorTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
                             doorTransform.setRotation(0, 90, 0);
-                            doors.add(new Door(doorTransform, m_material, doorTransform.getPosition().add(new Vector3f(0, 0, -0.9f))));
+                            doors.add(new Door(doorTransform, material, doorTransform.getPosition().add(new Vector3f(0, 0, -0.9f))));
                         }
-                    }else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 20) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 20) {
                         Transform wallTransform = new Transform();
 
-                        boolean xSecretWall = (m_bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0 && (m_bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0;
-                        boolean ySecretWall = (m_bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (m_bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
+                        boolean xSecretWall = (bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0 && (bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0;
+                        boolean ySecretWall = (bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
 
                         if ((ySecretWall && xSecretWall) || !(ySecretWall || xSecretWall)) {
                             System.err.println("Level Generation Error at (" + i + ", " + j + "): Secret Walls must be between two solid walls.");
@@ -873,73 +915,123 @@ public class Level extends GameComponent {
 
                         if (ySecretWall) {
                             wallTransform.setPosition(i, 0, j + SPOT_LENGTH);
-                            secretWalls.add(new SecretWall(wallTransform, m_material, wallTransform.getPosition().add(new Vector3f(-0.9f, 0, 0))));
+                            secretWalls.add(new SecretWall(wallTransform, material, wallTransform.getPosition().add(new Vector3f(-0.9f, 0, 0))));
                         } else if (xSecretWall) {
                             wallTransform.setPosition(i + SPOT_LENGTH, 0, j);
                             wallTransform.setRotation(0, 90, 0);
-                            secretWalls.add(new SecretWall(wallTransform, m_material, wallTransform.getPosition().add(new Vector3f(0, 0, -0.9f))));
+                            secretWalls.add(new SecretWall(wallTransform, material, wallTransform.getPosition().add(new Vector3f(0, 0, -0.9f))));
                         }
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 128) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 24) {
+                    	//Gold
+                        Transform lockedTransform = new Transform();
+
+                        boolean xLockedDoor = (bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0 && (bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0;
+                        boolean yLockedDoor = (bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
+
+                        if ((yLockedDoor && xLockedDoor) || !(yLockedDoor || xLockedDoor)) {
+                            System.err.println("Level Generation Error at (" + i + ", " + j + "): Gold Locked Doors must be between two solid walls.");
+                            Debug.printErrorMessage("Level Generation Error at (" + i + ", " + j + "): Gold Locked Doors must be between two solid walls.", "Level generation error!");
+                            new Exception().printStackTrace();
+                            System.exit(1);
+                        }
+
+                        if (yLockedDoor) {
+                        	lockedTransform.setPosition(i, 0,j + SPOT_LENGTH / 2);
+                            lockedDoors.add(new LockedDoor(lockedTransform, lockedTransform.getPosition().add(new Vector3f(-0.9f, 0, 0)), true));
+                        } else if (xLockedDoor) {
+                        	lockedTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
+                        	lockedTransform.setRotation(0, 90, 0);
+                            lockedDoors.add(new LockedDoor(lockedTransform, lockedTransform.getPosition().add(new Vector3f(0, 0, -0.9f)), true));
+                        }
+                    }else if ((bitmap.getPixel(i, j) & 0x0000FF) == 28) {
+                    	//Bronze
+                        Transform lockedTransform = new Transform();
+
+                        boolean xLockedDoor = (bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0 && (bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0;
+                        boolean yLockedDoor = (bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
+
+                        if ((yLockedDoor && xLockedDoor) || !(yLockedDoor || xLockedDoor)) {
+                            System.err.println("Level Generation Error at (" + i + ", " + j + "): Bronze Locked Doors must be between two solid walls.");
+                            Debug.printErrorMessage("Level Generation Error at (" + i + ", " + j + "): Bronze Locked Doors must be between two solid walls.", "Level generation error!");
+                            new Exception().printStackTrace();
+                            System.exit(1);
+                        }
+
+                        if (yLockedDoor) {
+                        	lockedTransform.setPosition(i, 0,j + SPOT_LENGTH / 2);
+                            lockedDoors.add(new LockedDoor(lockedTransform, lockedTransform.getPosition().add(new Vector3f(-0.9f, 0, 0)), false));
+                        } else if (xLockedDoor) {
+                        	lockedTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
+                        	lockedTransform.setRotation(0, 90, 0);
+                            lockedDoors.add(new LockedDoor(lockedTransform, lockedTransform.getPosition().add(new Vector3f(0, 0, -0.9f)), false));
+                        }
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 128) {
                     	naziSoldiers.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 1) {
-                        player = new Player(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.4375f, (j + 0.5f) * SPOT_LENGTH));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 192) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 1) {
+                        player = new Player(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.5f, (j + 0.5f) * SPOT_LENGTH));
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 192) {
                         medkits.add(new Medkit(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 100) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 100) {
                         trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 50) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 50) {
                     	flares.add(new Lantern(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, LEVEL_HEIGHT * 0.75f, (j + 0.5f) * SPOT_LENGTH))));
                     	//lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 51) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 51) {
                     	//lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
                     	lamps.add(new Lamp(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 55) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 55) {
                         bones.add(new Bones(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 60) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 60) {
                         deadNazi.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 70) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 70) {
                         deadJews.add(new DeadJew(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.05f, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 80) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 80) {
                         foods.add(new Food(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 90) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 90) {
                         dogs.add(new Dog(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 110) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 110) {
                         ssSoldiers.add(new SsSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 120) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 120) {
                     	tables.add(new Table(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 121) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 121) {
                     	furnaces.add(new Furnace(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                	} else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 122) {
+                	} else if ((bitmap.getPixel(i, j) & 0x0000FF) == 122) {
                     	kitchens.add(new Kitchen(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         foods.add(new Food(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 123) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 123) {
                     	clocks.add(new Clock(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 130) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 130) {
                     	superShotguns.add(new SuperShotgun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 140) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 140) {
                     	naziSeargeants.add(new NaziSergeant(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 150) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 150) {
                     	pipes.add(new Pipe(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.00000000001f * LEVEL_HEIGHT, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 151) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 151) {
                         pendules.add(new Pendule(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 152) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 152) {
                         hangeds.add(new Hanged(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 153) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 153) {
                         pillars.add(new Pillar(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.0000000001f * LEVEL_HEIGHT, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 154) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 154) {
                         armors.add(new Armor(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 155) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 155) {
                         helmets.add(new Helmet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         //barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) == 160) {
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 169) {
+                    	//GoldKey
+                    	keys.add(new Key(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true, true));
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 170) {
+                    	//BronzeKey
+                    	keys.add(new Key(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), false, true));
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 160) {
                         barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((m_bitmap.getPixel(i, j) & 0x0000FF) < 128 && (m_bitmap.getPixel(i, j) & 0x0000FF) > 96) {
-                        int offset = (m_bitmap.getPixel(i, j) & 0x0000FF) - 96;
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) < 128 && (bitmap.getPixel(i, j) & 0x0000FF) > 96) {
+                        int offset = (bitmap.getPixel(i, j) & 0x0000FF) - 96;
                         exitPoints.add(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0f, (j + 0.5f) * SPOT_LENGTH));
                         exitOffsets.add(offset);
                     }
                     
-                    float[] texCoords = calcTextCoords((m_bitmap.getPixel(i, j) & 0x00FF00) >> 8);
+                    float[] texCoords = calcTextCoords((bitmap.getPixel(i, j) & 0x00FF00) >> 8);
                     
                     //Generate Floor
     				addFace(indices, vertices.size(), true);
@@ -949,7 +1041,7 @@ public class Level extends GameComponent {
     				addFace(indices, vertices.size(), false);
     				addVertices(vertices, i, j, 1, true, false, true, texCoords);
                     
-                    texCoords = calcTextCoords((m_bitmap.getPixel(i, j) & 0xFF0000) >> 16);
+                    texCoords = calcTextCoords((bitmap.getPixel(i, j) & 0xFF0000) >> 16);
                     
                     SecretWall.xHigher = texCoords[0];
                     SecretWall.xLower = texCoords[1];
@@ -957,25 +1049,25 @@ public class Level extends GameComponent {
                     SecretWall.yLower = texCoords[3];
 
                     //Generate Walls
-                    if ((m_bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0) {
+                    if ((bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0) {
                         collisionPosStart.add(new Vector2f(i * SPOT_WIDTH, j * SPOT_LENGTH));
                         collisionPosEnd.add(new Vector2f((i + 1) * SPOT_WIDTH, j * SPOT_LENGTH));
                         addFace(indices,vertices.size(),false);
                         addVertices(vertices, i, 0, j, true, true, false, texCoords);
                     }
-                    if ((m_bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0) {
+                    if ((bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0) {
                         collisionPosStart.add(new Vector2f(i * SPOT_WIDTH, (j + 1) * SPOT_LENGTH));
                         collisionPosEnd.add(new Vector2f((i + 1) * SPOT_WIDTH, (j + 1) * SPOT_LENGTH));
                         addFace(indices,vertices.size(),true);
                         addVertices(vertices, i, 0, (j + 1), true, true, false, texCoords);
                     }
-                    if ((m_bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0) {
+                    if ((bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0) {
                         collisionPosStart.add(new Vector2f(i * SPOT_WIDTH, j * SPOT_LENGTH));
                         collisionPosEnd.add(new Vector2f(i * SPOT_WIDTH, (j + 1) * SPOT_LENGTH));
                         addFace(indices,vertices.size(),true);
                         addVertices(vertices, 0, j, i, false, true, true, texCoords);
                     }
-                    if ((m_bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0) {
+                    if ((bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0) {
                         collisionPosStart.add(new Vector2f((i + 1) * SPOT_WIDTH, j * SPOT_LENGTH));
                         collisionPosEnd.add(new Vector2f((i + 1) * SPOT_WIDTH, (j + 1) * SPOT_LENGTH));
                         addFace(indices,vertices.size(),false);
@@ -989,18 +1081,26 @@ public class Level extends GameComponent {
         vertices.toArray(vertArray);
         indices.toArray(intArray);
         
-        if(m_geometry == null)
-        	m_geometry = new Mesh(vertArray, Util.toIntArray(intArray), true, true);
-        if(m_meshRenderer == null)
-        	m_meshRenderer = new MeshRenderer(m_geometry, m_transform, m_material);
+        if(geometry == null)
+        	geometry = new Mesh(vertArray, Util.toIntArray(intArray), true, true);
+        if(meshRenderer == null)
+        	meshRenderer = new MeshRenderer(geometry, transform, material);
+        if(directionalLight == null)
+        	directionalLight = new DirectionalLight(new Vector3f(0.75f,0.75f,0.75f), 
+            		1f, new Vector3f(bitmap.getWidth()/2,10,bitmap.getHeight()/2));
         
-        m_renderingEngine.setFogDensity(0.07f);
-        m_renderingEngine.setFogGradient(1.5f);
-        m_renderingEngine.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
-        m_renderingEngine.setAmbientLight(new Vector3f(0.75f,0.75f,0.75f));
-        m_renderingEngine.addLight(new DirectionalLight(new Vector3f(0.75f,0.75f,0.75f), 
-        		1f, new Vector3f(m_bitmap.getWidth()/2,10,m_bitmap.getHeight()/2)));
+        renderingEngine.setFogDensity(0.07f);
+        renderingEngine.setFogGradient(1.5f);
+        renderingEngine.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
+        renderingEngine.setAmbientLight(new Vector3f(0.75f,0.75f,0.75f));
+        renderingEngine.addLight(directionalLight);
     }
+    
+    /**
+     * Returns the material of the level
+     * @return material
+     */
+    public Material getMaterial() { return material; } 
 	
 	/**
 	 * Returns all the secret walls in the array-list.
@@ -1109,5 +1209,11 @@ public class Level extends GameComponent {
 	 * @param barrel Barrels.
 	 */
 	public static void removeBarrel(Barrel barrel) {removeBarrels.add(barrel);}
+
+	/**
+	 * Removes the key when disappears.
+	 * @param key keys.
+	 */
+	public static void removeArmor(Key key) { removeKeys.add(key); }
 
 }

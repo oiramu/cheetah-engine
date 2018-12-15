@@ -39,25 +39,25 @@ import game.enemies.*;
 public class Auschwitz implements Game {
 	
 	private static HashMap<String,TextureFont> text = new HashMap<String,TextureFont>();
-	private static ArrayList<Sequence> m_playlist = new ArrayList<Sequence>();
+	private static ArrayList<Sequence> playlist = new ArrayList<Sequence>();
 	
     private static final int EPISODE_1 = 1;
     private static final int EPISODE_2 = 2;
     private static final int EPISODE_3 = 2;
 
-    public static Level 			m_level;
-    public static Material			m_material;
-    public static int 				m_levelNum;
-    public static int 				m_startingLevel;
-    public static int 				m_track;
-    public static int				m_currentEpisode;
-    private static boolean 			m_isRunning;
-    private static boolean 			m_displayStats = false;
-    private static int 				m_secrets = 0;
-    private static int 				m_deadMonsters = 0;
-    private static int 				m_totalSecrets = 0;
-    private static int 				m_totalMonsters = 0;
-    private static double			m_stateTime = 0;
+    public static Level 			level;
+    public static Material			material;
+    public static int 				levelNum;
+    public static int 				startingLevel;
+    public static int 				track;
+    public static int				currentEpisode;
+    private static boolean 			isRunning;
+    private static boolean 			displayStats = false;
+    private static int 				secrets = 0;
+    private static int 				deadMonsters = 0;
+    private static int 				totalSecrets = 0;
+    private static int 				totalMonsters = 0;
+    private static double			stateTime = 0;
 
     /**
      * The constructor method of the compiling game.
@@ -66,11 +66,11 @@ public class Auschwitz implements Game {
     	text.put("Level",new TextureFont("", new Vector2f(-1.25f,1.2f), new Vector2f(0.75f,0.75f)));
         text.put("Enemies",new TextureFont("", new Vector2f(-1.25f,1.1f), new Vector2f(0.75f,0.75f)));
         text.put("Secrets",new TextureFont("", new Vector2f(-1.25f,1.0f), new Vector2f(0.75f,0.75f)));
-        for (int i = 0; i < 13; i++) m_playlist.add(AudioUtil.loadMidi("THEME" + i));
+        for (int i = 0; i < 13; i++) playlist.add(AudioUtil.loadMidi("THEME" + i));
 
-        m_track = m_startingLevel - 1;
-        m_levelNum = m_startingLevel - 1;
-        m_isRunning = true;
+        track = startingLevel - 1;
+        levelNum = startingLevel - 1;
+        isRunning = true;
         loadLevel(1, true);
     }
 	
@@ -89,15 +89,15 @@ public class Auschwitz implements Game {
      */
     private void printStats(RenderingEngine renderingEngine) {
     	double time = Time.getTime();
-    	if(time<m_stateTime+5.0f) {
-	    	text.get("Level").setText("Level:" + m_levelNum + ";Episode" + m_currentEpisode);
+    	if(time<stateTime+5.0f) {
+	    	text.get("Level").setText("Level:" + levelNum + ";Episode" + currentEpisode);
 	    	text.get("Level").render(renderingEngine);
-	    	if(m_displayStats) {
-		    	text.get("Enemies").setText("Killed:" + m_deadMonsters + "/" + m_totalMonsters + " Nazis:" +
-		            	(int)(((float) m_deadMonsters / (float) m_totalMonsters) * 100f )+ "%");
+	    	if(displayStats) {
+		    	text.get("Enemies").setText("Killed:" + deadMonsters + "/" + totalMonsters + " Nazis:" +
+		            	(int)(((float) deadMonsters / (float) totalMonsters) * 100f )+ "%");
 		    	text.get("Enemies").render(renderingEngine);
-		    	text.get("Secrets").setText("Secrets:" + m_secrets + "/" + m_totalSecrets + " Secrets:" +
-		    			(int)(((float) m_secrets / (float) m_totalSecrets) * 100f) + "%");
+		    	text.get("Secrets").setText("Secrets:" + secrets + "/" + totalSecrets + " Secrets:" +
+		    			(int)(((float) secrets / (float) totalSecrets) * 100f) + "%");
 		    	text.get("Secrets").render(renderingEngine);
 	    	}
     	}
@@ -107,13 +107,13 @@ public class Auschwitz implements Game {
      * Sets the starting level depending of what level you want to start;
      * @param level to set.
      */
-    public static void setStartingLevel(int level) {m_startingLevel = level;}
+    public static void setStartingLevel(int level) {startingLevel = level;}
 
     /**
      * Checks all the inputs.
      */
     public void input() {
-        m_level.input();
+        level.input();
         
         if(Input.getKeyDown(Input.KEY_F4))
         	System.exit(0);
@@ -124,8 +124,8 @@ public class Auschwitz implements Game {
      * @param delta of time
      */
     public void update(double delta) {
-        if (m_isRunning) {
-            m_level.update(delta);
+        if (isRunning) {
+            level.update(delta);
         }
     }
 
@@ -133,8 +133,8 @@ public class Auschwitz implements Game {
      * Renders everything every on screen.
      */
 	public void render(RenderingEngine engine) {
-        if (m_isRunning) {
-        	engine.render(m_level);
+        if (isRunning) {
+        	engine.render(level);
         	printStats(engine);
         }
     }
@@ -142,7 +142,7 @@ public class Auschwitz implements Game {
 	/**
      * Reloads the last level played.
      */
-	public static void reloadLevel() { loadLevel(m_levelNum-m_levelNum, false); }
+	public static void reloadLevel() { loadLevel(levelNum-levelNum, false); }
 
     /**
      * Load the level and also charges the next level when the last end.
@@ -151,10 +151,10 @@ public class Auschwitz implements Game {
 	@SuppressWarnings("static-access")
 	public static void loadLevel(int offset, boolean displayText) {
         try {
-        	m_secrets = 0;
-            m_deadMonsters = 0;
-            m_totalSecrets = 0;
-            m_totalMonsters = 0;
+        	secrets = 0;
+            deadMonsters = 0;
+            totalSecrets = 0;
+            totalMonsters = 0;
             int healthTemp = 0;
             int bulletTemp = 0;
             int shellTemp = 0;
@@ -171,83 +171,78 @@ public class Auschwitz implements Game {
             boolean mouseLocktemp = false;
             String weaponStateTemp = "";
 
-            if (m_level != null) {
-                m_totalMonsters = m_level.getNaziSoldiers().size() + m_level.getSsSoldiers().size()
-                		+ m_level.getDogs().size() + + m_level.getNaziSergeants().size();
+            if (level != null) {
+                totalMonsters = level.getNaziSoldiers().size() + level.getSsSoldiers().size()
+                		+ level.getDogs().size() + + level.getNaziSergeants().size();
                 
-                m_totalSecrets = m_level.getSecretWalls().size();
+                totalSecrets = level.getSecretWalls().size();
                 
-                for (SecretWall secret : m_level.getSecretWalls()) {
-                    if (secret.opens()) {
-                    	m_secrets++;
-                    }
+                for (SecretWall secret : level.getSecretWalls()) {
+                    if (secret.opens())
+                    	secrets++;
                 }
 
-                for (NaziSoldier monster : m_level.getNaziSoldiers()) {
-                    if (!monster.isAlive()) {
-                        m_deadMonsters++;
-                    }
+                for (NaziSoldier naziSoldier : level.getNaziSoldiers()) {
+                    if (!naziSoldier.isAlive())
+                        deadMonsters++;
                 }
                 
-                for (SsSoldier ssSoldier : m_level.getSsSoldiers()) {
-                    if (!ssSoldier.isAlive()) {
-                        m_deadMonsters++;
-                    }
+                for (SsSoldier ssSoldier : level.getSsSoldiers()) {
+                    if (!ssSoldier.isAlive())
+                        deadMonsters++;
                 }
                 
-                for (Dog dog : m_level.getDogs()) {
-                    if (!dog.isAlive()) {
-                        m_deadMonsters++;
-                    }
+                for (Dog dog : level.getDogs()) {
+                    if (!dog.isAlive())
+                        deadMonsters++;
                 }
                 
-                for (NaziSergeant naziSargent : m_level.getNaziSergeants()) {
-                    if (!naziSargent.isAlive()) {
-                        m_deadMonsters++;
-                    }
+                for (NaziSergeant naziSargent : level.getNaziSergeants()) {
+                    if (!naziSargent.isAlive())
+                        deadMonsters++;
                 }
 
-                m_displayStats = true;
+                displayStats = true;
                 
-                healthTemp = m_level.getPlayer().getHealth();
-                armoriTemp = m_level.getPlayer().getArmori();
-                bulletTemp = m_level.getPlayer().getBullets();
-                shellTemp = m_level.getPlayer().getShells();
-                maxHealthTemp = m_level.getPlayer().getMaxHealth();
-                maxBulletTemp = m_level.getPlayer().getMaxBullets();
-                maxShellTemp = m_level.getPlayer().getMaxShells();
-                maxArmoriTemp = m_level.getPlayer().getMaxArmori();
-                shotgunTemp = m_level.getPlayer().isShotgun();
-                machinegunTemp = m_level.getPlayer().isMachinegun();
-                superShotgunTemp = m_level.getPlayer().isSuperShotgun();
-                chaingunTemp = m_level.getPlayer().isChaingun();
-                weaponStateTemp = m_level.getPlayer().getWeaponState();
-                armorbTemp = m_level.getPlayer().isArmorb();
-                mouseLocktemp = m_level.getPlayer().mouseLocked;
+                healthTemp = level.getPlayer().getHealth();
+                armoriTemp = level.getPlayer().getArmor();
+                bulletTemp = level.getPlayer().getBullets();
+                shellTemp = level.getPlayer().getShells();
+                maxHealthTemp = level.getPlayer().getMaxHealth();
+                maxBulletTemp = level.getPlayer().getMaxBullets();
+                maxShellTemp = level.getPlayer().getMaxShells();
+                maxArmoriTemp = level.getPlayer().getMaxArmor();
+                shotgunTemp = level.getPlayer().isShotgun();
+                machinegunTemp = level.getPlayer().isMachinegun();
+                superShotgunTemp = level.getPlayer().isSuperShotgun();
+                chaingunTemp = level.getPlayer().isChaingun();
+                weaponStateTemp = level.getPlayer().getWeaponState();
+                armorbTemp = level.getPlayer().isArmor();
+                mouseLocktemp = level.getPlayer().mouseLocked;
                 renderingEngine.clearLights();
             }
 
-            if(m_levelNum > 9)
-            	m_currentEpisode = EPISODE_2;
-            else if(m_levelNum > 19)
-            	m_currentEpisode = EPISODE_3;
+            if(levelNum > 9)
+            	currentEpisode = EPISODE_2;
+            else if(levelNum > 19)
+            	currentEpisode = EPISODE_3;
             else
-            	m_currentEpisode = EPISODE_1;
+            	currentEpisode = EPISODE_1;
 
-            m_levelNum += offset;
+            levelNum += offset;
             
             switch(GAME_GRAPHICS) {
             	case "Low":
-            		m_material = new Material(new Texture("mapTexture" + m_currentEpisode));
+            		material = new Material(new Texture("mapTexture" + currentEpisode));
             		break;
             	case "High":
-            		m_material = new Material(new Texture("mapTexture" + m_currentEpisode), 1, 8, 
-            				new Texture("mapTextureNormal" + m_currentEpisode), 
-            				new Texture("mapTextureBump" + m_currentEpisode), 0.0004f, -0.75f);
+            		material = new Material(new Texture("mapTexture" + currentEpisode), 1, 8, 
+            				new Texture("mapTextureNormal" + currentEpisode), 
+            				new Texture("mapTextureBump" + currentEpisode), 0.0004f, -0.75f);
             		break;
             }
             
-            m_level = new Level(new Bitmap("level" + m_levelNum).flipX(), m_material);
+            level = new Level(new Bitmap("level" + levelNum).flipX(), material);
             
             switch(CLEAR_LIGHTS) {
     			case "True":
@@ -257,77 +252,77 @@ public class Auschwitz implements Game {
     				break;
             }
             
-            if(m_level.getPlayer().getArmori() == 0)
-            	m_level.getPlayer().setArmori(armoriTemp);
-            if(m_level.getPlayer().getHealth() == 0) {
+            if(level.getPlayer().getArmor() == 0)
+            	level.getPlayer().setArmori(armoriTemp);
+            if(level.getPlayer().getHealth() == 0) {
             	if(healthTemp == 0)
-            		m_level.getPlayer().setHealth(100);
-            	m_level.getPlayer().setHealth(healthTemp);
+            		level.getPlayer().setHealth(100);
+            	level.getPlayer().setHealth(healthTemp);
             }
-            if(m_level.getPlayer().getBullets() == 0) {
+            if(level.getPlayer().getBullets() == 0) {
             	if(bulletTemp == 0)
-            		m_level.getPlayer().setBullets(20);
-            	m_level.getPlayer().setBullets(bulletTemp);
+            		level.getPlayer().setBullets(20);
+            	level.getPlayer().setBullets(bulletTemp);
             }
-            if(m_level.getPlayer().getShells() == 0) {
+            if(level.getPlayer().getShells() == 0) {
             	if(shellTemp == 0)
-            		m_level.getPlayer().setShells(20);
-            	m_level.getPlayer().setShells(shellTemp);
+            		level.getPlayer().setShells(20);
+            	level.getPlayer().setShells(shellTemp);
             }
-            if(m_level.getPlayer().getMaxArmori() == 0) {
+            if(level.getPlayer().getMaxArmor() == 0) {
             	if(maxArmoriTemp == 0)
-            		m_level.getPlayer().setMaxArmori(100);
-            	m_level.getPlayer().setMaxArmori(maxArmoriTemp);
+            		level.getPlayer().setMaxArmor(100);
+            	level.getPlayer().setMaxArmor(maxArmoriTemp);
             }
-            if(m_level.getPlayer().getMaxHealth() == 0) {
+            if(level.getPlayer().getMaxHealth() == 0) {
             	if(maxHealthTemp == 0)
-            		m_level.getPlayer().setMaxHealth(100);
-            	m_level.getPlayer().setMaxHealth(maxHealthTemp);
+            		level.getPlayer().setMaxHealth(100);
+            	level.getPlayer().setMaxHealth(maxHealthTemp);
             }
-            if(m_level.getPlayer().getMaxBullets() == 0) {
+            if(level.getPlayer().getMaxBullets() == 0) {
             	if(maxBulletTemp == 0)
-            		m_level.getPlayer().setMaxBullets(100);
-            	m_level.getPlayer().setMaxBullets(maxBulletTemp);
+            		level.getPlayer().setMaxBullets(100);
+            	level.getPlayer().setMaxBullets(maxBulletTemp);
             }
-            if(m_level.getPlayer().getMaxShells() == 0) {
+            if(level.getPlayer().getMaxShells() == 0) {
             	if(maxShellTemp == 0)
-            		m_level.getPlayer().setMaxShells(50);
-            	m_level.getPlayer().setMaxShells(maxShellTemp);
+            		level.getPlayer().setMaxShells(50);
+            	level.getPlayer().setMaxShells(maxShellTemp);
             }
-            m_level.getPlayer().setShotgun(shotgunTemp);
-            m_level.getPlayer().setMachinegun(machinegunTemp);
-            m_level.getPlayer().setSuperShotgun(superShotgunTemp);
-            m_level.getPlayer().setChaingun(chaingunTemp);
-            m_level.getPlayer().setArmor(armorbTemp);
-            m_level.getPlayer().setWeaponState(weaponStateTemp);
-            m_level.getPlayer().mouseLocked = mouseLocktemp;
+            level.getPlayer().setShotgun(shotgunTemp);
+            level.getPlayer().setMachinegun(machinegunTemp);
+            level.getPlayer().setSuperShotgun(superShotgunTemp);
+            level.getPlayer().setChaingun(chaingunTemp);
+            level.getPlayer().setArmor(armorbTemp);
+            level.getPlayer().setWeaponState(weaponStateTemp);
+            level.getPlayer().mouseLocked = mouseLocktemp;
             
-            m_track += offset;
+            track += offset;
 
-            AudioUtil.playMidi(m_playlist.get(m_track));
+            AudioUtil.playMidi(playlist.get(track));
 
-            while (m_track >= m_playlist.size()) m_track -= m_playlist.size();
-            if(displayText) m_stateTime = Time.getTime();
+            while (track >= playlist.size()) track -= playlist.size();
+            if(displayText) stateTime = Time.getTime();
 
-            if (m_displayStats) {
-            	if(m_level.getPlayer().getWeaponState() == m_level.getPlayer().HAND){
-            		m_level.getPlayer().gotHand();
-            	}else if(m_level.getPlayer().getWeaponState() == m_level.getPlayer().PISTOL) {
-            		m_level.getPlayer().gotPistol();
-            	}else if(m_level.getPlayer().getWeaponState() == m_level.getPlayer().MACHINEGUN && machinegunTemp == true) {
-            		m_level.getPlayer().gotMachinegun();
-            	}else if(m_level.getPlayer().getWeaponState() == m_level.getPlayer().SHOTGUN && shotgunTemp == true) {
-            		m_level.getPlayer().gotShotgun();
-            	}else if(m_level.getPlayer().getWeaponState() == m_level.getPlayer().SUPER_SHOTGUN && superShotgunTemp == true) {
-            		m_level.getPlayer().gotSShotgun();
-            	}else if(m_level.getPlayer().getWeaponState() == m_level.getPlayer().CHAINGUN && chaingunTemp == true) {
-            		m_level.getPlayer().gotChaingun();
+            if (displayStats) {
+            	if(level.getPlayer().getWeaponState() == level.getPlayer().HAND){
+            		level.getPlayer().gotHand();
+            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().PISTOL) {
+            		level.getPlayer().gotPistol();
+            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().MACHINEGUN && machinegunTemp == true) {
+            		level.getPlayer().gotMachinegun();
+            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().SHOTGUN && shotgunTemp == true) {
+            		level.getPlayer().gotShotgun();
+            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().SUPER_SHOTGUN && superShotgunTemp == true) {
+            		level.getPlayer().gotSShotgun();
+            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().CHAINGUN && chaingunTemp == true) {
+            		level.getPlayer().gotChaingun();
             	}
             }
             
         } catch (RuntimeException ex) {
         	ex.printStackTrace();
-            m_isRunning = false;
+            isRunning = false;
             //Debug.printErrorMessage(ex.getMessage(), "GAME OVER!");
             System.out.println("GAME OVER!");
             AudioUtil.stopMidi();
@@ -340,12 +335,12 @@ public class Auschwitz implements Game {
      * Gets the actual level.
      * @return Level.
      */
-    public static Level getLevel() {return m_level;}
+    public static Level getLevel() {return level;}
 
     /**
      * Allow to stop the game rendering without stop all the program.
      * @param value True or false.
      */
-    public static void setIsRunning(boolean value) {m_isRunning = value;}
+    public static void setIsRunning(boolean value) {isRunning = value;}
 
 }

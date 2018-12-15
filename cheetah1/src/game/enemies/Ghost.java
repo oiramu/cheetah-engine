@@ -285,7 +285,7 @@ public class Ghost extends GameComponent {
                             	state = STATE_DONE;
                             }else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
-                            	if(player.isArmorb() == false) {
+                            	if(player.isArmor() == false) {
                             		player.addHealth((int) -damage, "Ghost");
                             	}else {
                             		player.addArmor((int) -damage);

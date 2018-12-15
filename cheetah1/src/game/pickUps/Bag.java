@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package game.powerUp;
+package game.pickUps;
 
 import javax.sound.sampled.Clip;
 
@@ -113,7 +113,7 @@ public class Bag extends GameComponent {
 			Level.getPlayer().setMaxHealth(Level.getPlayer().getMaxHealth()*2);
             Level.getPlayer().setMaxBullets(Level.getPlayer().getMaxBullets()*2);
             Level.getPlayer().setMaxShells(Level.getPlayer().getMaxShells()*2);
-            Level.getPlayer().setMaxArmori(Level.getPlayer().getMaxArmori()*2);
+            Level.getPlayer().setMaxArmor(Level.getPlayer().getMaxArmor()*2);
             Level.removeBags(this);
         }
     }

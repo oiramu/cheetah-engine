@@ -60,6 +60,8 @@ public class Player extends GameComponent {
     private static final float MIN_LOOK_ANGLE = -17;//-45
     private static final float PLAYER_WIDTH = 0.2f;
     private static final float GRAVITY = 9.8f;
+    private static final float BULLET_DAMAGE = 25f;
+    private static final float SHELL_DAMAGE = 50f;
     
     private static float gunTransformMultiplicator;
     private static float moveSpeed;
@@ -319,7 +321,7 @@ public class Player extends GameComponent {
     		playerText.put("CrossHair", new TextureFont("+", new Vector2f(0,0), new Vector2f(1f,1f)));
     	}
     		
-    	if(weaponState == null) { gotPistol(); }
+    	if (weaponState == null) { gotPistol(); }
     	
         if (gunMesh == null) {
             float sizeY = GUN_SIZE;
@@ -417,7 +419,7 @@ public class Player extends GameComponent {
         gunNoise = gunsNoiseSounds.get(1);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(1);
         gunFireAnimationTime = 0.1f;
-        damageMin = 25f;
+        damageMin = BULLET_DAMAGE + (BULLET_DAMAGE / (gunFireAnimationTime * 100));
         damageRange = 30f;
         moveSpeed = 5f;
         attenuation = 0.25f;
@@ -444,8 +446,8 @@ public class Player extends GameComponent {
         gunReload = gunsReloadSounds.get(2);
         gunClipp = gunsClippingSounds.get(2);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(2);
-        gunFireAnimationTime = 0.175f;   
-        damageMin = 50f;
+        gunFireAnimationTime = 0.15f;   
+        damageMin = SHELL_DAMAGE + (SHELL_DAMAGE / (gunFireAnimationTime * 100));
         damageRange = 50f;
         moveSpeed = 4f;
         attenuation = 0.1f;
@@ -468,8 +470,8 @@ public class Player extends GameComponent {
     	gunLightColor = new Vector3f(1.0f,0.6f,0.2f);
         gunNoise = gunsNoiseSounds.get(3);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(3);
-        gunFireAnimationTime = 0.05f;   
-        damageMin = 25f;
+        gunFireAnimationTime = 0.075f;   
+        damageMin = BULLET_DAMAGE + (BULLET_DAMAGE/ (gunFireAnimationTime * 100));
         damageRange = 30f;
         moveSpeed = 4.5f;
         attenuation = 0.175f;
@@ -496,8 +498,8 @@ public class Player extends GameComponent {
         gunReload = gunsReloadSounds.get(4);
         gunClipp = gunsClippingSounds.get(4);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(4);
-        gunFireAnimationTime = 0.2f;   
-        damageMin = 100f;
+        gunFireAnimationTime = 0.175f;   
+        damageMin = (SHELL_DAMAGE + SHELL_DAMAGE) + (SHELL_DAMAGE / (gunFireAnimationTime * 100));
         damageRange = 50f;
         moveSpeed = 4f;
         attenuation = 0.05f;
@@ -520,8 +522,8 @@ public class Player extends GameComponent {
     	gunLightColor = new Vector3f(1.0f,0.7f,0.2f);
         gunNoise = gunsNoiseSounds.get(3);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(3);
-        gunFireAnimationTime = 0.05f;   
-        damageMin = 25f;
+        gunFireAnimationTime = 0.035f;   
+        damageMin = BULLET_DAMAGE + (BULLET_DAMAGE/ (gunFireAnimationTime * 100));
         damageRange = 60f;
         moveSpeed = 4.5f;
         attenuation = 0.025f;
@@ -778,9 +780,8 @@ public class Player extends GameComponent {
 	        sLight.setPosition(getCamera().getPos());
 	        sLight.setDirection(getCamera().getForward());
         }
-        if(!isShooting && (!isBulletBased || !isShellBased)) {
-        	if(renderingEngine != null)renderingEngine.removeLight(fireLight);
-        }
+        if(!isShooting && (!isBulletBased || !isShellBased) && renderingEngine != null)
+        	renderingEngine.removeLight(fireLight);
         fireLight.setPosition(new Vector3f(getCamera().getPos().getX(), 0, getCamera().getPos().getZ()));
         fireLight.setDirection(getCamera().getForward());
         
@@ -793,9 +794,7 @@ public class Player extends GameComponent {
     	if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
     	playerText.get("Life").setText("Life:"+getHealth());
     	playerText.get("Ammo").setText("Ammo:"+ammo);
-        if(armorb) { 
-        	playerText.get("Armor").setText("Armor:"+getArmor());
-        }
+        if(isArmor()) playerText.get("Armor").setText("Armor:"+getArmor());
         
 		if(isMelee) {
 	        if ((double) time < gunTime) {
@@ -1169,8 +1168,8 @@ public class Player extends GameComponent {
 	 * @param amt amount of armor
 	 */
 	public void setMaxArmor(int amt) {
+		if(amt > 200) amt = 200;
 		this.maxArmori += amt;
-		if(maxArmori > 200) maxArmori = 200;
 	}
 
 	/**
@@ -1186,8 +1185,8 @@ public class Player extends GameComponent {
 	 * @param amt amount of bullets
 	 */
 	public void setMaxBullets(int amt) {
+		if(amt > 600) amt = 600;
 		this.maxBullets += amt;
-		if(maxBullets > 600) maxArmori = 600;
 	}
 
 	/**
@@ -1203,8 +1202,8 @@ public class Player extends GameComponent {
 	 * @param amt amount of shells
 	 */
 	public void setMaxShells(int amt) {
+		if(amt > 200) amt = 200;
 		this.maxShells += amt;
-		if(maxShells > 200) maxArmori = 200;
 	}
 	
 	/**
@@ -1250,5 +1249,11 @@ public class Player extends GameComponent {
 		playerText.get("Notification").setText("You've got the bronze key!");
     	notificationTime = Time.getTime();
 	}
+	
+	/**
+	 * Returns the player's own speed.
+	 * @return player's speed
+	 */
+	public float getSpeed() { return moveSpeed; }
 
 }

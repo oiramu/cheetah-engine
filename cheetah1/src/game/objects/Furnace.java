@@ -46,11 +46,12 @@ public class Furnace extends GameComponent {
 	private static final int STATE_IDLE = 0;
 	
 	private int state;
+	private float temp = 0;
     
     private static Mesh mesh;
     private Material material;
-    private MeshRenderer m_meshRenderer;
-    private RenderingEngine m_renderingEngine;
+    private MeshRenderer meshRenderer;
+    private RenderingEngine renderingEngine;
     private PointLight light;
     
     private float sizeX;
@@ -97,15 +98,15 @@ public class Furnace extends GameComponent {
         this.material = new Material(animation.get(0));
         this.state = STATE_IDLE;
         this.transform = transform;
-        this.m_meshRenderer = new MeshRenderer(mesh, getTransform(), material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         
-        if(m_renderingEngine == null) m_renderingEngine = CoreEngine.renderingEngine;
+        if(renderingEngine == null) renderingEngine = CoreEngine.renderingEngine;
         
         if(light == null) {
 	        this.light = new PointLight(new Vector3f(1.0f,0.5f,0.2f), 0.8f, 
 	        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.25f, 
 	        				getTransform().getPosition().getZ()));
-	        m_renderingEngine.addLight(light);
+	        renderingEngine.addLight(light);
     	}
     }
 
@@ -124,8 +125,12 @@ public class Furnace extends GameComponent {
         if (orientation.getX() > 0) {
             angle = 180 + angle;
         }
+        
+        temp += delta;
 
         transform.setRotation(0, angle + 90, 0);
+        
+        light.setPosition(new Vector3f(light.getPosition().getX(), 0.05f * (float)(Math.sin(temp*2.5)+1.0/2.0) + 0.025f, light.getPosition().getZ()));
         
         double time = Time.getTime();
         
@@ -146,7 +151,7 @@ public class Furnace extends GameComponent {
      * @param shader to render
      * @param renderingEngine to use
      */
-    public void render(Shader shader, RenderingEngine renderingEngine) {m_meshRenderer.render(shader, renderingEngine);}
+    public void render(Shader shader, RenderingEngine renderingEngine) {meshRenderer.render(shader, renderingEngine);}
     
     /**
      * Gets the transform of the object in projection.

@@ -53,12 +53,12 @@ public class DeadJew extends GameComponent {
 
     /**
      * Constructor of the actual object.
-     * @param transform the transform of the object in a 3D space.
+     * @param transform the transform of the object in a 3D space
      */
     public DeadJew(Transform transform) {
         if (mesh == null) {
             sizeY = 0.3095238095238095f;
-            sizeX = (float) ((double) sizeY / (3.530769230769231 / 4));
+            sizeX = (float) ((double) sizeY / (3.530769230769231 / 4.0));
 
             float offsetX = 0.0f;
             float offsetY = 0.0f;

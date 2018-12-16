@@ -26,6 +26,7 @@ import javax.swing.JOptionPane;
 
 import engine.rendering.RenderingEngine;
 import engine.rendering.TextureFont;
+import game.Player;
 
 /**
  *
@@ -47,6 +48,9 @@ public class Debug {
 	private static int 		cpu = 0;
 	
 	public static boolean 	state;
+	public static boolean 	godMode;
+	
+	private static Player	player;
 	
 	private static HashMap<String,TextureFont> debugText = new HashMap<String,TextureFont>();
 	
@@ -63,6 +67,8 @@ public class Debug {
 		debugText.put("OS",new TextureFont("OS:"+System.getProperty("os.name"), new Vector2f(X_MARGIN,1.1f), new Vector2f(0.5f,0.5f)));
 		debugText.put("LWJGL",new TextureFont("LWJGL:"+getVersion(), new Vector2f(X_MARGIN,1.0f), new Vector2f(0.5f,0.5f)));
 		debugText.put("OpenGL",new TextureFont("OpenGL:"+glGetString(GL_VERSION), new Vector2f(X_MARGIN,0.9f), new Vector2f(0.5f,0.5f)));
+		debugText.put("Damage",new TextureFont("", new Vector2f(X_MARGIN,0.7f), new Vector2f(0.5f,0.5f)));
+		debugText.put("Speed",new TextureFont("", new Vector2f(X_MARGIN,0.8f), new Vector2f(0.5f,0.5f)));
 	}
 	
 	/**
@@ -98,6 +104,39 @@ public class Debug {
 	        debugText.get("OS").render(renderingEngine);
 	        debugText.get("LWJGL").render(renderingEngine);
 	        debugText.get("OpenGL").render(renderingEngine);
+	        if (Debug.godMode && player != null) {
+	        	debugText.get("Damage").setText("Damage: " + player.getDamage());
+				debugText.get("Speed").setText("Speed: " + player.getSpeed());
+		        debugText.get("Damage").render(renderingEngine);
+		        debugText.get("Speed").render(renderingEngine);
+	        }
+		}
+	}
+	
+	/**
+	 * Enables or disables the god mode to some player.
+	 * @param godMode to set
+	 * @param player to set
+	 */
+	public static void enableGod(boolean godMode, Player player) {
+		Debug.player = player;
+		Debug.godMode = godMode;
+		if (Debug.godMode) {
+			player.setMaxArmor(100000);
+			player.setMaxHealth(100000);
+			player.setMaxBullets(100000);
+			player.setMaxShells(100000);
+			player.setArmor(godMode);
+			player.addArmor(100000);
+			player.addBullets(100000);
+			player.addShells(100000);
+			player.addHealth(1000000, "");
+			player.setBronzekey(godMode);
+			player.setGoldkey(godMode);
+			player.setShotgun(godMode);
+			player.setMachinegun(godMode);
+			player.setSuperShotgun(godMode);
+			player.setChaingun(godMode);
 		}
 	}
 	

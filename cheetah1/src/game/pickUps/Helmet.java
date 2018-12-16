@@ -39,25 +39,25 @@ import game.Level;
  */
 public class Helmet extends GameComponent {
 
-    private static final float PICKUP_THRESHHOLD = 0.75f;
-    private static final boolean STATE = true;
-    private static final int AMOUNT = 25;
-	private static final String RES_LOC = "helmet/MEDIA";
-	private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
+    private static final float 		PICKUP_THRESHHOLD = 0.75f;
+    private static final boolean 	STATE = true;
+    private static final int 		AMOUNT = 25;
+	private static final String 	RES_LOC = "helmet/MEDIA";
+	private static final Clip 		PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
 	
-	private float			m_temp = 0;
+	private float					temp = 0;
 
-    private static Mesh 	m_mesh;
-    private static Material m_material;
-    private MeshRenderer 	m_meshRenderer;
-    private Transform 		m_transform; 
+    private static Mesh 			mesh;
+    private static Material 		material;
+    private MeshRenderer 			meshRenderer;
+    private Transform 				transform; 
 
     /**
      * Constructor of the actual power-up.
      * @param transform the transform of the data.
      */
     public Helmet(Transform transform) {
-        if (m_mesh == null) {
+        if (mesh == null) {
             final float sizeY = 0.7096774193548387f / 4.0f;
             final float sizeX = (float) ((double) sizeY / (1.409090909090909));
 
@@ -77,15 +77,15 @@ public class Helmet extends GameComponent {
             int[] indices = new int[]{0, 1, 2,
             						0, 2, 3};
 
-            m_mesh = new Mesh(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
 
-        if (m_material == null) {
-            m_material = new Material(new Texture(RES_LOC));
+        if (material == null) {
+            material = new Material(new Texture(RES_LOC));
         }
 
-        this.m_transform = transform;
-        this.m_meshRenderer = new MeshRenderer(m_mesh, this.m_transform, m_material);
+        this.transform = transform;
+        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
     }
 
     /**
@@ -93,7 +93,7 @@ public class Helmet extends GameComponent {
      * @param delta of time
      */
     public void update(double delta) {
-    	Vector3f playerDistance = m_transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
+    	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
         Vector3f orientation = playerDistance.normalized();
         float distance = playerDistance.length();
         setDistance(distance);
@@ -104,10 +104,10 @@ public class Helmet extends GameComponent {
             angle = 180 + angle;
         }
 
-        m_transform.setRotation(0, angle + 90, 0);
+        transform.setRotation(0, angle + 90, 0);
         if (!(distance < PICKUP_THRESHHOLD)) {
-	        m_temp += (float) delta; 
-	        m_transform.getPosition().setY(0.05f * (float)(Math.sin(m_temp)+1.0/2.0) + 0.025f);
+	        temp += (float) delta; 
+	        transform.getPosition().setY(0.05f * (float)(Math.sin(temp)+1.0/2.0) + 0.025f);
         }
         
 		if (distance < PICKUP_THRESHHOLD) {
@@ -123,7 +123,7 @@ public class Helmet extends GameComponent {
      * @param shader to render
      * @param renderingEngine to use
      */
-    public void render(Shader shader, RenderingEngine renderingEngine) {m_meshRenderer.render(shader, renderingEngine);}
+    public void render(Shader shader, RenderingEngine renderingEngine) {meshRenderer.render(shader, renderingEngine);}
     
 
 }

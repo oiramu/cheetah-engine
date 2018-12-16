@@ -39,18 +39,18 @@ import game.Level;
  */
 public class Shotgun extends GameComponent {
 
-    public final float PICKUP_THRESHHOLD = 0.75f;
+    public final float 			PICKUP_THRESHHOLD = 0.75f;
     private static final String RES_LOC = "shotgun/MEDIA";
     private static final String WEAPONS_RES_LOC = "weapons/";
-    private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
+    private static final Clip 	PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
     
-    private float			temp = 0;
+    private float				temp = 0;
 
-    private static Mesh 	mesh;
-    private static Material material;
-    private MeshRenderer 	meshRenderer;
-    private Transform 		transform;
-    private boolean			shouldFloat;
+    private static Mesh 		mesh;
+    private static Material 	material;
+    private MeshRenderer 		meshRenderer;
+    private Transform 			transform;
+    private boolean				shouldFloat;
 
     /**
      * Constructor of the actual power-up.
@@ -58,11 +58,11 @@ public class Shotgun extends GameComponent {
      */
     public Shotgun(Transform transform, boolean shouldFloat) {
         if (mesh == null) {
-            float sizeY = 0.15f;
-            float sizeX = (float) ((double) sizeY / (0.2295081967213115 * (sizeY * 10)));
+            float sizeY = 0.14f;
+            float sizeX = (float) ((double) sizeY / (0.229508196721311 * 2.0));
 
-            float offsetX = 0.05f;
-            float offsetY = 0.01f;
+            float offsetX = 0.0f;
+            float offsetY = 0.0f;
 
             float texMinX = -offsetX;
             float texMaxX = -1 - offsetX;

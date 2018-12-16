@@ -571,6 +571,15 @@ public class Level extends GameComponent {
                 nearestIntersect = collision;
             }
         }
+        
+        for (LockedDoor lockedDoor : lockedDoors) {
+            Vector2f collision = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, lockedDoor.getTransform().getPosition().getXZ(), lockedDoor.getSize());
+
+            if (collision != null && (nearestIntersect == null
+                    || nearestIntersect.sub(lineStart).length() > collision.sub(lineStart).length())) {
+                nearestIntersect = collision;
+            }
+        }
 
         if (hurtMonsters) {
             Vector2f monsterIntersect = null;

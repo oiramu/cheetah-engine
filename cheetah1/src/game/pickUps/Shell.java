@@ -39,18 +39,18 @@ import game.Level;
  */
 public class Shell extends GameComponent {
 
-	public final float PICKUP_THRESHHOLD = 0.75f;
-    private static final int AMOUNT = 6;
+	public final float 			PICKUP_THRESHHOLD = 0.75f;
+    private static final int 	AMOUNT = 6;
     private static final String RES_LOC = "shell/MEDIA";
-    private static final Clip PICKUP_NOISE = AudioUtil.loadAudio("bullet/MEDIA");
+    private static final Clip 	PICKUP_NOISE = AudioUtil.loadAudio("bullet/MEDIA");
     
-    private float			temp = 0;
+    private float				temp = 0;
 
-    private static Mesh 	mesh;
-    private static Material material;
-    private MeshRenderer 	meshRenderer;
-    private Transform 		transform;
-    private boolean			shouldFloat;
+    private static Mesh 		mesh;
+    private static Material 	material;
+    private MeshRenderer 		meshRenderer;
+    private Transform 			transform;
+    private boolean				shouldFloat;
 
     /**
      * Constructor of the actual power-up.
@@ -59,8 +59,8 @@ public class Shell extends GameComponent {
      */
     public Shell(Transform transform, boolean shouldFloat) {
         if (mesh == null) {
-        	float sizeY = 0.2f;
-            float sizeX = (float) ((double) sizeY / (1.666666666666667f * 2.0));
+        	float sizeY = 0.11f;
+            float sizeX = (float) ((double) sizeY / (0.64705882f * 2.0));
 
             float offsetX = 0.0f;
             float offsetY = 0.0f;

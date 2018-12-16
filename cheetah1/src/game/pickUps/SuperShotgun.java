@@ -39,18 +39,18 @@ import game.Level;
  */
 public class SuperShotgun extends GameComponent {
 
-    public static final float PICKUP_THRESHHOLD = 0.75f;
+    public static final float 	PICKUP_THRESHHOLD = 0.75f;
     private static final String RES_LOC = "superShotgun/MEDIA";
     private static final String WEAPONS_RES_LOC = "weapons/";
-    private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
+    private static final Clip 	PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
     
-    private float			m_temp = 0;
+    private float				temp = 0;
 
-    private static Mesh 	m_mesh;
-    private static Material m_material;
-    private MeshRenderer 	m_meshRenderer;
-    private Transform 		m_transform;
-    private boolean			m_shouldFloat;
+    private static Mesh 		mesh;
+    private static Material 	material;
+    private MeshRenderer 		meshRenderer;
+    private Transform 			transform;
+    private boolean				shouldFloat;
 
     /**
      * Constructor of the actual power-up.
@@ -58,9 +58,9 @@ public class SuperShotgun extends GameComponent {
      * @param shouldFloat if it does.
      */
     public SuperShotgun(Transform transform, boolean shouldFloat) {
-        if (m_mesh == null) {
-            float sizeY = 0.3142857142857143f;
-            float sizeX = (float) ((double) sizeY / (0.2295081967213115 * (sizeY * 10)));
+        if (mesh == null) {
+            float sizeY = 0.22f;
+            float sizeX = (float) ((double) sizeY / (0.305555555555556 * 2.0));
 
             float offsetX = 0.0f;
             float offsetY = 0.0f;
@@ -78,15 +78,15 @@ public class SuperShotgun extends GameComponent {
             int[] indices = new int[]{0, 1, 2,
             						0, 2, 3};
 
-            m_mesh = new Mesh(verts, indices, true);
+            mesh = new Mesh(verts, indices, true);
         }
 
-        if (m_material == null) {
-            m_material = new Material(new Texture(WEAPONS_RES_LOC + RES_LOC));
+        if (material == null) {
+            material = new Material(new Texture(WEAPONS_RES_LOC + RES_LOC));
         }
-        this.m_shouldFloat = shouldFloat;
-        this.m_transform = transform;
-        this.m_meshRenderer = new MeshRenderer(m_mesh, m_transform, m_material);
+        this.shouldFloat = shouldFloat;
+        this.transform = transform;
+        this.meshRenderer = new MeshRenderer(mesh, this.transform, material);
     }
 
     /**
@@ -94,7 +94,7 @@ public class SuperShotgun extends GameComponent {
      * @param delta of time
      */
 	public void update(double delta) {
-		Vector3f playerDistance = m_transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
+		Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
         Vector3f orientation = playerDistance.normalized();
         float distance = playerDistance.length();
         setDistance(distance);
@@ -105,11 +105,11 @@ public class SuperShotgun extends GameComponent {
             angle = 180 + angle;
         }
 
-        m_transform.setRotation(0, angle + 90, 0);
+        transform.setRotation(0, angle + 90, 0);
         
-        if (m_shouldFloat) {
-	        m_temp += (float) delta; 
-	        m_transform.getPosition().setY(0.05f * (float)(Math.sin(m_temp)+1.0/2.0) + 0.025f);
+        if (shouldFloat) {
+	        temp += (float) delta; 
+	        transform.getPosition().setY(0.05f * (float)(Math.sin(temp)+1.0/2.0) + 0.025f);
         }
 
         if (distance < PICKUP_THRESHHOLD) {
@@ -124,7 +124,7 @@ public class SuperShotgun extends GameComponent {
      * @param shader to render
      * @param renderingEngine to use
      */
-    public void render(Shader shader, RenderingEngine renderingEngine) {m_meshRenderer.render(shader, renderingEngine);}
+    public void render(Shader shader, RenderingEngine renderingEngine) {meshRenderer.render(shader, renderingEngine);}
     
     
 }

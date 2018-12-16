@@ -1132,7 +1132,7 @@ public class Player extends GameComponent {
 		if (armori > getMaxArmor())
         	armori = getMaxArmor();
         
-        if (armori < 0) {
+        if (armori <= 0) {
         	armori = 0;
         	armorb = false;
         }

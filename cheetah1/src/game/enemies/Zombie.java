@@ -49,8 +49,8 @@ public class Zombie extends GameComponent {
 
     private static final float MAX_HEALTH = 600f;
     private static final float SHOT_ANGLE = 10.0f;
-    private static final float DAMAGE_MIN = 1.5f;
-    private static final float DAMAGE_RANGE = 3.0f;
+    private static final float DAMAGE_MIN = 15f;
+    private static final float DAMAGE_RANGE = 20f;
     private static final float ZOMBIE_WIDTH = 0.4f;
 
     private static final int STATE_IDLE = 0;
@@ -403,7 +403,7 @@ public class Zombie extends GameComponent {
             	transform.setScale(1.586206896551724f,0.630434782608696f,1);
                 material.setDiffuse(animation.get(14));
             } else if (time > deathTime + time4 && time <= deathTime + time6) {
-            	transform.setScale(0.935483870967742f,1.068965517241379f,1);
+            	transform.setScale(1.586206896551724f,0.630434782608696f,1);
                 material.setDiffuse(animation.get(15));
             } else if (time > deathTime + time6) {
                 state = STATE_DEAD;
@@ -416,7 +416,7 @@ public class Zombie extends GameComponent {
             if(key == null)
             	key = new Key(new Transform(transform.getPosition().add(-0.001f)), true, false);
             key.update(delta);
-            transform.setScale(0.4375f,2.285714285714286f,1);
+            transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
             material.setDiffuse(animation.get(16));
             if (distance < key.PICKUP_THRESHHOLD) {
             	state = STATE_POST_DEATH;
@@ -425,7 +425,7 @@ public class Zombie extends GameComponent {
         
         if (state == STATE_POST_DEATH) {
         	isQuiet = true;
-        	transform.setScale(0.419354838709677f,2.384615384615385f,1);
+        	transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
             material.setDiffuse(animation.get(17));
         }
         

@@ -731,7 +731,7 @@ public class Level extends GameComponent {
         	}
             
             for (Barrel barrel : barrels) {
-                if(barrel.boom == true) {
+                if(barrel.kBooms) {
                     if (monsterIntersect != null && (nearestIntersect == null
                                                      || nearestIntersect.sub(lineStart).length() > monsterIntersect.sub(lineStart).length())) {
                         nearestMonster.damage(barrel.damage);

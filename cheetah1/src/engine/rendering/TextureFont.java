@@ -202,12 +202,26 @@ public class TextureFont {
 	 * Method that updates the position.
 	 * @param position to set
 	 */
-	public void setPosition(Vector2f position) {this.position = position;}
+	public void setPosition(Vector2f position) {
+		this.position = position;
+		Matrix4f matrixScaleFont = new Matrix4f();
+        Matrix4f matrixTranslationFont = new Matrix4f();
+        matrixScaleFont.initScale(scale.getX(), scale.getY(), 1.5f);
+        matrixTranslationFont.initTranslation(this.position.getX(), this.position.getY(), 0);
+        fontMatrix = matrixScaleFont.mul(matrixTranslationFont);
+	}
 
 	/**
 	 * Method that updates the scale.
 	 * @param scale to set
 	 */
-	public void setScale(Vector2f scale) {this.scale = scale;}
+	public void setScale(Vector2f scale) {
+		this.scale = scale;
+		Matrix4f matrixScaleFont = new Matrix4f();
+        Matrix4f matrixTranslationFont = new Matrix4f();
+        matrixScaleFont.initScale(this.scale.getX(), this.scale.getY(), 1.5f);
+        matrixTranslationFont.initTranslation(position.getX(), position.getY(), 0);
+        fontMatrix = matrixScaleFont.mul(matrixTranslationFont);
+	}
 
 }

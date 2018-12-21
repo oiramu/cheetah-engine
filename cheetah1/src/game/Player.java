@@ -318,10 +318,8 @@ public class Player extends GameComponent {
     		playerText.put("Armor", new TextureFont("", new Vector2f(-0.9f,-0.7f), new Vector2f(1f,1f)));
     		playerText.put("Ammo", new TextureFont("", new Vector2f(-0.9f,-0.9f), new Vector2f(1f,1f)));
     		playerText.put("Notification", new TextureFont("", new Vector2f(-1.3f,1.25f), new Vector2f(0.7f,0.7f)));
-    		playerText.put("CrossHair", new TextureFont("+", new Vector2f(0,0), new Vector2f(1f,1f)));
+    		playerText.put("CrossHair", new TextureFont("", zeroVector.getXY(), new Vector2f(1f,1f)));
     	}
-    		
-    	if (weaponState == null) { gotPistol(); }
     	
         if (gunMesh == null) {
             float sizeY = GUN_SIZE;
@@ -357,7 +355,8 @@ public class Player extends GameComponent {
         maxShells = 0;
 
         if(gunTransform == null) gunTransform = new Transform(playerCamera.getPos());
-        if(gunRenderer == null) gunRenderer = new MeshRenderer(gunMesh, gunTransform, gunMaterial);  
+        if(gunRenderer == null) gunRenderer = new MeshRenderer(gunMesh, gunTransform, gunMaterial); 
+        if (weaponState == null) { gotPistol(); }
         
         if(sLight == null && fireLight == null) {
         	sLight = new SpotLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f, 
@@ -380,7 +379,7 @@ public class Player extends GameComponent {
         Debug.init();
         goldkey = false;
         bronzekey = false;
-        Debug.enableGod(true, this);
+        Debug.enableGod(false, this);
     }
 
     private float upAngle = 0;
@@ -406,6 +405,7 @@ public class Player extends GameComponent {
         weaponState = HAND;
         isAutomatic = false;
         isDoubleShooter = false;
+        playerText.get("CrossHair").setText("");
     }
     
     /**
@@ -430,6 +430,8 @@ public class Player extends GameComponent {
         weaponState = PISTOL;
         isAutomatic = false;
         isDoubleShooter = false;
+        playerText.get("CrossHair").setPosition(zeroVector.getXY());
+        playerText.get("CrossHair").setText(".");
     }
     
     /**
@@ -458,6 +460,8 @@ public class Player extends GameComponent {
         weaponState = SHOTGUN;
         isAutomatic = false;
         isDoubleShooter = false;
+        playerText.get("CrossHair").setPosition(new Vector2f(-0.065f, 0));
+        playerText.get("CrossHair").setText("( )");
     }
     
     /**
@@ -482,6 +486,8 @@ public class Player extends GameComponent {
         weaponState = MACHINEGUN;
         isAutomatic = true;
         isDoubleShooter = false;
+        playerText.get("CrossHair").setPosition(zeroVector.getXY());
+        playerText.get("CrossHair").setText(".");
     }
     
     /**
@@ -510,6 +516,8 @@ public class Player extends GameComponent {
         weaponState = SUPER_SHOTGUN;
         isAutomatic = false;
         isDoubleShooter = true;
+        playerText.get("CrossHair").setPosition(new Vector2f(-0.065f, 0));
+        playerText.get("CrossHair").setText("( )");
     }
     
     /**
@@ -534,6 +542,8 @@ public class Player extends GameComponent {
         weaponState = CHAINGUN;
         isAutomatic = true;
         isDoubleShooter = false;
+        playerText.get("CrossHair").setPosition(zeroVector.getXY());
+        playerText.get("CrossHair").setText(".");
     }
 
     /**
@@ -856,8 +866,7 @@ public class Player extends GameComponent {
 	    	playerText.get("CrossHair").render(renderingEngine);
 	    	playerText.get("Life").render(renderingEngine);
 	    	playerText.get("Ammo").render(renderingEngine);
-	        if(armorb) 
-	        	playerText.get("Armor").render(renderingEngine);
+	        if(armorb) playerText.get("Armor").render(renderingEngine);
 	        if(time < notificationTime + 2.5f) playerText.get("Notification").render(renderingEngine);
     	}
         

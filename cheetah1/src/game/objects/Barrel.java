@@ -50,7 +50,7 @@ public class Barrel extends GameComponent {
 	private static final int STATE_BOOM = 1;
 	private static final int STATE_DEAD = 2;
 	public int damage;
-	public boolean boom;
+	public boolean kBooms;
 	private int state;
 	private double fireTime;
     
@@ -65,7 +65,7 @@ public class Barrel extends GameComponent {
     
     private static ArrayList<Texture> animation;
     
-    private static final Clip breakNoice = AudioUtil.loadAudio(RES_LOC_2 + "EXPLOSIO");
+    private static final Clip boomNoice = AudioUtil.loadAudio(RES_LOC_2 + "EXPLOSIO");
 
     private Transform transform;
 
@@ -131,7 +131,7 @@ public class Barrel extends GameComponent {
         this.health = 200;
         this.damage = 0;
         this.fireTime = 0;
-        this.boom = false;
+        this.kBooms = false;
     }
 
     /**
@@ -163,7 +163,7 @@ public class Barrel extends GameComponent {
         if (!dead && health <= 0) {
             dead = true;
             state = STATE_BOOM;
-            AudioUtil.playAudio(breakNoice, distance);
+            AudioUtil.playAudio(boomNoice, distance);
         }
         
         if (state == STATE_BOOM) {
@@ -171,7 +171,7 @@ public class Barrel extends GameComponent {
             timeDecimals *= 4.5f;
 
         	if (timeDecimals <= 0.25f) {
-        		boom = true;
+        		kBooms = true;
         		dead = true;
                 material.setDiffuse(animation.get(1));
             } else if (timeDecimals <= 0.5f) {
@@ -216,7 +216,7 @@ public class Barrel extends GameComponent {
         }
         
         if (state == STATE_DEAD) {
-        	boom = false;
+        	kBooms = false;
         	Level.removeBarrel(this);
         }
 

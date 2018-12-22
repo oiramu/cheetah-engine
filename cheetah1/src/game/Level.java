@@ -860,8 +860,9 @@ public class Level extends GameComponent {
      * @param engine of the level.
      */
     private void generateLevel() {
-        ArrayList<Vertex> vertices = new ArrayList<Vertex>();
-        ArrayList<Integer> indices = new ArrayList<Integer>();
+    	
+    	ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+    	ArrayList<Integer> indices = new ArrayList<Integer>();
         
         //Remove list
     	if(removeMedkitList == null) Level.removeMedkitList = new ArrayList<Medkit>();
@@ -1122,14 +1123,16 @@ public class Level extends GameComponent {
                         addFace(indices,vertices.size(),false);
                         addVertices(vertices, 0, j, (i + 1), false, true, true, texCoords);
                     }
+               
             }
         }
+        
         Vertex[] vertArray = new Vertex[vertices.size()];
         Integer[] intArray = new Integer[indices.size()];
         
         vertices.toArray(vertArray);
         indices.toArray(intArray);
-        
+
         if(geometry == null)
         	geometry = new Mesh(vertArray, Util.toIntArray(intArray), true, true);
         if(meshRenderer == null)

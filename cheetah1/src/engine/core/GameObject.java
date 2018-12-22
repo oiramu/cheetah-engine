@@ -33,13 +33,13 @@ import game.enemies.NaziSoldier;
  */
 public class GameObject {
 	
-	private ArrayList <GameComponent> list;
+	private ArrayList <GameComponent> components;
 	
 	/**
 	 * Game Object's constructor.
 	 */
 	public GameObject() {
-		list = new ArrayList<GameComponent>();
+		components = new ArrayList<GameComponent>();
 	}
 	
 	/**
@@ -47,7 +47,7 @@ public class GameObject {
 	 * @param component to add
 	 */
 	public <E> void add(E component) {
-		list.add((GameComponent) component);
+		components.add((GameComponent) component);
 	}
 	
 	/**
@@ -55,9 +55,8 @@ public class GameObject {
 	 * @param list to add
 	 */
 	public <E> void add(ArrayList<E> list) {
-		list.stream().forEach(object -> {
-			this.list.add((GameComponent) object);
-		});
+		for(E component : list)
+			components.add((GameComponent) component);
 	}
 	
 	/**
@@ -65,9 +64,8 @@ public class GameObject {
 	 * the list.
 	 */
 	public void input() {
-		list.stream().forEach(object -> {
-			object.input();
-		});
+		for(GameComponent component : components)
+			component.input();
 	}
 	
 	/**
@@ -77,10 +75,9 @@ public class GameObject {
 	 * @param renderingEngine to render
 	 */
 	public void render(Shader shader, RenderingEngine renderingEngine) {
-		list.stream().forEach(object -> {
-			if(object.getDistance() < POP_IN)
-				object.render(shader, renderingEngine);
-		});
+		for(GameComponent component : components)
+			if(component.getDistance() < POP_IN)
+				component.render(shader, renderingEngine);
 	}
 	
 	/**
@@ -89,9 +86,8 @@ public class GameObject {
 	 * @param delta of time
 	 */
 	public void update(double delta) {
-		list.stream().forEach(object -> {
-			object.update(delta);
-		});
+		for(GameComponent component : components)
+			component.update(delta);
 	}
 	
 	/**
@@ -150,8 +146,7 @@ public class GameObject {
      */
     public <E> void removeListToRenderPipeline(ArrayList<E> removeList) {
     	for (E component : removeList) 
-    		list.remove(component);
-    	
+    		components.remove(component);    	
     }
     
     /**

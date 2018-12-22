@@ -56,7 +56,7 @@ public class MeshRenderer {
         shader.updateUniforms(transform, material, renderingEngine);
         mesh.draw();
 	}
-
+	
 	/**
 	 * Sets a new mesh for the mesh renderer.
 	 * @param mesh to set

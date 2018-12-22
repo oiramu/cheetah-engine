@@ -83,24 +83,26 @@ public class RenderingEngine extends MappedValues {
 			glDepthMask(false);
 			glDepthFunc(GL_EQUAL);
 			
-			lights.stream().forEach(light -> {
-				if(light.getIntensity() > 0) {
-					activeLight = light;
-					switch(activeLight.getShader().getName()) {
-						case"forward-directional":
+			for(BaseLight light : lights) {
+				switch(light.getShader().getName()) {
+					case"forward-directional":
+						activeLight = light;
+						component.render(activeLight.getShader(), this);
+					break;
+					case"forward-point":
+						if(((PointLight) light).getDistance() < LIGHT_POP_IN) {
+							activeLight = light;
 							component.render(activeLight.getShader(), this);
-						break;
-						case"forward-point":
-							if(((PointLight) activeLight).getDistance() < LIGHT_POP_IN)
-								component.render(activeLight.getShader(), this);
-						break;
-						case"forward-spot":
-							if(((SpotLight) activeLight).getDistance() < LIGHT_POP_IN)
-								component.render(activeLight.getShader(), this);
-						break;
-					}
+						}
+					break;
+					case"forward-spot":
+						if(((SpotLight) light).getDistance() < LIGHT_POP_IN) {
+							activeLight = light;
+							component.render(activeLight.getShader(), this);
+						}
+					break;
 				}
-			});
+			}
 			glDepthFunc(GL_LESS);
 			glDepthMask(true);
 			glDisable(GL_BLEND);

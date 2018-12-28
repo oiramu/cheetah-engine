@@ -128,7 +128,7 @@ public class Captain extends GameComponent {
         }
 
         if (mesh == null) {
-            final float sizeY = 0.8f;
+            final float sizeY = 1.0f;
             sizeX = (float) ((double) sizeY / (sizeY * 2.0));
 
             final float offsetX = 0.05f;

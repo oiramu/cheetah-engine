@@ -40,8 +40,8 @@ import engine.rendering.Vertex;
 import game.Auschwitz;
 import game.Level;
 import game.Player;
-import game.pickUps.Shell;
-import game.pickUps.Shotgun;
+import game.pickUps.Bullet;
+import game.pickUps.Key;
 
 /**
  *
@@ -49,55 +49,59 @@ import game.pickUps.Shotgun;
  * @version 1.1
  * @since 2017
  */
-public class NaziSergeant extends GameComponent {
+public class Captain extends GameComponent {
 
-    private static final float MAX_HEALTH = 175f;
-    private static final float SHOT_ANGLE = 10.0f;
-    private static final float DAMAGE_MIN = 37.5f;
-    private static final float DAMAGE_RANGE = 37.5f;
+    private static final float MAX_HEALTH = 1000f;
+    private static final float SHOT_ANGLE = 30.0f;
+    private static final float DAMAGE_MIN = 50f;
+    private static final float DAMAGE_RANGE = 60f;
     private static final float NAZI_WIDTH = 0.4f;
 
     private static final int STATE_IDLE = 0;
     private static final int STATE_CHASE = 1;
     private static final int STATE_ATTACK = 2;
     private static final int STATE_DYING = 3;
-    private static final int STATE_DEAD = 4;
+    private static final int STATE_POST_DEATH = 4;
     private static final int STATE_DONE = 5;
     private static final int STATE_HIT = 6;
-    private static final int STATE_POST_DEATH = 7;
+    private static final int STATE_DEAD = 7;
     
-    private static final String RES_LOC = "naziSergeant/";
+    private static final String RES_LOC = "Captain/";
 
-    private static final Clip seeNoise = AudioUtil.loadAudio(RES_LOC + "SSSSIT");
-    private static final Clip shootNoise = AudioUtil.loadAudio(RES_LOC + "SSHOTGN");
-    private static final Clip hitNoise = AudioUtil.loadAudio(RES_LOC + "SPOPAIN");
-    private static final Clip deathNoise = AudioUtil.loadAudio(RES_LOC + "SSSDTH");
+    private static final Clip seeNoise = AudioUtil.loadAudio(RES_LOC + "hailhtlr");
+    private static final Clip shootNoise = AudioUtil.loadAudio(RES_LOC + "GUN");
+    private static final Clip loadNoise = AudioUtil.loadAudio(RES_LOC + "LOAD");
+    private static final Clip hitNoise = AudioUtil.loadAudio(RES_LOC + "hit");
+    private static final Clip deathNoise = AudioUtil.loadAudio(RES_LOC + "dying");
 
     private static ArrayList<Texture> animation;
     private static Mesh mesh;
     private static Random rand;
+    private float sizeX;
 
     private Transform transform;
     private Material material;
     private MeshRenderer meshRenderer;
     private RenderingEngine renderingEngine;
-    private Shotgun shotgun;
-    private Shell shell;
+    private Bullet bullet;
     private SpotLight light;
+    private Key key;
 
     private int state;
     public boolean isQuiet;
     private boolean canAttack;
     private boolean canLook;
     private boolean dead;
+    private boolean dropsKey;
     private double deathTime;
     private double health;
 
     /**
      * Constructor of the actual enemy.
      * @param transform the transform of the data.
+     * @param dropsKey if he does
      */
-    public NaziSergeant(Transform transform) {
+    public Captain(Transform transform, boolean dropsKey) {
         if (rand == null) {
             rand = new Random();
         }
@@ -116,18 +120,19 @@ public class NaziSergeant extends GameComponent {
 
             animation.add(new Texture(RES_LOC + "TRANH0"));
             animation.add(new Texture(RES_LOC + "TRANH1"));
-            animation.add(new Texture(RES_LOC + "TRANH2"));
             animation.add(new Texture(RES_LOC + "TRANI0"));
             animation.add(new Texture(RES_LOC + "TRANJ0"));
             animation.add(new Texture(RES_LOC + "TRANK0"));
+            animation.add(new Texture(RES_LOC + "TRANL0"));
+            
         }
 
         if (mesh == null) {
-            final float sizeY = 0.9f;
-            final float sizeX = (float) ((double) sizeY / (sizeY * 2.0));
+            final float sizeY = 0.8f;
+            sizeX = (float) ((double) sizeY / (sizeY * 2.0));
 
             final float offsetX = 0.05f;
-            final float offsetY = 0.0f;
+            final float offsetY = 0.01f;
 
             final float texMinX = -offsetX;
             final float texMaxX = -1 - offsetX;
@@ -143,7 +148,7 @@ public class NaziSergeant extends GameComponent {
                                         0, 2, 3};
 
             mesh = new Mesh(verts, indices, true);
-        }   
+        }
         
         if(this.renderingEngine == null) this.renderingEngine = CoreEngine.renderingEngine;
         
@@ -151,14 +156,16 @@ public class NaziSergeant extends GameComponent {
         this.material = new Material(animation.get(0));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         if(light == null)
-        	light = new SpotLight(new Vector3f(0.45f,0.35f,0.1f), 1.6f, 
-        	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
+        	light = new SpotLight(new Vector3f(0.5f,0.3f,0.1f), 0.8f, 
+        	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f); 
+        
         this.state = 0;
         this.canAttack = true;
         this.canLook = true;
         this.dead = false;
         this.deathTime = 0.0;
         this.health = MAX_HEALTH;
+        this.dropsKey = dropsKey;
     }
 
     float offsetX = 0;
@@ -169,6 +176,7 @@ public class NaziSergeant extends GameComponent {
      * @param delta of time
      */
     public void update(double delta) {
+        
         //Set Height
         transform.setPosition(transform.getPosition().getX(), 0, transform.getPosition().getZ());
         
@@ -239,9 +247,9 @@ public class NaziSergeant extends GameComponent {
                     state = STATE_ATTACK;
                 }
 
-                if (distance > 1.20f) {
+                if (distance > 1.0f) {
                     orientation.setY(0);
-                    float moveSpeed = 2f;
+                    float moveSpeed = 1.5f;
 
                     Vector3f oldPos = transform.getPosition();
                     Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * delta)));
@@ -289,9 +297,11 @@ public class NaziSergeant extends GameComponent {
                 double timeDecimals = (time - (double) ((int) time));
 
                 if (timeDecimals <= 0.25f) {
+                	AudioUtil.playAudio(loadNoise, distance);
                     material.setDiffuse(animation.get(4));
                 } else if (timeDecimals <= 0.5f) {
                     material.setDiffuse(animation.get(5));
+                    AudioUtil.playAudio(shootNoise, distance);
                 } else if (timeDecimals <= 0.7f) {
                     if (canAttack) {
                     	light.setPosition(transform.getPosition());
@@ -314,13 +324,14 @@ public class NaziSergeant extends GameComponent {
                             if(player.getHealth() <= 0) {
                             	state = STATE_DONE;
                             	renderingEngine.removeLight(light);
-                            }else {
+                            } else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
                             	if(player.isArmor() == false) {
-                            		player.addHealth((int) -damage, "Schutzstaffel Sergeant");
+                            		player.addHealth((int) -damage, "Schutzstaffel Captain");
                             	}else {
                             		player.addArmor((int) -damage);
                             	}
+                     
                             }
                             
                         }
@@ -328,9 +339,10 @@ public class NaziSergeant extends GameComponent {
                     }
                     material.setDiffuse(animation.get(6));
                 } else {
-                	renderingEngine.removeLight(light);
                     canAttack = true;
                     material.setDiffuse(animation.get(5));
+                    AudioUtil.playAudio(shootNoise, distance);
+                    AudioUtil.playAudio(loadNoise, distance);
                     state = STATE_CHASE;
                 }
             }
@@ -342,56 +354,55 @@ public class NaziSergeant extends GameComponent {
 
             final float time1 = 0.1f;
             final float time2 = 0.3f;
-            final float time3 = 0.5f;
+            final float time3 = 0.45f;
+            final float time4 = 0.6f;
 
             if (time <= deathTime + 0.2f) {
                 material.setDiffuse(animation.get(9));
             } else if (time > deathTime + time1 && time <= deathTime + time2) {
                 material.setDiffuse(animation.get(10));
-            }else if (time > deathTime + time2 && time <= deathTime + time3) {
+            } else if (time > deathTime + time2 && time <= deathTime + time3) {
                 material.setDiffuse(animation.get(11));
-            } else if (time > deathTime + time3) {
+            } else if (time > deathTime + time3 && time <= deathTime + time4) {
+                material.setDiffuse(animation.get(12));
+            } else if (time > deathTime + time4) {
                 state = STATE_DEAD;
             }
         }
-
+        
         if (state == STATE_DEAD) {
         	isQuiet = true;
-        	if(shotgun == null)
-        		shotgun = new Shotgun(new Transform(transform.getPosition().add(-0.001f)), false);
-        	shotgun.update(delta);
-        	if(shell == null)
-        		shell = new Shell(new Transform(transform.getPosition().add(-0.002f)), false);
-        	shell.update(delta);
-            dead = true;
-            material.setDiffuse(animation.get(12));
-            if (distance < shotgun.PICKUP_THRESHHOLD) {
+        	if(bullet == null)
+            	bullet = new Bullet(new Transform(transform.getPosition().add(-0.001f)), false);
+        	if(key == null && dropsKey)
+        		key = new Key(new Transform(transform.getPosition().add(-0.002f)), true, false);
+        	bullet.update(delta);
+        	key.update(delta);
+        	material.setDiffuse(animation.get(12));   	
+            dead = true;  
+            if (distance < bullet.PICKUP_THRESHHOLD) {
             	state = STATE_POST_DEATH;
             }
         }
         
         if (state == STATE_POST_DEATH) {
         	isQuiet = true;
+            dead = true;
         }
         
         if (state == STATE_DONE) {
         	isQuiet = true;
         	double timeDecimals = (time - (double) ((int) time));
 
-        	timeDecimals *= 1.5f;
-
-            if (timeDecimals <= 0.25f) {
-                material.setDiffuse(animation.get(0));
-            } else if (timeDecimals <= 0.5f) {
-                material.setDiffuse(animation.get(1));
-            } else if (timeDecimals <= 0.75f) {
-                material.setDiffuse(animation.get(2));
-            } else {
+            if (timeDecimals <= 0.75f) {
                 material.setDiffuse(animation.get(3));
+            } else {
+                material.setDiffuse(animation.get(4));
             }
         }
         
         if (state == STATE_HIT) {
+        	isQuiet = true;
         	double timeDecimals = (time - (double) ((int) time));
             if (timeDecimals <= 0.5f) {
                 material.setDiffuse(animation.get(7));
@@ -414,7 +425,7 @@ public class NaziSergeant extends GameComponent {
 
         if (health > 0) {
         	state = STATE_HIT;
-            AudioUtil.playAudio(hitNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
+        	AudioUtil.playAudio(hitNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());     	
         }
     }
 
@@ -426,16 +437,23 @@ public class NaziSergeant extends GameComponent {
     public void render(Shader shader, RenderingEngine renderingEngine) {
         Vector3f prevPosition = transform.getPosition();
         transform.setPosition(new Vector3f(transform.getPosition().getX() + offsetX, transform.getPosition().getY() + offsetY, transform.getPosition().getZ()));
-
-        meshRenderer.render(shader, renderingEngine);
         
         if (state == STATE_DEAD) {
-        	shotgun.render(shader, renderingEngine);
-        	shell.render(shader, renderingEngine);
+        	bullet.render(shader, renderingEngine);
+        	if(dropsKey)
+        		key.render(shader, renderingEngine);
         }
+        
+        meshRenderer.render(shader, renderingEngine);
 
         transform.setPosition(prevPosition);
     }
+    
+    /**
+     * Sets the state to start with.
+     * @param state to set.
+     */
+    public void setState(int state) {this.state = state;}
 
     /**
 	 * Gets the enemy's actual transformation.

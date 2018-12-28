@@ -378,7 +378,6 @@ public class NaziSoldier extends GameComponent {
         
         if (state == STATE_POST_DEATH) {
         	isQuiet = true;
-            material.setDiffuse(animation.get(12));
             dead = true;
         }
         

@@ -43,6 +43,7 @@ import engine.rendering.Vertex;
 import game.doors.Door;
 import game.doors.LockedDoor;
 import game.doors.SecretWall;
+import game.enemies.Captain;
 import game.enemies.Dog;
 import game.enemies.Ghost;
 import game.enemies.NaziSergeant;
@@ -170,6 +171,7 @@ public class Level extends GameComponent {
     private ArrayList<NaziSergeant> naziSeargeants;
     private ArrayList<Ghost> ghosts;
     private ArrayList<Zombie> zombies;
+    private ArrayList<Captain> captains;
 
     //Level
     private Mesh geometry;
@@ -208,6 +210,7 @@ public class Level extends GameComponent {
         objects.add(dogs);
         objects.add(ghosts);
         objects.add(zombies);
+        objects.add(captains);
         //Objects
         objects.add(doors);
         objects.add(secretWalls);
@@ -305,6 +308,7 @@ public class Level extends GameComponent {
         	checkDamage(naziSeargeants, punchNoise, 1);
         	checkDamage(ghosts, null, 255);
         	checkDamage(zombies, punchNoise, 1);
+        	checkDamage(captains, punchSolidNoise, 6);
         	checkDamage(lamps, punchSolidNoise, 1);
         	checkDamage(pillars, punchSolidNoise, 1);
         	checkDamage(barrels, barrelNoise, 3);
@@ -318,7 +322,6 @@ public class Level extends GameComponent {
         	checkDamage(furnaces, punchSolidNoise, 69);
         	checkDamage(kitchens, punchSolidNoise, 69);
         	checkDamage(lockedDoors, punchSolidNoise, 69);
- 
         }
 
         player.input();
@@ -378,6 +381,7 @@ public class Level extends GameComponent {
    		objects.sortNumberComponents(ssSoldiers);
    		objects.sortNumberComponents(naziSeargeants);
    		objects.sortNumberComponents(zombies);
+   		objects.sortNumberComponents(captains);
     }
     
     /**
@@ -538,6 +542,10 @@ public class Level extends GameComponent {
             	if(zombie.isQuiet)
             		collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, zombie.getTransform().getPosition().getXZ(), zombie.getSize()));
             
+            for (Captain captain : captains)
+            	if(captain.isQuiet)
+            		collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, captain.getTransform().getPosition().getXZ(), captain.getSize()));
+            
         }
 
         return new Vector3f(collisionVector.getX(), 0, collisionVector.getY());
@@ -607,6 +615,9 @@ public class Level extends GameComponent {
             
             Vector2f zombieIntersect = null;
             Zombie nearestZombie = null;
+            
+            Vector2f captainIntersect = null;
+            Captain nearestCaptain = null;
 
             for (NaziSoldier monster : naziSoldiers) {
                 Vector2f collision = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, monster.getTransform().getPosition().getXZ(), monster.getSize());
@@ -668,6 +679,16 @@ public class Level extends GameComponent {
                 	nearestZombie= zombie;
                 }
             }
+            
+            for (Captain captain : captains) {
+                Vector2f collision = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, captain.getTransform().getPosition().getXZ(), captain.getSize());
+
+                if (collision != null && (captainIntersect == null
+                        || captainIntersect.sub(lineStart).length() > collision.sub(lineStart).length())) {
+                	captainIntersect = collision;
+                	nearestCaptain= captain;
+                }
+            }
 
             if((player.isBulletBased && player.getBullets()!=0)||(player.isShellBased && player.getShells()!=0)) {
 	            if (monsterIntersect != null && (nearestIntersect == null
@@ -696,6 +717,10 @@ public class Level extends GameComponent {
 	            if (zombieIntersect != null && (nearestIntersect == null
 	                    || nearestIntersect.sub(lineStart).length() > zombieIntersect.sub(lineStart).length())) {
 	            	nearestZombie.damage(player.getDamage());
+	            }
+	            if (captainIntersect != null && (nearestIntersect == null
+	                    || nearestIntersect.sub(lineStart).length() > captainIntersect.sub(lineStart).length())) {
+	            	nearestCaptain.damage(player.getDamage());
 	            }
         	}
             if(player.isMelee && player.isAlive) {
@@ -727,6 +752,11 @@ public class Level extends GameComponent {
 	            if (zombieIntersect != null && (nearestIntersect == null
 	                    || /*nearestIntersect.sub(lineStart).length() >*/ zombieIntersect.sub(lineStart).length() < MELEE_RANGE)) {
 	            	nearestZombie.damage(player.getDamage());
+	            }
+	            
+	            if (captainIntersect != null && (nearestIntersect == null
+	                    || /*nearestIntersect.sub(lineStart).length() >*/ captainIntersect.sub(lineStart).length() < MELEE_RANGE)) {
+	            	nearestCaptain.damage(player.getDamage());
 	            }
         	}
             
@@ -760,6 +790,11 @@ public class Level extends GameComponent {
                     if (zombieIntersect != null && (nearestIntersect == null
     	                    || nearestIntersect.sub(lineStart).length() > zombieIntersect.sub(lineStart).length())) {
     	            	nearestZombie.damage(barrel.damage);
+    	            }
+                    
+                    if (captainIntersect != null && (nearestIntersect == null
+    	                    || nearestIntersect.sub(lineStart).length() > captainIntersect.sub(lineStart).length())) {
+    	            	nearestCaptain.damage(barrel.damage);
     	            }
                 }
             }
@@ -891,6 +926,7 @@ public class Level extends GameComponent {
         if(naziSeargeants == null) this.naziSeargeants = new ArrayList<NaziSergeant>();
         if(ghosts == null) this.ghosts = new ArrayList<Ghost>();
         if(zombies == null) this.zombies = new ArrayList<Zombie>();
+        if(captains == null) this.captains = new ArrayList<Captain>();
         //Power-ups
         if(medkits == null) this.medkits = new ArrayList<Medkit>();
         if(foods == null) this.foods = new ArrayList<Food>();
@@ -1035,6 +1071,10 @@ public class Level extends GameComponent {
                         foods.add(new Food(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 90) {
                         dogs.add(new Dog(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 91) {
+                        captains.add(new Captain(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 92) {
+                        captains.add(new Captain(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), false));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 110) {
                         ssSoldiers.add(new SsSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 120) {

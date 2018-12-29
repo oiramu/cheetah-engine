@@ -54,7 +54,7 @@ import game.objects.Barrel;
 import game.objects.Bones;
 import game.objects.Clock;
 import game.objects.DeadJew;
-import game.objects.Explocion;
+import game.objects.Explosion;
 import game.objects.Furnace;
 import game.objects.Hanged;
 import game.objects.Kitchen;
@@ -64,6 +64,7 @@ import game.objects.LightBeam;
 import game.objects.Pendule;
 import game.objects.Pillar;
 import game.objects.Pipe;
+import game.objects.Rocket;
 import game.objects.Table;
 import game.objects.Tree;
 import game.pickUps.Armor;
@@ -120,7 +121,8 @@ public class Level extends GameComponent {
     private static ArrayList<Helmet> removeHelmets;
     private static ArrayList<Barrel> removeBarrels;
     private static ArrayList<Key> removeKeys;
-    private static ArrayList<Explocion> removeExplosions;
+    private static ArrayList<Explosion> removeExplosions;
+    private static ArrayList<Rocket> removeRockets;
     
     //Player
     private static Player player;
@@ -165,6 +167,10 @@ public class Level extends GameComponent {
     private ArrayList<Furnace> furnaces;
     private ArrayList<Kitchen> kitchens;
     private ArrayList<Barrel> barrels;
+    
+    //Active objects
+    private ArrayList<Explosion> explosions;
+    private ArrayList<Rocket> rockets;
    
     //Enemies
     private ArrayList<NaziSoldier> naziSoldiers;
@@ -361,6 +367,7 @@ public class Level extends GameComponent {
         objects.removeListToRenderPipeline(removeBarrels);
         objects.removeListToRenderPipeline(removeKeys);
         objects.removeListToRenderPipeline(removeExplosions);
+        objects.removeListToRenderPipeline(removeRockets);
         
         removeMedkitList.clear();
         removeFoodList.clear();
@@ -376,6 +383,7 @@ public class Level extends GameComponent {
         removeBarrels.clear();
         removeKeys.clear();
         removeExplosions.clear();
+        removeRockets.clear();
     }
 
     /**
@@ -925,7 +933,8 @@ public class Level extends GameComponent {
     	if(removeHelmets == null) Level.removeHelmets = new ArrayList<Helmet>();
     	if(removeBarrels == null) Level.removeBarrels = new ArrayList<Barrel>();
     	if(removeKeys == null) Level.removeKeys = new ArrayList<Key>();
-    	if(removeExplosions == null) Level.removeExplosions = new ArrayList<Explocion>();
+    	if(removeExplosions == null) Level.removeExplosions = new ArrayList<Explosion>();
+    	if(removeRockets == null) Level.removeRockets = new ArrayList<Rocket>();
         //Doors and stuff
         if(doors == null) this.doors = new ArrayList<Door>();
         if(lockedDoors == null) this.lockedDoors = new ArrayList<LockedDoor>();
@@ -968,6 +977,8 @@ public class Level extends GameComponent {
         if(furnaces == null) this.furnaces = new ArrayList<Furnace>();
         if(kitchens == null) this.kitchens = new ArrayList<Kitchen>();
         if(barrels == null) this.barrels = new ArrayList<Barrel>();
+        if(explosions == null) this.explosions = new ArrayList<Explosion>();
+        if(rockets == null) this.rockets = new ArrayList<Rocket>();
 
         for (int i = 1; i < bitmap.getWidth() - 1; i++) {
             for (int j = 1; j < bitmap.getHeight() - 1; j++) {
@@ -1244,11 +1255,16 @@ public class Level extends GameComponent {
 	public ArrayList<Zombie> getZombies() {return zombies;}
 	
 	/**
+	 * Returns all the captains in the array-list.
+	 * @return captains.
+	 */
+	public ArrayList<Captain> getCaptains() {return captains;}
+	
+	/**
 	 * Get access to the main player object in game.
 	 * @return Player.
 	 */
 	public static Player getPlayer() {return player;}
-	
 
 	/**
 	 * Gets the nearest targetComponent in the level.
@@ -1344,6 +1360,12 @@ public class Level extends GameComponent {
 	 * Removes the explosion when disappears.
 	 * @param explocion explosions.
 	 */
-	public static void removeExplocion(Explocion explocion) { removeExplosions.add(explocion); }
+	public static void removeExplocion(Explosion explocion) { removeExplosions.add(explocion); }
+	
+	/**
+	 * Removes the rocket when disappears.
+	 * @param rocket rocket.
+	 */
+	public static void removeRocket(Rocket rocket) { removeRockets.add(rocket); }
 
 }

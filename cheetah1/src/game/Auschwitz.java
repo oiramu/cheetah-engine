@@ -174,7 +174,7 @@ public class Auschwitz implements Game {
             if (level != null) {
                 totalMonsters = level.getNaziSoldiers().size() + level.getSsSoldiers().size()
                 		+ level.getDogs().size() + level.getNaziSergeants().size()
-                		+ level.getZombies().size();
+                		+ level.getZombies().size() + level.getCaptains().size();
                 
                 totalSecrets = level.getSecretWalls().size();
                 
@@ -205,6 +205,11 @@ public class Auschwitz implements Game {
                 
                 for (Zombie zombie : level.getZombies()) {
                     if (!zombie.isAlive())
+                        deadMonsters++;
+                }
+                
+                for (Captain captain : level.getCaptains()) {
+                    if (!captain.isAlive())
                         deadMonsters++;
                 }
 

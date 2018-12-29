@@ -47,8 +47,8 @@ public class Rocket extends GameComponent {
     private static final String RES_LOC = "Rocket/";
 
     private Transform transform;
-    private Explocion explocion;
     private Vector3f objetiveOrientation;
+    private Explosion explosion;
 
     /**
      * Constructor of the actual object.
@@ -91,7 +91,6 @@ public class Rocket extends GameComponent {
         	objetiveOrientation = this.transform.getPosition().sub(Auschwitz.getLevel().getRocketObjetive().getTransform().getPosition()).normalized();
         else
         	objetiveOrientation = this.transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).normalized();
-        this.explocion = null;
         this.playerShoots = playerShoots;
         this.state = 0;
     }
@@ -124,23 +123,28 @@ public class Rocket extends GameComponent {
 	
 	        Vector3f movementVector = collisionVector.mul(objetiveOrientation.normalized());
 	
-	        if (movementVector.length() > 0) {
+	        if (movementVector.length() > 0.2f) {
 	            transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * delta))));
 	        } else {
 	        	if(!playerShoots) {
-	        		if(getTransform().getPosition().sub(Level.getPlayer().getCamera().getPos()).length() < 0.55f)
+	        		if(distance < 0.55f) {
 	        			Level.getPlayer().addHealth(-200, "Rocket");
+	        			state = 1;
+	        		}
 	        	} else {
-	        		if(getTransform().getPosition().sub(Auschwitz.getLevel().getRocketObjetive().getTransform().getPosition()).length() < 0.55f)
+	        		if(getTransform().getPosition().sub(Auschwitz.getLevel().getRocketObjetive().getTransform().getPosition()).length() < 0.55f) {
 	        			Auschwitz.getLevel().getRocketObjetive().damage(Level.getPlayer().getDamage());
+	        			state = 1;
+	        		}
 	        	}
 	        	state = 1;
 	        }
+	        
     	} 
     	if(state == 1){
-    		if(explocion == null)
-        		explocion = new Explocion(new Transform(getTransform().getPosition()));
-    		explocion.update(delta);
+    		if(explosion == null)
+    			explosion = new Explosion(new Transform(getTransform().getPosition()));
+    		explosion.update(delta);
     	}
     }
 
@@ -150,10 +154,10 @@ public class Rocket extends GameComponent {
      * @param renderingEngine to use
      */
     public void render(Shader shader, RenderingEngine renderingEngine) {
-    	if(state != 1)
+    	if(state == 0)
     		meshRenderer.render(shader, renderingEngine);
-    	else
-    		explocion.render(shader, renderingEngine);
+    	if(explosion != null)
+    		explosion.render(shader, renderingEngine);
     }
     
     /**

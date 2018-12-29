@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Julio Vergara.
+ * Copyright 2018 Carlos Rodriguez.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ import game.Level;
  * @version 1.0
  * @since 2018
  */
-public class Explocion extends GameComponent {
+public class Explosion extends GameComponent {
 	
 	private static final String RES_LOC = "explotion/";
 	private static final int STATE_BOOM = 1;
@@ -69,7 +69,7 @@ public class Explocion extends GameComponent {
      * Constructor of the actual object.
      * @param transform the transform of the object in a 3D space.
      */
-	public Explocion(Transform transform) {
+	public Explosion(Transform transform) {
     	
     	if (animation == null) {
             animation = new ArrayList<Texture>();
@@ -121,6 +121,7 @@ public class Explocion extends GameComponent {
 	        				getTransform().getPosition().getZ()));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         if(this.renderingEngine == null) this.renderingEngine = CoreEngine.renderingEngine;
+
     }
 
     /**
@@ -132,28 +133,26 @@ public class Explocion extends GameComponent {
         Vector3f orientation = playerDistance.normalized();
 		float distance = playerDistance.length();
 		setDistance(distance);
-
-        float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
-
-        if (orientation.getX() > 0) {
-            angle = 180 + angle;
-        }
-
-        transform.setRotation(0, angle + 90, 0);
-        
-        double time = Time.getTime();
-        temp = delta;
         
         if (state == STATE_BOOM) {
+            float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
+
+            if (orientation.getX() > 0) {
+                angle = 180 + angle;
+            }
+
+            transform.setRotation(0, angle + 90, 0);
+            
+            double time = Time.getTime();
+            temp = delta;
+            light.setPosition(new Vector3f(light.getPosition().getX(), 0.05f * (float)(Math.sin(temp*2.5)+1.0/2.0) + 0.45f, light.getPosition().getZ()));
         	double timeDecimals = (time - (double) ((int) time));
             timeDecimals *= 4.5f;
             
-            light.setPosition(new Vector3f(light.getPosition().getX(), 0.05f * (float)(Math.sin(temp*2.5)+1.0/2.0) + 0.45f, light.getPosition().getZ()));
-
             if (timeDecimals <= 0.25f) {
             	renderingEngine.addLight(light);
-            	AudioUtil.playAudio(boomNoice, distance);
                 material.setDiffuse(animation.get(0));
+                AudioUtil.playAudio(boomNoice, distance);
             } else if (timeDecimals <= 0.5f) {
                 material.setDiffuse(animation.get(1));
             } else if (timeDecimals <= 0.75f) {
@@ -179,6 +178,7 @@ public class Explocion extends GameComponent {
             } else if (timeDecimals <= 3.25f) {
                 material.setDiffuse(animation.get(12));
             } else if (timeDecimals <= 3.5f) {
+            	renderingEngine.removeLight(light);
             	material.setDiffuse(animation.get(13));
             } else {
                 state = STATE_DEAD;
@@ -187,7 +187,6 @@ public class Explocion extends GameComponent {
         
         if (state == STATE_DEAD) {
         	renderingEngine.removeLight(light);
-        	Level.removeExplocion(this);
         }
 
     }
@@ -197,7 +196,16 @@ public class Explocion extends GameComponent {
      * @param shader to render
      * @param renderingEngine to use
      */
-    public void render(Shader shader, RenderingEngine renderingEngine) { meshRenderer.render(shader, renderingEngine);}
+    public void render(Shader shader, RenderingEngine renderingEngine) {
+    	if(state != STATE_DEAD)
+    		meshRenderer.render(shader, renderingEngine);
+    }
+    
+    /**
+     * Returns the explosion state.
+     * @return state
+     */
+    public int getState() {return state;}
     
     /**
      * Gets the transform of the object in projection.

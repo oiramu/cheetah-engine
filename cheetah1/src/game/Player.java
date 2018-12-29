@@ -174,6 +174,7 @@ public class Player extends GameComponent {
     public boolean fires;
     
     public boolean isAlive;
+    public boolean isMoving;
     public boolean isShooting;
     public boolean isReloading;
     public boolean isMelee;
@@ -754,6 +755,7 @@ public class Player extends GameComponent {
         }  
         
         movementVector.setY(0);
+        isMoving = false;
 
         Vector3f oldPos = playerCamera.getPos();
         Vector3f newPos = oldPos.add(movementVector.normalized().mul(movAmt));
@@ -763,6 +765,7 @@ public class Player extends GameComponent {
         movementVector = movementVector.normalized().mul(collisionVector);
 
         if (movementVector.length() > 0) {
+        	isMoving = true;
         	float bobOscillate = (float) Math.sin(time * moveSpeed * (2 * Math.PI));
         	dy += bobOscillate * movAmt/20;
             dx += bobOscillate * movAmt/50;

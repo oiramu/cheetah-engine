@@ -43,6 +43,7 @@ public class Barrel extends GameComponent {
 	private static final int STATE_IDLE = 0;
 	private static final int STATE_BOOM = 1;
 	private static final int STATE_DEAD = 2;
+	private static final int STATE_DONE = 3;
 	public int damage;
 	public boolean kBooms;
 	private int state;
@@ -50,7 +51,7 @@ public class Barrel extends GameComponent {
     private static Mesh mesh;
     private Material material;
     private MeshRenderer meshRenderer;
-    private Explocion explocion;
+    private Explosion explosion;
     
     private float sizeX;
     private double health;
@@ -104,7 +105,6 @@ public class Barrel extends GameComponent {
         this.health = 200;
         this.damage = 0;
         this.kBooms = false;
-        this.explocion = null;
     }
 
     /**
@@ -153,11 +153,15 @@ public class Barrel extends GameComponent {
         
         if (state == STATE_DEAD) {
         	kBooms = false;
-        	material.setDiffuse(new Texture("EMPTY"));
-        	if(explocion == null)
-            	explocion = new Explocion(new Transform(getTransform().getPosition()));
-            explocion.update(delta);
+        	if(explosion == null)
+            	explosion = new Explosion(new Transform(getTransform().getPosition()));
+            explosion.update(delta);
+            if(explosion.getState() == 3)
+            	state = STATE_DONE;
         }
+        
+        if(state == STATE_DONE)
+        	Level.removeBarrel(this);
 
     }
 
@@ -169,8 +173,8 @@ public class Barrel extends GameComponent {
     public void render(Shader shader, RenderingEngine renderingEngine) {
     	if(state != STATE_DEAD)
     		meshRenderer.render(shader, renderingEngine);
-    	else
-    		explocion.render(shader, renderingEngine);
+    	if(explosion != null)
+    		explosion.render(shader, renderingEngine);
     }
     
     /**

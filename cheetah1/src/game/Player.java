@@ -179,6 +179,7 @@ public class Player extends GameComponent {
     public boolean isMelee;
     public boolean isBulletBased;
     public boolean isShellBased;
+    public boolean isRocketBased;
     public boolean isAutomatic;
     public boolean isDoubleShooter;
     

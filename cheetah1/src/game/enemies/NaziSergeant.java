@@ -371,7 +371,7 @@ public class NaziSergeant extends GameComponent {
         }
         
         if (state == STATE_POST_DEATH) {
-        	isQuiet = true;
+        	material.setDiffuse(animation.get(12));
         }
         
         if (state == STATE_DONE) {

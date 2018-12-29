@@ -379,7 +379,7 @@ public class SsSoldier extends GameComponent {
         }
         
         if (state == STATE_POST_DEATH) {
-        	isQuiet = true;
+        	material.setDiffuse(animation.get(15));
         }
         
         if (state == STATE_DONE) {

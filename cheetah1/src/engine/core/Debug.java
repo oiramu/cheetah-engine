@@ -126,10 +126,12 @@ public class Debug {
 			player.setMaxHealth(100000);
 			player.setMaxBullets(100000);
 			player.setMaxShells(100000);
+			player.setMaxRockets(100000);
 			player.setArmor(godMode);
 			player.addArmor(100000);
 			player.addBullets(100000);
 			player.addShells(100000);
+			player.addRockets(100000);
 			player.addHealth(1000000, "");
 			player.setBronzekey(godMode);
 			player.setGoldkey(godMode);
@@ -137,8 +139,22 @@ public class Debug {
 			player.setMachinegun(godMode);
 			player.setSuperShotgun(godMode);
 			player.setChaingun(godMode);
+			player.setRocketLauncher(godMode);
 		}
 	}
+	
+	/**
+	 * Print some message to the console or terminal
+	 * by lines.
+	 * @param message to show
+	 */
+	public static void println(String message) { System.out.println(message);}
+	
+	/**
+	 * Print some message to the console or terminal.
+	 * @param message to show
+	 */
+	public static void print(String message) { System.out.print(message);}
 	
 	/**
 	 * Prints an error message to a window, keep in

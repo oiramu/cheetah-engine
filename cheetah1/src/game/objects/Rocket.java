@@ -88,11 +88,11 @@ public class Rocket extends GameComponent {
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         if(playerShoots)
-        	objetiveOrientation = this.transform.getPosition().sub(Auschwitz.getLevel().getRocketObjetive().getTransform().getPosition()).normalized();
+        	objetiveOrientation = Level.getPlayer().getCamera().getPos().sub(transform.getPosition()).normalized();
         else
         	objetiveOrientation = this.transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).normalized();
-        this.playerShoots = playerShoots;
         this.state = 0;
+        this.playerShoots = playerShoots;
     }
 
     /**
@@ -122,21 +122,28 @@ public class Rocket extends GameComponent {
 	        Vector3f collisionVector = Auschwitz.getLevel().checkCollisions(oldPos, newPos, sizeX, sizeX);
 	
 	        Vector3f movementVector = collisionVector.mul(objetiveOrientation.normalized());
+	        
+	        if(!playerShoots) {
+	        	if(distance < 0.55f && Level.getPlayer().isShooting) {
+	    			if(Level.getPlayer().isArmor() == false) {
+	    				Level.getPlayer().addHealth((int) -200, "Rocket");
+	    				state = 1;
+	            	} else {
+	            		Level.getPlayer().addArmor((int) -200);
+	            		state = 1;
+	            	}
+	    		}
+	        } else {
+	        	if(Auschwitz.getLevel().getRocketObjetive() != null)
+	    	        if(getTransform().getPosition().sub(Auschwitz.getLevel().getRocketObjetive().getTransform().getPosition()).length() < 0.55f) {
+	    	        	Auschwitz.getLevel().getRocketObjetive().damage(Level.getPlayer().getDamage());
+	    	        	state = 1;
+	            	}
+	        }
 	
 	        if (movementVector.length() > 0.2f) {
 	            transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * delta))));
 	        } else {
-	        	if(!playerShoots) {
-	        		if(distance < 0.55f) {
-	        			Level.getPlayer().addHealth(-200, "Rocket");
-	        			state = 1;
-	        		}
-	        	} else {
-	        		if(getTransform().getPosition().sub(Auschwitz.getLevel().getRocketObjetive().getTransform().getPosition()).length() < 0.55f) {
-	        			Auschwitz.getLevel().getRocketObjetive().damage(Level.getPlayer().getDamage());
-	        			state = 1;
-	        		}
-	        	}
 	        	state = 1;
 	        }
 	        

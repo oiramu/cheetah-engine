@@ -43,6 +43,7 @@ import engine.rendering.Texture;
 import engine.rendering.TextureFont;
 import engine.rendering.Vertex;
 import engine.rendering.Window;
+import game.objects.Rocket;
 
 /**
  *
@@ -62,6 +63,7 @@ public class Player extends GameComponent {
     private static final float GRAVITY = 9.8f;
     private static final float BULLET_DAMAGE = 25f;
     private static final float SHELL_DAMAGE = 50f;
+    private static final float ROCKET_DAMAGE = 200f;
     
     private static float gunTransformMultiplicator;
     private static float moveSpeed;
@@ -77,6 +79,7 @@ public class Player extends GameComponent {
     public static final String MACHINEGUN = "machinegun";
     public static final String SUPER_SHOTGUN = "superShotgun";
     public static final String CHAINGUN = "chaingun";
+    public static final String ROCKET_LAUNCHER = "rocketLauncher";
     
     private static final String PLAYER_RES_LOC = "player/";
     private static final String WEAPONS_RES_LOC = "weapons/";
@@ -87,6 +90,7 @@ public class Player extends GameComponent {
     private static final String MACHINEGUN_RES_LOC = WEAPONS_RES_LOC + MACHINEGUN + "/";
     private static final String SUPER_SHOTGUN_RES_LOC = WEAPONS_RES_LOC + SUPER_SHOTGUN + "/";
     private static final String CHAINGUN_RES_LOC = WEAPONS_RES_LOC + CHAINGUN + "/";
+    private static final String ROCKET_LAUNCHER_RES_LOC = WEAPONS_RES_LOC + ROCKET_LAUNCHER + "/";
     private static final String PISGB0 = "PISGB0";
     private static final String PISFA0 = "PISFA0";
     private static final String PISFC0 = "PISFC0";
@@ -117,6 +121,8 @@ public class Player extends GameComponent {
     private static ArrayList<Clip> playerMovement;
     private static ArrayList<Clip> playerNoises;
     private static ArrayList<Clip> flashLightNoises;
+    
+    private static ArrayList<Rocket> rocketsArray;
 
     private static final Vector2f centerPosition = new Vector2f(Display.getWidth()/2, Display.getHeight()/2);
     private static final Vector3f zeroVector = new Vector3f(0, 0, 0);
@@ -155,10 +161,12 @@ public class Player extends GameComponent {
     private int armori;
     private int bullets;
     private int shells;
+    private int rockets;
     private int maxHealth;
     private int maxArmori;
     private int maxBullets;
     private int maxShells;
+    private int maxRockets;
     private boolean goldkey;
     private boolean bronzekey;
     private boolean armorb;
@@ -166,6 +174,7 @@ public class Player extends GameComponent {
     private boolean machinegun;
     private boolean sShotgun;
     private boolean chaingun;
+    private boolean rocketLauncher;
     private boolean isInAir = false;
     
     public static boolean mouseLocked;
@@ -174,7 +183,6 @@ public class Player extends GameComponent {
     public boolean fires;
     
     public boolean isAlive;
-    public boolean isMoving;
     public boolean isShooting;
     public boolean isReloading;
     public boolean isMelee;
@@ -204,6 +212,7 @@ public class Player extends GameComponent {
     		gunsMaterial.add(new Texture(MACHINEGUN_RES_LOC + PISGB0));
     		gunsMaterial.add(new Texture(SUPER_SHOTGUN_RES_LOC + PISGB0));
     		gunsMaterial.add(new Texture(CHAINGUN_RES_LOC + PISGB0));
+    		gunsMaterial.add(new Texture(ROCKET_LAUNCHER_RES_LOC + PISGB0));
     	}
     	
     	if(gunsAnimationMaterial1 == null) {
@@ -215,6 +224,7 @@ public class Player extends GameComponent {
     		gunsAnimationMaterial1.add(new Texture(MACHINEGUN_RES_LOC + PISFA0));
     		gunsAnimationMaterial1.add(new Texture(SUPER_SHOTGUN_RES_LOC + PISFA0));
     		gunsAnimationMaterial1.add(new Texture(CHAINGUN_RES_LOC + PISFA0));
+    		gunsAnimationMaterial1.add(new Texture(ROCKET_LAUNCHER_RES_LOC + PISFA0));
     	}
     	
     	if(gunsAnimationMaterial2 == null) {
@@ -226,6 +236,7 @@ public class Player extends GameComponent {
     		gunsAnimationMaterial2.add(new Texture(MACHINEGUN_RES_LOC + PISFC0));
     		gunsAnimationMaterial2.add(new Texture(SUPER_SHOTGUN_RES_LOC + PISFC0));
     		gunsAnimationMaterial2.add(new Texture(CHAINGUN_RES_LOC + PISFC0));
+    		gunsAnimationMaterial2.add(new Texture(ROCKET_LAUNCHER_RES_LOC + PISFC0));
     	}
     	
     	if(gunsAnimationMaterial3 == null) {
@@ -237,6 +248,7 @@ public class Player extends GameComponent {
     		gunsAnimationMaterial3.add(null);
     		gunsAnimationMaterial3.add(new Texture(SUPER_SHOTGUN_RES_LOC + PISFD0));
     		gunsAnimationMaterial3.add(null);
+    		gunsAnimationMaterial3.add(new Texture(ROCKET_LAUNCHER_RES_LOC + PISFD0));
     	}
     	
     	if(gunsAnimationMaterial4 == null) {
@@ -248,6 +260,7 @@ public class Player extends GameComponent {
     		gunsAnimationMaterial4.add(null);
     		gunsAnimationMaterial4.add(new Texture(SUPER_SHOTGUN_RES_LOC + PISFE0));
     		gunsAnimationMaterial4.add(null);
+    		gunsAnimationMaterial4.add(null);
     	}
     	
     	if(gunsNoiseSounds == null) {
@@ -258,6 +271,8 @@ public class Player extends GameComponent {
     		gunsNoiseSounds.add(AudioUtil.loadAudio(SHOTGUN_RES_LOC + GUNSOUND));
     		gunsNoiseSounds.add(AudioUtil.loadAudio(MACHINEGUN_RES_LOC + GUNSOUND));
     		gunsNoiseSounds.add(AudioUtil.loadAudio(SUPER_SHOTGUN_RES_LOC + GUNSOUND));
+    		gunsNoiseSounds.add(null);
+    		gunsNoiseSounds.add(AudioUtil.loadAudio(ROCKET_LAUNCHER_RES_LOC + GUNSOUND));
     	}
     	
     	if(gunsReloadSounds == null) {
@@ -268,6 +283,8 @@ public class Player extends GameComponent {
     		gunsReloadSounds.add(AudioUtil.loadAudio(SHOTGUN_RES_LOC + RELOADSOUND));
     		gunsReloadSounds.add(null);
     		gunsReloadSounds.add(AudioUtil.loadAudio(SUPER_SHOTGUN_RES_LOC + RELOADSOUND));
+    		gunsReloadSounds.add(null);
+    		gunsReloadSounds.add(null);
     	}
     	
     	if(gunsClippingSounds == null) {
@@ -278,6 +295,8 @@ public class Player extends GameComponent {
     		gunsClippingSounds.add(AudioUtil.loadAudio(SHOTGUN_RES_LOC + CLIPSOUND));
     		gunsClippingSounds.add(null);
     		gunsClippingSounds.add(AudioUtil.loadAudio(SUPER_SHOTGUN_RES_LOC + CLIPSOUND));
+    		gunsClippingSounds.add(null);
+    		gunsClippingSounds.add(null);
     	}
     	
     	if(gunsEmptyNoiseSounds == null) {
@@ -288,6 +307,8 @@ public class Player extends GameComponent {
     		gunsEmptyNoiseSounds.add(AudioUtil.loadAudio(SHOTGUN_RES_LOC + EMPTY));
     		gunsEmptyNoiseSounds.add(AudioUtil.loadAudio(MACHINEGUN_RES_LOC + EMPTY));
     		gunsEmptyNoiseSounds.add(AudioUtil.loadAudio(SUPER_SHOTGUN_RES_LOC + EMPTY));
+    		gunsEmptyNoiseSounds.add(null);
+    		gunsEmptyNoiseSounds.add(AudioUtil.loadAudio(ROCKET_LAUNCHER_RES_LOC + EMPTY));
     	}
     	
     	if(playerNoises == null) {
@@ -366,6 +387,9 @@ public class Player extends GameComponent {
     		fireLight = new SpotLight(gunLightColor, 1.6f, 
             		new Attenuation(attenuation,0,attenuation), getCamera().getPos(), new Vector3f(1,1,1), 0.7f);
     	}
+        
+        if(rocketsArray == null)
+        	rocketsArray = new ArrayList<Rocket>();
 
         toTerrain = gunTransform.getPosition().getY();
         gunFireTime = 0;
@@ -408,6 +432,7 @@ public class Player extends GameComponent {
         isAutomatic = false;
         isDoubleShooter = false;
         playerText.get("CrossHair").setText("");
+        isRocketBased = false;
     }
     
     /**
@@ -434,6 +459,7 @@ public class Player extends GameComponent {
         isDoubleShooter = false;
         playerText.get("CrossHair").setPosition(zeroVector.getXY());
         playerText.get("CrossHair").setText(".");
+        isRocketBased = false;
     }
     
     /**
@@ -464,6 +490,7 @@ public class Player extends GameComponent {
         isDoubleShooter = false;
         playerText.get("CrossHair").setPosition(new Vector2f(-0.065f, 0));
         playerText.get("CrossHair").setText("( )");
+        isRocketBased = false;
     }
     
     /**
@@ -490,6 +517,7 @@ public class Player extends GameComponent {
         isDoubleShooter = false;
         playerText.get("CrossHair").setPosition(zeroVector.getXY());
         playerText.get("CrossHair").setText(".");
+        isRocketBased = false;
     }
     
     /**
@@ -520,6 +548,7 @@ public class Player extends GameComponent {
         isDoubleShooter = true;
         playerText.get("CrossHair").setPosition(new Vector2f(-0.065f, 0));
         playerText.get("CrossHair").setText("( )");
+        isRocketBased = false;
     }
     
     /**
@@ -546,6 +575,35 @@ public class Player extends GameComponent {
         isDoubleShooter = false;
         playerText.get("CrossHair").setPosition(zeroVector.getXY());
         playerText.get("CrossHair").setText(".");
+        isRocketBased = false;
+    }
+    
+    /**
+     * The settings that the player sets if he chooses the rocket launcher
+     * of he's bag, only if he have it on it.
+     */
+    public void gotRocketLauncher() {
+    	gunMaterial = new Material(gunsMaterial.get(6));
+    	gunAnimationMaterial1 = new Material(gunsAnimationMaterial1.get(6));
+    	gunAnimationMaterial2 = new Material(gunsAnimationMaterial2.get(6));
+    	gunAnimationMaterial3 = new Material(gunsAnimationMaterial2.get(6));
+    	gunLightColor = new Vector3f(1.0f,0.7f,0.2f);
+        gunNoise = gunsNoiseSounds.get(6);
+        gunEmptyNoise = gunsEmptyNoiseSounds.get(6);
+        gunFireAnimationTime = 0.1f;   
+        damageMin = ROCKET_DAMAGE + (ROCKET_DAMAGE/ (gunFireAnimationTime * 100));
+        damageRange = 60f;
+        moveSpeed = 4.5f;
+        attenuation = 0.025f;
+        isMelee = false;
+        isBulletBased = false;
+        isShellBased = false;
+        weaponState = ROCKET_LAUNCHER;
+        isAutomatic = false;
+        isDoubleShooter = false;
+        playerText.get("CrossHair").setPosition(new Vector2f(-0.065f, 0));
+        playerText.get("CrossHair").setText("( )");
+        isRocketBased = true;
     }
 
     /**
@@ -571,43 +629,57 @@ public class Player extends GameComponent {
 	        	if(weaponState == HAND && isReloading) {
 	        		AudioUtil.playAudio(playerNoises.get(1), 0);
 	        	} else {
+	        		if(weaponState != HAND)
+	        			AudioUtil.playAudio(playerNoises.get(0), 0);
 	        		gotHand();
-	        		AudioUtil.playAudio(playerNoises.get(0), 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_2)) {
 	        	if(weaponState == PISTOL && isReloading) {
 	        		AudioUtil.playAudio(playerNoises.get(1), 0);
 	        	} else {
+	        		if(weaponState != PISTOL)
+	        			AudioUtil.playAudio(playerNoises.get(0), 0);
 	        		gotPistol();
-	        		AudioUtil.playAudio(playerNoises.get(0), 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_3)) {
 	        	if(shotgun == false || weaponState == SHOTGUN && isReloading) {
 	        		AudioUtil.playAudio(playerNoises.get(1), 0);
 	        	} else {
+	        		if(weaponState != SHOTGUN)
+	        			AudioUtil.playAudio(playerNoises.get(0), 0);
 	        		gotShotgun();
-	        		AudioUtil.playAudio(playerNoises.get(0), 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_4)) {
 	        	if(machinegun == false || weaponState == MACHINEGUN && isReloading) {
 	        		AudioUtil.playAudio(playerNoises.get(1), 0);
 	        	} else {
+	        		if(weaponState != MACHINEGUN)
+	        			AudioUtil.playAudio(playerNoises.get(0), 0);
 	        		gotMachinegun();
-	        		AudioUtil.playAudio(playerNoises.get(0), 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_5)) {
 	        	if(sShotgun == false || weaponState == SUPER_SHOTGUN && isReloading) {
 	        		AudioUtil.playAudio(playerNoises.get(1), 0);
 	        	} else {
+	        		if(weaponState != SUPER_SHOTGUN)
+	        			AudioUtil.playAudio(playerNoises.get(0), 0);
 	        		gotSShotgun();
-	        		AudioUtil.playAudio(playerNoises.get(0), 0);
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_6)) {
 	        	if(chaingun == false || weaponState == CHAINGUN && isReloading) {
 	        		AudioUtil.playAudio(playerNoises.get(1), 0);
 	        	} else {
+	        		if(weaponState != CHAINGUN)
+	        			AudioUtil.playAudio(playerNoises.get(0), 0);
 	        		gotChaingun();
-	        		AudioUtil.playAudio(playerNoises.get(0), 0);
+	        	}
+	        } else if (Input.getKeyDown(Input.KEY_7)) {
+	        	if(rocketLauncher == false || weaponState == ROCKET_LAUNCHER && isReloading) {
+	        		AudioUtil.playAudio(playerNoises.get(1), 0);
+	        	} else {
+	        		if(weaponState != ROCKET_LAUNCHER)
+	        			AudioUtil.playAudio(playerNoises.get(0), 0);
+	        		gotRocketLauncher();
 	        	}
 	        }
 	        
@@ -648,6 +720,11 @@ public class Player extends GameComponent {
 		            		addShells(-2);
 		            	else
 		            		addShells(-1);
+		            } else if(rockets != 0 && isRocketBased) {
+		            	AudioUtil.playAudio(gunNoise, 0);
+		            	addRockets(-1);
+		            	rocketsArray.add(new Rocket(new Transform(gunTransform.getPosition()), true));
+		            	gunFireTime = Time.getTime();
 		            }
 	            }
 	        }
@@ -755,7 +832,6 @@ public class Player extends GameComponent {
         }  
         
         movementVector.setY(0);
-        isMoving = false;
 
         Vector3f oldPos = playerCamera.getPos();
         Vector3f newPos = oldPos.add(movementVector.normalized().mul(movAmt));
@@ -765,7 +841,6 @@ public class Player extends GameComponent {
         movementVector = movementVector.normalized().mul(collisionVector);
 
         if (movementVector.length() > 0) {
-        	isMoving = true;
         	float bobOscillate = (float) Math.sin(time * moveSpeed * (2 * Math.PI));
         	dy += bobOscillate * movAmt/20;
             dx += bobOscillate * movAmt/50;
@@ -795,7 +870,7 @@ public class Player extends GameComponent {
 	        sLight.setPosition(getCamera().getPos());
 	        sLight.setDirection(getCamera().getForward());
         }
-        if(!isShooting && (!isBulletBased || !isShellBased) && renderingEngine != null)
+        if(!isShooting && (!isBulletBased || !isShellBased || !isRocketBased) && renderingEngine != null)
         	renderingEngine.removeLight(fireLight);
         fireLight.setPosition(new Vector3f(getCamera().getPos().getX(), 0, getCamera().getPos().getZ()));
         fireLight.setDirection(getCamera().getForward());
@@ -806,7 +881,11 @@ public class Player extends GameComponent {
     	double gunTime4 = gunTime3 + gunFireAnimationTime;
     	int ammo = 0;
     	
-    	if(isBulletBased) ammo = getBullets();else if(isShellBased) ammo = getShells();else ammo = 0;
+    	for(Rocket rocket : rocketsArray)
+    		rocket.update(delta);
+    	
+    	if(isBulletBased) ammo = getBullets(); else if(isShellBased) ammo = getShells();
+    	else if(isRocketBased) ammo = getRockets(); else ammo = 0;
     	playerText.get("Life").setText("Life:"+getHealth());
     	playerText.get("Ammo").setText("Ammo:"+ammo);
         if(isArmor()) playerText.get("Armor").setText("Armor:"+getArmor());
@@ -853,7 +932,22 @@ public class Player extends GameComponent {
 	        	gunRenderer.setMaterial(gunMaterial);
 	            isReloading = false;
 	        }
-		} 
+		}
+		if(isRocketBased) {
+	        if ((double) time < gunTime) {
+	        	isReloading = true;
+	        	renderingEngine.addLight(fireLight);
+	        	gunRenderer.setMaterial(gunAnimationMaterial1);
+	        } else if ((double) time < gunTime2) {
+	        	gunRenderer.setMaterial(gunAnimationMaterial2);
+	        } else if ((double) time < gunTime3) {
+	        	gunRenderer.setMaterial(gunAnimationMaterial3);
+	        	isShooting = false;
+	        } else {
+	        	gunRenderer.setMaterial(gunMaterial);
+            	isReloading = false;
+	        }
+		}
     }
 
     /**
@@ -873,6 +967,9 @@ public class Player extends GameComponent {
 	        if(armorb) playerText.get("Armor").render(renderingEngine);
 	        if(time < notificationTime + 2.5f) playerText.get("Notification").render(renderingEngine);
     	}
+    	
+    	for(Rocket rocket : rocketsArray)
+    		rocket.render(shader, renderingEngine);
         
         gunRenderer.render(shader, renderingEngine);   
     }
@@ -996,6 +1093,42 @@ public class Player extends GameComponent {
         	}
         }
 	}
+	
+	/**
+	 * Gets the player's actual rockets.
+	 * @return player's shells.
+	 */
+	public int getRockets() {return rockets;}
+	
+	/**
+	 * Sets the amount of rockets for the player to have.
+	 * @param amt amount of rockets to set
+	 */
+	public void setRockets(int amt) { rockets += amt; }
+
+	/**
+     * Method that sets an amount of rockets if player get some, or lose some.
+     * @param amt amount of rockets to set.
+     */
+	public void addRockets(int amt) {
+		int temp = rockets;
+		setRockets(amt);
+		if(rockets>temp) {
+			playerText.get("Notification").setText("You've got " + amt + " rockets!");
+			notificationTime = Time.getTime();
+		}
+        if (rockets > getMaxRockets()) {
+        	rockets = getMaxRockets();
+        }
+        if(isRocketBased) {
+        	if (rockets < 0) {
+        		rockets = 0;
+        		playerText.get("Notification").setText("You Need More Rockets!");
+            	notificationTime = Time.getTime();
+        		AudioUtil.playAudio(gunEmptyNoise, 1);
+        	}
+        }
+	}
     
     /**
      * Method that assigns the shotgun to the player object.
@@ -1077,6 +1210,28 @@ public class Player extends GameComponent {
     	}
     	if(chaingun == true && isAlive) {
     		playerText.get("Notification").setText("You've got a Chaingun!");
+        	notificationTime = Time.getTime();
+    	}
+    }
+    
+    /**
+     * Method that returns if the player have or not a rocket launcher.
+     * on he's bag.
+     * @returns rocketLauncher rocket launcher
+     */
+    public boolean isRocketLauncher() {return rocketLauncher;}
+    
+    /**
+     * Method that assigns the rocket launcher to the player object.
+     * @param amt amount.
+     */
+    public void setRocketLauncher(boolean amt) {
+    	if(amt == true && rocketLauncher == false && isAlive) {
+    		rocketLauncher = amt;
+    		gotRocketLauncher();
+    	}
+    	if(rocketLauncher == true && isAlive) {
+    		playerText.get("Notification").setText("You've got a Rocket Launcher!");
         	notificationTime = Time.getTime();
     	}
     } 
@@ -1218,6 +1373,23 @@ public class Player extends GameComponent {
 	public void setMaxShells(int amt) {
 		if(amt > 200) amt = 200;
 		this.maxShells += amt;
+	}
+	
+	/**
+	 * Returns the maximum of rockets that the player can
+	 * handle.
+	 * @return maximum of rockets
+	 */
+	public int getMaxRockets() { return maxRockets; }
+
+	/**
+	 * Sets a new maximum amount of rockets that the player
+	 * can handle.
+	 * @param amt amount of rockets
+	 */
+	public void setMaxRockets(int amt) {
+		if(amt > 200) amt = 200;
+		this.maxRockets += amt;
 	}
 	
 	/**

@@ -143,7 +143,6 @@ public class Barrel extends GameComponent {
             timeDecimals *= 4.5f;
 
         	if (timeDecimals <= 0.25f) {
-        		kBooms = true;
         		dead = true;
                 material.setDiffuse(animation.get(1));
             } else {
@@ -152,7 +151,7 @@ public class Barrel extends GameComponent {
         }
         
         if (state == STATE_DEAD) {
-        	kBooms = false;
+        	kBooms = true;
         	if(explosion == null)
             	explosion = new Explosion(new Transform(getTransform().getPosition()));
             explosion.update(delta);
@@ -160,8 +159,10 @@ public class Barrel extends GameComponent {
             	state = STATE_DONE;
         }
         
-        if(state == STATE_DONE)
+        if(state == STATE_DONE) {
+        	kBooms = false;
         	Level.removeBarrel(this);
+        }
 
     }
 

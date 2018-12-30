@@ -284,14 +284,12 @@ public class Level extends GameComponent {
 							AudioUtil.playAudio(sound, 0);
 					((GameComponent) component).damage(player.getDamage());
             	}
-			}//else if(player.isRocketBased) {
-			//	if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1000 /*&& player.getRockets()!=0*/) {
-			//		setRocketObjetive((GameComponent) component);
-			//		if(getTransform().getPosition().sub(getRocketObjetive().getTransform().getPosition()).length() < 0.55f)
-			//			((GameComponent) component).damage(player.getDamage());
-			//	}
+			}else if(player.isRocketBased) {
+				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.5f /*&& player.getRockets()!=0*/) {
+					setRocketObjetive((GameComponent) component);
+				}
 				
-			//}
+			}
 			if(player.isMelee == true && times == 69) {
 				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive) {
 					AudioUtil.playAudio(sound, 0);
@@ -741,6 +739,39 @@ public class Level extends GameComponent {
 	            if (captainIntersect != null && (nearestIntersect == null
 	                    || nearestIntersect.sub(lineStart).length() > captainIntersect.sub(lineStart).length())) {
 	            	nearestCaptain.damage(player.getDamage());
+	            }
+        	}
+            if(player.isRocketBased && player.getRockets()!=0) {
+	            if (naziIntersect != null && (nearestIntersect == null
+	                    || nearestIntersect.sub(lineStart).length() > naziIntersect.sub(lineStart).length())) {
+	            	setRocketObjetive(nearestNazi);
+	            }
+	            
+	            if (dogIntersect != null && (nearestIntersect == null
+	                    || nearestIntersect.sub(lineStart).length() > dogIntersect.sub(lineStart).length())) {
+	            	setRocketObjetive(nearestDog);
+	            }
+	            
+	            if (ssSoldierIntersect != null && (nearestIntersect == null
+	                    || nearestIntersect.sub(lineStart).length() > ssSoldierIntersect.sub(lineStart).length())) {
+	            	setRocketObjetive(nearestSsSoldier);
+	            }
+	            if (naziSergeantsIntersect != null && (nearestIntersect == null
+	                    || nearestIntersect.sub(lineStart).length() > naziSergeantsIntersect.sub(lineStart).length())) {
+	            	setRocketObjetive(nearestNaziSargent);
+	            }
+	            
+	            if (ghostIntersect != null && (nearestIntersect == null
+	                    || nearestIntersect.sub(lineStart).length() > ghostIntersect.sub(lineStart).length())) {
+	            	setRocketObjetive(nearestGhost);
+	            }
+	            if (zombieIntersect != null && (nearestIntersect == null
+	                    || nearestIntersect.sub(lineStart).length() > zombieIntersect.sub(lineStart).length())) {
+	            	setRocketObjetive(nearestZombie);
+	            }
+	            if (captainIntersect != null && (nearestIntersect == null
+	                    || nearestIntersect.sub(lineStart).length() > captainIntersect.sub(lineStart).length())) {
+	            	setRocketObjetive(nearestCaptain);
 	            }
         	}
             if(player.isMelee && player.isAlive) {

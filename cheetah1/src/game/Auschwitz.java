@@ -158,15 +158,18 @@ public class Auschwitz implements Game {
             int healthTemp = 0;
             int bulletTemp = 0;
             int shellTemp = 0;
+            int rocketTemp = 0;
             int armoriTemp = 0;
             int maxHealthTemp = 0;
             int maxBulletTemp = 0;
             int maxShellTemp = 0;
+            int maxRocketTemp = 0;
             int maxArmoriTemp = 0;
             boolean shotgunTemp = false;
             boolean machinegunTemp = false;
             boolean superShotgunTemp = false;
             boolean chaingunTemp = false;
+            boolean rocketLauncherTemp = false;
             boolean armorbTemp = false;
             boolean mouseLocktemp = false;
             String weaponStateTemp = "";
@@ -219,14 +222,17 @@ public class Auschwitz implements Game {
                 armoriTemp = level.getPlayer().getArmor();
                 bulletTemp = level.getPlayer().getBullets();
                 shellTemp = level.getPlayer().getShells();
+                rocketTemp = level.getPlayer().getRockets();
                 maxHealthTemp = level.getPlayer().getMaxHealth();
                 maxBulletTemp = level.getPlayer().getMaxBullets();
                 maxShellTemp = level.getPlayer().getMaxShells();
+                maxRocketTemp = level.getPlayer().getMaxRockets();
                 maxArmoriTemp = level.getPlayer().getMaxArmor();
                 shotgunTemp = level.getPlayer().isShotgun();
                 machinegunTemp = level.getPlayer().isMachinegun();
                 superShotgunTemp = level.getPlayer().isSuperShotgun();
                 chaingunTemp = level.getPlayer().isChaingun();
+                rocketLauncherTemp = level.getPlayer().isRocketLauncher();
                 weaponStateTemp = level.getPlayer().getWeaponState();
                 armorbTemp = level.getPlayer().isArmor();
                 mouseLocktemp = level.getPlayer().mouseLocked;
@@ -263,8 +269,6 @@ public class Auschwitz implements Game {
     				break;
             }
             
-            if(level.getPlayer().getArmor() == 0)
-            	level.getPlayer().setArmori(armoriTemp);
             if(level.getPlayer().getHealth() == 0) {
             	if(healthTemp == 0)
             		level.getPlayer().setHealth(100);
@@ -279,6 +283,11 @@ public class Auschwitz implements Game {
             	if(shellTemp == 0)
             		level.getPlayer().setShells(20);
             	level.getPlayer().setShells(shellTemp);
+            }
+            if(level.getPlayer().getRockets() == 0) {
+            	if(rocketTemp == 0)
+            		level.getPlayer().setRockets(10);
+            	level.getPlayer().setRockets(rocketTemp);
             }
             if(level.getPlayer().getMaxArmor() == 0) {
             	if(maxArmoriTemp == 0)
@@ -300,10 +309,17 @@ public class Auschwitz implements Game {
             		level.getPlayer().setMaxShells(50);
             	level.getPlayer().setMaxShells(maxShellTemp);
             }
+            if(level.getPlayer().getMaxRockets() == 0) {
+            	if(maxRocketTemp == 0)
+            		level.getPlayer().setMaxRockets(50);
+            	level.getPlayer().setMaxRockets(maxRocketTemp);
+            }
+            level.getPlayer().setArmori(armoriTemp);
             level.getPlayer().setShotgun(shotgunTemp);
             level.getPlayer().setMachinegun(machinegunTemp);
             level.getPlayer().setSuperShotgun(superShotgunTemp);
             level.getPlayer().setChaingun(chaingunTemp);
+            level.getPlayer().setRocketLauncher(rocketLauncherTemp);
             level.getPlayer().setArmor(armorbTemp);
             level.getPlayer().setWeaponState(weaponStateTemp);
             level.getPlayer().mouseLocked = mouseLocktemp;
@@ -328,7 +344,10 @@ public class Auschwitz implements Game {
             		level.getPlayer().gotSShotgun();
             	}else if(level.getPlayer().getWeaponState() == level.getPlayer().CHAINGUN && chaingunTemp == true) {
             		level.getPlayer().gotChaingun();
+            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().ROCKET_LAUNCHER && rocketLauncherTemp == true) {
+            		level.getPlayer().gotRocketLauncher();
             	}
+            	
             }
             
         } catch (RuntimeException ex) {

@@ -16,10 +16,13 @@
 package game.objects;
 
 import java.util.ArrayList;
-import java.util.Random;
 
+import javax.sound.sampled.Clip;
+
+import engine.audio.AudioUtil;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
+import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
@@ -40,14 +43,22 @@ import game.Level;
 public class Hanged extends GameComponent {
 	
 	private static final String 		RES_LOC = "hanged/";
+	private static final int 			STATE_IDLE = 0;
+    private static final int 			STATE_DYING = 1;
+	private static final int 			STATE_DEAD = 2;
+	
+	private int 						state;
+	private double 						deathTime;
+	
+	private static final Clip 			deathNoice = AudioUtil.loadAudio(RES_LOC + "MEDIA");
     
     private static Mesh 				mesh;
     private Material 					material;
     private MeshRenderer 				meshRenderer;
-    @SuppressWarnings("unused")
-	private int 						random;
     
     private float 						sizeX;
+    private double 						health;
+    private boolean 					dead;
     
     private static ArrayList<Texture> 	animation;
 
@@ -62,10 +73,15 @@ public class Hanged extends GameComponent {
     	if (animation == null) {
             animation = new ArrayList<Texture>();
 
-            //animation.add(new Texture(RES_LOC + "HUNGA0"));
-            animation.add(new Texture(RES_LOC + "HUNGB0"));
-            animation.add(new Texture(RES_LOC + "HUNGC0"));
-            animation.add(new Texture(RES_LOC + "HUNGD0"));
+            animation.add(new Texture(RES_LOC + "HANGJEW0"));
+            animation.add(new Texture(RES_LOC + "HANGJEW1"));
+            animation.add(new Texture(RES_LOC + "HANGJEW2"));
+            
+            animation.add(new Texture(RES_LOC + "HANGJEW3"));
+            animation.add(new Texture(RES_LOC + "HANGJEW4"));
+            animation.add(new Texture(RES_LOC + "HANGJEW5"));
+            
+            animation.add(new Texture(RES_LOC + "HANGJEW6"));
         }
     	
         if (mesh == null) {
@@ -91,9 +107,11 @@ public class Hanged extends GameComponent {
             mesh = new Mesh(verts, indices, true);
         }
         
-        this.material = new Material(animation.get(random = new Random().nextInt(animation.size())));
+        this.material = new Material(animation.get(0));
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
+        this.health = 50;
+        this.dead = false;
     }
 
     /**
@@ -102,7 +120,7 @@ public class Hanged extends GameComponent {
      */
     public void update(double delta) {
     	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
-    	Vector3f orientation = playerDistance.normalized();
+        Vector3f orientation = playerDistance.normalized();
 		float distance = playerDistance.length();
 		setDistance(distance);
 
@@ -113,23 +131,53 @@ public class Hanged extends GameComponent {
         }
 
         transform.setRotation(0, angle + 90, 0);
-        /**
-        double time = (double) Time.getTime() / Time.SECOND;
+        
+        double time = Time.getTime();
+        
+        if (!dead && health <= 0) {
+            dead = true;
+            state = STATE_DYING;
+            deathTime = time;
+            AudioUtil.playAudio(deathNoice, distance);
+        }
         
         if (state == STATE_IDLE) {
         	double timeDecimals = (time - (double) ((int) time));
 
+            timeDecimals *= 1.25f;
+
         	if (timeDecimals <= 0.25f) {
-                material.setTexture(animation.get(0));
+                material.setDiffuse(animation.get(0));
             } else if (timeDecimals <= 0.5f) {
-                material.setTexture(animation.get(1));
-            } else if (timeDecimals <= 0.75f) {
-                material.setTexture(animation.get(3));
-            } else if (timeDecimals <= 1.0f) {
-                material.setTexture(animation.get(2));
+                material.setDiffuse(animation.get(1));
+            } else {
+            	material.setDiffuse(animation.get(2));
             }
         }
-		*/
+        
+        if (state == STATE_DYING) {
+            dead = true;
+
+            final float time1 = 0.1f;
+            final float time2 = 0.3f;
+            final float time3 = 0.45f;
+
+            if (time <= deathTime + 0.2f) {
+                material.setDiffuse(animation.get(3));
+            } else if (time > deathTime + time1 && time <= deathTime + time2) {
+                material.setDiffuse(animation.get(4));
+            } else if (time > deathTime + time2 && time <= deathTime + time3) {
+            	material.setDiffuse(animation.get(5));
+            } else if (time > deathTime + time3) {
+                state = STATE_DEAD;
+            }
+        }
+        
+        if (state == STATE_DEAD) {
+            dead = true;
+            material.setDiffuse(animation.get(6));
+        }
+
     }
 
     /**
@@ -150,5 +198,11 @@ public class Hanged extends GameComponent {
 	 * @return the vector size.
 	 */
     public Vector2f getSize() {return new Vector2f(sizeX, sizeX);}
+    
+    /**
+     * Method that calculates the damage.
+     * @param amt amount.
+     */
+    public void damage(int amt) {health -= amt;}
     
 }

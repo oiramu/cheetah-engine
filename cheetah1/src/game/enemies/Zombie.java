@@ -48,7 +48,7 @@ import game.projectiles.ZombieMeat;
  */
 public class Zombie extends GameComponent {
 
-    private static final float MAX_HEALTH = 600f;
+    private static final float MAX_HEALTH = 300f;
     private static final float SHOT_ANGLE = 10.0f;
     private static final float DAMAGE_MIN = 15f;
     private static final float DAMAGE_RANGE = 20f;
@@ -265,9 +265,9 @@ public class Zombie extends GameComponent {
             dead = true;
             deathTime = time;
             state = STATE_DYING;
-            seeNoise.stop();
-            attackNoise.stop();
-            hitNoise.stop();
+            if(seeNoise != null) seeNoise.stop();
+            if(attackNoise != null) attackNoise.stop();
+            if(hitNoise != null) hitNoise.stop();
             deathNoise = deathNoises.get(new Random().nextInt(deathNoises.size()));
             AudioUtil.playAudio(deathNoise, distance);
         }
@@ -371,7 +371,7 @@ public class Zombie extends GameComponent {
                 double timeDecimals = (time - (double) ((int) time));
 
                 if (timeDecimals <= 0.25f) {
-                	transform.setScale(2.296296296296296f,0.435483870967742f,1);
+                	//transform.setScale(2.296296296296296f,0.435483870967742f,1);
                     material.setDiffuse(animation.get(6));
                 } else if (timeDecimals <= 0.5f) {
                 	transform.setScale(1.333333333333333f,0.75f,1);
@@ -459,12 +459,11 @@ public class Zombie extends GameComponent {
 	            if(key == null)
 	            	key = new Key(new Transform(transform.getPosition().add(-0.001f)), true, false);
 	            key.update(delta);
+	            if (distance < key.PICKUP_THRESHHOLD)
+	            	state = STATE_POST_DEATH;
             }
             transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
             material.setDiffuse(animation.get(16));
-            if (distance < key.PICKUP_THRESHHOLD) {
-            	state = STATE_POST_DEATH;
-            }
         }
         
         if (state == STATE_POST_DEATH) {

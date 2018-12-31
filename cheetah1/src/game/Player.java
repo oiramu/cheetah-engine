@@ -889,8 +889,9 @@ public class Player extends GameComponent {
     	double gunTime4 = gunTime3 + gunFireAnimationTime;
     	int ammo = 0;
     	
-    	for(Rocket rocket : rocketsArray)
-    		rocket.update(delta);
+    	if(rocketsArray.size()>0)
+    		for(Rocket rocket : rocketsArray)
+    			rocket.update(delta);
     	
     	if(isBulletBased) ammo = getBullets(); else if(isShellBased) ammo = getShells();
     	else if(isRocketBased) ammo = getRockets(); else ammo = 0;
@@ -957,8 +958,9 @@ public class Player extends GameComponent {
 	        }
 		}
 		
-		for (Rocket rocketToDelete : removeRockets) 
-    		rocketsArray.remove(rocketToDelete);   
+		if(removeRockets.size()>0)
+			for (Rocket rocketToDelete : removeRockets) 
+				rocketsArray.remove(rocketToDelete);   
 		
 		removeRockets.clear();
     }
@@ -981,8 +983,9 @@ public class Player extends GameComponent {
 	        if(time < notificationTime + 2.5f) playerText.get("Notification").render(renderingEngine);
     	}
     	
-    	for(Rocket rocket : rocketsArray)
-    		rocket.render(shader, renderingEngine);
+    	if(rocketsArray.size()>0)
+    		for(Rocket rocket : rocketsArray)
+    			rocket.render(shader, renderingEngine);
         
         gunRenderer.render(shader, renderingEngine);   
     }
@@ -1454,6 +1457,12 @@ public class Player extends GameComponent {
 	 * @return player's speed
 	 */
 	public float getSpeed() { return moveSpeed; }
+	
+	/**
+	 * Returns the player's movement vector.
+	 * @return movement vector
+	 */
+	public Vector3f getMovementVector() { return movementVector; }
 	
 	/**
 	 * Removes the rocket when disappears.

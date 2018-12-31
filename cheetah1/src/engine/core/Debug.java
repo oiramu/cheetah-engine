@@ -127,12 +127,12 @@ public class Debug {
 			player.setMaxBullets(100000);
 			player.setMaxShells(100000);
 			player.setMaxRockets(100000);
-			player.setArmor(godMode);
 			player.addArmor(100000);
 			player.addBullets(100000);
 			player.addShells(100000);
 			player.addRockets(100000);
 			player.addHealth(1000000, "");
+			player.setArmor(godMode);
 			player.setBronzekey(godMode);
 			player.setGoldkey(godMode);
 			player.setShotgun(godMode);

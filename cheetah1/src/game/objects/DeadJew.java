@@ -39,7 +39,7 @@ import game.Level;
  */
 public class DeadJew extends GameComponent {
 	
-	private static final String RES_LOC = "Dead/";
+	private static final String RES_LOC = "Jew/";
     private static Mesh 		mesh;
     private static Material 	material;
     private MeshRenderer 		meshRenderer;
@@ -82,15 +82,8 @@ public class DeadJew extends GameComponent {
         if(animation == null) {
         	animation = new ArrayList<Texture>();
         	
-        	animation.add(new Texture(RES_LOC+"CBEDA0"));
-        	animation.add(new Texture(RES_LOC+"CBEDB0"));
-        	animation.add(new Texture(RES_LOC+"CBEDC0"));
-        	animation.add(new Texture(RES_LOC+"CBEDD0"));
-        	//animation.add(new Texture(RES_LOC+"CBEDE0"));
-        	//animation.add(new Texture(RES_LOC+"CBEDF0"));
-        	//animation.add(new Texture(RES_LOC+"CBEDG0"));
-        	animation.add(new Texture(RES_LOC+"CBEDH0"));
-        	//animation.add(new Texture(RES_LOC+"CBEDI0"));
+        	animation.add(new Texture(RES_LOC+"deadA"));
+        	animation.add(new Texture(RES_LOC+"deadB"));
         }
 
         if (material == null)

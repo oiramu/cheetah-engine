@@ -40,42 +40,52 @@ import game.Level;
  * @version 1.0
  * @since 2018
  */
-public class Furnace extends GameComponent {
+public class Oven extends GameComponent {
 	
-	private static final String RES_LOC = "furnace/";
-	private static final int STATE_IDLE = 0;
+	private static final String 		RES_LOC = "oven/";
+	private static final int 			STATE_IDLE = 0;
+	private static final int 			STATE_DYING = 1;
+	private static final int 			STATE_DEAD = 2;
 	
-	private int state;
-	private float temp = 0;
+	private int 						state;
+	private float 						temp = 0;
     
-    private static Mesh mesh;
-    private Material material;
-    private MeshRenderer meshRenderer;
-    private RenderingEngine renderingEngine;
-    private PointLight light;
+    private static Mesh 				mesh;
+    private Material 					material;
+    private MeshRenderer				meshRenderer;
+    private RenderingEngine 			renderingEngine;
+    private PointLight 					light;
+    private Explosion					explosion;
     
-    private float sizeX;
+    private float 						sizeX;
+    private double 						health;
+    private boolean 					dead;
     
-    private static ArrayList<Texture> animation;
+    private static ArrayList<Texture> 	animation;
 
-    private Transform transform;
+    private Transform 					transform;
 
     /**
      * Constructor of the actual object.
      * @param transform the transform of the object in a 3D space.
      */
-    public Furnace(Transform transform) {
+    public Oven(Transform transform) {
     	
     	if (animation == null) {
             animation = new ArrayList<Texture>();
 
-            animation.add(new Texture(RES_LOC + "STOVA0"));
-            animation.add(new Texture(RES_LOC + "STOVB0"));
+            animation.add(new Texture(RES_LOC + "OVENA0"));
+            animation.add(new Texture(RES_LOC + "OVENB0"));
+            animation.add(new Texture(RES_LOC + "OVENC0"));
+            animation.add(new Texture(RES_LOC + "OVEND0"));
+            animation.add(new Texture(RES_LOC + "OVENE0"));
+            
+            animation.add(new Texture(RES_LOC + "OVENF0"));
         }
     	
         if (mesh == null) {
             float sizeY = 1.0f;
-            sizeX = (float) ((double) sizeY / (1f * 2.0));
+            sizeX = (float) ((double) sizeY / (1.5f * 2.0));
 
             float offsetX = 0.0f;
             float offsetY = 0.0f;
@@ -108,6 +118,8 @@ public class Furnace extends GameComponent {
 	        				getTransform().getPosition().getZ()));
 	        renderingEngine.addLight(light);
     	}
+        this.health = 200;
+        this.dead = false;
     }
 
     /**
@@ -130,18 +142,47 @@ public class Furnace extends GameComponent {
 
         transform.setRotation(0, angle + 90, 0);
         
-        light.setPosition(new Vector3f(light.getPosition().getX(), 0.05f * (float)(Math.sin(temp*2.5)+1.0/2.0) + 0.025f, light.getPosition().getZ()));
-        
         double time = Time.getTime();
+        
+        if (!dead && health <= 0) {
+        	renderingEngine.removeLight(light);
+            dead = true;
+            state = STATE_DYING;
+        }
         
         if (state == STATE_IDLE) {
         	double timeDecimals = (time - (double) ((int) time));
+        	
+            light.setPosition(new Vector3f(light.getPosition().getX(), 0.05f * (float)(Math.sin(temp*7.5)+1.0/2.0) + 0.025f, light.getPosition().getZ()));
+
+            timeDecimals *= 1.25f;
 
         	if (timeDecimals <= 0.25f) {
-                material.setDiffuse(animation.get(1));
-            } else {
                 material.setDiffuse(animation.get(0));
+            } else if (timeDecimals <= 0.5f) {
+                material.setDiffuse(animation.get(1));
+            } else if (timeDecimals <= 0.75f) {
+                material.setDiffuse(animation.get(2));
+            } else {
+            	material.setDiffuse(animation.get(3));
             }
+        }
+        
+        if (state == STATE_DYING) {
+            dead = true;
+            if(explosion == null)
+            	explosion = new Explosion(new Transform(getTransform().getPosition()));
+            explosion.update(delta);
+            transform.setScale(1,0.28571428571428571428571428571429f,1);
+            material.setDiffuse(animation.get(5));
+            if(explosion.getState() == 3)
+            	state = STATE_DEAD;          	
+        }
+        
+        if (state == STATE_DEAD) {
+            dead = true;
+            transform.setScale(1,0.28571428571428571428571428571429f,1);
+            material.setDiffuse(animation.get(5));
         }
 
     }
@@ -151,7 +192,11 @@ public class Furnace extends GameComponent {
      * @param shader to render
      * @param renderingEngine to use
      */
-    public void render(Shader shader, RenderingEngine renderingEngine) {meshRenderer.render(shader, renderingEngine);}
+    public void render(Shader shader, RenderingEngine renderingEngine) {
+    	meshRenderer.render(shader, renderingEngine);
+    	if(explosion != null)
+    		explosion.render(shader, renderingEngine);
+    }
     
     /**
      * Gets the transform of the object in projection.
@@ -164,5 +209,11 @@ public class Furnace extends GameComponent {
 	 * @return the vector size.
 	 */
     public Vector2f getSize() {return new Vector2f(sizeX, sizeX);}
+    
+    /**
+     * Method that calculates the damage.
+     * @param amt amount.
+     */
+    public void damage(int amt) {health -= amt;}
     
 }

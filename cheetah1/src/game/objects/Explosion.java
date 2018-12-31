@@ -202,7 +202,8 @@ public class Explosion extends GameComponent {
         	state = STATE_DONE;
         }
         
-        if(state == STATE_DONE);
+        if(state == STATE_DONE)
+        	renderingEngine.removeLight(light);
 
     }
 

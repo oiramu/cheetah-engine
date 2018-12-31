@@ -55,7 +55,7 @@ import game.objects.Bones;
 import game.objects.Clock;
 import game.objects.DeadJew;
 import game.objects.Explosion;
-import game.objects.Furnace;
+import game.objects.Oven;
 import game.objects.Hanged;
 import game.objects.Kitchen;
 import game.objects.Lamp;
@@ -162,7 +162,7 @@ public class Level extends GameComponent {
     private ArrayList<Hanged> hangeds;
     private ArrayList<Pillar> pillars;
     private ArrayList<Clock> clocks;
-    private ArrayList<Furnace> furnaces;
+    private ArrayList<Oven> furnaces;
     private ArrayList<Kitchen> kitchens;
     private ArrayList<Barrel> barrels;
     
@@ -323,12 +323,12 @@ public class Level extends GameComponent {
         	checkDamage(lamps, punchSolidNoise, 1);
         	checkDamage(pillars, punchSolidNoise, 1);
         	checkDamage(barrels, barrelNoise, 3);
-        	checkDamage(hangeds, punchNoise, 69);
+        	checkDamage(hangeds, punchNoise, 1);
         	checkDamage(doors, punchSolidNoise, 69);
         	checkDamage(pipes, punchSolidNoise, 69);
         	checkDamage(tables, punchSolidNoise, 69);
         	checkDamage(clocks, punchSolidNoise, 69);
-        	checkDamage(furnaces, punchSolidNoise, 69);
+        	checkDamage(furnaces, punchSolidNoise, 1);
         	checkDamage(clocks, punchSolidNoise, 69);
         	checkDamage(furnaces, punchSolidNoise, 69);
         	checkDamage(kitchens, punchSolidNoise, 69);
@@ -456,7 +456,8 @@ public class Level extends GameComponent {
         }
 
         if (!worked && playSound) {
-            AudioUtil.playAudio(misuseNoise, 0);
+        	if(player.getMovementVector().length() <= 0.33f)
+            	AudioUtil.playAudio(misuseNoise, 0);
         }
     }
 
@@ -544,7 +545,7 @@ public class Level extends GameComponent {
             for (Clock clock : clocks)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, clock.getTransform().getPosition().getXZ(), clock.getSize()));
             
-            for (Furnace furnace : furnaces)
+            for (Oven furnace : furnaces)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, furnace.getTransform().getPosition().getXZ(), furnace.getSize()));
             
             for (Barrel barrel : barrels)
@@ -1001,7 +1002,7 @@ public class Level extends GameComponent {
         if(tables == null) this.tables = new ArrayList<Table>();
         if(pillars == null) this.pillars = new ArrayList<Pillar>();
         if(clocks == null) this.clocks = new ArrayList<Clock>();
-        if(furnaces == null) this.furnaces = new ArrayList<Furnace>();
+        if(furnaces == null) this.furnaces = new ArrayList<Oven>();
         if(kitchens == null) this.kitchens = new ArrayList<Kitchen>();
         if(barrels == null) this.barrels = new ArrayList<Barrel>();
         if(explosions == null) this.explosions = new ArrayList<Explosion>();
@@ -1129,7 +1130,7 @@ public class Level extends GameComponent {
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 120) {
                     	tables.add(new Table(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 121) {
-                    	furnaces.add(new Furnace(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                    	furnaces.add(new Oven(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                 	} else if ((bitmap.getPixel(i, j) & 0x0000FF) == 122) {
                     	kitchens.add(new Kitchen(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         foods.add(new Food(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));

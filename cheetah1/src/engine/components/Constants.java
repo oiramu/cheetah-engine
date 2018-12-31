@@ -23,7 +23,7 @@ package engine.components;
  */
 public class Constants {
 	
-	public static final String TEXTURE_FILTER = "Anisotropic";
+	public static final String TEXTURE_FILTER = "Nearest";
 	public static final String GAME_GRAPHICS = "High";
 	public static final String CLEAR_LIGHTS = "False";
 	public static final float MIPMAP_LEVEL = 0.4f;

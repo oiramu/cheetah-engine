@@ -173,7 +173,6 @@ public class NaziSoldier extends GameComponent {
      * @param delta of time
      */
     public void update(double delta) {
-        
         //Set Height
         transform.setPosition(transform.getPosition().getX(), 0, transform.getPosition().getZ());
         
@@ -430,7 +429,6 @@ public class NaziSoldier extends GameComponent {
         
         if (state == STATE_DEAD)    	
         	bullet.render(shader, renderingEngine);
-        
         meshRenderer.render(shader, renderingEngine);
 
         transform.setPosition(prevPosition);

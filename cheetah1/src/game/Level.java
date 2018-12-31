@@ -60,11 +60,9 @@ import game.objects.Hanged;
 import game.objects.Kitchen;
 import game.objects.Lamp;
 import game.objects.Lantern;
-import game.objects.LightBeam;
 import game.objects.Pendule;
 import game.objects.Pillar;
 import game.objects.Pipe;
-import game.objects.Rocket;
 import game.objects.Table;
 import game.objects.Tree;
 import game.pickUps.Armor;
@@ -78,6 +76,7 @@ import game.pickUps.Medkit;
 import game.pickUps.Shell;
 import game.pickUps.Shotgun;
 import game.pickUps.SuperShotgun;
+import game.projectiles.Rocket;
 
 /**
  *
@@ -153,7 +152,6 @@ public class Level extends GameComponent {
     //Static objects
     private ArrayList<Tree> trees;
     private ArrayList<Lantern> flares;
-    private ArrayList<LightBeam> lightPoints;
     private ArrayList<Bones> bones;
     private ArrayList<NaziSoldier> deadNazi;
     private ArrayList<DeadJew> deadJews;
@@ -225,7 +223,6 @@ public class Level extends GameComponent {
         objects.add(secretWalls);
         objects.add(trees);
         objects.add(flares);
-        objects.add(lightPoints);
         objects.add(bones);
         objects.add(tables);
         objects.add(deadNazi);
@@ -994,7 +991,6 @@ public class Level extends GameComponent {
         //Objects
         if(trees == null) this.trees = new ArrayList<Tree>();
         if(flares == null) this.flares = new ArrayList<Lantern>();
-        if(lightPoints == null) this.lightPoints = new ArrayList<LightBeam>();
         if(bones == null) this.bones = new ArrayList<Bones>();
         if(deadNazi == null) this.deadNazi = new ArrayList<NaziSoldier>();
         if(pipes == null) this.pipes = new ArrayList<Pipe>();
@@ -1112,9 +1108,7 @@ public class Level extends GameComponent {
                         trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 50) {
                     	flares.add(new Lantern(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, LEVEL_HEIGHT * 0.75f, (j + 0.5f) * SPOT_LENGTH))));
-                    	//lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 51) {
-                    	//lightPoints.add(new LightBeam(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.04f, (j + 0.5f) * SPOT_LENGTH))));
                     	lamps.add(new Lamp(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 55) {
                         bones.add(new Bones(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));

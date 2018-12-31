@@ -43,7 +43,7 @@ import engine.rendering.Texture;
 import engine.rendering.TextureFont;
 import engine.rendering.Vertex;
 import engine.rendering.Window;
-import game.objects.Rocket;
+import game.projectiles.Rocket;
 
 /**
  *
@@ -123,6 +123,7 @@ public class Player extends GameComponent {
     private static ArrayList<Clip> flashLightNoises;
     
     private static ArrayList<Rocket> rocketsArray;
+    private static ArrayList<Rocket> removeRockets;
 
     private static final Vector2f centerPosition = new Vector2f(Display.getWidth()/2, Display.getHeight()/2);
     private static final Vector3f zeroVector = new Vector3f(0, 0, 0);
@@ -150,7 +151,7 @@ public class Player extends GameComponent {
     private Vector3f gunLightColor;
     
     private SpotLight fireLight;
-    private SpotLight sLight;
+    private SpotLight flashLight;
     
     public double notificationTime;
     
@@ -381,8 +382,8 @@ public class Player extends GameComponent {
         if(gunRenderer == null) gunRenderer = new MeshRenderer(gunMesh, gunTransform, gunMaterial); 
         if (weaponState == null) { gotPistol(); }
         
-        if(sLight == null && fireLight == null) {
-        	sLight = new SpotLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f, 
+        if(flashLight == null && fireLight == null) {
+        	flashLight = new SpotLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f, 
         	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
     		fireLight = new SpotLight(gunLightColor, 1.6f, 
             		new Attenuation(attenuation,0,attenuation), getCamera().getPos(), new Vector3f(1,1,1), 0.7f);
@@ -390,6 +391,8 @@ public class Player extends GameComponent {
         
         if(rocketsArray == null)
         	rocketsArray = new ArrayList<Rocket>();
+        if(removeRockets == null)
+        	removeRockets = new ArrayList<Rocket>();
 
         toTerrain = gunTransform.getPosition().getY();
         gunFireTime = 0;
@@ -405,7 +408,7 @@ public class Player extends GameComponent {
         Debug.init();
         goldkey = false;
         bronzekey = false;
-        Debug.enableGod(false, this);
+        Debug.enableGod(true, this);
     }
 
     private float upAngle = 0;
@@ -480,7 +483,7 @@ public class Player extends GameComponent {
         gunFireAnimationTime = 0.15f;   
         damageMin = SHELL_DAMAGE + (SHELL_DAMAGE / (gunFireAnimationTime * 100));
         damageRange = 50f;
-        moveSpeed = 4f;
+        moveSpeed = 4.25f;
         attenuation = 0.1f;
         isMelee = false;
         isBulletBased = false;
@@ -538,7 +541,7 @@ public class Player extends GameComponent {
         gunFireAnimationTime = 0.175f;   
         damageMin = (SHELL_DAMAGE + SHELL_DAMAGE) + (SHELL_DAMAGE / (gunFireAnimationTime * 100));
         damageRange = 50f;
-        moveSpeed = 4f;
+        moveSpeed = 4.5f;
         attenuation = 0.05f;
         isMelee = false;
         isBulletBased = false;
@@ -565,7 +568,7 @@ public class Player extends GameComponent {
         gunFireAnimationTime = 0.035f;   
         damageMin = BULLET_DAMAGE + (BULLET_DAMAGE/ (gunFireAnimationTime * 100));
         damageRange = 60f;
-        moveSpeed = 4.5f;
+        moveSpeed = 3.5f;
         attenuation = 0.025f;
         isMelee = false;
         isBulletBased = true;
@@ -590,10 +593,10 @@ public class Player extends GameComponent {
     	gunLightColor = new Vector3f(1.0f,0.7f,0.2f);
         gunNoise = gunsNoiseSounds.get(6);
         gunEmptyNoise = gunsEmptyNoiseSounds.get(6);
-        gunFireAnimationTime = 0.1f;   
+        gunFireAnimationTime = 0.0875f;   
         damageMin = ROCKET_DAMAGE + (ROCKET_DAMAGE/ (gunFireAnimationTime * 100));
         damageRange = 60f;
-        moveSpeed = 4.5f;
+        moveSpeed = 3.5f;
         attenuation = 0.025f;
         isMelee = false;
         isBulletBased = false;
@@ -601,7 +604,7 @@ public class Player extends GameComponent {
         weaponState = ROCKET_LAUNCHER;
         isAutomatic = false;
         isDoubleShooter = false;
-        playerText.get("CrossHair").setPosition(new Vector2f(-0.065f, 0));
+        playerText.get("CrossHair").setPosition(new Vector2f(-0.08f, 0));
         playerText.get("CrossHair").setText("( )");
         isRocketBased = true;
     }
@@ -731,14 +734,14 @@ public class Player extends GameComponent {
 
 	        if(isOn) {
 				if (Input.getKeyDown(Input.KEY_F)) {
-					renderingEngine.removeLight(sLight);
+					renderingEngine.removeLight(flashLight);
 					AudioUtil.playAudio(flashLightNoises.get(1), 0);
 					isOn = false;
 				}
             } else {
             	if (Input.getKeyDown(Input.KEY_F)) {
             		AudioUtil.playAudio(flashLightNoises.get(0), 0);
-            		renderingEngine.addLight(sLight);
+            		renderingEngine.addLight(flashLight);
 	            	isOn = true;
             	}
             }
@@ -846,6 +849,9 @@ public class Player extends GameComponent {
             dx += bobOscillate * movAmt/50;
             playerCamera.move(movementVector, movAmt);
         }
+        
+        if(!isRocketBased)
+        	rocketsArray.clear();
 
         //Gun movement
         gunTransform.setScale(1,1,1);
@@ -866,12 +872,14 @@ public class Player extends GameComponent {
 
         gunTransform.setRotation(0, angle + 90, 0);
         
+        
         if(isOn) {
-	        sLight.setPosition(getCamera().getPos());
-	        sLight.setDirection(getCamera().getForward());
+	        flashLight.setPosition(getCamera().getPos());
+	        flashLight.setDirection(getCamera().getForward());
         }
         if(!isShooting && (!isBulletBased || !isShellBased || !isRocketBased) && renderingEngine != null)
         	renderingEngine.removeLight(fireLight);
+        fireLight.setAtten(new Attenuation(attenuation,0, attenuation));
         fireLight.setPosition(new Vector3f(getCamera().getPos().getX(), 0, getCamera().getPos().getZ()));
         fireLight.setDirection(getCamera().getForward());
         
@@ -948,6 +956,11 @@ public class Player extends GameComponent {
             	isReloading = false;
 	        }
 		}
+		
+		for (Rocket rocketToDelete : removeRockets) 
+    		rocketsArray.remove(rocketToDelete);   
+		
+		removeRockets.clear();
     }
 
     /**
@@ -1441,5 +1454,11 @@ public class Player extends GameComponent {
 	 * @return player's speed
 	 */
 	public float getSpeed() { return moveSpeed; }
+	
+	/**
+	 * Removes the rocket when disappears.
+	 * @param rocket rocket.
+	 */
+	public void removeRocket(Rocket rocket) { removeRockets.add(rocket); }
 
 }

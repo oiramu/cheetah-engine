@@ -35,6 +35,7 @@ import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
+import game.Auschwitz;
 import game.Level;
 
 /**
@@ -48,6 +49,7 @@ public class Explosion extends GameComponent {
 	private static final String RES_LOC = "explotion/";
 	private static final int STATE_BOOM = 1;
 	private static final int STATE_DEAD = 2;
+	private static final int STATE_DONE = 3;
 	private int state;
 	private double temp;
     
@@ -121,7 +123,19 @@ public class Explosion extends GameComponent {
 	        				getTransform().getPosition().getZ()));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         if(this.renderingEngine == null) this.renderingEngine = CoreEngine.renderingEngine;
-
+        if(transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length() < 1.0f && !Level.getPlayer().isShooting) {
+			if(Level.getPlayer().isArmor() == false) {
+				Level.getPlayer().addHealth((int) -85, "Explosion");
+        	} else {
+        		Level.getPlayer().addArmor((int) -85);
+        	}
+		}
+        if(Auschwitz.getLevel().getRocketObjetive() != null)
+	        if(getTransform().getPosition().sub(Auschwitz.getLevel().getRocketObjetive().getTransform().getPosition()).length() < 1.0f) {
+	        	Auschwitz.getLevel().getRocketObjetive().damage(Level.getPlayer().getDamage());
+        	}
+        renderingEngine.addLight(light);
+    	AudioUtil.playAudio(boomNoice, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
     }
 
     /**
@@ -150,9 +164,7 @@ public class Explosion extends GameComponent {
             timeDecimals *= 4.5f;
             
             if (timeDecimals <= 0.25f) {
-            	renderingEngine.addLight(light);
                 material.setDiffuse(animation.get(0));
-                AudioUtil.playAudio(boomNoice, distance);
             } else if (timeDecimals <= 0.5f) {
                 material.setDiffuse(animation.get(1));
             } else if (timeDecimals <= 0.75f) {
@@ -187,7 +199,10 @@ public class Explosion extends GameComponent {
         
         if (state == STATE_DEAD) {
         	renderingEngine.removeLight(light);
+        	state = STATE_DONE;
         }
+        
+        if(state == STATE_DONE);
 
     }
 
@@ -197,7 +212,7 @@ public class Explosion extends GameComponent {
      * @param renderingEngine to use
      */
     public void render(Shader shader, RenderingEngine renderingEngine) {
-    	if(state != STATE_DEAD)
+    	if(state == STATE_BOOM)
     		meshRenderer.render(shader, renderingEngine);
     }
     

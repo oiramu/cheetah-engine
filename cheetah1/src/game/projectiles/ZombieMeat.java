@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package game.objects;
+package game.projectiles;
 
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
@@ -28,6 +28,7 @@ import engine.rendering.Texture;
 import engine.rendering.Vertex;
 import game.Auschwitz;
 import game.Level;
+import game.enemies.Zombie;
 
 /**
  *
@@ -35,26 +36,24 @@ import game.Level;
  * @version 1.0
  * @since 2018
  */
-public class Rocket extends GameComponent {
+public class ZombieMeat extends GameComponent {
     
-    private static Mesh mesh;
-    private static Material material;
-    private MeshRenderer meshRenderer;
-    private float sizeX;
-    private int state;
-    private boolean playerShoots;
+    private static Mesh 		mesh;
+    private static Material 	material;
+    private MeshRenderer 		meshRenderer;
+    private float 				sizeX;
+    private int 				state;
     
     private static final String RES_LOC = "Rocket/";
 
-    private Transform transform;
-    private Vector3f objetiveOrientation;
-    private Explosion explosion;
+    private Transform 			transform;
+    private Vector3f 			objetiveOrientation;
 
     /**
      * Constructor of the actual object.
      * @param transform the transform of the data.
      */
-    public Rocket(Transform transform, boolean playerShoots) {
+    public ZombieMeat(Transform transform) {
         if (mesh == null) {
             float sizeY = 0.25f;
             sizeX = sizeY;
@@ -79,20 +78,13 @@ public class Rocket extends GameComponent {
         }
 
         if (material == null) {
-        	if(playerShoots)
-        		material = new Material(new Texture(RES_LOC+"MISLA5"));
-        	else
-        		material = new Material(new Texture(RES_LOC+"MISLA1"));
+        	material = new Material(new Texture(RES_LOC+"ZOMBMEAT"));
         }
 
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
-        if(playerShoots)
-        	objetiveOrientation = Level.getPlayer().getCamera().getPos().sub(transform.getPosition()).normalized();
-        else
-        	objetiveOrientation = this.transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).normalized();
+        this.objetiveOrientation = this.transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).normalized();
         this.state = 0;
-        this.playerShoots = playerShoots;
     }
 
     /**
@@ -114,7 +106,7 @@ public class Rocket extends GameComponent {
 	        transform.setRotation(0, angle + 90, 0);
 	        
 	        objetiveOrientation.setY(0);
-	        float moveSpeed = 7.5f;
+	        float moveSpeed = 6.5f;
 	
 	        Vector3f oldPos = transform.getPosition();
 	        Vector3f newPos = transform.getPosition().add(objetiveOrientation.mul((float) (-moveSpeed * delta)));
@@ -123,36 +115,24 @@ public class Rocket extends GameComponent {
 	
 	        Vector3f movementVector = collisionVector.mul(objetiveOrientation.normalized());
 	        
-	        if(!playerShoots) {
-	        	if(distance < 0.55f && Level.getPlayer().isShooting) {
-	    			if(Level.getPlayer().isArmor() == false) {
-	    				Level.getPlayer().addHealth((int) -200, "Rocket");
-	    				state = 1;
-	            	} else {
-	            		Level.getPlayer().addArmor((int) -200);
-	            		state = 1;
-	            	}
-	    		}
-	        } else {
-	        	if(Auschwitz.getLevel().getRocketObjetive() != null)
-	    	        if(getTransform().getPosition().sub(Auschwitz.getLevel().getRocketObjetive().getTransform().getPosition()).length() < 0.55f) {
-	    	        	Auschwitz.getLevel().getRocketObjetive().damage(Level.getPlayer().getDamage());
-	    	        	state = 1;
-	            	}
-	        }
-	
-	        if (movementVector.length() > 0.2f) {
+	        if(distance < 1.0f && !Level.getPlayer().isShooting) {
+				if(Level.getPlayer().isArmor() == false) {
+					Level.getPlayer().addHealth((int) -35, "Zombie's gib");
+					state = 1;
+	        	} else {
+	        		Level.getPlayer().addArmor((int) -35);
+	        		state = 1;
+	        	}
+			}
+	        
+	        if (movementVector.length() > 0.33f) {
 	            transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * delta))));
 	        } else {
 	        	state = 1;
 	        }
-	        
     	} 
-    	if(state == 1){
-    		if(explosion == null)
-    			explosion = new Explosion(new Transform(getTransform().getPosition()));
-    		explosion.update(delta);
-    	}
+    	if(state == 1) { Zombie.removeGibs(this); }
+    	
     }
 
     /**
@@ -163,8 +143,6 @@ public class Rocket extends GameComponent {
     public void render(Shader shader, RenderingEngine renderingEngine) {
     	if(state == 0)
     		meshRenderer.render(shader, renderingEngine);
-    	if(explosion != null)
-    		explosion.render(shader, renderingEngine);
     }
     
     /**

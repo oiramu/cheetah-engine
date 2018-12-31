@@ -39,16 +39,16 @@ import game.Level;
  */
 public class Lantern extends GameComponent {
     
-    private Mesh 			mesh;
-    private Material 		material;
-    private MeshRenderer 	meshRenderer;
-    private RenderingEngine renderingEngine;
-    private PointLight 		light;
-    private float 			sizeX;
+    private Mesh 				mesh;
+    private Material 			material;
+    private MeshRenderer 		meshRenderer;
+    private RenderingEngine 	renderingEngine;
+    private PointLight 			light;
+    private float 				sizeX;
     
     private static final String RES_LOC = "lantern/MEDIA";
 
-    private Transform 		transform;
+    private Transform 			transform;
 
     /**
      * Constructor of the actual object.

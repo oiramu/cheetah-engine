@@ -42,26 +42,26 @@ import game.Level;
  */
 public class Pillar extends GameComponent {
 	
-	private static final String RES_LOC = "pillar/";
-	private static final int STATE_IDLE = 0;
-    private static final int STATE_DYING = 1;
-	private static final int STATE_DEAD = 2;
-	private int state;
-	private double deathTime;
+	private static final String 		RES_LOC = "pillar/";
+	private static final int 			STATE_IDLE = 0;
+    private static final int 			STATE_DYING = 1;
+	private static final int 			STATE_DEAD = 2;
+	private int 						state;
+	private double 						deathTime;
 	
-	private static final Clip breakNoice = AudioUtil.loadAudio(RES_LOC + "MEDIA");
+	private static final Clip 			breakNoice = AudioUtil.loadAudio(RES_LOC + "MEDIA");
     
-    private static Mesh mesh;
-    private Material material;
-    private MeshRenderer m_meshRenderer;
+    private static Mesh 				mesh;
+    private Material 					material;
+    private MeshRenderer 				meshRenderer;
     
-    private float sizeX;
-    private double health;
-    private boolean dead;
+    private float 						sizeX;
+    private double 						health;
+    private boolean 					dead;
     
-    private static ArrayList<Texture> animation;
+    private static ArrayList<Texture> 	animation;
 
-    private Transform transform;
+    private Transform 					transform;
 
     /**
      * Constructor of the actual object.
@@ -108,7 +108,7 @@ public class Pillar extends GameComponent {
         this.material = new Material(animation.get(0));
         this.state = STATE_IDLE;
         this.transform = transform;
-        this.m_meshRenderer = new MeshRenderer(mesh, getTransform(), material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         this.dead = false;
         this.health = 500;
     }
@@ -183,7 +183,7 @@ public class Pillar extends GameComponent {
      * @param shader to render
      * @param renderingEngine to use
      */
-    public void render(Shader shader, RenderingEngine renderingEngine) {m_meshRenderer.render(shader, renderingEngine);}
+    public void render(Shader shader, RenderingEngine renderingEngine) {meshRenderer.render(shader, renderingEngine);}
     
     /**
      * Gets the transform of the object in projection.

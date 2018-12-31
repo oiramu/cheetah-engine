@@ -38,13 +38,13 @@ public class Kitchen extends GameComponent {
 	
 	private static final String RES_LOC = "kitchen/PANSA0";
     
-    private static Mesh mesh;
-    private Material material;
-    private MeshRenderer m_meshRenderer;
+    private static Mesh 		mesh;
+    private Material 			material;
+    private MeshRenderer 		meshRenderer;
     
-    private float sizeX;
+    private float 				sizeX;
 
-    private Transform transform;
+    private Transform 			transform;
 
     /**
      * Constructor of the actual object.
@@ -80,7 +80,7 @@ public class Kitchen extends GameComponent {
         }
         
         this.transform = transform;
-        this.m_meshRenderer = new MeshRenderer(mesh, getTransform(), material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
     }
 
     /**
@@ -108,7 +108,7 @@ public class Kitchen extends GameComponent {
      * @param shader to render
      * @param renderingEngine to use
      */
-    public void render(Shader shader, RenderingEngine renderingEngine) {m_meshRenderer.render(shader, renderingEngine);}
+    public void render(Shader shader, RenderingEngine renderingEngine) {meshRenderer.render(shader, renderingEngine);}
     
     /**
      * Gets the transform of the object in projection.

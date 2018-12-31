@@ -39,20 +39,20 @@ import game.Level;
  */
 public class Pendule extends GameComponent {
 	
-	private static final String RES_LOC = "pendule/";
-	private static final int STATE_IDLE = 0;
-	private static final int DAMAGE = -2;
-	private int state;
+	private static final String 		RES_LOC = "pendule/";
+	private static final int 			STATE_IDLE = 0;
+	private static final int 			DAMAGE = -2;
+	private int 						state;
     
-    private static Mesh mesh;
-    private Material material;
-    private MeshRenderer m_meshRenderer;
+    private static Mesh 				mesh;
+    private Material 					material;
+    private MeshRenderer 				meshRenderer;
     
-    private float sizeX;
+    private float 						sizeX;
     
-    private static ArrayList<Texture> animation;
+    private static ArrayList<Texture> 	animation;
 
-    private Transform transform;
+    private Transform 					transform;
 
     /**
      * Constructor of the actual object.
@@ -102,7 +102,7 @@ public class Pendule extends GameComponent {
         this.material = new Material(animation.get(5));
         this.state = STATE_IDLE;
         this.transform = transform;
-        this.m_meshRenderer = new MeshRenderer(mesh, getTransform(), material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
     }
 
     /**
@@ -186,7 +186,7 @@ public class Pendule extends GameComponent {
      * @param shader to render
      * @param renderingEngine to use
      */
-    public void render(Shader shader, RenderingEngine renderingEngine) {m_meshRenderer.render(shader, renderingEngine);}
+    public void render(Shader shader, RenderingEngine renderingEngine) {meshRenderer.render(shader, renderingEngine);}
     
     /**
      * Gets the transform of the object in projection.

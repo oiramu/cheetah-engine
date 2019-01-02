@@ -344,7 +344,7 @@ public class Ghost extends GameComponent {
 
         health -= amt;
 
-        if (health > 0) {
+        if (health > 0 && amt > 0) {
             AudioUtil.playAudio(hitNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
         }
     }

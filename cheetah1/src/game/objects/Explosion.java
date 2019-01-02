@@ -147,6 +147,9 @@ public class Explosion extends GameComponent {
         Vector3f orientation = playerDistance.normalized();
 		float distance = playerDistance.length();
 		setDistance(distance);
+		
+		if(!Level.getPlayer().isAlive)
+			renderingEngine.removeLight(light);
         
         if (state == STATE_BOOM) {
             float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));

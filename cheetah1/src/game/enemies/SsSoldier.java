@@ -379,6 +379,7 @@ public class SsSoldier extends GameComponent {
         }
         
         if (state == STATE_POST_DEATH) {
+        	isQuiet = false;
         	material.setDiffuse(animation.get(15));
         }
         
@@ -409,7 +410,7 @@ public class SsSoldier extends GameComponent {
 
         health -= amt;
 
-        if (health > 0) {
+        if (health > 0 && amt > 0) {
         	state = STATE_HIT;
             AudioUtil.playAudio(hitNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
         }

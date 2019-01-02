@@ -260,8 +260,15 @@ public class Level extends GameComponent {
      */
     private <E> void checkDamage(ArrayList<E> array, Clip sound, int times) {
 		for (E component : array) {
-			if(player.isBulletBased) {
+			if(player.isBulletBased && player.getWeaponState() != "chaingun") {
 				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
+					if(times == 3)
+						if(sound != null)
+							AudioUtil.playAudio(sound, 0);
+					((GameComponent) component).damage(player.getDamage());
+				}
+			}else if(player.isBulletBased && player.getWeaponState() == "chaingun" && player.chaingunState) {
+				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
 					if(times == 3)
 						if(sound != null)
 							AudioUtil.playAudio(sound, 0);
@@ -706,7 +713,7 @@ public class Level extends GameComponent {
                 }
             }
 
-            if((player.isBulletBased && player.getBullets()!=0)||(player.isShellBased && player.getShells()!=0)) {
+            if(player.isBulletBased || player.isShellBased) {
 	            if (naziIntersect != null && (nearestIntersect == null
 	                    || nearestIntersect.sub(lineStart).length() > naziIntersect.sub(lineStart).length())) {
 	                nearestNazi.damage(player.getDamage());
@@ -739,7 +746,7 @@ public class Level extends GameComponent {
 	            	nearestCaptain.damage(player.getDamage());
 	            }
         	}
-            if(player.isRocketBased && player.getRockets()!=0) {
+            if(player.isRocketBased) {
 	            if (naziIntersect != null && (nearestIntersect == null
 	                    || nearestIntersect.sub(lineStart).length() > naziIntersect.sub(lineStart).length())) {
 	            	setRocketObjetive(nearestNazi);

@@ -371,6 +371,7 @@ public class NaziSergeant extends GameComponent {
         }
         
         if (state == STATE_POST_DEATH) {
+        	isQuiet = false;
         	material.setDiffuse(animation.get(12));
         }
         
@@ -412,7 +413,7 @@ public class NaziSergeant extends GameComponent {
 
         health -= amt;
 
-        if (health > 0) {
+        if (health > 0 && amt > 0) {
         	state = STATE_HIT;
             AudioUtil.playAudio(hitNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
         }

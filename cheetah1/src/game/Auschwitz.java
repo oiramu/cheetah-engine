@@ -24,8 +24,10 @@ import static engine.components.Constants.*;
 import static engine.core.CoreEngine.*;
 
 import engine.audio.AudioUtil;
+import engine.components.Constants;
 import engine.core.*;
-import engine.menu.DefaultMenu;
+import engine.menu.CreditsMenu;
+import engine.menu.Menu;
 import engine.rendering.*;
 import game.doors.SecretWall;
 import game.enemies.*;
@@ -38,34 +40,41 @@ import game.enemies.*;
  */
 public class Auschwitz implements Game {
 	
-	private static HashMap<String,TextureFont> text = new HashMap<String,TextureFont>();
-	private static ArrayList<Sequence> playlist = new ArrayList<Sequence>();
+	private static HashMap<String,TextureFont> 	text = new HashMap<String,TextureFont>();
+	private static ArrayList<Sequence> 			playlist = new ArrayList<Sequence>();
 	
-    private static final int EPISODE_1 = 1;
-    private static final int EPISODE_2 = 2;
-    private static final int EPISODE_3 = 2;
+    private static final int 					EPISODE_1 = 1;
+    private static final int 					EPISODE_2 = 2;
+    private static final int 					EPISODE_3 = 3;
 
-    public static Level 			level;
-    public static Material			material;
-    public static int 				levelNum;
-    public static int 				startingLevel;
-    public static int 				track;
-    public static int				currentEpisode;
-    private static boolean 			isRunning;
-    private static boolean 			displayStats = false;
-    private static int 				secrets = 0;
-    private static int 				deadMonsters = 0;
-    private static int 				totalSecrets = 0;
-    private static int 				totalMonsters = 0;
-    private static double			stateTime = 0;
+    public static Level 						level;
+    public static Material						material;
+    
+    private static Menu							menu;
+    
+    public static boolean						isPaused;
+    public static int 							levelNum;
+    public static int 							startingLevel;
+    public static int 							track;
+    public static int							currentEpisode;
+    
+    private static boolean 						isRunning;
+    private static boolean 						displayStats = false;
+    private static int 							secrets = 0;
+    private static int 							deadMonsters = 0;
+    private static int 							totalSecrets = 0;
+    private static int 							totalMonsters = 0;
+    private static double						stateTime = 0;
 
     /**
      * The constructor method of the compiling game.
      */
 	public void init() {
+		Constants.load("res/config.txt");
     	text.put("Level",new TextureFont("", new Vector2f(-1.25f,1.2f), new Vector2f(0.75f,0.75f)));
         text.put("Enemies",new TextureFont("", new Vector2f(-1.25f,1.1f), new Vector2f(0.75f,0.75f)));
         text.put("Secrets",new TextureFont("", new Vector2f(-1.25f,1.0f), new Vector2f(0.75f,0.75f)));
+        text.put("Paused",new TextureFont("PAUSED!", new Vector2f(-0.175f,0.175f), new Vector2f(1.5f,1.5f)));
         for (int i = 0; i < 13; i++) playlist.add(AudioUtil.loadMidi("THEME" + i));
 
         track = startingLevel - 1;
@@ -79,6 +88,7 @@ public class Auschwitz implements Game {
      */
     @Override
     protected void finalize() {
+    	isRunning = false;
     	AudioUtil.stopMidi();
         System.exit(0);
     }
@@ -113,10 +123,21 @@ public class Auschwitz implements Game {
      * Checks all the inputs.
      */
     public void input() {
-        level.input();
-        
-        if(Input.getKeyDown(Input.KEY_F4))
-        	System.exit(0);
+    	
+    	if(!isPaused)
+    		level.input();
+    	
+        if(isPaused) {
+			if (Input.getKeyDown(Input.KEY_ESCAPE)) {
+				AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
+				isPaused = false;
+			}
+        } else {
+        	if (Input.getKeyDown(Input.KEY_ESCAPE)) {
+        		AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
+        		isPaused = true;
+        	}
+        }
     }
 
     /**
@@ -125,17 +146,25 @@ public class Auschwitz implements Game {
      */
     public void update(double delta) {
         if (isRunning) {
-            level.update(delta);
+        	if(!isPaused)
+        		level.update(delta);
+        } else {
+        	menu.update();
         }
     }
 
     /**
      * Renders everything every on screen.
+     * @param engine to render
      */
 	public void render(RenderingEngine engine) {
         if (isRunning) {
         	engine.render(level);
         	printStats(engine);
+        	if(isPaused)
+        		text.get("Paused").render(engine);
+        } else {
+        	menu.draw2D();
         }
     }
 	
@@ -146,7 +175,8 @@ public class Auschwitz implements Game {
 
     /**
      * Load the level and also charges the next level when the last end.
-     * @param offset count of level offset by offset.
+     * @param offset count of level offset by offset
+     * @param displayText if it does
      */
 	@SuppressWarnings("static-access")
 	public static void loadLevel(int offset, boolean displayText) {
@@ -159,17 +189,20 @@ public class Auschwitz implements Game {
             int bulletTemp = 0;
             int shellTemp = 0;
             int rocketTemp = 0;
+            int gasTemp = 0;
             int armoriTemp = 0;
             int maxHealthTemp = 0;
             int maxBulletTemp = 0;
             int maxShellTemp = 0;
             int maxRocketTemp = 0;
+            int maxGasTemp = 0;
             int maxArmoriTemp = 0;
             boolean shotgunTemp = false;
             boolean machinegunTemp = false;
             boolean superShotgunTemp = false;
             boolean chaingunTemp = false;
             boolean rocketLauncherTemp = false;
+            boolean flameThrowerTemp = false;
             boolean armorbTemp = false;
             boolean mouseLocktemp = false;
             String weaponStateTemp = "";
@@ -223,20 +256,23 @@ public class Auschwitz implements Game {
                 bulletTemp = level.getPlayer().getBullets();
                 shellTemp = level.getPlayer().getShells();
                 rocketTemp = level.getPlayer().getRockets();
+                gasTemp = level.getPlayer().getGas();
                 maxHealthTemp = level.getPlayer().getMaxHealth();
                 maxBulletTemp = level.getPlayer().getMaxBullets();
                 maxShellTemp = level.getPlayer().getMaxShells();
                 maxRocketTemp = level.getPlayer().getMaxRockets();
+                maxGasTemp = level.getPlayer().getMaxGas();
                 maxArmoriTemp = level.getPlayer().getMaxArmor();
                 shotgunTemp = level.getPlayer().isShotgun();
                 machinegunTemp = level.getPlayer().isMachinegun();
                 superShotgunTemp = level.getPlayer().isSuperShotgun();
                 chaingunTemp = level.getPlayer().isChaingun();
                 rocketLauncherTemp = level.getPlayer().isRocketLauncher();
+                flameThrowerTemp = level.getPlayer().isFlameThrower();
                 weaponStateTemp = level.getPlayer().getWeaponState();
                 armorbTemp = level.getPlayer().isArmor();
                 mouseLocktemp = level.getPlayer().mouseLocked;
-                renderingEngine.clearLights();
+                getRenderingEngine().clearLights();
             }
 
             if(levelNum > 9)
@@ -263,7 +299,7 @@ public class Auschwitz implements Game {
             
             switch(CLEAR_LIGHTS) {
     			case "True":
-    				renderingEngine.clearLights();
+    				getRenderingEngine().clearLights();
     				break;
     			case "False":
     				break;
@@ -288,6 +324,11 @@ public class Auschwitz implements Game {
             	if(rocketTemp == 0)
             		level.getPlayer().setRockets(10);
             	level.getPlayer().setRockets(rocketTemp);
+            }
+            if(level.getPlayer().getGas() == 0) {
+            	if(gasTemp == 0)
+            		level.getPlayer().setGas(10);
+            	level.getPlayer().setGas(gasTemp);
             }
             if(level.getPlayer().getMaxArmor() == 0) {
             	if(maxArmoriTemp == 0)
@@ -314,12 +355,18 @@ public class Auschwitz implements Game {
             		level.getPlayer().setMaxRockets(50);
             	level.getPlayer().setMaxRockets(maxRocketTemp);
             }
+            if(level.getPlayer().getMaxGas() == 0) {
+            	if(maxGasTemp == 0)
+            		level.getPlayer().setMaxGas(50);
+            	level.getPlayer().setMaxGas(maxGasTemp);
+            }
             level.getPlayer().setArmori(armoriTemp);
             level.getPlayer().setShotgun(shotgunTemp);
             level.getPlayer().setMachinegun(machinegunTemp);
             level.getPlayer().setSuperShotgun(superShotgunTemp);
             level.getPlayer().setChaingun(chaingunTemp);
             level.getPlayer().setRocketLauncher(rocketLauncherTemp);
+            level.getPlayer().setFlameThrower(flameThrowerTemp);
             level.getPlayer().setArmor(armorbTemp);
             level.getPlayer().setWeaponState(weaponStateTemp);
             level.getPlayer().mouseLocked = mouseLocktemp;
@@ -346,6 +393,8 @@ public class Auschwitz implements Game {
             		level.getPlayer().gotChaingun();
             	}else if(level.getPlayer().getWeaponState() == level.getPlayer().ROCKET_LAUNCHER && rocketLauncherTemp == true) {
             		level.getPlayer().gotRocketLauncher();
+            	}else if(level.getPlayer().getWeaponState() == level.getPlayer().FLAME_THROWER && flameThrowerTemp == true) {
+            		level.getPlayer().gotFlameThrower();
             	}
             	
             }
@@ -356,7 +405,7 @@ public class Auschwitz implements Game {
             //Debug.printErrorMessage(ex.getMessage(), "GAME OVER!");
             System.out.println("GAME OVER!");
             AudioUtil.stopMidi();
-            new DefaultMenu();
+            menu = new CreditsMenu();
         }
 
     }
@@ -372,5 +421,11 @@ public class Auschwitz implements Game {
      * @param value True or false.
      */
     public static void setIsRunning(boolean value) {isRunning = value;}
+
+    /**
+     * Returns it's own game name
+     * @return name
+     */
+	public String getName() { return "Auschwitz"; }
 
 }

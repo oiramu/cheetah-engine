@@ -18,9 +18,9 @@ package engine.rendering;
 import java.util.ArrayList;
 
 import engine.core.Matrix4f;
-import engine.core.Util;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
+import engine.core.utils.Util;
 
 /**
  *
@@ -86,7 +86,7 @@ public class TextureFont {
      * @param position of the text.
      * @param scale of the text.
      */
-    public TextureFont(String text, Vector2f position, Vector2f scale) {  	
+    public <E> TextureFont(E text, Vector2f position, Vector2f scale) {  	
     	this(text, new Material(new Texture("font")), position, scale);
     }
 
@@ -97,15 +97,15 @@ public class TextureFont {
      * @param position of the text.
      * @param scale of the text.
      */
-    public TextureFont(String text, Material material, Vector2f position, Vector2f scale) {
+    public <E> TextureFont(E text, Material material, Vector2f position, Vector2f scale) {
     	
-    	if(this.text == null) this.text = text;
+    	if(this.text == null) this.text = text + "";
     	if(this.position == null) this.position = position;
     	if(this.scale == null) this.scale = scale;
         ArrayList<Vertex> vertices = new ArrayList<Vertex>(); // ArrayList is a variable length Collection class
         ArrayList<Integer> indices = new ArrayList<Integer>();
-        for (int i = 0; i < text.length(); i++) {
-            int c = text.charAt(i);
+        for (int i = 0; i < this.text.length(); i++) {
+            int c = this.text.charAt(i);
             float u = (c % 16) / 16.0f;
             float v = (c / 16) / 16.0f;
             float w = (1 / 16.0f);
@@ -156,11 +156,12 @@ public class TextureFont {
      * Method that updates the text.
      * @param text to change.
      */
-    public void setText(String text) {   	
+    public <E> void setText(E text) {   	
         ArrayList<Vertex> vertices = new ArrayList<Vertex>(); // ArrayList is a variable length Collection class
         ArrayList<Integer> indices = new ArrayList<Integer>();
-        for (int i = 0; i < text.length(); i++) {
-            int c = text.charAt(i);
+        String toText = text + "";
+        for (int i = 0; i < toText.length(); i++) {
+            int c = toText.charAt(i);
             float u = (c % 16) / 16.0f;
             float v = (c / 16) / 16.0f;
             float w = (1 / 16.0f);

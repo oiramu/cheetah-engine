@@ -15,6 +15,8 @@
  */
 package game;
 
+import static engine.core.CoreEngine.getRenderingEngine;
+
 import java.util.ArrayList;
 
 import javax.sound.sampled.Clip;
@@ -24,13 +26,10 @@ import engine.components.BaseLight;
 import engine.components.DirectionalLight;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
-import engine.core.CoreEngine;
-import engine.core.Debug;
 import engine.core.GameObject;
 import engine.core.Input;
 import engine.core.Time;
 import engine.core.Transform;
-import engine.core.Util;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.physics.PhysicsUtil;
@@ -40,6 +39,8 @@ import engine.rendering.Mesh;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Vertex;
+import engine.core.utils.Log;
+import engine.core.utils.Util;
 import game.doors.Door;
 import game.doors.LockedDoor;
 import game.doors.SecretWall;
@@ -51,10 +52,12 @@ import game.enemies.NaziSoldier;
 import game.enemies.SsSoldier;
 import game.enemies.Zombie;
 import game.objects.Barrel;
+import game.objects.Bleed;
 import game.objects.Bones;
 import game.objects.Clock;
 import game.objects.DeadJew;
 import game.objects.Explosion;
+import game.objects.Fire;
 import game.objects.Oven;
 import game.objects.Hanged;
 import game.objects.Kitchen;
@@ -68,15 +71,17 @@ import game.objects.Tree;
 import game.pickUps.Armor;
 import game.pickUps.Bag;
 import game.pickUps.Bullet;
+import game.pickUps.Chaingun;
 import game.pickUps.Food;
 import game.pickUps.Helmet;
 import game.pickUps.Key;
 import game.pickUps.Machinegun;
 import game.pickUps.Medkit;
+import game.pickUps.RocketLauncher;
 import game.pickUps.Shell;
 import game.pickUps.Shotgun;
 import game.pickUps.SuperShotgun;
-import game.projectiles.Rocket;
+import game.pickUps.Rocket;
 
 /**
  *
@@ -87,9 +92,9 @@ import game.projectiles.Rocket;
 public class Level extends GameComponent {
 
 	//Constants
-    public static final float SPOT_WIDTH = 1;
-    public static final float SPOT_LENGTH = 1;
-    public static final float LEVEL_HEIGHT = 1;
+    public static final float SPOT_WIDTH = 1f;
+    public static final float SPOT_LENGTH = 1f;
+    public static final float LEVEL_HEIGHT = 1f;
 
     private static final float NUM_TEX_X = 4f;
     private static final float NUM_TEX_Y = 4f;
@@ -97,6 +102,7 @@ public class Level extends GameComponent {
     private static final float MELEE_RANGE = 0.55f;
     private static final float BULLET_RANGE = 2f;
     private static final float SHELL_RANGE = 3f;
+    private static final float FLAME_RANGE = 6f;
 
     private static final String PLAYER_RES_LOC = "player/";
     
@@ -119,9 +125,13 @@ public class Level extends GameComponent {
     private static ArrayList<SuperShotgun> removeSuperShotgunList;
     private static ArrayList<Helmet> removeHelmets;
     private static ArrayList<Barrel> removeBarrels;
+    private static ArrayList<Chaingun> removeChaingunList;
     private static ArrayList<Key> removeKeys;
     private static ArrayList<Explosion> removeExplosions;
     private static ArrayList<Rocket> removeRockets;
+    private static ArrayList<RocketLauncher> removeRocketLauncherList;
+    private static ArrayList<Bleed> removeBleedingList;
+    private static ArrayList<Fire> removeFireList;
     
     //Player
     private static Player player;
@@ -147,7 +157,9 @@ public class Level extends GameComponent {
     private ArrayList<Armor> armors;
     private ArrayList<SuperShotgun> superShotguns;
     private ArrayList<Helmet> helmets;
+    private ArrayList<Chaingun> chainguns;
     private ArrayList<Key> keys;
+    private ArrayList<RocketLauncher> rocketLaunchers;
     
     //Static objects
     private ArrayList<Tree> trees;
@@ -169,6 +181,8 @@ public class Level extends GameComponent {
     //Active objects
     private ArrayList<Explosion> explosions;
     private ArrayList<Rocket> rockets;
+    private ArrayList<Bleed> bleeding;
+    private ArrayList<Fire> fire;
    
     //Enemies
     private ArrayList<NaziSoldier> naziSoldiers;
@@ -188,7 +202,7 @@ public class Level extends GameComponent {
     private RenderingEngine renderingEngine;
     private BaseLight directionalLight;
     private GameObject objects;
-    private GameComponent rocketObjetive;
+    private GameComponent shootingObjective;
 
     /**
      * Constructor of the level in the game.
@@ -204,7 +218,7 @@ public class Level extends GameComponent {
         if(transform == null) this.transform = new Transform();
         if(collisionPosStart == null) this.collisionPosStart = new ArrayList<Vector2f>();
         if(collisionPosEnd == null) this.collisionPosEnd = new ArrayList<Vector2f>();
-    	if(renderingEngine == null) renderingEngine = CoreEngine.renderingEngine;
+    	if(renderingEngine == null) this.renderingEngine = getRenderingEngine();
         
         generateLevel();
         
@@ -244,62 +258,14 @@ public class Level extends GameComponent {
         objects.add(bags);
         objects.add(shotguns);
         objects.add(machineguns);
+        objects.add(chainguns);
         objects.add(armors);
         objects.add(helmets);
         objects.add(superShotguns); 
         objects.add(keys);
+        objects.add(rocketLaunchers);
         
         renderingEngine.setMainCamera(player.getCamera());
-    }
-    
-    /**
-     * Checks the damage of some enemy.
-     * @param array of enemies
-     * @param sound to play
-     * @param times to check patron
-     */
-    private <E> void checkDamage(ArrayList<E> array, Clip sound, int times) {
-		for (E component : array) {
-			if(player.isBulletBased && player.getWeaponState() != "chaingun") {
-				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
-					if(times == 3)
-						if(sound != null)
-							AudioUtil.playAudio(sound, 0);
-					((GameComponent) component).damage(player.getDamage());
-				}
-			}else if(player.isBulletBased && player.getWeaponState() == "chaingun" && player.chaingunState) {
-				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
-					if(times == 3)
-						if(sound != null)
-							AudioUtil.playAudio(sound, 0);
-					((GameComponent) component).damage(player.getDamage());
-				}
-			}else if(player.isShellBased) {
-				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
-					if(times == 2 || times == 3)
-						if(sound != null)
-							AudioUtil.playAudio(sound, 0);
-					((GameComponent) component).damage(player.getDamage());
-				}
-			}else if(player.isMelee) {
-				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
-					if(times == 1 || times == 3)
-						if(sound != null)
-							AudioUtil.playAudio(sound, 0);
-					((GameComponent) component).damage(player.getDamage());
-            	}
-			}else if(player.isRocketBased) {
-				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.5f /*&& player.getRockets()!=0*/) {
-					setRocketObjetive((GameComponent) component);
-				}
-				
-			}
-			if(player.isMelee == true && times == 69) {
-				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive) {
-					AudioUtil.playAudio(sound, 0);
-				}
-			}
-		}
     }
 
     /**
@@ -318,7 +284,7 @@ public class Level extends GameComponent {
 	        }
         }
 
-        if (player.fires && !player.isReloading) {
+        if ((player.fires && !player.isReloading) || (Input.getKeyDown(Input.KEY_Q) && !player.trowsKick)) {
         	
         	checkDamage(naziSoldiers, punchNoise, 1);
         	checkDamage(dogs, punchNoise, 1);
@@ -326,7 +292,7 @@ public class Level extends GameComponent {
         	checkDamage(naziSeargeants, punchNoise, 1);
         	checkDamage(ghosts, null, 255);
         	checkDamage(zombies, punchNoise, 1);
-        	checkDamage(captains, punchSolidNoise, 6);
+        	checkDamage(captains, punchSolidNoise, 1);
         	checkDamage(lamps, punchSolidNoise, 1);
         	checkDamage(pillars, punchSolidNoise, 1);
         	checkDamage(barrels, barrelNoise, 3);
@@ -334,8 +300,6 @@ public class Level extends GameComponent {
         	checkDamage(doors, punchSolidNoise, 69);
         	checkDamage(pipes, punchSolidNoise, 69);
         	checkDamage(tables, punchSolidNoise, 69);
-        	checkDamage(clocks, punchSolidNoise, 69);
-        	checkDamage(furnaces, punchSolidNoise, 1);
         	checkDamage(clocks, punchSolidNoise, 69);
         	checkDamage(furnaces, punchSolidNoise, 69);
         	checkDamage(kitchens, punchSolidNoise, 69);
@@ -353,23 +317,27 @@ public class Level extends GameComponent {
         
     	objects.update(delta);
 
-        objects.updateAndKillToRenderPipeline(deadNazi, delta);
+        objects.killList(deadNazi, delta);
         
-        objects.removeListToRenderPipeline(removeMedkitList);
-        objects.removeListToRenderPipeline(removeFoodList);
-        objects.removeListToRenderPipeline(removeBulletList);
-        objects.removeListToRenderPipeline(removeShellList);
-        objects.removeListToRenderPipeline(removeBagList);
-        objects.removeListToRenderPipeline(removeShotgunList);
-        objects.removeListToRenderPipeline(removeMachineGunList);
-        objects.removeListToRenderPipeline(removeGhostList);
-        objects.removeListToRenderPipeline(removeArmorList);
-        objects.removeListToRenderPipeline(removeHelmets);
-        objects.removeListToRenderPipeline(removeSuperShotgunList);
-        objects.removeListToRenderPipeline(removeBarrels);
-        objects.removeListToRenderPipeline(removeKeys);
-        objects.removeListToRenderPipeline(removeExplosions);
-        objects.removeListToRenderPipeline(removeRockets);
+        objects.removeComponents(removeMedkitList);
+        objects.removeComponents(removeFoodList);
+        objects.removeComponents(removeBulletList);
+        objects.removeComponents(removeShellList);
+        objects.removeComponents(removeBagList);
+        objects.removeComponents(removeShotgunList);
+        objects.removeComponents(removeMachineGunList);
+        objects.removeComponents(removeGhostList);
+        objects.removeComponents(removeArmorList);
+        objects.removeComponents(removeHelmets);
+        objects.removeComponents(removeSuperShotgunList);
+        objects.removeComponents(removeBarrels);
+        objects.removeComponents(removeChaingunList);
+        objects.removeComponents(removeKeys);
+        objects.removeComponents(removeExplosions);
+        objects.removeComponents(removeRockets);
+        objects.removeComponents(removeRocketLauncherList);
+        objects.removeComponents(removeBleedingList);
+        objects.removeComponents(removeFireList);
         
         removeMedkitList.clear();
         removeFoodList.clear();
@@ -383,9 +351,13 @@ public class Level extends GameComponent {
         removeSuperShotgunList.clear();
         removeHelmets.clear();
         removeBarrels.clear();
+        removeChaingunList.clear();
         removeKeys.clear();
         removeExplosions.clear();
         removeRockets.clear();
+        removeRocketLauncherList.clear();
+        removeBleedingList.clear();
+        removeFireList.clear();
     }
 
     /**
@@ -713,24 +685,28 @@ public class Level extends GameComponent {
                 }
             }
 
-            if(player.isBulletBased || player.isShellBased) {
+            if((player.weaponType == player.BULLET && player.getWeaponState() != "chaingun" && player.getBullets() > 0) || player.weaponType == player.SHELL && player.getShells() > 0 || (player.weaponType == player.BULLET && player.chaingunCanFire && player.getWeaponState() == "chaingun" && player.getBullets() > 0)) {
 	            if (naziIntersect != null && (nearestIntersect == null
 	                    || nearestIntersect.sub(lineStart).length() > naziIntersect.sub(lineStart).length())) {
 	                nearestNazi.damage(player.getDamage());
+	                addBleeding(nearestNazi);
 	            }
 	            
 	            if (dogIntersect != null && (nearestIntersect == null
 	                    || nearestIntersect.sub(lineStart).length() > dogIntersect.sub(lineStart).length())) {
 	            	nearestDog.damage(player.getDamage());
+	            	addBleeding(nearestDog);
 	            }
 	            
 	            if (ssSoldierIntersect != null && (nearestIntersect == null
 	                    || nearestIntersect.sub(lineStart).length() > ssSoldierIntersect.sub(lineStart).length())) {
 	            	nearestSsSoldier.damage(player.getDamage());
+	            	addBleeding(nearestSsSoldier);
 	            }
 	            if (naziSergeantsIntersect != null && (nearestIntersect == null
 	                    || nearestIntersect.sub(lineStart).length() > naziSergeantsIntersect.sub(lineStart).length())) {
 	            	nearestNaziSargent.damage(player.getDamage());
+	            	addBleeding(nearestNaziSargent);
 	            }
 	            
 	            if (ghostIntersect != null && (nearestIntersect == null
@@ -744,75 +720,88 @@ public class Level extends GameComponent {
 	            if (captainIntersect != null && (nearestIntersect == null
 	                    || nearestIntersect.sub(lineStart).length() > captainIntersect.sub(lineStart).length())) {
 	            	nearestCaptain.damage(player.getDamage());
+	            	addBleeding(nearestCaptain);
 	            }
         	}
-            if(player.isRocketBased) {
+            if(player.weaponType == player.ROCKET || player.weaponType == player.GAS) {
 	            if (naziIntersect != null && (nearestIntersect == null
 	                    || nearestIntersect.sub(lineStart).length() > naziIntersect.sub(lineStart).length())) {
-	            	setRocketObjetive(nearestNazi);
+	            	setShootingObjective(nearestNazi);
+	            	if(player.weaponType == player.GAS && player.getGas() > 0 && nearestNazi.getDistance() < FLAME_RANGE)
+	            		addFire(nearestNazi, false);
 	            }
 	            
 	            if (dogIntersect != null && (nearestIntersect == null
 	                    || nearestIntersect.sub(lineStart).length() > dogIntersect.sub(lineStart).length())) {
-	            	setRocketObjetive(nearestDog);
+	            	setShootingObjective(nearestDog);
+	            	if(player.weaponType == player.GAS && player.getGas() > 0 && nearestDog.getDistance() < FLAME_RANGE)
+	            		addFire(nearestDog, false);
 	            }
 	            
 	            if (ssSoldierIntersect != null && (nearestIntersect == null
 	                    || nearestIntersect.sub(lineStart).length() > ssSoldierIntersect.sub(lineStart).length())) {
-	            	setRocketObjetive(nearestSsSoldier);
+	            	setShootingObjective(nearestSsSoldier);
+	            	if(player.weaponType == player.GAS && player.getGas() > 0 && nearestSsSoldier.getDistance() < FLAME_RANGE)
+	            		addFire(nearestSsSoldier, false);
 	            }
 	            if (naziSergeantsIntersect != null && (nearestIntersect == null
 	                    || nearestIntersect.sub(lineStart).length() > naziSergeantsIntersect.sub(lineStart).length())) {
-	            	setRocketObjetive(nearestNaziSargent);
+	            	setShootingObjective(nearestNaziSargent);
+	            	if(player.weaponType == player.GAS && player.getGas() > 0 && nearestNaziSargent.getDistance() < FLAME_RANGE)
+	            		addFire(nearestNaziSargent, false);
 	            }
 	            
 	            if (ghostIntersect != null && (nearestIntersect == null
 	                    || nearestIntersect.sub(lineStart).length() > ghostIntersect.sub(lineStart).length())) {
-	            	setRocketObjetive(nearestGhost);
+	            	setShootingObjective(nearestGhost);
 	            }
 	            if (zombieIntersect != null && (nearestIntersect == null
 	                    || nearestIntersect.sub(lineStart).length() > zombieIntersect.sub(lineStart).length())) {
-	            	setRocketObjetive(nearestZombie);
+	            	setShootingObjective(nearestZombie);
+	            	if(player.weaponType == player.GAS && player.getGas() > 0 && nearestZombie.getDistance() < FLAME_RANGE)
+	            		addFire(nearestZombie, false);
 	            }
 	            if (captainIntersect != null && (nearestIntersect == null
 	                    || nearestIntersect.sub(lineStart).length() > captainIntersect.sub(lineStart).length())) {
-	            	setRocketObjetive(nearestCaptain);
+	            	setShootingObjective(nearestCaptain);
+	            	if(player.weaponType == player.GAS && player.getGas() > 0 && nearestCaptain.getDistance() < FLAME_RANGE)
+	            		addFire(nearestCaptain, false);
 	            }
         	}
-            if(player.isMelee && player.isAlive) {
+            if(player.weaponType == player.MELEE) {
         		if (naziIntersect != null && (nearestIntersect == null
 	                    || /*nearestIntersect.sub(lineStart).length() >*/ naziIntersect.sub(lineStart).length() < MELEE_RANGE)) {
-	                nearestNazi.damage(player.getDamage());
+	                nearestNazi.damage(player.getMeleeDamage());
 	            }
 	            
 	            if (dogIntersect != null && (nearestIntersect == null
 	                    || /*nearestIntersect.sub(lineStart).length() >*/ dogIntersect.sub(lineStart).length() < MELEE_RANGE)) {
-	            	nearestDog.damage(player.getDamage());
+	            	nearestDog.damage(player.getMeleeDamage());
 	            }
 	            
 	            if (ssSoldierIntersect != null && (nearestIntersect == null
 	                    || /*nearestIntersect.sub(lineStart).length() >*/ ssSoldierIntersect.sub(lineStart).length() < MELEE_RANGE)) {
-	            	nearestSsSoldier.damage(player.getDamage());
+	            	nearestSsSoldier.damage(player.getMeleeDamage());
 	            }
 	            
 	            if (naziSergeantsIntersect != null && (nearestIntersect == null
 	                    || /*nearestIntersect.sub(lineStart).length() >*/ naziSergeantsIntersect.sub(lineStart).length() < MELEE_RANGE)) {
-	            	nearestNaziSargent.damage(player.getDamage());
+	            	nearestNaziSargent.damage(player.getMeleeDamage());
 	            }
 	            
 	            if (ghostIntersect != null && (nearestIntersect == null
 	                    || /*nearestIntersect.sub(lineStart).length() >*/ ghostIntersect.sub(lineStart).length() < MELEE_RANGE)) {
-	            	nearestGhost.damage(player.getDamage());
+	            	nearestGhost.damage(player.getMeleeDamage());
 	            }
 	            
 	            if (zombieIntersect != null && (nearestIntersect == null
 	                    || /*nearestIntersect.sub(lineStart).length() >*/ zombieIntersect.sub(lineStart).length() < MELEE_RANGE)) {
-	            	nearestZombie.damage(player.getDamage());
+	            	nearestZombie.damage(player.getMeleeDamage());
 	            }
 	            
 	            if (captainIntersect != null && (nearestIntersect == null
 	                    || /*nearestIntersect.sub(lineStart).length() >*/ captainIntersect.sub(lineStart).length() < MELEE_RANGE)) {
-	            	nearestCaptain.damage(player.getDamage());
+	            	nearestCaptain.damage(player.getMeleeDamage());
 	            }
         	}
             
@@ -821,36 +810,42 @@ public class Level extends GameComponent {
                     if (naziIntersect != null && (nearestIntersect == null
                                                      || nearestIntersect.sub(lineStart).length() > naziIntersect.sub(lineStart).length())) {
                         nearestNazi.damage(barrel.damage);
+                        addBleeding(nearestNazi);
+    	            	addFire(nearestNazi, false);
                     }
                     
                     if (dogIntersect != null && (nearestIntersect == null
                                                  || nearestIntersect.sub(lineStart).length() > dogIntersect.sub(lineStart).length())) {
                         nearestDog.damage(barrel.damage);
+                        addBleeding(nearestDog);
+                        addFire(nearestDog, false);
                     }
                     
                     if (ssSoldierIntersect != null && (nearestIntersect == null
                                                        || nearestIntersect.sub(lineStart).length() > ssSoldierIntersect.sub(lineStart).length())) {
                         nearestSsSoldier.damage(barrel.damage);
+                        addBleeding(nearestSsSoldier);
+                        addFire(nearestSsSoldier, false);
                     }
                     
                     if (naziSergeantsIntersect != null && (nearestIntersect == null
                                                            || nearestIntersect.sub(lineStart).length() > naziSergeantsIntersect.sub(lineStart).length())) {
                         nearestNaziSargent.damage(barrel.damage);
-                    }
-                    
-                    if (ghostIntersect != null && (nearestIntersect == null
-                                                   || nearestIntersect.sub(lineStart).length() > ghostIntersect.sub(lineStart).length())) {
-                        nearestGhost.damage(barrel.damage);
+                        addBleeding(nearestNaziSargent);
+                        addFire(nearestNaziSargent, false);
                     }
                     
                     if (zombieIntersect != null && (nearestIntersect == null
     	                    || nearestIntersect.sub(lineStart).length() > zombieIntersect.sub(lineStart).length())) {
     	            	nearestZombie.damage(barrel.damage);
+    	            	addFire(nearestZombie, false);
     	            }
                     
                     if (captainIntersect != null && (nearestIntersect == null
     	                    || nearestIntersect.sub(lineStart).length() > captainIntersect.sub(lineStart).length())) {
     	            	nearestCaptain.damage(barrel.damage);
+    	            	addBleeding(nearestCaptain);
+    	            	addFire(nearestCaptain, false);
     	            }
                 }
             }
@@ -939,10 +934,7 @@ public class Level extends GameComponent {
 		}
 		else
 		{
-			Debug.printErrorMessage("Invalid plane used in level generator", "Level generation error!");
-			System.err.println("Invalid plane used in level generator");
-			new Exception().printStackTrace();
-			System.exit(1);
+			Log.fatal("Invalid plane used in level generator");
 		}
 	}
 
@@ -969,8 +961,12 @@ public class Level extends GameComponent {
     	if(removeHelmets == null) Level.removeHelmets = new ArrayList<Helmet>();
     	if(removeBarrels == null) Level.removeBarrels = new ArrayList<Barrel>();
     	if(removeKeys == null) Level.removeKeys = new ArrayList<Key>();
+    	if(removeChaingunList == null) Level.removeChaingunList = new ArrayList<Chaingun>();
     	if(removeExplosions == null) Level.removeExplosions = new ArrayList<Explosion>();
     	if(removeRockets == null) Level.removeRockets = new ArrayList<Rocket>();
+    	if(removeRocketLauncherList == null) Level.removeRocketLauncherList = new ArrayList<RocketLauncher>();
+    	if(removeBleedingList == null) Level.removeBleedingList = new ArrayList<Bleed>();
+    	if(removeFireList == null) Level.removeFireList = new ArrayList<Fire>();
         //Doors and stuff
         if(doors == null) this.doors = new ArrayList<Door>();
         if(lockedDoors == null) this.lockedDoors = new ArrayList<LockedDoor>();
@@ -995,7 +991,9 @@ public class Level extends GameComponent {
         if(armors == null) this.armors = new ArrayList<Armor>();
         if(superShotguns == null) this.superShotguns = new ArrayList<SuperShotgun>();
         if(helmets == null) this.helmets = new ArrayList<Helmet>();
+        if(chainguns == null) this.chainguns = new ArrayList<Chaingun>();
         if(keys == null) this.keys = new ArrayList<Key>();
+        if(rocketLaunchers == null) this.rocketLaunchers = new ArrayList<RocketLauncher>();
         //Objects
         if(trees == null) this.trees = new ArrayList<Tree>();
         if(flares == null) this.flares = new ArrayList<Lantern>();
@@ -1014,6 +1012,8 @@ public class Level extends GameComponent {
         if(barrels == null) this.barrels = new ArrayList<Barrel>();
         if(explosions == null) this.explosions = new ArrayList<Explosion>();
         if(rockets == null) this.rockets = new ArrayList<Rocket>();
+        if(bleeding == null) this.bleeding = new ArrayList<Bleed>();
+        if(fire == null) this.fire = new ArrayList<Fire>();
 
         for (int i = 1; i < bitmap.getWidth() - 1; i++) {
             for (int j = 1; j < bitmap.getHeight() - 1; j++) {
@@ -1027,10 +1027,7 @@ public class Level extends GameComponent {
                         boolean yDoor = (bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
 
                         if ((yDoor && xDoor) || !(yDoor || xDoor)) {
-                            System.err.println("Level Generation Error at (" + i + ", " + j + "): Doors must be between two solid walls.");
-                            Debug.printErrorMessage("Level Generation Error at (" + i + ", " + j + "): Doors must be between two solid walls.", "Level generation error!");
-                            new Exception().printStackTrace();
-                            System.exit(1);
+                            Log.fatal("Level Generation Error at (" + i + ", " + j + "): Doors must be between two solid walls.");
                         }
 
                         if (yDoor) {
@@ -1048,19 +1045,16 @@ public class Level extends GameComponent {
                         boolean ySecretWall = (bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
 
                         if ((ySecretWall && xSecretWall) || !(ySecretWall || xSecretWall)) {
-                            System.err.println("Level Generation Error at (" + i + ", " + j + "): Secret Walls must be between two solid walls.");
-                            Debug.printErrorMessage("Level Generation Error at (" + i + ", " + j + "): Secret Walls must be between two solid walls.", "Level generation error!");
-                            new Exception().printStackTrace();
-                            System.exit(1);
+                            Log.fatal("Level Generation Error at (" + i + ", " + j + "): Secret Walls must be between two solid walls.");
                         }
 
                         if (ySecretWall) {
                             wallTransform.setPosition(i, 0, j + SPOT_LENGTH);
-                            secretWalls.add(new SecretWall(wallTransform, material, wallTransform.getPosition().add(new Vector3f(-0.9f, 0, 0))));
+                            secretWalls.add(new SecretWall(wallTransform, material, wallTransform.getPosition().add(new Vector3f(-1.0f, 0, -0.01f))));
                         } else if (xSecretWall) {
                             wallTransform.setPosition(i + SPOT_LENGTH, 0, j);
                             wallTransform.setRotation(0, 90, 0);
-                            secretWalls.add(new SecretWall(wallTransform, material, wallTransform.getPosition().add(new Vector3f(0, 0, -0.9f))));
+                            secretWalls.add(new SecretWall(wallTransform, material, wallTransform.getPosition().add(new Vector3f(-0.01f, 0, -1.0f))));
                         }
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 24) {
                     	//Gold
@@ -1070,10 +1064,7 @@ public class Level extends GameComponent {
                         boolean yLockedDoor = (bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
 
                         if ((yLockedDoor && xLockedDoor) || !(yLockedDoor || xLockedDoor)) {
-                            System.err.println("Level Generation Error at (" + i + ", " + j + "): Gold Locked Doors must be between two solid walls.");
-                            Debug.printErrorMessage("Level Generation Error at (" + i + ", " + j + "): Gold Locked Doors must be between two solid walls.", "Level generation error!");
-                            new Exception().printStackTrace();
-                            System.exit(1);
+                           Log.fatal("Level Generation Error at (" + i + ", " + j + "): Gold Locked Doors must be between two solid walls.");
                         }
 
                         if (yLockedDoor) {
@@ -1092,10 +1083,7 @@ public class Level extends GameComponent {
                         boolean yLockedDoor = (bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
 
                         if ((yLockedDoor && xLockedDoor) || !(yLockedDoor || xLockedDoor)) {
-                            System.err.println("Level Generation Error at (" + i + ", " + j + "): Bronze Locked Doors must be between two solid walls.");
-                            Debug.printErrorMessage("Level Generation Error at (" + i + ", " + j + "): Bronze Locked Doors must be between two solid walls.", "Level generation error!");
-                            new Exception().printStackTrace();
-                            System.exit(1);
+                            Log.fatal("Level Generation Error at (" + i + ", " + j + "): Bronze Locked Doors must be between two solid walls.");
                         }
 
                         if (yLockedDoor) {
@@ -1122,8 +1110,16 @@ public class Level extends GameComponent {
                         bones.add(new Bones(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 60) {
                         deadNazi.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 65) {
+                        chainguns.add(new Chaingun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 67) {
+                    	rocketLaunchers.add(new RocketLauncher(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 70) {
                         deadJews.add(new DeadJew(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.05f, (j + 0.5f) * SPOT_LENGTH))));
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 73) {
+                        rockets.add(new Rocket(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.05f, (j + 0.5f) * SPOT_LENGTH)), true, 1));
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 75) {
+                        rockets.add(new Rocket(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.05f, (j + 0.5f) * SPOT_LENGTH)), true, 10));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 80) {
                         foods.add(new Food(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 90) {
@@ -1222,7 +1218,6 @@ public class Level extends GameComponent {
                         addFace(indices,vertices.size(),false);
                         addVertices(vertices, 0, j, (i + 1), false, true, true, texCoords);
                     }
-               
             }
         }
         
@@ -1234,8 +1229,10 @@ public class Level extends GameComponent {
 
         if(geometry == null)
         	geometry = new Mesh(vertArray, Util.toIntArray(intArray), true, true);
+        
         if(meshRenderer == null)
         	meshRenderer = new MeshRenderer(geometry, transform, material);
+        
         if(directionalLight == null)
         	directionalLight = new DirectionalLight(new Vector3f(0.75f,0.75f,0.75f), 
             		1f, new Vector3f(bitmap.getWidth()/2,10,bitmap.getHeight()/2));
@@ -1245,6 +1242,88 @@ public class Level extends GameComponent {
         renderingEngine.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
         renderingEngine.setAmbientLight(new Vector3f(0.75f,0.75f,0.75f));
         renderingEngine.addLight(directionalLight);
+    }
+    
+    /**
+     * Checks the damage of some enemy.
+     * @param array of enemies
+     * @param sound to play
+     * @param times to check patron
+     */
+    private <E> void checkDamage(ArrayList<E> array, Clip sound, int times) {
+		for (E component : array) {
+			if(player.weaponType == player.BULLET && player.getWeaponState() != "chaingun") {
+				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
+					if(times == 3)
+						if(sound != null)
+							AudioUtil.playAudio(sound, 0);
+					((GameComponent) component).damage(player.getDamage());
+				}
+			}else if(player.weaponType == player.BULLET && player.getWeaponState() == "chaingun" && player.chaingunCanFire) {
+				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
+					if(times == 3)
+						if(sound != null)
+							AudioUtil.playAudio(sound, 0);
+					((GameComponent) component).damage(player.getDamage());
+				}
+			}else if(player.weaponType == player.SHELL) {
+				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
+					if(times == 2 || times == 3)
+						if(sound != null)
+							AudioUtil.playAudio(sound, 0);
+					((GameComponent) component).damage(player.getDamage());
+				}
+			}else if(player.weaponType == player.MELEE) {
+				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
+					if(times == 1 || times == 3)
+						if(sound != null)
+							AudioUtil.playAudio(sound, 0);
+					((GameComponent) component).damage(player.getMeleeDamage());
+            	}
+			}else if(player.weaponType == player.ROCKET || player.weaponType == player.GAS && times == 69) {
+				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.5f) {
+					setShootingObjective((GameComponent) component);
+					if(player.weaponType == player.GAS)
+	            		addFire((GameComponent) component, true);
+				}
+				
+			}		
+			if(player.kickCanHurt) {
+				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE + 0.05f && player.isAlive) {
+					if(times == 1 || times == 3)
+						if(sound != null)
+							AudioUtil.playAudio(sound, 0);
+					((GameComponent) component).damage(player.getMeleeDamage());
+            	}
+			}
+			
+			if((player.weaponType == player.MELEE == true || player.kickCanHurt) && times == 69) {
+				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive) {
+					AudioUtil.playAudio(sound, 0);
+				}
+			}
+		}
+    }
+    
+    /**
+     * Adds a bleeding to the objects list.
+     * @param component to bleed.
+     */
+    public <E> void addBleeding(E component) {
+    	bleeding.add(new Bleed(new Transform(((GameComponent) component).getTransform().getPosition())));
+    	objects.add(bleeding);
+    }
+    
+    /**
+     * Adds a fire to the objects list.
+     * @param component to fire.
+     */
+    public <E> void addFire(E component, boolean isStatic) {
+    	if(isStatic)
+    		fire.add(new Fire(new Transform(((GameComponent) component).getTransform().getPosition().add(0.01f))));
+    	else
+    		fire.add(new Fire(((GameComponent) component).getTransform()));
+    	objects.add(fire);
     }
     
     /**
@@ -1300,18 +1379,24 @@ public class Level extends GameComponent {
 	 * @return Player.
 	 */
 	public static Player getPlayer() {return player;}
+	
+	/**
+	 * Returns the game's objects list.
+	 * @return game's objects list
+	 */
+	public GameObject getObjectsList() { return objects; }
 
 	/**
 	 * Gets the nearest targetComponent in the level.
-	 * @return the rocketObjetive
+	 * @return the shootingObjetive
 	 */
-	public GameComponent getRocketObjetive() { return rocketObjetive; }
+	public GameComponent getShootingObjective() { return shootingObjective; }
 
 	/**
 	 * Sets a new nearest targetComponent in the level.
-	 * @param rocketObjetive the rocketObjetive to set
+	 * @param shootingObjective the shooting objective to set
 	 */
-	public void setRocketObjetive(GameComponent rocketObjetive) { this.rocketObjetive = rocketObjetive; }
+	public void setShootingObjective(GameComponent shootingObjective) { this.shootingObjective = shootingObjective; }
 	
 	/**
 	  * Removes the medical kits when the player grabs it.
@@ -1393,14 +1478,38 @@ public class Level extends GameComponent {
 	
 	/**
 	 * Removes the explosion when disappears.
-	 * @param explocion explosions.
+	 * @param explosion explosions.
 	 */
-	public static void removeExplocion(Explosion explocion) { removeExplosions.add(explocion); }
+	public static void removeExplosion(Explosion explosion) { removeExplosions.add(explosion); }
+	
+	/**
+	 * Removes the chain-gun when the player grabs it.
+	 * @param chaingun chain-gun.
+	 */
+	public static void removeChainGun(Chaingun chaingun) {removeChaingunList.add(chaingun);}
 	
 	/**
 	 * Removes the rocket when disappears.
 	 * @param rocket rocket.
 	 */
-	public static void removeRocket(Rocket rocket) { removeRockets.add(rocket); }
+	public static void removeRockets(Rocket rocket) { removeRockets.add(rocket); }
+	
+	/**
+	 * Removes the bleeding when disappears.
+	 * @param bleed bleed.
+	 */
+	public static void removeBleeding(Bleed bleed) { removeBleedingList.add(bleed); }
+	
+	/**
+	 * Removes the rocket launcher when the player grabs it.
+	 * @param rocketLauncher rocket launcher.
+	 */
+	public static void removeRocketLauncher(RocketLauncher rocketLauncher) {removeRocketLauncherList.add(rocketLauncher);}
+	
+	/**
+	 * Removes the fire when disappears.
+	 * @param fire fire.
+	 */
+	public static void removeFire(Fire fire) { removeFireList.add(fire); }
 
 }

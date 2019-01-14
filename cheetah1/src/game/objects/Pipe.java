@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Julio Vergara.
+ * Copyright 2018 Carlos Rodriguez.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,8 @@ import game.Level;
 
 /**
  *
- * @author Julio Vergara.
- * @version 1.1
+ * @author Carlos Rodriguez.
+ * @version 1.2
  * @since 2018
  */
 public class Pipe extends GameComponent {
@@ -52,7 +52,7 @@ public class Pipe extends GameComponent {
      */
     public Pipe(Transform transform) {
         if (mesh == null) {
-            float sizeY = 1f;
+            float sizeY = Level.LEVEL_HEIGHT;
             sizeX = (float) ((double) sizeY / (5.818181818181818f * 2.0));
 
             float offsetX = 0.0f;

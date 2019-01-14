@@ -53,27 +53,21 @@ public class SEventListener {
 			case 3:
 				//Load game
 				Auschwitz.setStartingLevel(EPISODE_1);
-				CoreEngine.getEngine().start();
+				CoreEngine.getCurrent().start();
 		        System.exit(0);
 				break;
 			case 4:
 				//Load game
 				Auschwitz.setStartingLevel(EPISODE_2);
-				CoreEngine.getEngine().start();
+				CoreEngine.getCurrent().start();
 				break;
 			case 5:
 				//Load game
 				Auschwitz.setStartingLevel(EPISODE_3);
-				CoreEngine.getEngine().start();
+				CoreEngine.getCurrent().start();
 				break;
 			case 6:
-				//ResourceLoader.mipMapSamples = 4;
-				break;
-			case 7:
-				//ResourceLoader.mipMapSamples = 1;
-				break;
-			case 8:
-				//ResourceLoader.mipMapSamples = -4;
+				Auschwitz.isPaused = false;
 				break;
 		}
 	}

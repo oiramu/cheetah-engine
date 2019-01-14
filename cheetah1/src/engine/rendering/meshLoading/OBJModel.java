@@ -20,9 +20,9 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import engine.core.Util;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
+import engine.core.utils.Util;
 
 /**
  *

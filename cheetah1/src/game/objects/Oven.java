@@ -15,13 +15,14 @@
  */
 package game.objects;
 
+import static engine.core.CoreEngine.getRenderingEngine;
+
 import java.util.ArrayList;
 
 import engine.components.Attenuation;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.components.PointLight;
-import engine.core.CoreEngine;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -37,7 +38,7 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez.
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
 public class Oven extends GameComponent {
@@ -110,7 +111,7 @@ public class Oven extends GameComponent {
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         
-        if(renderingEngine == null) renderingEngine = CoreEngine.renderingEngine;
+        if(renderingEngine == null) renderingEngine = getRenderingEngine();
         
         if(light == null) {
 	        this.light = new PointLight(new Vector3f(1.0f,0.5f,0.2f), 0.8f, 

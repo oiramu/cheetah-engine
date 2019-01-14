@@ -1,35 +1,35 @@
 #MainMenu ML Code
-Background background=res/textures/Menu/background.jpg 0 0
-Image imgLogo=res/textures/Menu/logo.png 50 300 400 96
-ImgBackground imgBackground=res/textures/Menu/shadow.png 0 0 500
+Background background=res/textures/Menu/background.jpg 0 0 1 1
+Image imgLogo=res/textures/Menu/logo.png 0.0325 0.35 0.375 0.15
+Background imgBackground=res/textures/Menu/shadow.png 0 0 0.425 1
 
 #Credit
-Text credit=Copyright Cheetah Software 2018:50 470
-Button returnBtn=Back:20 420 460 37
+Text credit=Copyright Cheetah Software 2019:0.0325 0.6
+Button returnBtn=Back:0.0325 0.55 0.375 0.05
 returnBtn>addAction:loadMenu:res/Menu/menu.txt
 
 #Button list for keyboard/gamepad in order
 returnBtn>selectId
 
 #Animation
-Animation anim=-1 y -1250 0.02
+Animation anim=-1 y -1920 0.02
 
 #Team
-TextBold line1=CHEETAH SOFTWARE IS:660 70
-TextBold line1=Programmers:660 150
-Text line2=Carlos Rodriguez:700 190
-Text line4=Daniel Polo:700 230
-Text line8=Julio Vergara:700 270
-TextBold line9=Artist:660 350
-Text line10=Alfredo Polo:700 390
-TextBold line9=Design:660 470
-Text line4=Daniel Polo:700 510
-Text line8=Carlos Rodriguez:700 550
-TextBold line1=ADITIONAL SUPPORT:660 630
-TextBold line1=Sound Code:660 710
-Text line4=Julio Vergara:700 750
-TextBold line1=Music/FX:660 830
-Text line4=Rafael Conrado:700 870
-TextBold line13=Special thanks to:660 950
-Text line13=Mariana Mishell:700 990
-TextBold line13=And no, we do not are nazis.:660 1070
+TextBold line1=CHEETAH SOFTWARE IS:0.560 0.100
+TextBold line1=Programmers:0.560 0.2
+Text line2=Carlos Rodriguez:0.600 0.25
+Text line4=Daniel Polo:0.600 0.29
+TextBold line9=Artist:0.560 0.39
+Text line10=Alfredo Polo:0.600 0.44
+TextBold line9=Design:0.560 0.54
+Text line4=Daniel Polo:0.600 0.59
+Text line8=Carlos Rodriguez:0.600 0.64
+TextBold line1=ADITIONAL SUPPORT:0.560 0.74
+TextBold line1=Sound Code:0.560 0.84
+Text line4=Julio Vergara:0.600 0.89
+TextBold line1=Music/FX:0.560 0.99
+Text line4=Rafael Conrado:0.600 1.04
+TextBold line13=Special thanks to:0.560 1.14
+Text line13=Doom's modign community:0.600 1.19
+Text line14=ID software & Bethesda for creating:0.600 1.24
+Text line15=the games we love.:0.600 1.29

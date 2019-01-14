@@ -23,7 +23,9 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
 import engine.audio.AudioUtil;
+import engine.core.Debug;
 import engine.core.Input;
+import engine.core.crash.CrashReport;
 import engine.menu.system.SEngineUtil;
 import engine.menu.widget.WidgetModel;
 import engine.rendering.Window;
@@ -54,17 +56,16 @@ public class Button extends WidgetModel {
 	 * @param w width.
 	 * @param h height.
 	 */
-	public Button(String texturePath, String text, int x, int y, int w, int h) {
+	public Button(String texturePath, String text, float x, float y, float w, float h) {
 		m_componentType = "Button";
 		try {
 			this.m_text = text;
 			m_texture = new SpriteSheet(texturePath, 466, 37);
 			
-			m_position = new Vector2f(x, y);
-			m_size = new Vector2f(w, h);
+			m_position = new Vector2f(x * Window.getWidth(), y * Window.getHeight());
+			m_size = new Vector2f(w * Window.getWidth(), h * Window.getHeight());
 		} catch (SlickException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Debug.crash(new CrashReport(e));
 		}
 	}
 	
@@ -103,11 +104,11 @@ public class Button extends WidgetModel {
 		if(g_hover) {
 			m_texture.getSprite(0, 1).draw(m_position.x, m_position.y, m_size.x, m_size.y);
 			//Text
-			SEngineUtil.getInstance().getFont().drawString(m_position.x + 24, m_position.y, m_text);
+			SEngineUtil.getInstance().getFont().drawString(m_position.x + (int) (0.024 * Window.getWidth()), m_position.y, m_text);
 		} else {
 			m_texture.getSprite(0, 0).draw(m_position.x, m_position.y, m_size.x, m_size.y);
 			//Text
-			SEngineUtil.getInstance().getFont().drawString(m_position.x + 24, m_position.y, m_text);
+			SEngineUtil.getInstance().getFont().drawString(m_position.x + (int) (0.024 * Window.getWidth()), m_position.y, m_text);
 		}
 	}
 	

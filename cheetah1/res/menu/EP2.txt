@@ -1,18 +1,18 @@
 #EP2 ML CODE
-Background background=res/textures/Menu/background.jpg 0 0
-Image imgLogo=res/textures/Menu/logo.png 50 300 400 96
-ImgBackground imgBackground=res/textures/Menu/shadow.png 0 0 500
+Background background=res/textures/Menu/background.jpg 0 0 1 1
+Image imgLogo=res/textures/Menu/logo.png 0.0325 0.35 0.375 0.15
+Background imgBackground=res/textures/Menu/shadow.png 0 0 0.425 1
 
-Button episode1=Episode 1 Escape from auschwitz:20 420 460 37
+Button episode1=Episode 1 Escape from auschwitz:0.0325 0.55 0.375 0.05
 episode1>addAction:loadMenu:res/Menu/EP1.txt
 
-Button runBtn=GO!:20 470 460 37
+Button runBtn=GO!:0.0325 0.625 0.375 0.05
 runBtn>addAction:loadEpisode2
 
-Button episode3=Episode 3 Der fuhrer's face:20 520 460 37
+Button episode3=Episode 3 Der fuhrer's face:0.0325 0.7 0.375 0.05
 episode3>addAction:loadMenu:res/Menu/EP3.txt
 
-Button backBtn=Back:20 570 460 37
+Button backBtn=Back:0.0325 0.775 0.375 0.05
 backBtn>addAction:loadMenu:res/Menu/menu.txt
 
 #Button list for keyboard/gamepad in order
@@ -22,12 +22,12 @@ episode3>selectId
 backBtn>selectId
 
 #Context
-TextBold line1=The poland run:550 250
-Text line2=War is coming to hes end, the soviets are pushing:550 300
-Text line3=the germans to their knees so hard, that the german:550 330
-Text line3=goverment are cutting the auschwitz's budget:550 360
-Text line4=so guards start a plan to clean all the jews:550 390
-Text line5=so now is up to you if you want to survive and try to:550 420
-Text line6=escape; after a guard execute your room partner, you:550 450
-Text line7=kill the guard with your own arms. Now you have a pistol:550 480
-Text line8=and now you have two options, run and escape or die.:550 510
+TextBold line1=The poland run:0.450 0.3
+Text line2=War are coming to he's end, the soviets are pushing:0.450 0.4
+Text line3=the German to their knees so hard, that the German:0.450 0.44
+Text line3=government are cutting the auschwitz's budget:0.450 0.48
+Text line4=so guards start a plan to clean all the Jews:0.450 0.52
+Text line5=so now is up to you if you want to survive and try to:0.450 0.56
+Text line6=escape; after a guard execute your room partner, you:0.450 0.6
+Text line7=kill the guard with your own arms. Now you have a pistol:0.450 0.64
+Text line8=and now you have two options, run and escape or die.:0.450 0.68

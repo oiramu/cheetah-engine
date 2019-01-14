@@ -32,6 +32,7 @@ import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
 import engine.rendering.Vertex;
+import game.Auschwitz;
 import game.Level;
 
 /**
@@ -203,6 +204,10 @@ public class Hanged extends GameComponent {
      * Method that calculates the damage.
      * @param amt amount.
      */
-    public void damage(int amt) {health -= amt;}
+    public void damage(int amt) {
+    	health -= amt;
+    	if (health > 0 && amt > 0)
+    		Auschwitz.getLevel().addBleeding(this);
+    }
     
 }

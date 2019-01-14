@@ -22,11 +22,11 @@ import static org.lwjgl.opengl.GL20.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import engine.core.Util;
 import engine.core.Vector3f;
 import engine.rendering.meshLoading.IndexedModel;
 import engine.rendering.meshLoading.OBJModel;
 import engine.rendering.resourceManagement.MeshResource;
+import engine.core.utils.Util;
 
 /**
  *

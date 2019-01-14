@@ -141,10 +141,18 @@ public class GameObject {
     }
     
     /**
+     * Removes to the render pipeline the object to match.
+     * @param component to delete
+     */
+    public <E> void removeComponent(E component) {
+    	components.remove(component);    	
+    }
+    
+    /**
      * Removes to the render pipeline the lists of objects to render.
      * @param removeList of objects
      */
-    public <E> void removeListToRenderPipeline(ArrayList<E> removeList) {
+    public <E> void removeComponents(ArrayList<E> removeList) {
     	for (E component : removeList) 
     		components.remove(component);    	
     }
@@ -154,7 +162,7 @@ public class GameObject {
      * @param list of objects
      * @param delta of time
      */
-    public <E> void updateAndKillToRenderPipeline(ArrayList<E> list, double delta) {
+    public <E> void killList(ArrayList<E> list, double delta) {
     	for (E component : list) {
     		((NaziSoldier) component).setState(4);
     		((NaziSoldier) component).update(delta);

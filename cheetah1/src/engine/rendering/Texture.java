@@ -33,8 +33,10 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 
 import engine.core.Debug;
-import engine.core.Util;
+import engine.core.crash.CrashReport;
 import engine.rendering.resourceManagement.TextureResource;
+import engine.core.utils.Log;
+import engine.core.utils.Util;
 
 /**
  *
@@ -219,16 +221,14 @@ public class Texture {
         				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
         						ammount);
         			} else {
-        				Debug.printErrorMessage("Anisotropic filtering is not supported by the driver.\n"
-        						+ "Try with trilinear filtering.", "Driver error!");
+        				Log.fatal("Anisotropic filtering is not supported by the driver.\nTry with trilinear filtering.");
         			}
             		break;
             }
             
             return resource;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+            Debug.crash(new CrashReport(e));
         }
 
         return null;

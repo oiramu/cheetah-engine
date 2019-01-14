@@ -1,0 +1,30 @@
+#Options ML Code
+Background background=res/textures/Menu/background.jpg 0 0 1 1
+Image imgLogo=res/textures/Menu/logo.png 0.0325 0.35 0.375 0.15
+Background imgBackground=res/textures/Menu/shadow.png 0 0 0.425 1
+
+#Back
+Button returnBtn=Back:0.0325 0.55 0.375 0.05
+returnBtn>addAction:loadMenu:res/Menu/menu.txt
+
+#Context
+TextBold line1=Forward :0.45 0.1
+Text line2=press W:0.6 0.11
+TextBold line1=Back :0.45 0.2
+Text line2=press S:0.6 0.21
+TextBold line1=Left :0.45 0.3
+Text line2=press A:0.6 0.31
+TextBold line1=Right :0.45 0.4
+Text line2=press D:0.6 0.41
+TextBold line1=Move Camera :0.45 0.5
+Text line2=move mouse:0.75 0.51
+TextBold line1=Jump :0.45 0.6
+Text line2=press Space:0.6 0.61
+TextBold line1=Interact :0.45 0.7
+Text line2=press E:0.6 0.71
+TextBold line1=Flash light :0.45 0.8
+Text line2=press F:0.6 0.81
+TextBold line1=Pause :0.45 0.9
+Text line2=press ESC:0.6 0.91
+
+returnBtn>selectId

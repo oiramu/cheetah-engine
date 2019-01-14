@@ -29,9 +29,9 @@ import engine.components.PointLight;
 import engine.components.SpotLight;
 import engine.core.Matrix4f;
 import engine.core.Transform;
-import engine.core.Util;
 import engine.core.Vector3f;
 import engine.rendering.resourceManagement.ShaderResource;
+import engine.core.utils.Util;
 
 /**
  *

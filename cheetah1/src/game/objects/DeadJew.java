@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Julio Vergara.
+ * Copyright 2017 Carlos Rodriguez.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import game.Level;
 
 /**
  *
- * @author Julio Vergara.
+ * @author Carlos Rodriguez.
  * @version 1.1
  * @since 2017
  */
@@ -49,7 +49,7 @@ public class DeadJew extends GameComponent {
 
     private Transform 			transform;
     
-    private ArrayList<Texture> 	animation;
+    private ArrayList<Texture> 	materialArray;
 
     /**
      * Constructor of the actual object.
@@ -79,15 +79,15 @@ public class DeadJew extends GameComponent {
             mesh = new Mesh(verts, indices, true);
         }
         
-        if(animation == null) {
-        	animation = new ArrayList<Texture>();
+        if(materialArray == null) {
+        	materialArray = new ArrayList<Texture>();
         	
-        	animation.add(new Texture(RES_LOC+"deadA"));
-        	animation.add(new Texture(RES_LOC+"deadB"));
+        	materialArray.add(new Texture(RES_LOC+"deadA"));
+        	materialArray.add(new Texture(RES_LOC+"deadB"));
         }
 
         if (material == null)
-			material = new Material(animation.get(new Random().nextInt(animation.size())));
+			material = new Material(materialArray.get(new Random().nextInt(materialArray.size())));
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
     }

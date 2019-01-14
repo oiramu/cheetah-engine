@@ -15,11 +15,12 @@
  */
 package game.objects;
 
+import static engine.core.CoreEngine.getRenderingEngine;
+
 import engine.components.Attenuation;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.components.PointLight;
-import engine.core.CoreEngine;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
@@ -82,7 +83,7 @@ public class Lantern extends GameComponent {
             material = new Material(new Texture(RES_LOC));
         }
         
-        if(renderingEngine == null) renderingEngine = CoreEngine.renderingEngine;
+        if(renderingEngine == null) renderingEngine = getRenderingEngine();
         
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);

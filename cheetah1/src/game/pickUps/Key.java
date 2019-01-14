@@ -39,18 +39,18 @@ import game.Level;
  */
 public class Key extends GameComponent {
 
-    public final float PICKUP_THRESHHOLD = 0.75f;
+    public final float			PICKUP_THRESHHOLD = 0.75f;
 
-	private static final Clip PICKUP_NOISE = AudioUtil.loadAudio("key/GETKEY");
+	private static final Clip 	PICKUP_NOISE = AudioUtil.loadAudio("key/GETKEY");
 	
-	private float 			temp = 0;
-	private boolean			isGoldKey;
-	private boolean			shouldFloat;
+	private float 				temp = 0;
+	private boolean				isGoldKey;
+	private boolean				shouldFloat;
 
-    private static Mesh 	mesh;
-    private static Material	material;
-    private MeshRenderer 	meshRenderer;
-    private Transform 		transform;
+    private static Mesh 		mesh;
+    private static Material		material;
+    private MeshRenderer 		meshRenderer;
+    private Transform 			transform;
 
     /**
      * Constructor of the actual power-up.
@@ -60,9 +60,9 @@ public class Key extends GameComponent {
      */
     public Key(Transform transform, boolean isGoldKey, boolean shouldFloat) {
         if (mesh == null) {
-            final float sizeY = 1.0f;
-            final float sizeX = (float) ((double) sizeY / (sizeY * 2.0));
-
+            final float sizeY = 0.171875f;
+            final float sizeX = (float) ((double) sizeY / (0.861952862f * 1.0));
+            
             float offsetX = 0.0f;
             float offsetY = 0.0f;
 

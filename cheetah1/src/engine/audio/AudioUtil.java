@@ -26,6 +26,9 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
 
+import engine.core.Debug;
+import engine.core.crash.CrashReport;
+
 /**
  *
  * @author Julio Vergara
@@ -91,7 +94,7 @@ public class AudioUtil {
 
             sequencer.start();
         } catch (Exception e) {
-            e.printStackTrace();
+        	Debug.crash(new CrashReport(e));
         }
     }
     
@@ -106,8 +109,7 @@ public class AudioUtil {
         try {
             sequence = MidiSystem.getSequence(new File("./res/midi/" + fileName + ".mid"));
         } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+        	Debug.crash(new CrashReport(e));
         }
 
         return sequence;
@@ -128,8 +130,7 @@ public class AudioUtil {
 
             return clip;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+        	Debug.crash(new CrashReport(e));
         }
 
         return clip;

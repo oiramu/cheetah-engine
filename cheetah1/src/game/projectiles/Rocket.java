@@ -15,6 +15,8 @@
  */
 package game.projectiles;
 
+import static engine.components.Constants.GRAVITY;
+
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Transform;
@@ -28,6 +30,7 @@ import engine.rendering.Texture;
 import engine.rendering.Vertex;
 import game.Auschwitz;
 import game.Level;
+import game.enemies.Commander;
 import game.objects.Explosion;
 
 /**
@@ -38,14 +41,16 @@ import game.objects.Explosion;
  */
 public class Rocket extends GameComponent {
     
+	private static final String RES_LOC = "Rocket/";
+	private static final float	SPEED = 7.5f;
+	
     private static Mesh 		mesh;
     private static Material 	material;
     private MeshRenderer 		meshRenderer;
     private float 				sizeX;
+    private float 				upAmt = 0;
     private int 				state;
     private boolean 			playerShoots;
-    
-    private static final String RES_LOC = "Rocket/";
 
     private Transform 			transform;
     private Vector3f 			objetiveOrientation;
@@ -109,13 +114,21 @@ public class Rocket extends GameComponent {
 	
 	        float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 	
-	        if (orientation.getX() > 0) {
+	        if (orientation.getX() > 0)
 	            angle = 180 + angle;
-	        }
+	        
 	        transform.setRotation(0, angle + 90, 0);
 	        
+	        upAmt -= (GRAVITY/(SPEED * 100)) * delta;
+            transform.setPosition(transform.getPosition().add(new Vector3f(0, (float) (upAmt * delta), 0)));
+            if(transform.getPosition().getY() == 0) {
+            	upAmt = 0;
+            	transform.getPosition().setY(0);
+            	state = 1;
+            }
+	        
 	        objetiveOrientation.setY(0);
-	        float moveSpeed = 7.5f;
+	        float moveSpeed = SPEED;
 	
 	        Vector3f oldPos = transform.getPosition();
 	        Vector3f newPos = transform.getPosition().add(objetiveOrientation.mul((float) (-moveSpeed * delta)));
@@ -124,28 +137,27 @@ public class Rocket extends GameComponent {
 	
 	        Vector3f movementVector = collisionVector.mul(objetiveOrientation.normalized());
 	        
-	        if (movementVector.length() > 0.33f) {
+	        if (movementVector.length() > 0.33f)
 	            transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * delta))));
-	        } else {
+	        else
 	        	state = 1;
-	        }
-	        if(Auschwitz.getLevel().getRocketObjetive() != null)
-		        if(getTransform().getPosition().sub(Auschwitz.getLevel().getRocketObjetive().getTransform().getPosition()).length() < 1.0f) {
+	        
+	        if(Auschwitz.getLevel().getShootingObjective() != null)
+		        if(getTransform().getPosition().sub(Auschwitz.getLevel().getShootingObjective().getTransform().getPosition()).length() < 1.0f)
 		        	state = 1;
-	        }
-    	} 
+    	}
     	if(state == 1){
     		if(explosion == null)
     			explosion = new Explosion(new Transform(getTransform().getPosition()));
     		explosion.update(delta);
-    		if (explosion.getState() == 3) {
-            	state = 2;
-            }
+    		if (explosion.getState() == 2)
+    			state = 2;
     	}
-    	if(state == 2){
+    	if(state == 2) {
     		if(playerShoots)
-    			Level.getPlayer().removeRocket(this);
-    		explosion = null;
+				Level.getPlayer().removeRocket(this);
+    		else
+    			Commander.removeRocket(this);
     	}
     }
 
@@ -157,7 +169,7 @@ public class Rocket extends GameComponent {
     public void render(Shader shader, RenderingEngine renderingEngine) {
     	if(state == 0)
     		meshRenderer.render(shader, renderingEngine);
-    	if(explosion != null)
+    	if(state == 1)
     		explosion.render(shader, renderingEngine);
     }
     

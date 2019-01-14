@@ -1,0 +1,9 @@
+#Cheetah Engine configuration file
+TEXTURE_FILTER filter=Nearest
+GAME_GRAPHICS graphics=High
+CLEAR_LIGHTS lights=False
+MIPMAP_LEVEL mipMapping=0.4
+ANISOTROPIC_LEVEL anisotropic=4
+POP_IN popin=15
+LIGHT_POP_IN lightPopin=10
+GRAVITY gravity=9.8

@@ -124,7 +124,7 @@ public class MenuModel extends GUIComponent {
 						    		temporaryTreatment = treatment[0];
 						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
 						    		
-						    		menuObject.addChild(new Button("/res/textures/coreDisplay/button.png", temporaryTreatment, Integer.parseInt(treatment[0]), Integer.parseInt(treatment[1]), Integer.parseInt(treatment[2]), Integer.parseInt(treatment[3]))
+						    		menuObject.addChild(new Button("/res/textures/coreDisplay/button.png", temporaryTreatment, Float.parseFloat(treatment[0]), Float.parseFloat(treatment[1]), Float.parseFloat(treatment[2]), Float.parseFloat(treatment[3]))
 						    				, temporaryName);
 						    		break;
 						    	case "Image":
@@ -132,7 +132,7 @@ public class MenuModel extends GUIComponent {
 						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
 						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
 						    			
-						    		menuObject.addChild(new WidgetImage(treatment[0], Integer.parseInt(treatment[1]), Integer.parseInt(treatment[2]), Integer.parseInt(treatment[3]), Integer.parseInt(treatment[4]))
+						    		menuObject.addChild(new WidgetImage(treatment[0], Float.parseFloat(treatment[1]), Float.parseFloat(treatment[2]), Float.parseFloat(treatment[3]), Float.parseFloat(treatment[4]))
 						    				, temporaryName);
 						    		break;
 						    	case "Background":
@@ -140,15 +140,7 @@ public class MenuModel extends GUIComponent {
 						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
 						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
 						    			
-						    		menuObject.addChild(new WidgetImage(treatment[0], Integer.parseInt(treatment[1]), Integer.parseInt(treatment[2]))
-						    				, temporaryName);
-						    		break;
-						    	case "ImgBackground":
-						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='
-						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
-						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
-						    			
-						    		menuObject.addChild(new WidgetImage(treatment[0], Integer.parseInt(treatment[1]), Integer.parseInt(treatment[2]), Integer.parseInt(treatment[3]))
+						    		menuObject.addChild(new WidgetImage(treatment[0], Integer.parseInt(treatment[1]), Integer.parseInt(treatment[2]), Float.parseFloat(treatment[3]), Float.parseFloat(treatment[4]))
 						    				, temporaryName);
 						    		break;
 						    	case "Text":
@@ -159,7 +151,7 @@ public class MenuModel extends GUIComponent {
 						    		
 						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
 						    		
-						    		menuObject.addChild(new WidgetText(temporaryTreatment, Integer.parseInt(treatment[0]), Integer.parseInt(treatment[1]))
+						    		menuObject.addChild(new WidgetText(temporaryTreatment, Float.parseFloat(treatment[0]), Float.parseFloat(treatment[1]))
 						    				, temporaryName);
 						    		break;
 						    	case "TextBold":
@@ -170,7 +162,7 @@ public class MenuModel extends GUIComponent {
 						    		
 						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
 						    		
-						    		menuObject.addChild(new WidgetText(temporaryTreatment, Integer.parseInt(treatment[0]), Integer.parseInt(treatment[1]), true)
+						    		menuObject.addChild(new WidgetText(temporaryTreatment, Float.parseFloat(treatment[0]), Float.parseFloat(treatment[1]), true)
 						    				, temporaryName);
 						    		break;
 						    	case "Animation":

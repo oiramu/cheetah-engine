@@ -18,6 +18,7 @@ package engine.menu.widget;
 import org.lwjgl.util.vector.Vector2f;
 
 import engine.menu.system.SEngineUtil;
+import engine.rendering.Window;
 
 /**
 *
@@ -36,10 +37,10 @@ public class WidgetText extends WidgetModel {
 	 * @param x position.
 	 * @param y position.
 	 */
-	public WidgetText(String text, int x, int y) {
+	public WidgetText(String text, float x, float y) {
 		m_componentType = "Text";
 		this.m_text = text;
-		m_position = new Vector2f(x, y);
+		m_position = new Vector2f(x * Window.getWidth(), y * Window.getHeight());
 	}
 	
 	/**
@@ -49,7 +50,7 @@ public class WidgetText extends WidgetModel {
 	 * @param y position.
 	 * @param bold Checks if it is bold or not.
 	 */
-	public WidgetText(String text, int x, int y, boolean bold) {
+	public WidgetText(String text, float x, float y, boolean bold) {
 		this(text, x, y);
 		this.m_bold = bold;
 	}

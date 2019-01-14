@@ -28,6 +28,7 @@ import engine.components.PointLight;
 import engine.components.SpotLight;
 import engine.core.Debug;
 import engine.core.Vector3f;
+import engine.core.crash.CrashReport;
 import engine.rendering.resourceManagement.MappedValues;
 
 /**
@@ -73,7 +74,6 @@ public class RenderingEngine extends MappedValues {
      */
     public void render(GameComponent component) {
     	try {
-    		if (getMainCamera() == null) Debug.printErrorMessage("Error! Main camera not found. This is very very big bug, and game will crash.", "No camera in game!");
     		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     		
 	        component.render(forwardAmbient, this);
@@ -87,18 +87,18 @@ public class RenderingEngine extends MappedValues {
 				switch(light.getShader().getName()) {
 					case"forward-directional":
 						activeLight = light;
-						component.render(activeLight.getShader(), this);
+						component.render(light.getShader(), this);
 					break;
 					case"forward-point":
 						if(((PointLight) light).getDistance() < LIGHT_POP_IN) {
 							activeLight = light;
-							component.render(activeLight.getShader(), this);
+							component.render(light.getShader(), this);
 						}
 					break;
 					case"forward-spot":
 						if(((SpotLight) light).getDistance() < LIGHT_POP_IN) {
 							activeLight = light;
-							component.render(activeLight.getShader(), this);
+							component.render(light.getShader(), this);
 						}
 					break;
 				}
@@ -107,8 +107,7 @@ public class RenderingEngine extends MappedValues {
 			glDepthMask(true);
 			glDisable(GL_BLEND);
     	} catch(RuntimeException e) {
-    		e.printStackTrace();
-    		System.exit(0);
+    		Debug.crash(new CrashReport(e));
     	}
     }
     

@@ -15,6 +15,8 @@
  */
 package game.enemies;
 
+import static engine.core.CoreEngine.getRenderingEngine;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -25,7 +27,6 @@ import engine.components.Attenuation;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.components.SpotLight;
-import engine.core.CoreEngine;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -68,7 +69,7 @@ public class NaziSoldier extends GameComponent {
     private static final String RES_LOC = "naziSoldier/";
 
     private static final Clip seeNoise = AudioUtil.loadAudio(RES_LOC + "SSSSIT");
-    private static final Clip shootNoise = AudioUtil.loadAudio(RES_LOC + "SSHOTGN");
+    private static final Clip shootNoise = AudioUtil.loadAudio("weapons/pistol/GUN");
     private static final Clip hitNoise = AudioUtil.loadAudio(RES_LOC + "SPOPAIN");
     private static final Clip deathNoise = AudioUtil.loadAudio(RES_LOC + "SSSDTH");
 
@@ -148,7 +149,7 @@ public class NaziSoldier extends GameComponent {
             mesh = new Mesh(verts, indices, true);
         }
         
-        if(this.renderingEngine == null) this.renderingEngine = CoreEngine.renderingEngine;
+        if(this.renderingEngine == null) this.renderingEngine = getRenderingEngine();
         
         this.transform = transform;
         this.material = new Material(animation.get(0));
@@ -366,7 +367,7 @@ public class NaziSoldier extends GameComponent {
         if (state == STATE_DEAD) {
         	isQuiet = true;
         	if(bullet == null)
-            	bullet = new Bullet(new Transform(transform.getPosition().add(-0.001f)), false);
+            	bullet = new Bullet(new Transform(transform.getPosition().add(-0.01f)), false);
         	bullet.update(delta);
         	material.setDiffuse(animation.get(12));   	
             dead = true;  

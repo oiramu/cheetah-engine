@@ -15,7 +15,10 @@
  */
 package game.objects;
 
+import static engine.core.CoreEngine.getRenderingEngine;
+
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.sound.sampled.Clip;
 
@@ -24,7 +27,6 @@ import engine.components.Attenuation;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.components.PointLight;
-import engine.core.CoreEngine;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -46,26 +48,26 @@ import game.Level;
  */
 public class Explosion extends GameComponent {
 	
-	private static final String RES_LOC = "explotion/";
-	private static final int STATE_BOOM = 1;
-	private static final int STATE_DEAD = 2;
-	private static final int STATE_DONE = 3;
-	private int state;
-	private double temp;
+	private static final String 		RES_LOC = "explotion/";
+	private static final int 			STATE_BOOM = 1;
+	private static final int 			STATE_DEAD = 2;
     
-    private static Mesh mesh;
-    private Material material;
-    private MeshRenderer meshRenderer;
-    private PointLight light;
-    private RenderingEngine renderingEngine;
+    private static Mesh 				mesh;
     
-    private float sizeX;
+    private Material 					material;
+    private MeshRenderer 				meshRenderer;
+    private Transform 					transform;
     
-    private static ArrayList<Texture> animation;
+    public PointLight 					light;
+    private RenderingEngine				renderingEngine;
     
-    private static final Clip boomNoice = AudioUtil.loadAudio(RES_LOC + "EXPLOSIO");
-
-    private Transform transform;
+    private float 						sizeX;
+    private int 						state;
+	private double 						temp;
+    
+    private static ArrayList<Texture> 	animation;
+    
+    private static ArrayList<Clip> 		boomNoice;
 
     /**
      * Constructor of the actual object.
@@ -92,6 +94,13 @@ public class Explosion extends GameComponent {
             animation.add(new Texture(RES_LOC + "BEXPQ0"));
         }
     	
+    	if(boomNoice == null) {
+    		boomNoice = new ArrayList<Clip>();
+    		
+    		for (int i = 1; i < 3; i++)
+    			boomNoice.add(AudioUtil.loadAudio(RES_LOC + "Explode"+i));
+    	}
+    	
         if (mesh == null) {
             float sizeY = 1.2f;
             sizeX = (float) ((double) sizeY / (0.8333333333333333 * 2.0));
@@ -114,28 +123,25 @@ public class Explosion extends GameComponent {
 
             mesh = new Mesh(verts, indices, true);
         }
+        this.renderingEngine = getRenderingEngine();
         this.material = new Material(animation.get(0));
         this.state = STATE_BOOM;
         this.transform = transform;
-        if(light == null)
-	        this.light = new PointLight(new Vector3f(0.9f,0.7f,0.2f), 0.8f, 
-	        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0, 
-	        				getTransform().getPosition().getZ()));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
-        if(this.renderingEngine == null) this.renderingEngine = CoreEngine.renderingEngine;
-        if(transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length() < 1.0f && !Level.getPlayer().isShooting) {
-			if(Level.getPlayer().isArmor() == false) {
+        light = new PointLight(new Vector3f(0.9f,0.7f,0.2f), 0.8f, 
+			   new Attenuation(0,0,1), getTransform().getPosition());
+	    renderingEngine.addLight(light);
+    	AudioUtil.playAudio(boomNoice.get(new Random().nextInt(boomNoice.size())),
+    			transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
+    	if(transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length() < 1.0f && !Level.getPlayer().isShooting) {
+			if(Level.getPlayer().isArmor() == false)
 				Level.getPlayer().addHealth((int) -85, "Explosion");
-        	} else {
+        	else
         		Level.getPlayer().addArmor((int) -85);
-        	}
 		}
-        if(Auschwitz.getLevel().getRocketObjetive() != null)
-	        if(getTransform().getPosition().sub(Auschwitz.getLevel().getRocketObjetive().getTransform().getPosition()).length() < 1.0f) {
-	        	Auschwitz.getLevel().getRocketObjetive().damage(Level.getPlayer().getDamage());
-        	}
-        renderingEngine.addLight(light);
-    	AudioUtil.playAudio(boomNoice, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
+        if(Auschwitz.getLevel().getShootingObjective() != null)
+	        if(getTransform().getPosition().sub(Auschwitz.getLevel().getShootingObjective().getTransform().getPosition()).length() < 1.0f)
+	        	Auschwitz.getLevel().getShootingObjective().damage(Level.getPlayer().getDamage());
     }
 
     /**
@@ -148,9 +154,6 @@ public class Explosion extends GameComponent {
 		float distance = playerDistance.length();
 		setDistance(distance);
 		
-		if(!Level.getPlayer().isAlive)
-			renderingEngine.removeLight(light);
-        
         if (state == STATE_BOOM) {
             float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
@@ -164,7 +167,7 @@ public class Explosion extends GameComponent {
             temp = delta;
             light.setPosition(new Vector3f(light.getPosition().getX(), 0.05f * (float)(Math.sin(temp*2.5)+1.0/2.0) + 0.45f, light.getPosition().getZ()));
         	double timeDecimals = (time - (double) ((int) time));
-            timeDecimals *= 4.5f;
+            timeDecimals *= 3.75f;
             
             if (timeDecimals <= 0.25f) {
                 material.setDiffuse(animation.get(0));
@@ -193,20 +196,12 @@ public class Explosion extends GameComponent {
             } else if (timeDecimals <= 3.25f) {
                 material.setDiffuse(animation.get(12));
             } else if (timeDecimals <= 3.5f) {
-            	renderingEngine.removeLight(light);
             	material.setDiffuse(animation.get(13));
             } else {
+            	renderingEngine.removeLight(light);
                 state = STATE_DEAD;
             }
         }
-        
-        if (state == STATE_DEAD) {
-        	renderingEngine.removeLight(light);
-        	state = STATE_DONE;
-        }
-        
-        if(state == STATE_DONE)
-        	renderingEngine.removeLight(light);
 
     }
 

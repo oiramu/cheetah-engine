@@ -110,7 +110,7 @@ public class Helmet extends GameComponent {
 	        transform.getPosition().setY(0.05f * (float)(Math.sin(temp)+1.0/2.0) + 0.025f);
         }
         
-		if (distance < PICKUP_THRESHHOLD) {
+		if (distance < PICKUP_THRESHHOLD && Level.getPlayer().getArmor() < Level.getPlayer().getMaxArmor()) {
             Level.getPlayer().setArmor(STATE);
             Level.getPlayer().addArmor(AMOUNT);
             Level.removeHelmet(this);

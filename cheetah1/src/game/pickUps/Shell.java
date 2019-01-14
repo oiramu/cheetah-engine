@@ -42,7 +42,7 @@ public class Shell extends GameComponent {
 	public final float 			PICKUP_THRESHHOLD = 0.75f;
     private static final int 	AMOUNT = 6;
     private static final String RES_LOC = "shell/MEDIA";
-    private static final Clip 	PICKUP_NOISE = AudioUtil.loadAudio("bullet/MEDIA");
+    private static final Clip 	PICKUP_NOISE = AudioUtil.loadAudio("shell/SHELPK1");
     
     private float				temp = 0;
 

@@ -15,6 +15,8 @@
  */
 package game.enemies;
 
+import static engine.core.CoreEngine.getRenderingEngine;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -25,7 +27,6 @@ import engine.components.Attenuation;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.components.SpotLight;
-import engine.core.CoreEngine;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -69,7 +70,7 @@ public class NaziSergeant extends GameComponent {
     private static final String RES_LOC = "naziSergeant/";
 
     private static final Clip seeNoise = AudioUtil.loadAudio(RES_LOC + "SSSSIT");
-    private static final Clip shootNoise = AudioUtil.loadAudio(RES_LOC + "SSHOTGN");
+    private static final Clip shootNoise = AudioUtil.loadAudio("weapons/SGFIRE");
     private static final Clip hitNoise = AudioUtil.loadAudio(RES_LOC + "SPOPAIN");
     private static final Clip deathNoise = AudioUtil.loadAudio(RES_LOC + "SSSDTH");
 
@@ -145,7 +146,7 @@ public class NaziSergeant extends GameComponent {
             mesh = new Mesh(verts, indices, true);
         }   
         
-        if(this.renderingEngine == null) this.renderingEngine = CoreEngine.renderingEngine;
+        if(this.renderingEngine == null) this.renderingEngine = getRenderingEngine();
         
         this.transform = transform;
         this.material = new Material(animation.get(0));
@@ -358,14 +359,14 @@ public class NaziSergeant extends GameComponent {
         if (state == STATE_DEAD) {
         	isQuiet = true;
         	if(shotgun == null)
-        		shotgun = new Shotgun(new Transform(transform.getPosition().add(-0.001f)), false);
+        		shotgun = new Shotgun(new Transform(transform.getPosition().add(-0.01f)), false);
         	shotgun.update(delta);
         	if(shell == null)
-        		shell = new Shell(new Transform(transform.getPosition().add(-0.002f)), false);
+        		shell = new Shell(new Transform(transform.getPosition().add(-0.011f)), false);
         	shell.update(delta);
             dead = true;
             material.setDiffuse(animation.get(12));
-            if (distance < shotgun.PICKUP_THRESHHOLD) {
+            if (distance < shotgun.PICKUP_THRESHHOLD || distance < shell.PICKUP_THRESHHOLD) {
             	state = STATE_POST_DEATH;
             }
         }

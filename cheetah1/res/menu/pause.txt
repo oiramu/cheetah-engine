@@ -1,0 +1,18 @@
+#Options ML Code
+Background background=res/textures/Menu/background.jpg 0 0 1 1
+Image imgLogo=res/textures/Menu/logo.png 0.0325 0.35 0.375 0.15
+Background imgBackground=res/textures/Menu/shadow.png 0 0 0.425 1
+
+#Back
+Button menuBtn=Back to main menu:0.0325 0.55 0.375 0.05
+menuBtn>addAction:loadMenu:res/Menu/menu.txt
+
+Button returnBtn=Back:0.0325 0.55 0.375 0.05
+returnBtn>addAction:resume
+
+#Context
+TextBold line1=Paused!:0.45 0.5
+Text line2=Do something...:0.45 0.6
+
+menuBtn>selectId
+returnBtn>selectId

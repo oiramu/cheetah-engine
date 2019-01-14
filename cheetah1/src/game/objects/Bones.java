@@ -15,6 +15,9 @@
  */
 package game.objects;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Transform;
@@ -31,19 +34,21 @@ import game.Level;
 /**
  *
  * @author Julio Vergara.
- * @version 1.2
+ * @version 1.3
  * @since 2017
  */
 public class Bones extends GameComponent {
     
-    private static Mesh mesh;
-    private static Material material;
-    private MeshRenderer m_meshRenderer;
-    private float sizeX;
+    private static Mesh 		mesh;
+    private static Material 	material;
+    private MeshRenderer 		meshRenderer;
+    private float 				sizeX;
     
-    private static final String RES_LOC = "bones/MEDIA";
+    private static final String RES_LOC = "bones/";
 
-    private Transform transform;
+    private Transform 			transform;
+    
+    private ArrayList<Texture> 	materialArray;
 
     /**
      * Constructor of the actual object.
@@ -73,12 +78,18 @@ public class Bones extends GameComponent {
             mesh = new Mesh(verts, indices, true);
         }
 
-        if (material == null) {
-			material = new Material(new Texture(RES_LOC));
+        if(materialArray == null) {
+        	materialArray = new ArrayList<Texture>();
+        	
+        	for (int i = 0; i < 2; i++)
+        		materialArray.add(new Texture(RES_LOC+"MEDIA"+i));
         }
 
+        if (material == null)
+			material = new Material(materialArray.get(new Random().nextInt(materialArray.size())));
+
         this.transform = transform;
-        this.m_meshRenderer = new MeshRenderer(mesh, getTransform(), material);
+        this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
     }
 
     /**
@@ -93,13 +104,11 @@ public class Bones extends GameComponent {
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
-        if (orientation.getX() > 0) {
+        if (orientation.getX() > 0)
             angle = 180 + angle;
-        }
 
         transform.setRotation(0, angle + 90, 0);
         transform.setScale(1.7f, 0.5f, 1);
-
     }
 
     /**
@@ -107,7 +116,7 @@ public class Bones extends GameComponent {
      * @param shader to render
      * @param renderingEngine to use
      */
-    public void render(Shader shader, RenderingEngine renderingEngine) {m_meshRenderer.render(shader, renderingEngine);}
+    public void render(Shader shader, RenderingEngine renderingEngine) {meshRenderer.render(shader, renderingEngine);}
     
     /**
      * Gets the transform of the object in projection.

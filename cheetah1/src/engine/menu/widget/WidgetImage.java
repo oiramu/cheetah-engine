@@ -19,6 +19,8 @@ import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
+import engine.core.Debug;
+import engine.core.crash.CrashReport;
 import engine.rendering.Window;
 
 /**
@@ -40,57 +42,16 @@ public class WidgetImage extends WidgetModel {
 	 * @param w Width.
 	 * @param h Height.
 	 */
-	public WidgetImage(String imgPath, int x, int y, int w, int h) {
+	public WidgetImage(String imgPath, float x, float y, float w, float h) {
 		m_componentType = "Image";
 		try {
 			m_texture = new Image(imgPath);
 		} catch (SlickException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Debug.crash(new CrashReport(e));
 		}
 		
-		m_position = new Vector2f(x, y);
-		m_size = new Vector2f(w, h);
-	}
-	
-	/**
-	 * Constructor of a widget image.
-	 * @param imgPath Image's path.
-	 * @param x position.
-	 * @param y position.
-	 * @param w Width.
-	 */
-	public WidgetImage(String imgPath, int x, int y, int w) {
-		m_componentType = "ImgBackground";
-		try {
-			m_texture = new Image(imgPath);
-		} catch (SlickException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		m_position = new Vector2f(x, y);
-		m_size = new Vector2f(w, Window.getHeight());
-	}
-	
-	/**
-	 * Constructor of a widget image.
-	 * @param imgPath Image's path.
-	 * @param x position.
-	 * @param y position.
-	 * @param w Width.
-	 */
-	public WidgetImage(String imgPath, int x, int y) {
-		m_componentType = "Background";
-		try {
-			m_texture = new Image(imgPath);
-		} catch (SlickException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		m_position = new Vector2f(x, y);
-		m_size = new Vector2f(Window.getWidth(), Window.getHeight());
+		m_position = new Vector2f(x * Window.getWidth(), y * Window.getHeight());
+		m_size = new Vector2f(w * Window.getWidth(), h * Window.getHeight());
 	}
 	
 	/**

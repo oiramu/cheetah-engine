@@ -29,5 +29,7 @@ public interface Game {
 	public void input();
 	public void update(double delta);
 	public void render(RenderingEngine engine);
+	
+	public abstract String getName();
 
 }

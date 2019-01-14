@@ -98,9 +98,8 @@ public class Bag extends GameComponent {
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
-        if (orientation.getX() > 0) {
+        if (orientation.getX() > 0)
             angle = 180 + angle;
-        }
 
         transform.setRotation(0, angle + 90, 0);
         if (!(distance < PICKUP_THRESHHOLD)) {
@@ -114,6 +113,7 @@ public class Bag extends GameComponent {
             Level.getPlayer().setMaxBullets(Level.getPlayer().getMaxBullets()*2);
             Level.getPlayer().setMaxShells(Level.getPlayer().getMaxShells()*2);
             Level.getPlayer().setMaxRockets(Level.getPlayer().getMaxRockets()*2);
+            Level.getPlayer().setMaxGas(Level.getPlayer().getMaxGas()*2);
             Level.getPlayer().setMaxArmor(Level.getPlayer().getMaxArmor()*2);
             Level.removeBags(this);
         }

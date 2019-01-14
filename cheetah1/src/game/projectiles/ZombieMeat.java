@@ -44,7 +44,7 @@ public class ZombieMeat extends GameComponent {
     private float 				sizeX;
     private int 				state;
     
-    private static final String RES_LOC = "Rocket/";
+    private static final String RES_LOC = "zombie/";
 
     private Transform 			transform;
     private Vector3f 			objetiveOrientation;
@@ -106,7 +106,7 @@ public class ZombieMeat extends GameComponent {
 	        transform.setRotation(0, angle + 90, 0);
 	        
 	        objetiveOrientation.setY(0);
-	        float moveSpeed = 6.5f;
+	        float moveSpeed = 1f;
 	
 	        Vector3f oldPos = transform.getPosition();
 	        Vector3f newPos = transform.getPosition().add(objetiveOrientation.mul((float) (-moveSpeed * delta)));
@@ -115,7 +115,7 @@ public class ZombieMeat extends GameComponent {
 	
 	        Vector3f movementVector = collisionVector.mul(objetiveOrientation.normalized());
 	        
-	        if(distance < 1.0f && !Level.getPlayer().isShooting) {
+	        if(distance < 0.525f) {
 				if(Level.getPlayer().isArmor() == false) {
 					Level.getPlayer().addHealth((int) -35, "Zombie's gib");
 					state = 1;

@@ -18,12 +18,12 @@ package engine.core;
 import static org.lwjgl.Sys.*;
 import static org.lwjgl.opengl.GL11.*;
 
+import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-
+import engine.core.crash.CrashReport;
+import engine.core.utils.Util;
 import engine.rendering.RenderingEngine;
 import engine.rendering.TextureFont;
 import game.Player;
@@ -31,28 +31,32 @@ import game.Player;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.1
+ * @version 1.2
  * @since 2018
  */
 public class Debug {
 	
-	private static final float X_MARGIN = 0.5f;
-	private static final int MB = 1048576;
+	private static final float 					X_MARGIN = 0.5f;
+	private static final int 					MB = 1048576;
 	
-	private static int 		worstFPS = -1;
-	private static int 		averageFPS;
-	private static int 		bestFPS;
+	private static double 						fps;
+	private static double						frametime;
 	
-	private static int 		totalMemory = 0;
-	private static int 		freeMemory = 0;
-	private static int 		cpu = 0;
+	private static int 							worstFPS = -1;
+	private static int 							averageFPS;
+	private static int 							bestFPS;
 	
-	public static boolean 	state;
-	public static boolean 	godMode;
+	private static int 							totalMemory = 0;
+	private static int 							freeMemory = 0;
+	private static int 							cpu = 0;
 	
-	private static Player	player;
+	public static boolean 						state;
+	public static boolean 						godMode;
 	
-	private static HashMap<String,TextureFont> debugText = new HashMap<String,TextureFont>();
+	private static Player						player;
+	private static File	 						folder;
+	
+	private static HashMap<String,TextureFont> 	debugText = new HashMap<String,TextureFont>();
 	
 	/**
 	 * Defines the hash map of variables to test.
@@ -78,9 +82,9 @@ public class Debug {
 	public static void printToEngine(RenderingEngine renderingEngine) {
 		if(state) {
 			debugText.get("Engine").render(renderingEngine);
-			debugText.get("FPS").setText("FPS:"+(int)Time.getFPS());
+			debugText.get("FPS").setText("FPS:"+(int)fps);
 			debugText.get("FPS").render(renderingEngine);
-			debugText.get("FrameTime").setText("FrameTime:"+(float)Time.getFrametime()+"ms");
+			debugText.get("FrameTime").setText("FrameTime:"+(float)frametime+"ms");
 			debugText.get("FrameTime").render(renderingEngine);
 			totalMemory = (int)Runtime.getRuntime().totalMemory()/MB;
 	    	freeMemory = (int)Runtime.getRuntime().freeMemory()/MB;
@@ -95,10 +99,10 @@ public class Debug {
 	        cpu = (int) (((float)totalUsedCPUTime*10)/(float)totalAvailCPUTime);
 	        debugText.get("CPU").setText("CPU:"+Util.clamp(100, cpu)+"% "+cpus+" cores");
 	        debugText.get("CPU").render(renderingEngine);
-	        if(Time.getFPS() >= bestFPS) bestFPS = (int) Time.getFPS();
+	        if(fps >= bestFPS) bestFPS = (int) fps;
 	        averageFPS = (bestFPS+worstFPS)/2;
 	        if(worstFPS == -1) worstFPS = averageFPS; else
-	        if(Time.getFPS() <= worstFPS) worstFPS = (int) Time.getFPS();
+	        if(fps <= worstFPS) worstFPS = (int) fps;
 	        debugText.get("FPSMeasure").setText("wFPS:"+worstFPS+" aFPS:"+averageFPS+" bFPS:"+bestFPS);
 	        debugText.get("FPSMeasure").render(renderingEngine);
 	        debugText.get("OS").render(renderingEngine);
@@ -122,17 +126,19 @@ public class Debug {
 		Debug.player = player;
 		Debug.godMode = godMode;
 		if (Debug.godMode) {
-			player.setMaxArmor(100000);
 			player.setMaxHealth(100000);
 			player.setMaxBullets(100000);
 			player.setMaxShells(100000);
 			player.setMaxRockets(100000);
-			player.addArmor(100000);
+			player.setMaxGas(100000);
 			player.addBullets(100000);
 			player.addShells(100000);
 			player.addRockets(100000);
+			player.addGas(100000);
 			player.addHealth(1000000, "");
 			player.setArmor(godMode);
+			player.setMaxArmor(100000);
+			player.addArmor(100000);
 			player.setBronzekey(godMode);
 			player.setGoldkey(godMode);
 			player.setShotgun(godMode);
@@ -140,21 +146,22 @@ public class Debug {
 			player.setSuperShotgun(godMode);
 			player.setChaingun(godMode);
 			player.setRocketLauncher(godMode);
+			player.setFlameThrower(godMode);
 		}
 	}
+	
+	/**
+	 * Print some message to the console or terminal.
+	 * @param message to show
+	 */
+	public static <E> void print(E message) { System.out.print(message);}
 	
 	/**
 	 * Print some message to the console or terminal
 	 * by lines.
 	 * @param message to show
 	 */
-	public static void println(String message) { System.out.println(message);}
-	
-	/**
-	 * Print some message to the console or terminal.
-	 * @param message to show
-	 */
-	public static void print(String message) { System.out.print(message);}
+	public static <E> void println(E message) { System.out.println(message);}
 	
 	/**
 	 * Prints an error message to a window, keep in
@@ -162,12 +169,39 @@ public class Debug {
 	 * @param message to show
 	 * @param errorId a title to the window
 	 */
-	public static void printErrorMessage(String message, String errorId) {
-		JOptionPane optionPane = new JOptionPane(message, JOptionPane.ERROR_MESSAGE);    
-		JDialog dialog = optionPane.createDialog(errorId);
-		dialog.setAlwaysOnTop(true);
-		dialog.setVisible(true);
+	public static void crash(CrashReport report) {
+		report.printStack();
+		CoreEngine.getCurrent().kill();
 		System.exit(-1);
 	}
+	
+	/**
+	 * Gets the project's folder.
+	 * @return project's folder
+	 */
+	public static File getEngineFolder() {
+		if(folder == null) {
+			String appdata = System.getenv("APPDATA");
+			if(appdata != null)
+				folder = new File(appdata, ".cheetah1");
+			else
+				folder = new File(System.getProperty("user.home"), ".cheetah1");
+
+			if(!folder.exists()) folder.mkdirs();
+		}
+		return folder;
+	}
+
+	/**
+	 * Sets the frames per second reference.
+	 * @param fps to reference
+	 */
+	public static void setFps(double fps) { Debug.fps = fps; }
+
+	/**
+	 * Sets the frames time reference.
+	 * @param frametime to reference
+	 */
+	public static void setFrametime(double frametime) { Debug.frametime = frametime; }
 
 }

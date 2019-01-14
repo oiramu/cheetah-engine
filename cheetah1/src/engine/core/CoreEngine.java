@@ -15,17 +15,18 @@
  */
 package engine.core;
 
-import static org.lwjgl.opengl.GL11.GL_VERSION;
-import static org.lwjgl.opengl.GL11.glGetString;
+import static org.lwjgl.opengl.GL11.*;
+//import static org.lwjgl.openal.AL10.*;
 
 import engine.audio.AudioUtil;
+import engine.core.utils.Log;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Window;
 
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.4
+ * @version 1.5
  * @since 2017
  */
 public class CoreEngine {
@@ -37,7 +38,7 @@ public class CoreEngine {
 	private boolean 				isRunning;
 	private String 					title;
 	private Game 					game;
-	public static RenderingEngine 	renderingEngine;
+	private static RenderingEngine 	renderingEngine;
 	private static CoreEngine 		coreEngine;
 	
 	/**
@@ -143,8 +144,8 @@ public class CoreEngine {
                 game.update(frameTime);
 
                 if (frameCounter >= 1.0) {
-                	Time.setFPS(frames);
-                	Time.setFrametime(1000.0f/frames);
+                	Debug.setFps(frames);
+                	Debug.setFrametime(1000.0f/frames);
                     frames = 0;
                     frameCounter = 0;
                 }
@@ -157,8 +158,7 @@ public class CoreEngine {
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    Debug.printErrorMessage(e.getMessage(), "Core Error!");
+                	Log.fatal("Core Error!");
                 }
             }
         }
@@ -182,20 +182,16 @@ public class CoreEngine {
 			Window.updateMenu();
 			Window.renderMenu();
 		}
-		cleanUp();
+		kill();
 	}
-
-	/**
-	 * Returns the main game.
-	 * @return Game
-	 */
-	public Game getGame() {return game;}
 	
 	/**
-	 * Returns the main engine instance.
-	 * @return Engine instance
+	 * Kills everything in the program.
 	 */
-	public static CoreEngine getEngine() {return coreEngine;}
+	public void kill() {
+		isRunning = false;
+		cleanUp();
+	}
 	
 	/**
 	 * Prints the compilation configuration.
@@ -209,11 +205,33 @@ public class CoreEngine {
         System.out.println("-OS version: " + System.getProperty("os.version"));
         System.out.println("-LWJGL version: " + org.lwjgl.Sys.getVersion());
         System.out.println("-OpenGL version: " + glGetString(GL_VERSION));
+        System.out.println("-OpenGL vendor: " + glGetString(GL_VENDOR));
+        //System.out.println("-OpenAL version: " + alGetString(AL_VERSION));
+        //System.out.println("-OpenAL vendor: " + alGetString(AL_VENDOR));
+        System.out.println("Compiled by: " + System.getProperty("user.name") + "; in : " + Time.getTimeAsString());
 	}
 	
 	/**
      * Method that cleans everything in the program's window.
      */
     private void cleanUp() {Window.dispose(); AudioUtil.stopMidi();}
+
+	/**
+	 * Returns the main game.
+	 * @return Game
+	 */
+	public Game getGame() {return game;}
+	
+	/**
+	 * Returns the main engine instance.
+	 * @return Engine instance
+	 */
+	public static CoreEngine getCurrent() {return coreEngine;}
+	
+	/**
+	 * Returns the rendering engine instance.
+	 * @return Rendering engine instance
+	 */
+	public static RenderingEngine getRenderingEngine() {return renderingEngine;}
 
 }

@@ -35,10 +35,13 @@ import org.newdawn.slick.opengl.PNGDecoder;
 
 import engine.audio.AudioUtil;
 import engine.core.CoreEngine;
+import engine.core.Debug;
+import engine.core.crash.CrashReport;
 import engine.menu.DefaultMenu;
 import engine.menu.Menu;
 import engine.menu.Rendering2DEngine;
 import engine.menu.system.SGameTime;
+import engine.core.utils.LWJGLHandler;
 import game.Auschwitz;
 
 /**
@@ -58,13 +61,12 @@ public class Window {
 	 * @param fullscreen If its windowed or full-screen.
 	 */
 	public static void createWindow(int width, int height, String title, boolean fullscreen) {
-		
-		Display.setTitle(title);
-		Display.setIcon(new ByteBuffer[] {
-				loadIcon("/textures/coreDisplay/icon32"),
-		});
+		//setNatives();
 		try {
-			
+			Display.setTitle(title);
+			Display.setIcon(new ByteBuffer[] {
+					loadIcon("/textures/coreDisplay/icon32"),
+			});
 			if(fullscreen) {
 				@SuppressWarnings("unused")
 				DisplayMode displayMode = null;
@@ -85,10 +87,10 @@ public class Window {
 	        Mouse.create();
 	        
 	        Auschwitz.setStartingLevel(1);
-			CoreEngine.getEngine().start();
+			CoreEngine.getCurrent().start();
 
 		} catch(LWJGLException e) {
-			e.printStackTrace();
+			Debug.crash(new CrashReport(e));
 			dispose();
 		}
 	}
@@ -99,13 +101,12 @@ public class Window {
 	 * @param fullscreen If its windowed or full-screen.
 	 */
 	public static void createMenuWindow(int width, int height, String title, boolean fullscreen) {
-		
-		Display.setTitle(title);
-		Display.setIcon(new ByteBuffer[] {
-				loadIcon("/textures/coreDisplay/icon32"),
-		});
+		//setNatives();
 		try {
-			
+			Display.setTitle(title);
+			Display.setIcon(new ByteBuffer[] {
+					loadIcon("/textures/coreDisplay/icon32"),
+			});
 			if(fullscreen) {
 				@SuppressWarnings("unused")
 				DisplayMode displayMode = null;
@@ -133,8 +134,20 @@ public class Window {
 
 			//SEngineUtil.getInstance().setInputType(InputType.MOUSE); //Default input type
 		} catch(LWJGLException e) {
-			e.printStackTrace();
+			Debug.crash(new CrashReport(e));
 			dispose();
+		}
+	}
+	
+	/**
+	 * Sets the natives to the project.
+	 */
+	@SuppressWarnings("unused")
+	private static void setNatives() {
+		try {
+			LWJGLHandler.load(new File(Debug.getEngineFolder(), "natives"));
+		} catch (Exception e) {
+			Debug.crash(new CrashReport(e));
 		}
 	}
 	

@@ -15,6 +15,8 @@
  */
 package game.enemies;
 
+import static engine.core.CoreEngine.getRenderingEngine;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -25,7 +27,6 @@ import engine.components.Attenuation;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.components.SpotLight;
-import engine.core.CoreEngine;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -41,6 +42,7 @@ import game.Auschwitz;
 import game.Level;
 import game.Player;
 import game.pickUps.Bullet;
+import game.pickUps.Chaingun;
 import game.pickUps.Key;
 
 /**
@@ -66,13 +68,14 @@ public class Captain extends GameComponent {
     private static final int STATE_HIT = 6;
     private static final int STATE_DEAD = 7;
     
+    private static final String AUDIO_RES_LOC = "Boss/";
     private static final String RES_LOC = "Captain/";
 
-    private static final Clip seeNoise = AudioUtil.loadAudio(RES_LOC + "hailhtlr");
-    private static final Clip shootNoise = AudioUtil.loadAudio(RES_LOC + "GUN");
-    private static final Clip loadNoise = AudioUtil.loadAudio(RES_LOC + "LOAD");
-    private static final Clip hitNoise = AudioUtil.loadAudio(RES_LOC + "hit");
-    private static final Clip deathNoise = AudioUtil.loadAudio(RES_LOC + "dying");
+    private static final Clip seeNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "hailhtlr");
+    private static final Clip shootNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "GUN");
+    private static final Clip loadNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "LOAD");
+    private static final Clip hitNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "hit");
+    private static final Clip deathNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "dying");
 
     private static ArrayList<Texture> animation;
     private static Mesh mesh;
@@ -83,6 +86,7 @@ public class Captain extends GameComponent {
     private Material material;
     private MeshRenderer meshRenderer;
     private RenderingEngine renderingEngine;
+    private Chaingun chaingun;
     private Bullet bullet;
     private SpotLight light;
     private Key key;
@@ -150,7 +154,7 @@ public class Captain extends GameComponent {
             mesh = new Mesh(verts, indices, true);
         }
         
-        if(this.renderingEngine == null) this.renderingEngine = CoreEngine.renderingEngine;
+        if(this.renderingEngine == null) this.renderingEngine = getRenderingEngine();
         
         this.transform = transform;
         this.material = new Material(animation.get(0));
@@ -247,7 +251,7 @@ public class Captain extends GameComponent {
                     state = STATE_ATTACK;
                 }
 
-                if (distance > 1.0f) {
+                if (distance > 1.3f) {
                     orientation.setY(0);
                     float moveSpeed = 1.5f;
 
@@ -372,17 +376,20 @@ public class Captain extends GameComponent {
         
         if (state == STATE_DEAD) {
         	isQuiet = true;
+        	if(chaingun == null)
+        		chaingun = new Chaingun(new Transform(transform.getPosition().add(-0.01f)), false);
         	if(bullet == null)
-            	bullet = new Bullet(new Transform(transform.getPosition().add(-0.001f)), false);
+            	bullet = new Bullet(new Transform(transform.getPosition().add(-0.011f)), false);
         	if(key == null && dropsKey)
-        		key = new Key(new Transform(transform.getPosition().add(-0.002f)), true, false);
+        		key = new Key(new Transform(transform.getPosition().add(-0.012f)), true, false);
         	bullet.update(delta);
         	key.update(delta);
+        	chaingun.update(delta);
         	material.setDiffuse(animation.get(12));   	
             dead = true;  
-            if (distance < bullet.PICKUP_THRESHHOLD) {
+            if (distance < bullet.PICKUP_THRESHHOLD || distance < key.PICKUP_THRESHHOLD
+            		|| distance < chaingun.PICKUP_THRESHHOLD)
             	state = STATE_POST_DEATH;
-            }
         }
         
         if (state == STATE_POST_DEATH) {
@@ -440,6 +447,7 @@ public class Captain extends GameComponent {
         
         if (state == STATE_DEAD) {
         	bullet.render(shader, renderingEngine);
+        	chaingun.render(shader, renderingEngine);
         	if(dropsKey)
         		key.render(shader, renderingEngine);
         }

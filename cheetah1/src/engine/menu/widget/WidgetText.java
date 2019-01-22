@@ -21,11 +21,11 @@ import engine.menu.system.SEngineUtil;
 import engine.rendering.Window;
 
 /**
-*
-* @author Carlos Rodriguez
-* @version 1.0
-* @since 2017
-*/
+ *
+ * @author Carlos Rodriguez
+ * @version 1.0
+ * @since 2017
+ */
 public class WidgetText extends WidgetModel {
 	
 	private String 	m_text;

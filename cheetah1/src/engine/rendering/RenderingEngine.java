@@ -77,13 +77,14 @@ public class RenderingEngine extends MappedValues {
     		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     		
 	        component.render(forwardAmbient, this);
-	        
-	        glEnable(GL_BLEND);
-			glBlendFunc(GL_ONE, GL_ONE);
-			glDepthMask(false);
-			glDepthFunc(GL_EQUAL);
 			
 			for(BaseLight light : lights) {
+				
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_ONE, GL_ONE);
+				glDepthMask(false);
+				glDepthFunc(GL_EQUAL);
+				
 				switch(light.getShader().getName()) {
 					case"forward-directional":
 						activeLight = light;
@@ -102,10 +103,11 @@ public class RenderingEngine extends MappedValues {
 						}
 					break;
 				}
+				
+				glDepthFunc(GL_LESS);
+				glDepthMask(true);
+				glDisable(GL_BLEND);
 			}
-			glDepthFunc(GL_LESS);
-			glDepthMask(true);
-			glDisable(GL_BLEND);
     	} catch(RuntimeException e) {
     		Debug.crash(new CrashReport(e));
     	}

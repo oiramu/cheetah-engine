@@ -944,7 +944,7 @@ public class Player extends GameComponent {
             }
 	
 	        movementVector = zeroVector;
-	        if(camera.getPos().getY() == toTerrain) {
+	        if(!isInAir) {
 		        if(Input.getKeyDown(Input.KEY_W) || Input.getKeyDown(Input.KEY_UP) ||
 		        		Input.getKeyDown(Input.KEY_S) || Input.getKeyDown(Input.KEY_DOWN)
 		        		|| Input.getKeyDown(Input.KEY_A) || Input.getKeyDown(Input.KEY_D)) {
@@ -975,6 +975,7 @@ public class Player extends GameComponent {
             	if(!isInAir) {
             		AudioUtil.playAudio(playerJumpNoises.get(new Random().nextInt(playerJumpNoises.size())), 0);
             		upAmt = 10.0f;
+            		movementVector = movementVector.add(camera.getForward());
             		isInAir = true;
             	}
 	        }

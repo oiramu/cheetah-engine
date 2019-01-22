@@ -25,10 +25,10 @@ import engine.core.utils.Util;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
-public class TextureFont {
+public class HUD {
 	
     private Mesh		mesh;
     private Shader		shader;
@@ -44,7 +44,7 @@ public class TextureFont {
      * @param position of the text.
      * @param scale of the text.
      */
-    public TextureFont(Material material, Vector2f position, Vector2f scale) {
+    public HUD(Material material, Vector2f position, Vector2f scale) {
     	if(this.position == null) this.position = position;
     	if(this.scale == null) this.scale = scale;
         final float sizeY = 1.0f;
@@ -86,7 +86,7 @@ public class TextureFont {
      * @param position of the text.
      * @param scale of the text.
      */
-    public <E> TextureFont(E text, Vector2f position, Vector2f scale) {  	
+    public <E> HUD(E text, Vector2f position, Vector2f scale) {  	
     	this(text, new Material(new Texture("font")), position, scale);
     }
 
@@ -97,7 +97,7 @@ public class TextureFont {
      * @param position of the text.
      * @param scale of the text.
      */
-    public <E> TextureFont(E text, Material material, Vector2f position, Vector2f scale) {
+    public <E> HUD(E text, Material material, Vector2f position, Vector2f scale) {
     	
     	if(this.text == null) this.text = text + "";
     	if(this.position == null) this.position = position;

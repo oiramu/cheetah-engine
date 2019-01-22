@@ -42,7 +42,7 @@ import engine.rendering.Mesh;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import engine.rendering.Texture;
-import engine.rendering.TextureFont;
+import engine.rendering.HUD;
 import engine.rendering.Vertex;
 import engine.rendering.Window;
 import game.objects.Bleed;
@@ -122,7 +122,7 @@ public class Player extends GameComponent {
     
     private String weaponState;
     
-    public HashMap<String, TextureFont> playerText;
+    public HashMap<String, HUD> playerText;
     
     private static ArrayList<Texture> gunsAnimationMaterial0;
     private static ArrayList<Texture> gunsAnimationMaterial1;
@@ -448,16 +448,16 @@ public class Player extends GameComponent {
     	}
     	
     	if(playerText == null) {
-    		playerText = new HashMap<String, TextureFont>();
+    		playerText = new HashMap<String, HUD>();
     		
-    		playerText.put("Life", new TextureFont("", new Vector2f(-0.6f,-0.235f), new Vector2f(1f,4f)));
-    		playerText.put("Armor", new TextureFont("", new Vector2f(-0.6f,-0.175f), new Vector2f(1f,4f)));
-    		playerText.put("Ammo", new TextureFont("", new Vector2f(0.75f,-0.235f), new Vector2f(1f,4f)));
-    		playerText.put("Notification", new TextureFont("", new Vector2f(-1.3f,1.25f), new Vector2f(0.7f,0.7f)));
-    		playerText.put("CrossHair", new TextureFont("", zeroVector.getXY(), new Vector2f(1f,1f)));
-    		playerText.put("LifeHUD", new TextureFont(new Material(new Texture("medkit/MEDIA")), new Vector2f(-3.8f,-4.4f), new Vector2f(0.2f,0.2f)));
-    		playerText.put("ArmorHUD", new TextureFont(new Material(new Texture("armor/MEDIA")), new Vector2f(-3.8f,-3.2f), new Vector2f(0.2f,0.2f)));
-    		playerText.put("AmmoHUD", new TextureFont(new Material(new Texture("EMPTY")), new Vector2f(4.9f,-4.3f), new Vector2f(0.125f,0.2f)));
+    		playerText.put("Life", new HUD("", new Vector2f(-0.6f,-0.235f), new Vector2f(1f,4f)));
+    		playerText.put("Armor", new HUD("", new Vector2f(-0.6f,-0.175f), new Vector2f(1f,4f)));
+    		playerText.put("Ammo", new HUD("", new Vector2f(0.75f,-0.235f), new Vector2f(1f,4f)));
+    		playerText.put("Notification", new HUD("", new Vector2f(-1.3f,1.25f), new Vector2f(0.7f,0.7f)));
+    		playerText.put("CrossHair", new HUD("", zeroVector.getXY(), new Vector2f(1f,1f)));
+    		playerText.put("LifeHUD", new HUD(new Material(new Texture("medkit/MEDIA")), new Vector2f(-3.8f,-4.4f), new Vector2f(0.2f,0.2f)));
+    		playerText.put("ArmorHUD", new HUD(new Material(new Texture("armor/MEDIA")), new Vector2f(-3.8f,-3.2f), new Vector2f(0.2f,0.2f)));
+    		playerText.put("AmmoHUD", new HUD(new Material(new Texture("EMPTY")), new Vector2f(4.9f,-4.3f), new Vector2f(0.125f,0.2f)));
     	}
     	
         if (gunMesh == null) {

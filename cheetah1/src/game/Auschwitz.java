@@ -40,7 +40,7 @@ import game.enemies.*;
  */
 public class Auschwitz implements Game {
 	
-	private static HashMap<String,TextureFont> 	text = new HashMap<String,TextureFont>();
+	private static HashMap<String,HUD> 	text = new HashMap<String,HUD>();
 	private static ArrayList<Sequence> 			playlist = new ArrayList<Sequence>();
 	
     private static final int 					EPISODE_1 = 1;
@@ -71,10 +71,10 @@ public class Auschwitz implements Game {
      */
 	public void init() {
 		Constants.load("res/config.txt");
-    	text.put("Level",new TextureFont("", new Vector2f(-1.25f,1.2f), new Vector2f(0.75f,0.75f)));
-        text.put("Enemies",new TextureFont("", new Vector2f(-1.25f,1.1f), new Vector2f(0.75f,0.75f)));
-        text.put("Secrets",new TextureFont("", new Vector2f(-1.25f,1.0f), new Vector2f(0.75f,0.75f)));
-        text.put("Paused",new TextureFont("PAUSED!", new Vector2f(-0.175f,0.175f), new Vector2f(1.5f,1.5f)));
+    	text.put("Level",new HUD("", new Vector2f(-1.25f,1.2f), new Vector2f(0.75f,0.75f)));
+        text.put("Enemies",new HUD("", new Vector2f(-1.25f,1.1f), new Vector2f(0.75f,0.75f)));
+        text.put("Secrets",new HUD("", new Vector2f(-1.25f,1.0f), new Vector2f(0.75f,0.75f)));
+        text.put("Paused",new HUD("PAUSED!", new Vector2f(-0.175f,0.175f), new Vector2f(1.5f,1.5f)));
         for (int i = 0; i < 13; i++) playlist.add(AudioUtil.loadMidi("THEME" + i));
 
         track = startingLevel - 1;

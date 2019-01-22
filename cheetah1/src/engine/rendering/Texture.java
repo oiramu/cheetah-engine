@@ -216,8 +216,7 @@ public class Texture {
                     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0.0f);
         			if(getCapabilities().GL_EXT_texture_filter_anisotropic) {
-        				float ammount = Math.min(ANISOTROPIC_LEVEL,
-        						glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
+        				float ammount = Util.clamp(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, (int) ANISOTROPIC_LEVEL);
         				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
         						ammount);
         			} else {

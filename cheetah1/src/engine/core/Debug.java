@@ -25,7 +25,7 @@ import java.util.HashMap;
 import engine.core.crash.CrashReport;
 import engine.core.utils.Util;
 import engine.rendering.RenderingEngine;
-import engine.rendering.TextureFont;
+import engine.rendering.HUD;
 import game.Player;
 
 /**
@@ -56,23 +56,23 @@ public class Debug {
 	private static Player						player;
 	private static File	 						folder;
 	
-	private static HashMap<String,TextureFont> 	debugText = new HashMap<String,TextureFont>();
+	private static HashMap<String,HUD> 	debugText = new HashMap<String,HUD>();
 	
 	/**
 	 * Defines the hash map of variables to test.
 	 */
 	public static void init() {
-		debugText.put("Engine", new TextureFont("Cheetah Engine 1.0", new Vector2f(X_MARGIN,1.9f), new Vector2f(0.5f,0.5f)));
-		debugText.put("FPS",new TextureFont("", new Vector2f(X_MARGIN,1.7f), new Vector2f(0.5f,0.5f)));
-		debugText.put("FrameTime",new TextureFont("", new Vector2f(X_MARGIN,1.6f), new Vector2f(0.5f,0.5f)));
-		debugText.put("Memory",new TextureFont("", new Vector2f(X_MARGIN,1.5f), new Vector2f(0.5f,0.5f)));
-		debugText.put("CPU",new TextureFont("", new Vector2f(X_MARGIN,1.4f), new Vector2f(0.5f,0.5f)));
-		debugText.put("FPSMeasure",new TextureFont("", new Vector2f(X_MARGIN,1.3f), new Vector2f(0.5f,0.5f)));
-		debugText.put("OS",new TextureFont("OS:"+System.getProperty("os.name"), new Vector2f(X_MARGIN,1.1f), new Vector2f(0.5f,0.5f)));
-		debugText.put("LWJGL",new TextureFont("LWJGL:"+getVersion(), new Vector2f(X_MARGIN,1.0f), new Vector2f(0.5f,0.5f)));
-		debugText.put("OpenGL",new TextureFont("OpenGL:"+glGetString(GL_VERSION), new Vector2f(X_MARGIN,0.9f), new Vector2f(0.5f,0.5f)));
-		debugText.put("Damage",new TextureFont("", new Vector2f(X_MARGIN,0.7f), new Vector2f(0.5f,0.5f)));
-		debugText.put("Speed",new TextureFont("", new Vector2f(X_MARGIN,0.8f), new Vector2f(0.5f,0.5f)));
+		debugText.put("Engine", new HUD("Cheetah Engine 1.0", new Vector2f(X_MARGIN,1.9f), new Vector2f(0.5f,0.5f)));
+		debugText.put("FPS",new HUD("", new Vector2f(X_MARGIN,1.7f), new Vector2f(0.5f,0.5f)));
+		debugText.put("FrameTime",new HUD("", new Vector2f(X_MARGIN,1.6f), new Vector2f(0.5f,0.5f)));
+		debugText.put("Memory",new HUD("", new Vector2f(X_MARGIN,1.5f), new Vector2f(0.5f,0.5f)));
+		debugText.put("CPU",new HUD("", new Vector2f(X_MARGIN,1.4f), new Vector2f(0.5f,0.5f)));
+		debugText.put("FPSMeasure",new HUD("", new Vector2f(X_MARGIN,1.3f), new Vector2f(0.5f,0.5f)));
+		debugText.put("OS",new HUD("OS:"+System.getProperty("os.name"), new Vector2f(X_MARGIN,1.1f), new Vector2f(0.5f,0.5f)));
+		debugText.put("LWJGL",new HUD("LWJGL:"+getVersion(), new Vector2f(X_MARGIN,1.0f), new Vector2f(0.5f,0.5f)));
+		debugText.put("OpenGL",new HUD("OpenGL:"+glGetString(GL_VERSION), new Vector2f(X_MARGIN,0.9f), new Vector2f(0.5f,0.5f)));
+		debugText.put("Damage",new HUD("", new Vector2f(X_MARGIN,0.7f), new Vector2f(0.5f,0.5f)));
+		debugText.put("Speed",new HUD("", new Vector2f(X_MARGIN,0.8f), new Vector2f(0.5f,0.5f)));
 	}
 	
 	/**

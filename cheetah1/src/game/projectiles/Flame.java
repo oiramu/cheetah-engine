@@ -143,6 +143,7 @@ public class Flame extends GameComponent {
         
         upAmt += (GRAVITY/(SPEED*10)) * delta;
         transform.setPosition(transform.getPosition().add(new Vector3f(0, (float) (upAmt * delta), 0)));
+        light.setPosition(transform.getPosition());
         
         objetiveOrientation.setY(0);
         float moveSpeed = SPEED;

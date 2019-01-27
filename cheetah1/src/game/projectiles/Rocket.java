@@ -16,9 +16,12 @@
 package game.projectiles;
 
 import static engine.components.Constants.GRAVITY;
+import static engine.core.CoreEngine.getRenderingEngine;
 
+import engine.components.Attenuation;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
+import engine.components.PointLight;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
@@ -52,6 +55,8 @@ public class Rocket extends GameComponent {
     private int 				state;
     private boolean 			playerShoots;
 
+    private PointLight 			light;
+    private RenderingEngine		renderingEngine;
     private Transform 			transform;
     private Vector3f 			objetiveOrientation;
     private Explosion 			explosion;
@@ -90,7 +95,7 @@ public class Rocket extends GameComponent {
         	else
         		material = new Material(new Texture(RES_LOC+"MISLA1"));
         }
-
+        this.renderingEngine = getRenderingEngine();
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         if(playerShoots)
@@ -99,6 +104,9 @@ public class Rocket extends GameComponent {
         	objetiveOrientation = this.transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).normalized();
         this.state = 0;
         this.playerShoots = playerShoots;
+        light = new PointLight(new Vector3f(0.5f,0.5f,0.1f), 0.2f, 
+ 			   new Attenuation(0,0,1), getTransform().getPosition());
+ 	    renderingEngine.addLight(light);
     }
 
     /**
@@ -118,6 +126,7 @@ public class Rocket extends GameComponent {
 	            angle = 180 + angle;
 	        
 	        transform.setRotation(0, angle + 90, 0);
+	        light.setPosition(transform.getPosition());
 	        
 	        upAmt -= (GRAVITY/(SPEED * 100)) * delta;
             transform.setPosition(transform.getPosition().add(new Vector3f(0, (float) (upAmt * delta), 0)));
@@ -147,6 +156,7 @@ public class Rocket extends GameComponent {
 		        	state = 1;
     	}
     	if(state == 1){
+    		renderingEngine.removeLight(light);
     		if(explosion == null)
     			explosion = new Explosion(new Transform(getTransform().getPosition()));
     		explosion.update(delta);

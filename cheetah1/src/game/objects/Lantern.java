@@ -44,7 +44,6 @@ public class Lantern extends GameComponent {
     private Material 			material;
     private MeshRenderer 		meshRenderer;
     private RenderingEngine 	renderingEngine;
-    private PointLight 			light;
     private float 				sizeX;
     
     private static final String RES_LOC = "lantern/MEDIA";
@@ -87,13 +86,10 @@ public class Lantern extends GameComponent {
         
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
-        
-        if(light == null) {
-	        this.light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
-	        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.25f, 
-	        				getTransform().getPosition().getZ()));
-	        renderingEngine.addLight(light);
-    	}
+
+        renderingEngine.addLight(new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
+        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.25f, 
+        				getTransform().getPosition().getZ())));
     }
 
     /**

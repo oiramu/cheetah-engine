@@ -16,7 +16,6 @@
 package game.projectiles;
 
 import static engine.components.Constants.GRAVITY;
-import static engine.core.CoreEngine.getRenderingEngine;
 
 import java.util.ArrayList;
 
@@ -56,7 +55,6 @@ public class Flame extends GameComponent {
     private Transform 					transform;
     
     private PointLight 					light;
-    private RenderingEngine				renderingEngine;
     private Vector3f 					objetiveOrientation;
     
     private float 						sizeX;
@@ -110,14 +108,15 @@ public class Flame extends GameComponent {
 
             mesh = new Mesh(verts, indices, true);
         }
-        this.renderingEngine = getRenderingEngine();
         this.material = new Material(animation.get(0));
         this.state = STATE_FIRE;
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
-        light = new PointLight(new Vector3f(1.0f,0.5f,0.2f), 0.8f, 
-			   new Attenuation(0,0,1), getTransform().getPosition());
-	    renderingEngine.addLight(light);
+        if(light == null) {
+	        light = new PointLight(new Vector3f(1.0f,0.5f,0.2f), 0.8f, 
+				   new Attenuation(0,0,1), getTransform().getPosition());
+	        light.addToEngine();
+        }
         if(Auschwitz.getLevel().getShootingObjective() != null)
 	        if(getTransform().getPosition().sub(Auschwitz.getLevel().getShootingObjective().getTransform().getPosition()).length() < 1.0f)
 	        	Auschwitz.getLevel().getShootingObjective().damage(Level.getPlayer().getDamage());
@@ -187,7 +186,7 @@ public class Flame extends GameComponent {
         } else if (timeDecimals <= 2.75f) {
             material.setDiffuse(animation.get(10));
         } else {
-        	renderingEngine.removeLight(light);
+        	light.removeToEngine();
         	Level.getPlayer().removeFlame(this);
         }
 

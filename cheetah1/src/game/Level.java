@@ -1241,7 +1241,7 @@ public class Level extends GameComponent {
         renderingEngine.setFogGradient(1.5f);
         renderingEngine.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
         renderingEngine.setAmbientLight(new Vector3f(0.75f,0.75f,0.75f));
-        renderingEngine.addLight(directionalLight);
+        directionalLight.addToEngine();
     }
     
     /**

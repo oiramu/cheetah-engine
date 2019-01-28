@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Carlos Rodriguez.
+ * Copyright 2019 Carlos Rodriguez.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package game.enemies;
-
-import static engine.core.CoreEngine.getRenderingEngine;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -51,7 +49,7 @@ import game.projectiles.Rocket;
  *
  * @author Carlos Rodriguez
  * @version 1.1
- * @since 2017
+ * @since 2019
  */
 public class Commander extends GameComponent {
 
@@ -91,7 +89,6 @@ public class Commander extends GameComponent {
     private Transform transform;
     private Material material;
     private MeshRenderer meshRenderer;
-    private RenderingEngine renderingEngine;
     private Chaingun chaingun;
     private RocketLauncher rocketLauncher;
     private Bullet bullet;
@@ -171,8 +168,6 @@ public class Commander extends GameComponent {
             mesh = new Mesh(verts, indices, true);
         }
         
-        if(this.renderingEngine == null) this.renderingEngine = getRenderingEngine();
-        
         this.transform = transform;
         this.material = new Material(animation.get(0));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
@@ -229,7 +224,7 @@ public class Commander extends GameComponent {
             shootNoise.stop();
             hitNoise.stop();
             AudioUtil.playAudio(deathNoise, distance);
-            renderingEngine.removeLight(light);
+            light.removeToEngine();
         }
 
         if (!dead) {
@@ -265,7 +260,7 @@ public class Commander extends GameComponent {
                     }
                 }
             } else if (state == STATE_CHASE) {
-            	renderingEngine.removeLight(light);
+            	light.removeToEngine();
             	isQuiet = false;
                 if (rand.nextDouble() < 0.5f * delta) {
                     state = STATE_ATTACK;
@@ -294,7 +289,7 @@ public class Commander extends GameComponent {
                 }
 
                 if (state == STATE_CHASE) {
-                	renderingEngine.removeLight(light);
+                	light.removeToEngine();
                 	isQuiet = false;
                     double timeDecimals = (time - (double) ((int) time));
 
@@ -330,7 +325,7 @@ public class Commander extends GameComponent {
                     if (canAttack) {
                     	light.setPosition(transform.getPosition());
                         light.setDirection(orientation.mul(-1));
-                        renderingEngine.addLight(light);
+                        light.addToEngine();
                         Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
 
                         Vector2f lineStart = transform.getPosition().getXZ();
@@ -347,7 +342,7 @@ public class Commander extends GameComponent {
                         	float damage;
                             if(player.getHealth() <= 0) {
                             	state = STATE_DONE;
-                            	renderingEngine.removeLight(light);
+                            	light.removeToEngine();
                             } else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
                             	if(player.isArmor() == false) {
@@ -383,7 +378,7 @@ public class Commander extends GameComponent {
                     if (canAttack) {
                     	light.setPosition(transform.getPosition());
                         light.setDirection(orientation.mul(-1));
-                        renderingEngine.addLight(light);
+                        light.addToEngine();
                         rockets.add(new Rocket(new Transform(getTransform().getPosition()), false));
                         AudioUtil.playAudio(rocketNoise, distance);
                     }

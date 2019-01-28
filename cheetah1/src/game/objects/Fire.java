@@ -15,8 +15,6 @@
  */
 package game.objects;
 
-import static engine.core.CoreEngine.getRenderingEngine;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -57,7 +55,6 @@ public class Fire extends GameComponent {
     
 	private PointLight 					light;
     private static Mesh 				mesh;
-    private RenderingEngine				renderingEngine;
     private Clip						fireSound;
     
     private Material 					material;
@@ -151,14 +148,15 @@ public class Fire extends GameComponent {
 
             mesh = new Mesh(verts, indices, true);
         }
-        this.renderingEngine = getRenderingEngine();
         this.material = new Material(animation.get(0));
         this.state = STATE_FIRE;
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
-        light = new PointLight(new Vector3f(0.75f,0.5f,0.1f), 0.8f, 
-			   new Attenuation(0,0,1), getTransform().getPosition());
-	    renderingEngine.addLight(light);
+        if(light == null) {
+	        light = new PointLight(new Vector3f(0.75f,0.5f,0.1f), 0.8f, 
+				   new Attenuation(0,0,1), getTransform().getPosition());
+	        light.addToEngine();
+        }
         this.fireSound = sounds.get(new Random().nextInt(sounds.size()));
     	AudioUtil.playAudio(fireSound, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
     }
@@ -243,7 +241,7 @@ public class Fire extends GameComponent {
         }
         
         if(state == STATE_DONE) {
-        	renderingEngine.removeLight(light);
+        	light.removeToEngine();
         	fireSound.stop();
         	Level.removeFire(this);
         }

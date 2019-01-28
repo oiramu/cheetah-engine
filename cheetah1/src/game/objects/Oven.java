@@ -15,8 +15,6 @@
  */
 package game.objects;
 
-import static engine.core.CoreEngine.getRenderingEngine;
-
 import java.util.ArrayList;
 
 import engine.components.Attenuation;
@@ -54,7 +52,6 @@ public class Oven extends GameComponent {
     private static Mesh 				mesh;
     private Material 					material;
     private MeshRenderer				meshRenderer;
-    private RenderingEngine 			renderingEngine;
     private PointLight 					light;
     private Explosion					explosion;
     
@@ -111,13 +108,11 @@ public class Oven extends GameComponent {
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         
-        if(renderingEngine == null) renderingEngine = getRenderingEngine();
-        
         if(light == null) {
-	        this.light = new PointLight(new Vector3f(1.0f,0.5f,0.2f), 0.8f, 
+	        light = new PointLight(new Vector3f(1.0f,0.5f,0.2f), 0.8f, 
 	        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.25f, 
 	        				getTransform().getPosition().getZ()));
-	        renderingEngine.addLight(light);
+	        light.addToEngine();
     	}
         this.health = 200;
         this.dead = false;
@@ -146,7 +141,7 @@ public class Oven extends GameComponent {
         double time = Time.getTime();
         
         if (!dead && health <= 0) {
-        	renderingEngine.removeLight(light);
+        	light.removeToEngine();
             dead = true;
             state = STATE_DYING;
         }

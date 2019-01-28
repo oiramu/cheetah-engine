@@ -15,8 +15,6 @@
  */
 package game.objects;
 
-import static engine.core.CoreEngine.getRenderingEngine;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -59,7 +57,6 @@ public class Explosion extends GameComponent {
     private Transform 					transform;
     
     public PointLight 					light;
-    private RenderingEngine				renderingEngine;
     
     private float 						sizeX;
     private int 						state;
@@ -123,14 +120,15 @@ public class Explosion extends GameComponent {
 
             mesh = new Mesh(verts, indices, true);
         }
-        this.renderingEngine = getRenderingEngine();
         this.material = new Material(animation.get(0));
         this.state = STATE_BOOM;
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
-        light = new PointLight(new Vector3f(0.9f,0.7f,0.2f), 0.8f, 
-			   new Attenuation(0,0,1), getTransform().getPosition());
-	    renderingEngine.addLight(light);
+        if(light == null) {
+	        light = new PointLight(new Vector3f(0.9f,0.7f,0.2f), 0.8f, 
+				   new Attenuation(0,0,1), getTransform().getPosition());
+	        light.addToEngine();
+        }
     	AudioUtil.playAudio(boomNoice.get(new Random().nextInt(boomNoice.size())),
     			transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
     	if(transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length() < 1.0f && !Level.getPlayer().isShooting) {
@@ -198,7 +196,7 @@ public class Explosion extends GameComponent {
             } else if (timeDecimals <= 3.5f) {
             	material.setDiffuse(animation.get(13));
             } else {
-            	renderingEngine.removeLight(light);
+            	light.removeToEngine();
                 state = STATE_DEAD;
             }
         }

@@ -15,8 +15,6 @@
  */
 package game.enemies;
 
-import static engine.core.CoreEngine.getRenderingEngine;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -81,7 +79,6 @@ public class SsSoldier extends GameComponent {
     private Transform transform;
     private Material material;
     private MeshRenderer meshRenderer;
-    private RenderingEngine renderingEngine;
     private Machinegun machineGun;
     private Bullet bullet;
     private SpotLight light;
@@ -150,8 +147,6 @@ public class SsSoldier extends GameComponent {
             mesh = new Mesh(verts, indices, true);
         }
         
-        if(this.renderingEngine == null) this.renderingEngine = getRenderingEngine();
-        
         this.transform = transform;
         this.material = new Material(animation.get(0));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);    
@@ -203,7 +198,7 @@ public class SsSoldier extends GameComponent {
             shootNoise.stop();
             hitNoise.stop();
             AudioUtil.playAudio(deathNoise, distance);
-            renderingEngine.removeLight(light);
+            light.removeToEngine();
         }
 
         if (!dead) {
@@ -240,7 +235,7 @@ public class SsSoldier extends GameComponent {
                 }
             } else if (state == STATE_CHASE) {
             	isQuiet = false;
-            	renderingEngine.removeLight(light);
+            	light.removeToEngine();
                 if (rand.nextDouble() < 0.5f * delta) {
                     state = STATE_ATTACK;
                 }
@@ -269,7 +264,7 @@ public class SsSoldier extends GameComponent {
 
                 if (state == STATE_CHASE) {
                 	isQuiet = false;
-                	renderingEngine.removeLight(light);
+                	light.removeToEngine();
                     double timeDecimals = (time - (double) ((int) time));
 
                     while (timeDecimals > 0.5) {
@@ -302,7 +297,7 @@ public class SsSoldier extends GameComponent {
                     if (canAttack) {
                     	light.setPosition(transform.getPosition());
                         light.setDirection(orientation.mul(-1));
-                    	renderingEngine.addLight(light);
+                        light.addToEngine();
                         Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
 
                         Vector2f lineStart = transform.getPosition().getXZ();
@@ -319,7 +314,7 @@ public class SsSoldier extends GameComponent {
                         	float damage;
                             if(player.getHealth() <= 0) {
                             	state = STATE_DONE;
-                            	renderingEngine.removeLight(light);
+                            	light.removeToEngine();
                             }else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
                             	if(player.isArmor() == false) {
@@ -334,7 +329,7 @@ public class SsSoldier extends GameComponent {
                     }
                     material.setDiffuse(animation.get(7));
                 } else {
-                	renderingEngine.removeLight(light);
+                	light.removeToEngine();
                     canAttack = true;
                     material.setDiffuse(animation.get(6));
                     state = STATE_CHASE;

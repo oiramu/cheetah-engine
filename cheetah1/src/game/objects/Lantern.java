@@ -15,9 +15,8 @@
  */
 package game.objects;
 
-import static engine.core.CoreEngine.getRenderingEngine;
-
 import engine.components.Attenuation;
+import engine.components.BaseLight;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.components.PointLight;
@@ -43,7 +42,7 @@ public class Lantern extends GameComponent {
     private Mesh 				mesh;
     private Material 			material;
     private MeshRenderer 		meshRenderer;
-    private RenderingEngine 	renderingEngine;
+    private BaseLight			light;
     private float 				sizeX;
     
     private static final String RES_LOC = "lantern/MEDIA";
@@ -82,14 +81,15 @@ public class Lantern extends GameComponent {
             material = new Material(new Texture(RES_LOC));
         }
         
-        if(renderingEngine == null) renderingEngine = getRenderingEngine();
-        
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
 
-        renderingEngine.addLight(new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
-        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.25f, 
-        				getTransform().getPosition().getZ())));
+        if(light == null) {
+        	light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
+	        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.25f, 
+	        				getTransform().getPosition().getZ()));
+	        light.addToEngine();
+        }
     }
 
     /**

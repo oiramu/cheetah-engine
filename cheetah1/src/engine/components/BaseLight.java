@@ -15,6 +15,8 @@
  */
 package engine.components;
 
+import static engine.core.CoreEngine.getRenderingEngine;
+
 import engine.core.Vector3f;
 import engine.rendering.Shader;
 
@@ -39,6 +41,18 @@ public class BaseLight {
 		this.color = color;
 		this.intensity = intensity;
 	}
+	
+	/**
+	 * Adds the light to the rendering engine's
+	 * light data-structure
+	 */
+	public void addToEngine() { getRenderingEngine().addLight(this); }
+	
+	/**
+	 * Removes the light to the rendering engine's
+	 * light data-structure
+	 */
+	public void removeToEngine() { getRenderingEngine().removeLight(this); }
 	
 	/**
 	 * Gets the shader used by the light.

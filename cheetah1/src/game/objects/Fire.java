@@ -179,11 +179,12 @@ public class Fire extends GameComponent {
 
             transform.setRotation(0, angle + 90, 0);
             temp = delta;
+            light.setPosition(transform.getPosition());
             light.setPosition(new Vector3f(light.getPosition().getX(), 0.05f * (float)(Math.sin(temp*2.5)+1.0/2.0) + 0.45f, light.getPosition().getZ()));
             
             double time = Time.getTime();
             double timeDecimals = (time - (double) ((int) time));
-            timeDecimals *= 5.25f;
+            timeDecimals *= 12.1f;
             
             if (timeDecimals <= 0.25f) {
                 material.setDiffuse(animation.get(0));
@@ -211,7 +212,7 @@ public class Fire extends GameComponent {
             } else if (timeDecimals <= 2f) {
                 material.setDiffuse(animation.get(7));
             } else if (timeDecimals <= 2.25f) {
-                material.setDiffuse(animation.get(0));
+                material.setDiffuse(animation.get(6));
                 if(transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length() < 1.0f && !Level.getPlayer().isShooting) {
         			if(Level.getPlayer().isArmor() == false)
         				Level.getPlayer().addHealth((int) -DAMAGE/2, "FIRE");
@@ -222,19 +223,119 @@ public class Fire extends GameComponent {
         	        if(getTransform().getPosition().sub(Auschwitz.getLevel().getShootingObjective().getTransform().getPosition()).length() < 1.0f)
         	        	Auschwitz.getLevel().getShootingObjective().damage(DAMAGE);
             } else if (timeDecimals <= 2.5f) {
-                material.setDiffuse(animation.get(1));
+                material.setDiffuse(animation.get(5));
             } else if (timeDecimals <= 2.75f) {
-                material.setDiffuse(animation.get(2));
+                material.setDiffuse(animation.get(4));
             } else if (timeDecimals <= 3f) {
                 material.setDiffuse(animation.get(3));
             } else if (timeDecimals <= 3.25f) {
-                material.setDiffuse(animation.get(4));
+                material.setDiffuse(animation.get(2));
+            } else if (timeDecimals <= 3.5f) {
+                material.setDiffuse(animation.get(1));
+            } else if (timeDecimals <= 3.75f) {
+                material.setDiffuse(animation.get(0));
+            } else if (timeDecimals <= 4f) {
+                material.setDiffuse(animation.get(1));
+            } else if (timeDecimals <= 4.25f) {
+                material.setDiffuse(animation.get(2));
+                if(transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length() < 1.0f && !Level.getPlayer().isShooting) {
+        			if(Level.getPlayer().isArmor() == false)
+        				Level.getPlayer().addHealth((int) -DAMAGE/2, "FIRE");
+                	else
+                		Level.getPlayer().addArmor((int) -DAMAGE/2);
+        		}
+                if(Auschwitz.getLevel().getShootingObjective() != null)
+        	        if(getTransform().getPosition().sub(Auschwitz.getLevel().getShootingObjective().getTransform().getPosition()).length() < 1.0f)
+        	        	Auschwitz.getLevel().getShootingObjective().damage(DAMAGE);
             } else if (timeDecimals <= 4.5f) {
-                material.setDiffuse(animation.get(5));
+                material.setDiffuse(animation.get(3));
             } else if (timeDecimals <= 4.75f) {
-                material.setDiffuse(animation.get(6));
+                material.setDiffuse(animation.get(4));
             } else if (timeDecimals <= 5f) {
+                material.setDiffuse(animation.get(5));
+            } else if (timeDecimals <= 5.25f) {
+                material.setDiffuse(animation.get(6));
+            } else if (timeDecimals <= 5.5f) {
                 material.setDiffuse(animation.get(7));
+            } else if (timeDecimals <= 5.75f) {
+                material.setDiffuse(animation.get(0));
+            } else if (timeDecimals <= 6f) {
+                material.setDiffuse(animation.get(1));
+            } else if (timeDecimals <= 6.25f) {
+                material.setDiffuse(animation.get(2));
+                if(transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length() < 1.0f && !Level.getPlayer().isShooting) {
+        			if(Level.getPlayer().isArmor() == false)
+        				Level.getPlayer().addHealth((int) -DAMAGE/2, "FIRE");
+                	else
+                		Level.getPlayer().addArmor((int) -DAMAGE/2);
+        		}
+                if(Auschwitz.getLevel().getShootingObjective() != null)
+        	        if(getTransform().getPosition().sub(Auschwitz.getLevel().getShootingObjective().getTransform().getPosition()).length() < 1.0f)
+        	        	Auschwitz.getLevel().getShootingObjective().damage(DAMAGE);
+            } else if (timeDecimals <= 6.5f) {
+                material.setDiffuse(animation.get(3));
+            } else if (timeDecimals <= 6.75f) {
+                material.setDiffuse(animation.get(4));
+            } else if (timeDecimals <= 7f) {
+                material.setDiffuse(animation.get(5));
+            } else if (timeDecimals <= 7.25f) {
+                material.setDiffuse(animation.get(6));
+            } else if (timeDecimals <= 7.5f) {
+                material.setDiffuse(animation.get(7));
+            } else if (timeDecimals <= 7.75f) {
+                material.setDiffuse(animation.get(6));
+            } else if (timeDecimals <= 8f) {
+                material.setDiffuse(animation.get(5));
+            } else if (timeDecimals <= 8.25f) {
+                material.setDiffuse(animation.get(4));
+                if(transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length() < 1.0f && !Level.getPlayer().isShooting) {
+        			if(Level.getPlayer().isArmor() == false)
+        				Level.getPlayer().addHealth((int) -DAMAGE/2, "FIRE");
+                	else
+                		Level.getPlayer().addArmor((int) -DAMAGE/2);
+        		}
+                if(Auschwitz.getLevel().getShootingObjective() != null)
+        	        if(getTransform().getPosition().sub(Auschwitz.getLevel().getShootingObjective().getTransform().getPosition()).length() < 1.0f)
+        	        	Auschwitz.getLevel().getShootingObjective().damage(DAMAGE);
+            } else if (timeDecimals <= 8.5f) {
+                material.setDiffuse(animation.get(3));
+            } else if (timeDecimals <= 8.75f) {
+                material.setDiffuse(animation.get(2));
+            } else if (timeDecimals <= 9f) {
+                material.setDiffuse(animation.get(1));
+            } else if (timeDecimals <= 9.25f) {
+                material.setDiffuse(animation.get(0));
+            } else if (timeDecimals <= 9.5f) {
+                material.setDiffuse(animation.get(1));
+            } else if (timeDecimals <= 9.75f) {
+                material.setDiffuse(animation.get(2));
+            } else if (timeDecimals <= 10f) {
+                material.setDiffuse(animation.get(3));
+            } else if (timeDecimals <= 10.25f) {
+                material.setDiffuse(animation.get(4));
+                if(transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length() < 1.0f && !Level.getPlayer().isShooting) {
+        			if(Level.getPlayer().isArmor() == false)
+        				Level.getPlayer().addHealth((int) -DAMAGE/2, "FIRE");
+                	else
+                		Level.getPlayer().addArmor((int) -DAMAGE/2);
+        		}
+                if(Auschwitz.getLevel().getShootingObjective() != null)
+        	        if(getTransform().getPosition().sub(Auschwitz.getLevel().getShootingObjective().getTransform().getPosition()).length() < 1.0f)
+        	        	Auschwitz.getLevel().getShootingObjective().damage(DAMAGE);
+            } else if (timeDecimals <= 10.5f) {
+                material.setDiffuse(animation.get(5));
+            } else if (timeDecimals <= 10.75f) {
+                material.setDiffuse(animation.get(6));
+            } else if (timeDecimals <= 11f) {
+                material.setDiffuse(animation.get(7));
+            } else if (timeDecimals <= 11.25f) {
+                material.setDiffuse(animation.get(0));
+            } else if (timeDecimals <= 11.5f) {
+                material.setDiffuse(animation.get(1));
+            } else if (timeDecimals <= 11.75f) {
+                material.setDiffuse(animation.get(2));
+            } else if (timeDecimals <= 12f) {
+                material.setDiffuse(animation.get(3));
             } else {
                 state = STATE_DONE;
             }

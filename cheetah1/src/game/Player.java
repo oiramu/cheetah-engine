@@ -1363,7 +1363,8 @@ public class Player extends GameComponent {
             gotHand();
         } else {
             if (amt < 0) {
-            	bleedingArray.add(new Bleed(new Transform(getTransform().getPosition().add(0.01f))));
+            	if(provider != "FIRE")
+            		bleedingArray.add(new Bleed(new Transform(getTransform().getPosition().add(0.01f))));
                 AudioUtil.playAudio(playerNoises.get(2), 0);
             }
         }

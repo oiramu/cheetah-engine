@@ -61,18 +61,20 @@ public class Debug {
 	/**
 	 * Defines the hash map of variables to test.
 	 */
-	public static void init() {
+	public static void init(Player player) {
+		Debug.player = player;
 		debugText.put("Engine", new HUD("Cheetah Engine 1.0", new Vector2f(X_MARGIN,1.9f), new Vector2f(0.5f,0.5f)));
 		debugText.put("FPS",new HUD("", new Vector2f(X_MARGIN,1.7f), new Vector2f(0.5f,0.5f)));
 		debugText.put("FrameTime",new HUD("", new Vector2f(X_MARGIN,1.6f), new Vector2f(0.5f,0.5f)));
 		debugText.put("Memory",new HUD("", new Vector2f(X_MARGIN,1.5f), new Vector2f(0.5f,0.5f)));
 		debugText.put("CPU",new HUD("", new Vector2f(X_MARGIN,1.4f), new Vector2f(0.5f,0.5f)));
 		debugText.put("FPSMeasure",new HUD("", new Vector2f(X_MARGIN,1.3f), new Vector2f(0.5f,0.5f)));
-		debugText.put("OS",new HUD("OS:"+System.getProperty("os.name"), new Vector2f(X_MARGIN,1.1f), new Vector2f(0.5f,0.5f)));
-		debugText.put("LWJGL",new HUD("LWJGL:"+getVersion(), new Vector2f(X_MARGIN,1.0f), new Vector2f(0.5f,0.5f)));
-		debugText.put("OpenGL",new HUD("OpenGL:"+glGetString(GL_VERSION), new Vector2f(X_MARGIN,0.9f), new Vector2f(0.5f,0.5f)));
+		debugText.put("Position",new HUD("", new Vector2f(X_MARGIN,1.2f), new Vector2f(0.5f,0.5f)));
+		debugText.put("OS",new HUD("OS:"+System.getProperty("os.name"), new Vector2f(X_MARGIN,1.0f), new Vector2f(0.5f,0.5f)));
+		debugText.put("LWJGL",new HUD("LWJGL:"+getVersion(), new Vector2f(X_MARGIN,0.9f), new Vector2f(0.5f,0.5f)));
+		debugText.put("OpenGL",new HUD("OpenGL:"+glGetString(GL_VERSION), new Vector2f(X_MARGIN,0.8f), new Vector2f(0.5f,0.5f)));
 		debugText.put("Damage",new HUD("", new Vector2f(X_MARGIN,0.7f), new Vector2f(0.5f,0.5f)));
-		debugText.put("Speed",new HUD("", new Vector2f(X_MARGIN,0.8f), new Vector2f(0.5f,0.5f)));
+		debugText.put("Speed",new HUD("", new Vector2f(X_MARGIN,0.6f), new Vector2f(0.5f,0.5f)));
 	}
 	
 	/**
@@ -105,6 +107,8 @@ public class Debug {
 	        if(fps <= worstFPS) worstFPS = (int) fps;
 	        debugText.get("FPSMeasure").setText("wFPS:"+worstFPS+" aFPS:"+averageFPS+" bFPS:"+bestFPS);
 	        debugText.get("FPSMeasure").render(renderingEngine);
+	        debugText.get("Position").setText(player.getTransform().getPosition().toString());
+	        debugText.get("Position").render(renderingEngine);
 	        debugText.get("OS").render(renderingEngine);
 	        debugText.get("LWJGL").render(renderingEngine);
 	        debugText.get("OpenGL").render(renderingEngine);
@@ -120,11 +124,8 @@ public class Debug {
 	/**
 	 * Enables or disables the god mode to some player.
 	 * @param godMode to set
-	 * @param player to set
 	 */
-	public static void enableGod(boolean godMode, Player player) {
-		Debug.player = player;
-		Debug.godMode = godMode;
+	public static void enableGod(boolean godMode) {
 		if (Debug.godMode) {
 			player.setMaxHealth(100000);
 			player.setMaxBullets(100000);

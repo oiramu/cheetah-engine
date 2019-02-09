@@ -69,12 +69,15 @@ public class Debug {
 		debugText.put("Memory",new HUD("", new Vector2f(X_MARGIN,1.5f), new Vector2f(0.5f,0.5f)));
 		debugText.put("CPU",new HUD("", new Vector2f(X_MARGIN,1.4f), new Vector2f(0.5f,0.5f)));
 		debugText.put("FPSMeasure",new HUD("", new Vector2f(X_MARGIN,1.3f), new Vector2f(0.5f,0.5f)));
-		debugText.put("Position",new HUD("", new Vector2f(X_MARGIN,1.2f), new Vector2f(0.5f,0.5f)));
-		debugText.put("OS",new HUD("OS:"+System.getProperty("os.name"), new Vector2f(X_MARGIN,1.0f), new Vector2f(0.5f,0.5f)));
-		debugText.put("LWJGL",new HUD("LWJGL:"+getVersion(), new Vector2f(X_MARGIN,0.9f), new Vector2f(0.5f,0.5f)));
-		debugText.put("OpenGL",new HUD("OpenGL:"+glGetString(GL_VERSION), new Vector2f(X_MARGIN,0.8f), new Vector2f(0.5f,0.5f)));
-		debugText.put("Damage",new HUD("", new Vector2f(X_MARGIN,0.7f), new Vector2f(0.5f,0.5f)));
-		debugText.put("Speed",new HUD("", new Vector2f(X_MARGIN,0.6f), new Vector2f(0.5f,0.5f)));
+		debugText.put("Position",new HUD("Position:", new Vector2f(X_MARGIN,1.2f), new Vector2f(0.5f,0.5f)));
+		debugText.put("X",new HUD("", new Vector2f(X_MARGIN + 0.25f,1.1f), new Vector2f(0.5f,0.5f)));
+		debugText.put("Y",new HUD("", new Vector2f(X_MARGIN + 0.25f,1.0f), new Vector2f(0.5f,0.5f)));
+		debugText.put("Z",new HUD("", new Vector2f(X_MARGIN + 0.25f,0.9f), new Vector2f(0.5f,0.5f)));
+		debugText.put("OS",new HUD("OS:"+System.getProperty("os.name"), new Vector2f(X_MARGIN,0.8f), new Vector2f(0.5f,0.5f)));
+		debugText.put("LWJGL",new HUD("LWJGL:"+getVersion(), new Vector2f(X_MARGIN,0.7f), new Vector2f(0.5f,0.5f)));
+		debugText.put("OpenGL",new HUD("OpenGL:"+glGetString(GL_VERSION), new Vector2f(X_MARGIN,0.6f), new Vector2f(0.5f,0.5f)));
+		debugText.put("Damage",new HUD("", new Vector2f(X_MARGIN,0.5f), new Vector2f(0.5f,0.5f)));
+		debugText.put("Speed",new HUD("", new Vector2f(X_MARGIN,0.4f), new Vector2f(0.5f,0.5f)));
 	}
 	
 	/**
@@ -107,8 +110,13 @@ public class Debug {
 	        if(fps <= worstFPS) worstFPS = (int) fps;
 	        debugText.get("FPSMeasure").setText("wFPS:"+worstFPS+" aFPS:"+averageFPS+" bFPS:"+bestFPS);
 	        debugText.get("FPSMeasure").render(renderingEngine);
-	        debugText.get("Position").setText(player.getTransform().getPosition().toString());
 	        debugText.get("Position").render(renderingEngine);
+	        debugText.get("X").setText("X:"+player.getTransform().getPosition().getX());
+	        debugText.get("X").render(renderingEngine);
+	        debugText.get("Y").setText("Y:"+player.getTransform().getPosition().getY());
+	        debugText.get("Y").render(renderingEngine);
+	        debugText.get("Z").setText("Y:"+player.getTransform().getPosition().getZ());
+	        debugText.get("Z").render(renderingEngine);
 	        debugText.get("OS").render(renderingEngine);
 	        debugText.get("LWJGL").render(renderingEngine);
 	        debugText.get("OpenGL").render(renderingEngine);

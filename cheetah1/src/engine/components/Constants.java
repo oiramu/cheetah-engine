@@ -37,6 +37,7 @@ public class Constants {
 	public static float 	POP_IN;
 	public static float 	LIGHT_POP_IN;
 	public static float 	GRAVITY;
+	public static short 	PARTICLES_LEVEL;
 	
 	/**
 	 * Loads all the config language and structures all the components.
@@ -105,6 +106,12 @@ public class Constants {
 						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
 						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
 						    		GRAVITY = Float.parseFloat(treatment[0]);
+						    		break;
+						    	case "PARTICLES_LEVEL":
+						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='
+						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
+						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
+						    		PARTICLES_LEVEL = Short.parseShort(treatment[0]);
 						    		break;
 						    	}
 						    }

@@ -7,3 +7,4 @@ ANISOTROPIC_LEVEL anisotropic=4
 POP_IN popin=15
 LIGHT_POP_IN lightPopin=10
 GRAVITY gravity=9.8
+PARTICLES_LEVEL particles=2

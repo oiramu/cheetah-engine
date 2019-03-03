@@ -1086,7 +1086,7 @@ public class Player extends GameComponent {
     	if(!flamesArray.isEmpty())
     		for(Flame flame : flamesArray)
     			flame.update(delta);
-    	if(!bleedingArray.isEmpty()) {
+    	if(!bleedingArray.isEmpty() && PARTICLES_LEVEL >= 1) {
     		for(Bleed bleed : bleedingArray) {
     			bleed.update(delta);
     			if(bleed.getState() == 2)
@@ -1309,7 +1309,7 @@ public class Player extends GameComponent {
     	if(!flamesArray.isEmpty())
     		for(Flame flame : flamesArray)
     			flame.render(shader, renderingEngine);
-    	if(!bleedingArray.isEmpty())
+    	if(!bleedingArray.isEmpty() && PARTICLES_LEVEL >= 1)
     		for(Bleed bleed : bleedingArray)
     			bleed.render(shader, renderingEngine);
         

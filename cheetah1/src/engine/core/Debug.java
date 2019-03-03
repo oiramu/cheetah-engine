@@ -134,6 +134,7 @@ public class Debug {
 	 * @param godMode to set
 	 */
 	public static void enableGod(boolean godMode) {
+		Debug.godMode = godMode;
 		if (Debug.godMode) {
 			player.setMaxHealth(100000);
 			player.setMaxBullets(100000);

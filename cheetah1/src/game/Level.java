@@ -15,6 +15,7 @@
  */
 package game;
 
+import static engine.components.Constants.PARTICLES_LEVEL;
 import static engine.core.CoreEngine.getRenderingEngine;
 
 import java.util.ArrayList;
@@ -1310,8 +1311,10 @@ public class Level extends GameComponent {
      * @param component to bleed.
      */
     public <E> void addBleeding(E component) {
-    	bleeding.add(new Bleed(new Transform(((GameComponent) component).getTransform().getPosition())));
-    	objects.add(bleeding);
+    	if(PARTICLES_LEVEL >= 2) {
+	    	bleeding.add(new Bleed(new Transform(((GameComponent) component).getTransform().getPosition())));
+	    	objects.add(bleeding);
+    	}
     }
     
     /**
@@ -1319,11 +1322,13 @@ public class Level extends GameComponent {
      * @param component to fire.
      */
     public <E> void addFire(E component, boolean isStatic) {
-    	if(isStatic)
-    		fire.add(new Fire(new Transform(((GameComponent) component).getTransform().getPosition().add(0.01f))));
-    	else
-    		fire.add(new Fire(((GameComponent) component).getTransform()));
-    	objects.add(fire);
+    	if(PARTICLES_LEVEL >= 2) {
+	    	if(isStatic)
+	    		fire.add(new Fire(new Transform(((GameComponent) component).getTransform().getPosition().add(0.01f))));
+	    	else
+	    		fire.add(new Fire(((GameComponent) component).getTransform()));
+	    	objects.add(fire);
+    	}
     }
     
     /**

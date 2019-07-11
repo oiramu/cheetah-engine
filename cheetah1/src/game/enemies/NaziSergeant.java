@@ -353,15 +353,13 @@ public class NaziSergeant extends GameComponent {
 
         if (state == STATE_DEAD) {
         	isQuiet = true;
-        	if(shotgun == null)
-        		shotgun = new Shotgun(new Transform(transform.getPosition().add(-0.01f)), false);
+        	shotgun = new Shotgun(new Transform(transform.getPosition()), false);
         	shotgun.update(delta);
-        	if(shell == null)
-        		shell = new Shell(new Transform(transform.getPosition().add(-0.011f)), false);
+        	shell = new Shell(new Transform(transform.getPosition()), false);
         	shell.update(delta);
             dead = true;
             material.setDiffuse(animation.get(12));
-            if (distance < shotgun.PICKUP_THRESHHOLD || distance < shell.PICKUP_THRESHHOLD) {
+            if (distance < shotgun.PICKUP_THRESHHOLD && distance < shell.PICKUP_THRESHHOLD) {
             	state = STATE_POST_DEATH;
             }
         }

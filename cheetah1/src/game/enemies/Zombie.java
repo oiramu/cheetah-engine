@@ -316,11 +316,10 @@ public class Zombie extends GameComponent {
     	                }
     	            } else if (state == STATE_CHASE) {
     	            	isQuiet = false;
-    	                if (rand.nextDouble() < 0.5f * delta) {
-    	                    state = STATE_ATTACK;
-    	                }
 
     	                if (distance > 0.55f) {
+    	                	if (rand.nextDouble() < 0.5f * delta)
+        	                    state = STATE_ATTACK;
     	                    orientation.setY(0);
     	                    float moveSpeed = 1.5f;
 
@@ -464,8 +463,7 @@ public class Zombie extends GameComponent {
     	        	isQuiet = true;
     	            dead = true;
     	            if(drops) {
-    		            if(key == null)
-    		            	key = new Key(new Transform(transform.getPosition().add(-0.01f)), true, false);
+    		            key = new Key(new Transform(transform.getPosition()), true, false);
     		            key.update(delta);
     		            if (distance < key.PICKUP_THRESHHOLD && drops)
     		            	state = STATE_POST_DEATH;
@@ -552,9 +550,8 @@ public class Zombie extends GameComponent {
     	                }
     	            } else if (state == STATE_CHASE) {
     	            	isQuiet = false;
-    	                if (rand.nextDouble() < 0.5f * delta) {
+    	                if (rand.nextDouble() < 0.5f * delta)
     	                    state = STATE_ATTACK;
-    	                }
 
     	                if (distance > 2.0f) {
     	                    orientation.setY(0);
@@ -668,16 +665,13 @@ public class Zombie extends GameComponent {
     		        	isQuiet = true;
     		            dead = true;
     		            if(drops) {
-    			            if(key == null)
-    			            	key = new Key(new Transform(transform.getPosition().add(-0.01f)), true, false);
+    			            key = new Key(new Transform(transform.getPosition()), true, false);
     			            key.update(delta);
     		            }
     		            transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
     		            material.setDiffuse(animation.get(14));
-    		            if(drops)
-    		            	if (distance < key.PICKUP_THRESHHOLD) {
-    		            		state = STATE_POST_DEATH;
-    		            	}
+    		            if(drops && distance < key.PICKUP_THRESHHOLD)
+    		            	state = STATE_POST_DEATH;
     		        }
     		        
     		        if (state == STATE_POST_DEATH) {
@@ -715,16 +709,13 @@ public class Zombie extends GameComponent {
     		        	isQuiet = true;
     		            dead = true;
     		            if(drops) {
-    			            if(key == null)
-    			            	key = new Key(new Transform(transform.getPosition().add(-0.01f)), true, false);
+    			            key = new Key(new Transform(transform.getPosition().add(-0.01f)), true, false);
     			            key.update(delta);
     		            }
     		            transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
     		            material.setDiffuse(animation.get(19));
-    		            if(drops)
-    		            	if (distance < key.PICKUP_THRESHHOLD) {
-    		            		state = STATE_POST_DEATH;
-    		            	}
+    		            if(drops && distance < key.PICKUP_THRESHHOLD)
+    		            	state = STATE_POST_DEATH;
     		        }
     		        
     		        if (state == STATE_POST_DEATH) {

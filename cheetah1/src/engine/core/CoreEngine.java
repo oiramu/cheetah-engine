@@ -170,7 +170,7 @@ public class CoreEngine {
      * Method that renders everything to render.
      */
     private void render() {
-        game.render(renderingEngine);       
+        game.render(renderingEngine);   
         Window.render();
     }
 	
@@ -179,8 +179,10 @@ public class CoreEngine {
 	 */
 	public void run() {
 		while(!Window.isCloseRequested()) {
-			Window.updateMenu();
-			Window.renderMenu();
+			if(!isRunning) {
+				Window.updateMenu();
+				Window.renderMenu();
+			}
 		}
 		kill();
 	}

@@ -17,6 +17,7 @@ package game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 import javax.sound.midi.Sequence;
 
@@ -29,19 +30,19 @@ import engine.core.*;
 import engine.menu.CreditsMenu;
 import engine.menu.Menu;
 import engine.rendering.*;
-import game.doors.SecretWall;
 import game.enemies.*;
+import game.walls.SecretWall;
 
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.1
+ * @version 1.2
  * @since 2017
  */
 public class Auschwitz implements Game {
 	
-	private static HashMap<String,HUD> 	text = new HashMap<String,HUD>();
 	private static ArrayList<Sequence> 			playlist = new ArrayList<Sequence>();
+	public static HashMap<String,HUD> 			text;
 	
     private static final int 					EPISODE_1 = 1;
     private static final int 					EPISODE_2 = 2;
@@ -51,8 +52,11 @@ public class Auschwitz implements Game {
     public static Material						material;
     
     private static Menu							menu;
+    private static InGameMenu					gameMenu;
     
     public static boolean						isPaused;
+    public static boolean						sureToExit;
+    public static boolean						toExit;
     public static int 							levelNum;
     public static int 							startingLevel;
     public static int 							track;
@@ -65,18 +69,27 @@ public class Auschwitz implements Game {
     private static int 							totalSecrets = 0;
     private static int 							totalMonsters = 0;
     private static double						stateTime = 0;
+    
+    private String [] 							exitMessages = {
+    		"Please don't leave, there's more nazis to toast!",
+    		"I wouldn't leave if I were you. Life is much worse.",
+    		"You're trying to say you like TV better than me, right?",
+    		"Don't leave yet.There's a nazi around that corner!",
+    		"Go ahead, leave...but don't come begging next time",
+    		"Are you sure you want to quit this great game?",
+    		"If I were your boss, I'd deathmatch ya in a minute!",
+    		"Don't quit now! We're still spending your money!",
+    		"Hey, Daniel! Can we say 'fuck' in the game?"
+    };
 
     /**
      * The constructor method of the compiling game.
      */
 	public void init() {
 		Constants.load("res/config.txt");
-    	text.put("Level",new HUD("", new Vector2f(-1.25f,1.2f), new Vector2f(0.75f,0.75f)));
-        text.put("Enemies",new HUD("", new Vector2f(-1.25f,1.1f), new Vector2f(0.75f,0.75f)));
-        text.put("Secrets",new HUD("", new Vector2f(-1.25f,1.0f), new Vector2f(0.75f,0.75f)));
-        text.put("Paused",new HUD("PAUSED!", new Vector2f(-0.175f,0.175f), new Vector2f(1.5f,1.5f)));
+		gameMenu = new InGameMenu();
         for (int i = 0; i < 13; i++) playlist.add(AudioUtil.loadMidi("THEME" + i));
-
+        text = gameMenu.text;
         track = startingLevel - 1;
         levelNum = startingLevel - 1;
         isRunning = true;
@@ -128,10 +141,35 @@ public class Auschwitz implements Game {
     		level.input();
     	
         if(isPaused) {
-			if (Input.getKeyDown(Input.KEY_ESCAPE)) {
-				AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
-				isPaused = false;
-			}
+        	if(!toExit) {
+				if (Input.getKeyDown(Input.KEY_ESCAPE)) {
+					AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
+					isPaused = false;
+				}
+				if (Input.getKeyDown(Input.KEY_R)) {
+					AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
+					reloadLevel();
+					isPaused = false;
+				}
+				if (Input.getKeyDown(Input.KEY_B)) {
+					AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
+					isRunning = false;
+				}
+				if (Input.getKeyDown(Input.KEY_X)) {
+					AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
+					int textId = new Random().nextInt(exitMessages.length);
+					text.get("areYouSure").setText(exitMessages[textId]);
+					toExit = true;
+				}
+        	} else {
+				if(toExit && Input.getKeyDown(Input.KEY_Y)) {
+					AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
+					finalize();
+				}else if(toExit && Input.getKeyDown(Input.KEY_N)) {
+					AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
+					toExit = false;
+				}
+        	}
         } else {
         	if (Input.getKeyDown(Input.KEY_ESCAPE)) {
         		AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
@@ -161,8 +199,11 @@ public class Auschwitz implements Game {
         if (isRunning) {
         	engine.render(level);
         	printStats(engine);
-        	if(isPaused)
-        		text.get("Paused").render(engine);
+        	if(isPaused && !toExit) {
+        		gameMenu.renderPause(engine);
+        	} else if (toExit) {
+        		gameMenu.renderQuit(engine);
+        	}
         } else {
         	menu.draw2D();
         }

@@ -361,17 +361,14 @@ public class SsSoldier extends GameComponent {
 
         if (state == STATE_DEAD) {
         	isQuiet = true;
-        	if(machineGun == null)
-        		machineGun = new Machinegun(new Transform(transform.getPosition().add(-0.01f)), false);
+        	machineGun = new Machinegun(new Transform(transform.getPosition()), false);
         	machineGun.update(delta);
-        	if(bullet == null)
-            	bullet = new Bullet(new Transform(transform.getPosition().add(-0.011f)), false);
+            bullet = new Bullet(new Transform(transform.getPosition()), false);
         	bullet.update(delta);
             dead = true;
             material.setDiffuse(animation.get(15));
-            if (distance < machineGun.PICKUP_THRESHHOLD || distance < bullet.PICKUP_THRESHHOLD) {
+            if (distance < machineGun.PICKUP_THRESHHOLD && distance < bullet.PICKUP_THRESHHOLD)
             	state = STATE_POST_DEATH;
-            }
         }
         
         if (state == STATE_POST_DEATH) {

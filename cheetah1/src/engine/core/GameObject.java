@@ -55,8 +55,9 @@ public class GameObject {
 	 * @param list to add
 	 */
 	public <E> void add(ArrayList<E> list) {
-		for(E component : list)
-			components.add((GameComponent) component);
+		if(!list.isEmpty())
+			for(E component : list)
+				components.add((GameComponent) component);
 	}
 	
 	/**

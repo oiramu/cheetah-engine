@@ -361,14 +361,12 @@ public class NaziSoldier extends GameComponent {
         
         if (state == STATE_DEAD) {
         	isQuiet = true;
-        	if(bullet == null)
-            	bullet = new Bullet(new Transform(transform.getPosition().add(-0.01f)), false);
+            bullet = new Bullet(new Transform(transform.getPosition()), false);
         	bullet.update(delta);
         	material.setDiffuse(animation.get(12));   	
             dead = true;  
-            if (distance < bullet.PICKUP_THRESHHOLD) {
+            if (distance < bullet.PICKUP_THRESHHOLD)
             	state = STATE_POST_DEATH;
-            }
         }
         
         if (state == STATE_POST_DEATH) {

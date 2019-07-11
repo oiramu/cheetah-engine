@@ -26,7 +26,6 @@ import engine.audio.AudioUtil;
 import engine.components.BaseLight;
 import engine.components.DirectionalLight;
 import engine.components.GameComponent;
-import engine.components.MeshRenderer;
 import engine.core.GameObject;
 import engine.core.Input;
 import engine.core.Time;
@@ -42,9 +41,6 @@ import engine.rendering.Shader;
 import engine.rendering.Vertex;
 import engine.core.utils.Log;
 import engine.core.utils.Util;
-import game.doors.Door;
-import game.doors.LockedDoor;
-import game.doors.SecretWall;
 import game.enemies.Captain;
 import game.enemies.Dog;
 import game.enemies.Ghost;
@@ -82,12 +78,16 @@ import game.pickUps.RocketLauncher;
 import game.pickUps.Shell;
 import game.pickUps.Shotgun;
 import game.pickUps.SuperShotgun;
+import game.walls.Door;
+import game.walls.LockedDoor;
+import game.walls.SecretWall;
+import game.walls.Wall;
 import game.pickUps.Rocket;
 
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.6
+ * @version 1.7
  * @since 2017
  */
 public class Level extends GameComponent {
@@ -147,6 +147,7 @@ public class Level extends GameComponent {
     private ArrayList<Door> doors;
     private ArrayList<SecretWall> secretWalls;
     private ArrayList<LockedDoor> lockedDoors;
+    private ArrayList<Wall>  walls;
     
     //Pick-Ups
     private ArrayList<Shotgun> shotguns;
@@ -180,7 +181,8 @@ public class Level extends GameComponent {
     private ArrayList<Barrel> barrels;
     
     //Active objects
-    private ArrayList<Explosion> explosions;
+    @SuppressWarnings("unused")
+	private ArrayList<Explosion> explosions;
     private ArrayList<Rocket> rockets;
     private ArrayList<Bleed> bleeding;
     private ArrayList<Fire> fire;
@@ -195,11 +197,8 @@ public class Level extends GameComponent {
     private ArrayList<Captain> captains;
 
     //Level
-    private Mesh geometry;
     private Bitmap bitmap;
     private Material material;
-    private Transform transform;
-    private MeshRenderer meshRenderer;
     private RenderingEngine renderingEngine;
     private BaseLight directionalLight;
     private GameObject objects;
@@ -211,15 +210,14 @@ public class Level extends GameComponent {
      * @param material to load and use.
      */
     public Level(Bitmap bitmap, Material material) {	
-        if(objects == null) this.objects = new GameObject();
+        this.objects = new GameObject();
         
         //Level stuff
-        if(this.bitmap == null) this.bitmap = bitmap;
-        if(this.material == null) this.material = material;
-        if(transform == null) this.transform = new Transform();
-        if(collisionPosStart == null) this.collisionPosStart = new ArrayList<Vector2f>();
-        if(collisionPosEnd == null) this.collisionPosEnd = new ArrayList<Vector2f>();
-    	if(renderingEngine == null) this.renderingEngine = getRenderingEngine();
+        this.bitmap = bitmap;
+        this.material = material;
+        this.collisionPosStart = new ArrayList<Vector2f>();
+        this.collisionPosEnd = new ArrayList<Vector2f>();
+    	this.renderingEngine = getRenderingEngine();
         
         generateLevel();
         
@@ -265,6 +263,7 @@ public class Level extends GameComponent {
         objects.add(superShotguns); 
         objects.add(keys);
         objects.add(rocketLaunchers);
+        objects.add(walls);
         
         renderingEngine.setMainCamera(player.getCamera());
     }
@@ -367,7 +366,6 @@ public class Level extends GameComponent {
      * @param renderingEngine to use
      */
     public void render(Shader shader, RenderingEngine renderingEngine) {
-    	meshRenderer.render(shader, renderingEngine);
     	objects.render(shader, renderingEngine);
         
    		objects.sortNumberComponents(secretWalls);
@@ -944,78 +942,79 @@ public class Level extends GameComponent {
      * @param engine of the level.
      */
     private void generateLevel() {
-    	
+        
+        //Remove list
+    	Level.removeMedkitList = new ArrayList<Medkit>();
+    	Level.removeFoodList = new ArrayList<Food>();
+    	Level.removeBulletList = new ArrayList<Bullet>();
+    	Level.removeShellList = new ArrayList<Shell>();
+    	Level.removeBagList = new ArrayList<Bag>();
+    	Level.removeShotgunList = new ArrayList<Shotgun>();
+    	Level.removeMachineGunList = new ArrayList<Machinegun>();
+    	Level.removeGhostList = new ArrayList<Ghost>();
+    	Level.removeArmorList = new ArrayList<Armor>();
+    	Level.removeSuperShotgunList = new ArrayList<SuperShotgun>();
+    	Level.removeHelmets = new ArrayList<Helmet>();
+    	Level.removeBarrels = new ArrayList<Barrel>();
+    	Level.removeKeys = new ArrayList<Key>();
+    	Level.removeChaingunList = new ArrayList<Chaingun>();
+    	Level.removeExplosions = new ArrayList<Explosion>();
+    	Level.removeRockets = new ArrayList<Rocket>();
+    	Level.removeRocketLauncherList = new ArrayList<RocketLauncher>();
+    	Level.removeBleedingList = new ArrayList<Bleed>();
+    	Level.removeFireList = new ArrayList<Fire>();
+        //Doors and stuff
+        this.doors = new ArrayList<Door>();
+        this.lockedDoors = new ArrayList<LockedDoor>();
+        this.secretWalls = new ArrayList<SecretWall>();
+        this.exitOffsets = new ArrayList<Integer>();
+        this.exitPoints = new ArrayList<Vector3f>();
+        //Enemies
+        this.naziSoldiers = new ArrayList<NaziSoldier>();
+        this.dogs = new ArrayList<Dog>();
+        this.ssSoldiers = new ArrayList<SsSoldier>();
+        this.naziSeargeants = new ArrayList<NaziSergeant>();
+        this.ghosts = new ArrayList<Ghost>();
+        this.zombies = new ArrayList<Zombie>();
+        this.captains = new ArrayList<Captain>();
+        //Power-ups
+        this.medkits = new ArrayList<Medkit>();
+        this.foods = new ArrayList<Food>();
+        this.bullets = new ArrayList<Bullet>();
+        this.shotguns = new ArrayList<Shotgun>();
+        this.bags = new ArrayList<Bag>();
+        this.machineguns = new ArrayList<Machinegun>();
+        this.armors = new ArrayList<Armor>();
+        this.superShotguns = new ArrayList<SuperShotgun>();
+        this.helmets = new ArrayList<Helmet>();
+        this.chainguns = new ArrayList<Chaingun>();
+        this.keys = new ArrayList<Key>();
+        this.rocketLaunchers = new ArrayList<RocketLauncher>();
+        //Objects
+        this.trees = new ArrayList<Tree>();
+        this.flares = new ArrayList<Lantern>();
+        this.bones = new ArrayList<Bones>();
+        this.deadNazi = new ArrayList<NaziSoldier>();
+        this.pipes = new ArrayList<Pipe>();
+        this.pendules = new ArrayList<Pendule>();
+        this.lamps = new ArrayList<Lamp>();
+        this.hangeds = new ArrayList<Hanged>();
+        this.deadJews = new ArrayList<DeadJew>();
+        this.tables = new ArrayList<Table>();
+        this.pillars = new ArrayList<Pillar>();
+        this.clocks = new ArrayList<Clock>();
+        this.furnaces = new ArrayList<Oven>();
+        this.kitchens = new ArrayList<Kitchen>();
+        this.barrels = new ArrayList<Barrel>();
+        this.explosions = new ArrayList<Explosion>();
+        this.rockets = new ArrayList<Rocket>();
+        this.bleeding = new ArrayList<Bleed>();
+        this.fire = new ArrayList<Fire>();
+        this.walls = new ArrayList<Wall>();
+
     	ArrayList<Vertex> vertices = new ArrayList<Vertex>();
     	ArrayList<Integer> indices = new ArrayList<Integer>();
         
-        //Remove list
-    	if(removeMedkitList == null) Level.removeMedkitList = new ArrayList<Medkit>();
-    	if(removeFoodList == null) Level.removeFoodList = new ArrayList<Food>();
-    	if(removeBulletList == null) Level.removeBulletList = new ArrayList<Bullet>();
-    	if(removeShellList == null) Level.removeShellList = new ArrayList<Shell>();
-    	if(removeBagList == null) Level.removeBagList = new ArrayList<Bag>();
-    	if(removeShotgunList == null) Level.removeShotgunList = new ArrayList<Shotgun>();
-    	if(removeMachineGunList == null) Level.removeMachineGunList = new ArrayList<Machinegun>();
-    	if(removeGhostList == null) Level.removeGhostList = new ArrayList<Ghost>();
-    	if(removeArmorList == null) Level.removeArmorList = new ArrayList<Armor>();
-    	if(removeSuperShotgunList == null) Level.removeSuperShotgunList = new ArrayList<SuperShotgun>();
-    	if(removeHelmets == null) Level.removeHelmets = new ArrayList<Helmet>();
-    	if(removeBarrels == null) Level.removeBarrels = new ArrayList<Barrel>();
-    	if(removeKeys == null) Level.removeKeys = new ArrayList<Key>();
-    	if(removeChaingunList == null) Level.removeChaingunList = new ArrayList<Chaingun>();
-    	if(removeExplosions == null) Level.removeExplosions = new ArrayList<Explosion>();
-    	if(removeRockets == null) Level.removeRockets = new ArrayList<Rocket>();
-    	if(removeRocketLauncherList == null) Level.removeRocketLauncherList = new ArrayList<RocketLauncher>();
-    	if(removeBleedingList == null) Level.removeBleedingList = new ArrayList<Bleed>();
-    	if(removeFireList == null) Level.removeFireList = new ArrayList<Fire>();
-        //Doors and stuff
-        if(doors == null) this.doors = new ArrayList<Door>();
-        if(lockedDoors == null) this.lockedDoors = new ArrayList<LockedDoor>();
-        if(secretWalls == null) this.secretWalls = new ArrayList<SecretWall>();
-        if(exitOffsets == null) this.exitOffsets = new ArrayList<Integer>();
-        if(exitPoints == null) this.exitPoints = new ArrayList<Vector3f>();
-        //Enemies
-        if(naziSoldiers == null) this.naziSoldiers = new ArrayList<NaziSoldier>();
-        if(dogs == null) this.dogs = new ArrayList<Dog>();
-        if(ssSoldiers == null) this.ssSoldiers = new ArrayList<SsSoldier>();
-        if(naziSeargeants == null) this.naziSeargeants = new ArrayList<NaziSergeant>();
-        if(ghosts == null) this.ghosts = new ArrayList<Ghost>();
-        if(zombies == null) this.zombies = new ArrayList<Zombie>();
-        if(captains == null) this.captains = new ArrayList<Captain>();
-        //Power-ups
-        if(medkits == null) this.medkits = new ArrayList<Medkit>();
-        if(foods == null) this.foods = new ArrayList<Food>();
-        if(bullets == null) this.bullets = new ArrayList<Bullet>();
-        if(shotguns == null) this.shotguns = new ArrayList<Shotgun>();
-        if(bags == null) this.bags = new ArrayList<Bag>();
-        if(machineguns == null) this.machineguns = new ArrayList<Machinegun>();
-        if(armors == null) this.armors = new ArrayList<Armor>();
-        if(superShotguns == null) this.superShotguns = new ArrayList<SuperShotgun>();
-        if(helmets == null) this.helmets = new ArrayList<Helmet>();
-        if(chainguns == null) this.chainguns = new ArrayList<Chaingun>();
-        if(keys == null) this.keys = new ArrayList<Key>();
-        if(rocketLaunchers == null) this.rocketLaunchers = new ArrayList<RocketLauncher>();
-        //Objects
-        if(trees == null) this.trees = new ArrayList<Tree>();
-        if(flares == null) this.flares = new ArrayList<Lantern>();
-        if(bones == null) this.bones = new ArrayList<Bones>();
-        if(deadNazi == null) this.deadNazi = new ArrayList<NaziSoldier>();
-        if(pipes == null) this.pipes = new ArrayList<Pipe>();
-        if(pendules == null) this.pendules = new ArrayList<Pendule>();
-        if(lamps == null) this.lamps = new ArrayList<Lamp>();
-        if(hangeds == null) this.hangeds = new ArrayList<Hanged>();
-        if(deadJews == null) this.deadJews = new ArrayList<DeadJew>();
-        if(tables == null) this.tables = new ArrayList<Table>();
-        if(pillars == null) this.pillars = new ArrayList<Pillar>();
-        if(clocks == null) this.clocks = new ArrayList<Clock>();
-        if(furnaces == null) this.furnaces = new ArrayList<Oven>();
-        if(kitchens == null) this.kitchens = new ArrayList<Kitchen>();
-        if(barrels == null) this.barrels = new ArrayList<Barrel>();
-        if(explosions == null) this.explosions = new ArrayList<Explosion>();
-        if(rockets == null) this.rockets = new ArrayList<Rocket>();
-        if(bleeding == null) this.bleeding = new ArrayList<Bleed>();
-        if(fire == null) this.fire = new ArrayList<Fire>();
-
         for (int i = 1; i < bitmap.getWidth() - 1; i++) {
             for (int j = 1; j < bitmap.getHeight() - 1; j++) {
                 if ((bitmap.getPixel(i, j) & 0xFFFFFF) == 0) // If it isn't a black (wall) pixel
@@ -1157,6 +1156,8 @@ public class Level extends GameComponent {
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 155) {
                         helmets.add(new Helmet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         //barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 157) {
+                        bags.add(new Bag(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 169) {
                     	//GoldKey
                     	keys.add(new Key(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true, true));
@@ -1180,13 +1181,12 @@ public class Level extends GameComponent {
                     float[] texCoords = calcTextCoords((bitmap.getPixel(i, j) & 0x00FF00) >> 8);
                     
                     //Generate Floor
-    				addFace(indices, vertices.size(), true);
+                    addFace(indices, vertices.size(), true);
     				addVertices(vertices, i, j, 0, true, false, true, texCoords);
     				
     				//Generate Ceiling
-    				addFace(indices, vertices.size(), false);
-    				addVertices(vertices, i, j, 1, true, false, true, texCoords);
-                    
+                    addFace(indices, vertices.size(), false);
+    				addVertices(vertices, i, j, 1, true, false, true, texCoords);                    
                     texCoords = calcTextCoords((bitmap.getPixel(i, j) & 0xFF0000) >> 16);
                     
                     SecretWall.xHigher = texCoords[0];
@@ -1219,21 +1219,17 @@ public class Level extends GameComponent {
                         addFace(indices,vertices.size(),false);
                         addVertices(vertices, 0, j, (i + 1), false, true, true, texCoords);
                     }
+                    
             }
         }
-        
         Vertex[] vertArray = new Vertex[vertices.size()];
         Integer[] intArray = new Integer[indices.size()];
         
         vertices.toArray(vertArray);
         indices.toArray(intArray);
-
-        if(geometry == null)
-        	geometry = new Mesh(vertArray, Util.toIntArray(intArray), true, true);
         
-        if(meshRenderer == null)
-        	meshRenderer = new MeshRenderer(geometry, transform, material);
-        
+        Mesh geometry = new Mesh(vertArray, Util.toIntArray(intArray), true, true);
+        walls.add(new Wall(new Transform(), material, geometry));
         if(directionalLight == null)
         	directionalLight = new DirectionalLight(new Vector3f(0.75f,0.75f,0.75f), 
             		1f, new Vector3f(bitmap.getWidth()/2,10,bitmap.getHeight()/2));
@@ -1243,6 +1239,35 @@ public class Level extends GameComponent {
         renderingEngine.setFogColor(new Vector3f(0.5f,0.5f,0.5f));
         renderingEngine.setAmbientLight(new Vector3f(0.75f,0.75f,0.75f));
         directionalLight.addToEngine();
+    }
+    
+    /**
+     * Adds a wall into the level.
+     * @param i index on bitmap
+     * @param j index on bitmap
+     * @param verticeX position
+     * @param verticeY position
+     * @param verticeZ position
+     * @param faceX if it's
+     * @param faceY if it's
+     * @param faceZ if it's
+     * @param texCoords to sample
+     */
+    public void addWall(int i, int j, int verticeX, int verticeY, int verticeZ, boolean faceX, boolean faceY, boolean faceZ, float[] texCoords) {
+    	ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+    	ArrayList<Integer> indices = new ArrayList<Integer>();
+    	
+    	addFace(indices,vertices.size(),false);
+        addVertices(vertices, verticeX, verticeY, verticeZ, faceX, faceY, faceZ, texCoords);
+        
+        Vertex[] vertArray = new Vertex[vertices.size()];
+        Integer[] intArray = new Integer[indices.size()];
+        
+        vertices.toArray(vertArray);
+        indices.toArray(intArray);
+        
+        Mesh geometry = new Mesh(vertArray, Util.toIntArray(intArray), true, true);
+        walls.add(new Wall(new Transform(new Vector3f(i, 0, j)), material, geometry));
     }
     
     /**

@@ -226,11 +226,10 @@ public class Dog extends GameComponent {
                 }
             } else if (state == STATE_CHASE) {
             	isQuiet = false;
-                if (rand.nextDouble() < 0.5f * delta) {
-                    state = STATE_ATTACK;
-                }
 
                 if (distance > 0.55f) {
+                	if (rand.nextDouble() < 0.5f * delta)
+                        state = STATE_ATTACK;
                     orientation.setY(0);
                     float moveSpeed = 3f;
 

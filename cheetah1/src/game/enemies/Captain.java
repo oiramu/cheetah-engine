@@ -183,7 +183,6 @@ public class Captain extends GameComponent {
 
         Vector3f orientation = playerDistance.normalized();
         float distance = playerDistance.length();
-        setDistance(distance);
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
@@ -371,19 +370,16 @@ public class Captain extends GameComponent {
         
         if (state == STATE_DEAD) {
         	isQuiet = true;
-        	if(chaingun == null)
-        		chaingun = new Chaingun(new Transform(transform.getPosition().add(-0.01f)), false);
-        	if(bullet == null)
-            	bullet = new Bullet(new Transform(transform.getPosition().add(-0.011f)), false);
-        	if(key == null && dropsKey)
-        		key = new Key(new Transform(transform.getPosition().add(-0.012f)), true, false);
+        	chaingun = new Chaingun(new Transform(transform.getPosition()), false);
+            bullet = new Bullet(new Transform(transform.getPosition()), false);
+        	key = new Key(new Transform(transform.getPosition()), true, false);
         	bullet.update(delta);
         	key.update(delta);
         	chaingun.update(delta);
         	material.setDiffuse(animation.get(12));   	
             dead = true;  
-            if (distance < bullet.PICKUP_THRESHHOLD || distance < key.PICKUP_THRESHHOLD
-            		|| distance < chaingun.PICKUP_THRESHHOLD)
+            if (distance < bullet.PICKUP_THRESHHOLD && distance < key.PICKUP_THRESHHOLD
+            		&& distance < chaingun.PICKUP_THRESHHOLD)
             	state = STATE_POST_DEATH;
         }
         

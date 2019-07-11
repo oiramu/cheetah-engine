@@ -483,10 +483,8 @@ public class Player extends GameComponent {
             gunMesh = new Mesh(verts, indices, true);
         }
         
-        if(gunMaterial == null)
-        	gunMaterial = new Material(null);
-        if(legMaterial == null)
-        	legMaterial = new Material(null);
+        gunMaterial = new Material(null);
+        legMaterial = new Material(null);
         
         health = 0;
         armorb = false;
@@ -499,30 +497,22 @@ public class Player extends GameComponent {
         maxBullets = 0;
         maxShells = 0;
 
-        if(gunTransform == null) gunTransform = new Transform(camera.getPos());
-        if(gunRenderer == null) gunRenderer = new MeshRenderer(gunMesh, gunTransform, gunMaterial);
-        if(legRenderer == null) legRenderer = new MeshRenderer(gunMesh, gunTransform, legMaterial);
+        gunTransform = new Transform(camera.getPos());
+        gunRenderer = new MeshRenderer(gunMesh, gunTransform, gunMaterial);
+        legRenderer = new MeshRenderer(gunMesh, gunTransform, legMaterial);
         if (weaponState == null) { gotPistol(); }
         
-        if(flashLight == null && fireLight == null) {
-        	flashLight = new SpotLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f, 
-        	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
-    		fireLight = new SpotLight(gunLightColor, 1.6f, 
-            		new Attenuation(attenuation,0,attenuation), getCamera().getPos(), new Vector3f(1,1,1), 0.7f);
-    	}
+    	flashLight = new SpotLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f, 
+    	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
+		fireLight = new SpotLight(gunLightColor, 1.6f, 
+        		new Attenuation(attenuation,0,attenuation), getCamera().getPos(), new Vector3f(1,1,1), 0.7f);
         
-        if(rocketsArray == null)
-        	rocketsArray = new ArrayList<Rocket>();
-        if(removeRockets == null)
-        	removeRockets = new ArrayList<Rocket>();
-        if(flamesArray == null)
-        	flamesArray = new ArrayList<Flame>();
-        if(removeFlames == null)
-        	removeFlames = new ArrayList<Flame>();
-        if(bleedingArray == null)
-        	bleedingArray = new ArrayList<Bleed>();
-        if(removeBleedingList == null)
-        	removeBleedingList = new ArrayList<Bleed>();
+        rocketsArray = new ArrayList<Rocket>();
+        removeRockets = new ArrayList<Rocket>();
+        flamesArray = new ArrayList<Flame>();
+        removeFlames = new ArrayList<Flame>();
+        bleedingArray = new ArrayList<Bleed>();
+        removeBleedingList = new ArrayList<Bleed>();
 
         toGround = gunTransform.getPosition().getY();
         kickingTime = 0;
@@ -871,6 +861,9 @@ public class Player extends GameComponent {
 	        if(Input.getKeyDown(Input.KEY_Q) && !trowsKick) {
 	        	AudioUtil.playAudio(playerNoises.get(5), 0);
 	        	kickingTime = Time.getTime();
+	        	moveSpeed = speed*5;
+	        }else {
+	        	moveSpeed = speed;
 	        }
 	        
 	        if (fires && !isReloading) {
@@ -1036,7 +1029,7 @@ public class Player extends GameComponent {
 
         movementVector = movementVector.normalized().mul(collisionVector);
 
-        if (movementVector.length() > 0) {
+        if (movementVector.length() > 0 && isAlive) {
         	float bobOscillate = (float) Math.sin(time * moveSpeed * (2 * Math.PI));
         	dy += bobOscillate/500;
             dx += bobOscillate/750;
@@ -1115,6 +1108,7 @@ public class Player extends GameComponent {
     			currentAmmo = getGas();
     		break;
     	}
+    	
     	playerText.get("Life").setText(getHealth()+"%");
     	playerText.get("Ammo").setText(currentAmmo);
         if(isArmor()) playerText.get("Armor").setText(getArmor()+"%");
@@ -1313,7 +1307,7 @@ public class Player extends GameComponent {
     		for(Bleed bleed : bleedingArray)
     			bleed.render(shader, renderingEngine);
         
-        gunRenderer.render(shader, renderingEngine);
+        if(gunRenderer != null)gunRenderer.render(shader, renderingEngine);
         if (trowsKick) legRenderer.render(shader, renderingEngine);
     }
     

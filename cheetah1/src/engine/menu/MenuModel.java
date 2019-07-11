@@ -42,10 +42,10 @@ public class MenuModel extends GUIComponent {
 	private MenuObject 		menuObject = new MenuObject();
 	private List<Button> 	buttonPointer = new ArrayList<Button>();
 	
-	private Graphics 	m_m2DRender;
+	private Graphics 		m_m2DRender;
 	
 	//real time designer 
-	String 				m_filePath;
+	String 					m_filePath;
 	
 	/**
 	 * Menu model constructor.

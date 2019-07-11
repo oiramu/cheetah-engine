@@ -417,22 +417,18 @@ public class Commander extends GameComponent {
         
         if (state == STATE_DEAD) {
         	isQuiet = true;
-        	if(rocketLauncher == null)
-        		rocketLauncher = new RocketLauncher(new Transform(transform.getPosition().add(-0.01f)), false);
-        	if(chaingun == null)
-        		chaingun = new Chaingun(new Transform(transform.getPosition().add(-0.011f)), false);
-        	if(bullet == null)
-            	bullet = new Bullet(new Transform(transform.getPosition().add(-0.012f)), false);
-        	if(key == null)
-        		key = new Key(new Transform(transform.getPosition().add(-0.013f)), true, false);
+        	rocketLauncher = new RocketLauncher(new Transform(transform.getPosition()), false);
+        	chaingun = new Chaingun(new Transform(transform.getPosition()), false);
+            bullet = new Bullet(new Transform(transform.getPosition()), false);
+        	key = new Key(new Transform(transform.getPosition()), true, false);
         	rocketLauncher.update(delta);
         	bullet.update(delta);
         	key.update(delta);
         	chaingun.update(delta);
         	material.setDiffuse(animation.get(15));   	
             dead = true;  
-            if (distance < bullet.PICKUP_THRESHHOLD || distance < rocketLauncher.PICKUP_THRESHHOLD
-            		|| distance < key.PICKUP_THRESHHOLD || distance < chaingun.PICKUP_THRESHHOLD)
+            if (distance < bullet.PICKUP_THRESHHOLD && distance < rocketLauncher.PICKUP_THRESHHOLD
+            		&& distance < key.PICKUP_THRESHHOLD && distance < chaingun.PICKUP_THRESHHOLD)
             	state = STATE_POST_DEATH;
         }
         

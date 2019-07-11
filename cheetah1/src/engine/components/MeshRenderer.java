@@ -24,10 +24,10 @@ import engine.rendering.Shader;
 /**
  *
  * @author Carlos Rodriguez.
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
-public class MeshRenderer {
+public class MeshRenderer extends GameComponent {
 	
 	private Transform 	transform;
 	private Mesh 		mesh;

@@ -16,8 +16,10 @@
 package engine.components;
 
 import engine.core.Transform;
+import engine.core.Vector3f;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
+import game.Level;
 
 /**
  *
@@ -28,7 +30,7 @@ import engine.rendering.Shader;
 public abstract class GameComponent {
 	
 	private float distance;
-	
+
 	private Transform transform;
 	public void input() {}
 	public void render(Shader shader, RenderingEngine renderingEngine) {}
@@ -39,4 +41,12 @@ public abstract class GameComponent {
 	public void setDistance(float distance) {this.distance = distance;}
 	
     public void damage(int amt) {}
+    
+    /**
+     * Checks the distance from the point of view.
+     */
+    public void checkDistance(Transform t) {
+    	Vector3f playerDistance = t.getPosition().sub(Level.getPlayer().getCamera().getPos());
+        setDistance(playerDistance.length());
+    }
 }

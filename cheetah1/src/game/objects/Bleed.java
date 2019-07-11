@@ -169,7 +169,7 @@ public class Bleed extends GameComponent {
     	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
         Vector3f orientation = playerDistance.normalized();
 		float distance = playerDistance.length();
-		setDistance(distance);
+		setDistance(distance + (int) (POP_IN/PARTICLES_POP_IN));
 		
         if (state == STATE_BLEED) {
             float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));

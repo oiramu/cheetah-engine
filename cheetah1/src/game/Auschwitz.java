@@ -51,8 +51,8 @@ public class Auschwitz implements Game {
     public static Level 						level;
     public static Material						material;
     
-    private static Menu							menu;
     private static InGameMenu					gameMenu;
+    private static Menu							menu;
     
     public static boolean						isPaused;
     public static boolean						sureToExit;
@@ -62,7 +62,6 @@ public class Auschwitz implements Game {
     public static int 							track;
     public static int							currentEpisode;
     
-    private static boolean 						isRunning;
     private static boolean 						displayStats = false;
     private static int 							secrets = 0;
     private static int 							deadMonsters = 0;
@@ -72,8 +71,8 @@ public class Auschwitz implements Game {
     
     private String [] 							exitMessages = {
     		"Please don't leave, there's more nazis to toast!",
-    		"I wouldn't leave if I were you. Life is much worse.",
-    		"You're trying to say you like TV better than me, right?",
+    		"I wouldn't leave if I were you. " + System.getProperty("os.name") + " is much worse.",
+    		"You're trying to say you like " + System.getProperty("os.name") + " better than me, right?",
     		"Don't leave yet.There's a nazi around that corner!",
     		"Go ahead, leave...but don't come begging next time",
     		"Are you sure you want to quit this great game?",
@@ -92,7 +91,6 @@ public class Auschwitz implements Game {
         text = gameMenu.text;
         track = startingLevel - 1;
         levelNum = startingLevel - 1;
-        isRunning = true;
         loadLevel(1, true);
     }
 	
@@ -101,7 +99,6 @@ public class Auschwitz implements Game {
      */
     @Override
     protected void finalize() {
-    	isRunning = false;
     	AudioUtil.stopMidi();
         System.exit(0);
     }
@@ -153,7 +150,7 @@ public class Auschwitz implements Game {
 				}
 				if (Input.getKeyDown(Input.KEY_B)) {
 					AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
-					isRunning = false;
+					CoreEngine.getCurrent().cleanUp();
 				}
 				if (Input.getKeyDown(Input.KEY_X)) {
 					AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
@@ -183,12 +180,10 @@ public class Auschwitz implements Game {
      * @param delta of time
      */
     public void update(double delta) {
-        if (isRunning) {
-        	if(!isPaused)
-        		level.update(delta);
-        } else {
-        	menu.update();
-        }
+    	if(!isPaused)
+    		level.update(delta);
+    	if(menu != null)
+    		menu.update();
     }
 
     /**
@@ -196,17 +191,15 @@ public class Auschwitz implements Game {
      * @param engine to render
      */
 	public void render(RenderingEngine engine) {
-        if (isRunning) {
-        	engine.render(level);
-        	printStats(engine);
-        	if(isPaused && !toExit) {
-        		gameMenu.renderPause(engine);
-        	} else if (toExit) {
-        		gameMenu.renderQuit(engine);
-        	}
-        } else {
-        	menu.draw2D();
-        }
+    	engine.render(level);
+    	printStats(engine);
+    	if(isPaused && !toExit) {
+    		gameMenu.renderPause(engine);
+    	} else if (toExit) {
+    		gameMenu.renderQuit(engine);
+    	}
+    	if(menu != null)
+    		menu.draw2D();
     }
 	
 	/**
@@ -442,10 +435,6 @@ public class Auschwitz implements Game {
             
         } catch (RuntimeException ex) {
         	ex.printStackTrace();
-            isRunning = false;
-            //Debug.printErrorMessage(ex.getMessage(), "GAME OVER!");
-            System.out.println("GAME OVER!");
-            AudioUtil.stopMidi();
             menu = new CreditsMenu();
         }
 
@@ -456,12 +445,6 @@ public class Auschwitz implements Game {
      * @return Level.
      */
     public static Level getLevel() {return level;}
-
-    /**
-     * Allow to stop the game rendering without stop all the program.
-     * @param value True or false.
-     */
-    public static void setIsRunning(boolean value) {isRunning = value;}
 
     /**
      * Returns it's own game name

@@ -34,7 +34,11 @@ public class InGameMenu {
 	public HashMap<String,HUD> 	text = new HashMap<String,HUD>();
 	
 	private final String		WEAPON_RES_LOC = "weapons/";
+	private final String		KEY_RES_LOC = "key/";
 	
+	/**
+	 * Constructor for a in game menu.
+	 */
 	public InGameMenu() {
 		text.put("Level",new HUD("", new Vector2f(-1.25f,1.2f), new Vector2f(0.75f,0.75f)));
         text.put("Enemies",new HUD("", new Vector2f(-1.25f,1.1f), new Vector2f(0.75f,0.75f)));
@@ -44,7 +48,7 @@ public class InGameMenu {
         text.put("Reload",new HUD("Press R to reload level", new Vector2f(-1.75f,-0.15f), new Vector2f(0.4f,0.8f)));
         text.put("Back",new HUD("Press B to get back to menu", new Vector2f(-1.75f,-0.3f), new Vector2f(0.4f,0.8f)));
         text.put("Exit",new HUD("Press X to quit the game", new Vector2f(-1.75f,-0.45f), new Vector2f(0.4f,0.8f)));
-        text.put("areYouSure",new HUD("Are you sure you wanna quit?", new Vector2f(-1.75f,0.175f), new Vector2f(0.5f,1.0f)));
+        text.put("areYouSure",new HUD("Are you sure you wanna quit?", new Vector2f(-1.8f,0.175f), new Vector2f(0.5f,1.5f)));
         text.put("yesornot",new HUD("Press: Y/N", new Vector2f(-0.45f,0.0f), new Vector2f(0.5f,1.0f)));
         text.put("inventory",new HUD("Inventory:", new Vector2f(0.1f,0.0f), new Vector2f(0.8f,0.8f)));
         text.put("pistol", new HUD(new Material(new Texture(WEAPON_RES_LOC+"pistol/2PISE0")), new Vector2f(1.5f,-2.0f), new Vector2f(0.1f,0.1f)));
@@ -62,8 +66,14 @@ public class InGameMenu {
         text.put("gas", new HUD(new Material(new Texture(WEAPON_RES_LOC+"flameThrower/FLMTF0")), new Vector2f(7.0f,-7.5f), new Vector2f(0.05f,0.1f)));
         text.put("rocketText", new HUD("0", new Vector2f(0.5f,-0.41f), new Vector2f(0.75f,1.5f)));
         text.put("gasText", new HUD("0", new Vector2f(0.5f,-0.51f), new Vector2f(0.75f,1.5f)));
+        text.put("bronze", new HUD(new Material(new Texture(KEY_RES_LOC+"YSKUA1")), new Vector2f(1.5f,-9.0f), new Vector2f(0.1f,0.1f)));
+        text.put("gold", new HUD(new Material(new Texture(KEY_RES_LOC+"YSKUA0")), new Vector2f(3.0f,-9.0f), new Vector2f(0.1f,0.1f)));
 	}
 	
+	/**
+	 * Renders only the labels that appear when paused.
+	 * @param engine rendering engine
+	 */
 	public void renderPause(RenderingEngine engine) {
 		text.get("Level").render(engine);
 		text.get("Paused").render(engine);
@@ -101,8 +111,17 @@ public class InGameMenu {
     		text.get("gasText").setText(Level.getPlayer().getGas());
     		text.get("gasText").render(engine);
 		}
+		if(Level.getPlayer().isBronzekey())
+			text.get("bronze").render(engine);
+		if(Level.getPlayer().isGoldkey())
+			text.get("gold").render(engine);
 	}
 	
+	/**
+	 * Renders only the labels that appear only when
+	 * tries to quit the game.
+	 * @param engine rendering engine
+	 */
 	public void renderQuit(RenderingEngine engine) {
 		text.get("areYouSure").render(engine);
 		text.get("yesornot").render(engine);

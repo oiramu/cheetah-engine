@@ -106,7 +106,7 @@ public class ZombieMeat extends GameComponent {
 	        transform.setRotation(0, angle + 90, 0);
 	        
 	        objetiveOrientation.setY(0);
-	        float moveSpeed = 1f;
+	        float moveSpeed = 2.5f;
 	
 	        Vector3f oldPos = transform.getPosition();
 	        Vector3f newPos = transform.getPosition().add(objetiveOrientation.mul((float) (-moveSpeed * delta)));

@@ -164,14 +164,14 @@ public class Debug {
 	 * Print some message to the console or terminal.
 	 * @param message to show
 	 */
-	public static <E> void print(E message) { System.out.print(message);}
+	public static <E> void print(E message) { System.out.print(message+"");}
 	
 	/**
 	 * Print some message to the console or terminal
 	 * by lines.
 	 * @param message to show
 	 */
-	public static <E> void println(E message) { System.out.println(message);}
+	public static <E> void println(E message) { System.out.println(message+"");}
 	
 	/**
 	 * Prints an error message to a window, keep in
@@ -181,8 +181,7 @@ public class Debug {
 	 */
 	public static void crash(CrashReport report) {
 		report.printStack();
-		CoreEngine.getCurrent().kill();
-		System.exit(-1);
+		CoreEngine.getCurrent().cleanUp();
 	}
 	
 	/**

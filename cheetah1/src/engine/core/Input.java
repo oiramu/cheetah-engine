@@ -302,4 +302,14 @@ public class Input {
     public static void setCursor(boolean enabled) {
         Mouse.setGrabbed(!enabled);
     }
+    
+    /**
+     * Gets control of the mouse's wheel input and.
+     * returns it.
+     * @return mouse wheel input
+     */
+    public static int getMouseWheel() {
+    	return Mouse.getDWheel();
+    }
+    
 }

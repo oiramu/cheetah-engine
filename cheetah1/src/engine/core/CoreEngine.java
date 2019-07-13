@@ -162,7 +162,6 @@ public class CoreEngine {
                 }
             }
         }
-
         cleanUp();
     }
 
@@ -179,19 +178,9 @@ public class CoreEngine {
 	 */
 	public void run() {
 		while(!Window.isCloseRequested()) {
-			if(!isRunning) {
-				Window.updateMenu();
-				Window.renderMenu();
-			}
+			Window.updateMenu();
+			Window.renderMenu();
 		}
-		kill();
-	}
-	
-	/**
-	 * Kills everything in the program.
-	 */
-	public void kill() {
-		isRunning = false;
 		cleanUp();
 	}
 	
@@ -216,7 +205,7 @@ public class CoreEngine {
 	/**
      * Method that cleans everything in the program's window.
      */
-    private void cleanUp() {Window.dispose(); AudioUtil.stopMidi();}
+    public void cleanUp() {Window.dispose(); AudioUtil.stopMidi();}
 
 	/**
 	 * Returns the main game.

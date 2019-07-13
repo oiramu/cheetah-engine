@@ -212,7 +212,7 @@ public class Player extends GameComponent {
     private boolean armorb;
     private boolean shotgun;
     private boolean machinegun;
-    private boolean sShotgun;
+    private boolean SShotgun;
     private boolean chaingun;
     private boolean rocketLauncher;
     private boolean flameThrower;
@@ -529,7 +529,7 @@ public class Player extends GameComponent {
         goldkey = false;
         bronzekey = false;
         Debug.init(this);
-        //Debug.enableGod(true);
+        Debug.enableGod(true);
     }
 
     private float upAngle = 0;
@@ -763,6 +763,7 @@ public class Player extends GameComponent {
         	fires = Input.getMouseDown(0);
         
     	if(isAlive) {
+    		
 	        if (Input.getKeyDown(Input.KEY_E))
 	            Auschwitz.getLevel().openDoors(camera.getPos(), true);
 	        
@@ -785,7 +786,7 @@ public class Player extends GameComponent {
 	        			gotPistol();
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_3)) {
-	        	if(shotgun == false || weaponState == SHOTGUN || fires) {
+	        	if(!shotgun || weaponState == SHOTGUN || fires) {
 	        		AudioUtil.playAudio(playerNoises.get(1), 0);
 	        	} else {
 	        		if(weaponState != SHOTGUN)
@@ -794,7 +795,7 @@ public class Player extends GameComponent {
 	        			gotShotgun();
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_4)) {
-	        	if(machinegun == false || weaponState == MACHINEGUN || fires) {
+	        	if(!machinegun || weaponState == MACHINEGUN || fires) {
 	        		AudioUtil.playAudio(playerNoises.get(1), 0);
 	        	} else {
 	        		if(weaponState != MACHINEGUN)
@@ -803,7 +804,7 @@ public class Player extends GameComponent {
 	        			gotMachinegun();
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_5)) {
-	        	if(sShotgun == false || weaponState == SUPER_SHOTGUN || fires) {
+	        	if(!SShotgun || weaponState == SUPER_SHOTGUN || fires) {
 	        		AudioUtil.playAudio(playerNoises.get(1), 0);
 	        	} else {
 	        		if(weaponState != SUPER_SHOTGUN)
@@ -812,7 +813,7 @@ public class Player extends GameComponent {
 	        			gotSShotgun();
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_6)) {
-	        	if(chaingun == false || weaponState == CHAINGUN || fires) {
+	        	if(!chaingun || weaponState == CHAINGUN || fires) {
 	        		AudioUtil.playAudio(playerNoises.get(1), 0);
 	        	} else {
 	        		if(weaponState != CHAINGUN)
@@ -821,7 +822,7 @@ public class Player extends GameComponent {
 	        			gotChaingun();
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_7)) {
-	        	if(rocketLauncher == false || weaponState == ROCKET_LAUNCHER || fires) {
+	        	if(!rocketLauncher || weaponState == ROCKET_LAUNCHER || fires) {
 	        		AudioUtil.playAudio(playerNoises.get(1), 0);
 	        	} else {
 	        		if(weaponState != ROCKET_LAUNCHER)
@@ -830,7 +831,7 @@ public class Player extends GameComponent {
 	        			gotRocketLauncher();
 	        	}
 	        } else if (Input.getKeyDown(Input.KEY_8)) {
-	        	if(flameThrower == false || weaponState == FLAME_THROWER || fires) {
+	        	if(!flameThrower || weaponState == FLAME_THROWER || fires) {
 	        		AudioUtil.playAudio(playerNoises.get(1), 0);
 	        	} else {
 	        		if(weaponState != FLAME_THROWER)
@@ -1349,7 +1350,7 @@ public class Player extends GameComponent {
             armorb = false;
             shotgun = false;
             machinegun = false;
-            sShotgun = false;
+            SShotgun = false;
             chaingun = false;
             rocketLauncher = false;
             flameThrower = false;
@@ -1555,11 +1556,11 @@ public class Player extends GameComponent {
      * @param amt amount.
      */
     public void setSuperShotgun(boolean amt) {
-    	if(amt == true && sShotgun == false && isAlive) {
-    		sShotgun = amt;
+    	if(amt == true && SShotgun == false && isAlive) {
+    		SShotgun = amt;
     		gotSShotgun();
     	}
-    	if(sShotgun == true && isAlive && amt != true) {
+    	if(SShotgun == true && isAlive && amt != true) {
     		playerText.get("Notification").setText("You've got a double barrel shotgun!");
         	notificationTime = Time.getTime();
     	}
@@ -1569,7 +1570,7 @@ public class Player extends GameComponent {
      * Method that returns if the player have or not a super shotgun 
      * on he's bag.
      */
-    public boolean isSuperShotgun() {return sShotgun;}
+    public boolean isSuperShotgun() {return SShotgun;}
     
     /**
      * Method that returns if the player have or not a chain-gun

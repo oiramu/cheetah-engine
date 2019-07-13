@@ -154,6 +154,7 @@ public class Level extends GameComponent {
     private ArrayList<Medkit> medkits;
     private ArrayList<Food> foods;
     private ArrayList<Bullet> bullets;
+    private ArrayList<Shell> shells;
     private ArrayList<Bag> bags;
     private ArrayList<Machinegun> machineguns;
     private ArrayList<Armor> armors;
@@ -254,6 +255,7 @@ public class Level extends GameComponent {
         objects.add(medkits);
         objects.add(foods);
         objects.add(bullets);
+        objects.add(shells);
         objects.add(bags);
         objects.add(shotguns);
         objects.add(machineguns);
@@ -263,6 +265,7 @@ public class Level extends GameComponent {
         objects.add(superShotguns); 
         objects.add(keys);
         objects.add(rocketLaunchers);
+  
         objects.add(walls);
         
         renderingEngine.setMainCamera(player.getCamera());
@@ -981,6 +984,7 @@ public class Level extends GameComponent {
         this.medkits = new ArrayList<Medkit>();
         this.foods = new ArrayList<Food>();
         this.bullets = new ArrayList<Bullet>();
+        this.shells = new ArrayList<Shell>();
         this.shotguns = new ArrayList<Shotgun>();
         this.bags = new ArrayList<Bag>();
         this.machineguns = new ArrayList<Machinegun>();
@@ -1156,8 +1160,12 @@ public class Level extends GameComponent {
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 155) {
                         helmets.add(new Helmet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                         //barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 156) {
+                        shells.add(new Shell(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 157) {
                         bags.add(new Bag(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 158) {
+                        bullets.add(new Bullet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 169) {
                     	//GoldKey
                     	keys.add(new Key(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true, true));
@@ -1172,6 +1180,9 @@ public class Level extends GameComponent {
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 167) {
                     	//who do drop a key
                     	zombies.add(new Zombie(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 180) {
+                    	//who do drop a key
+                    	ghosts.add(new Ghost(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) < 128 && (bitmap.getPixel(i, j) & 0x0000FF) > 96) {
                         int offset = (bitmap.getPixel(i, j) & 0x0000FF) - 96;
                         exitPoints.add(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0f, (j + 0.5f) * SPOT_LENGTH));

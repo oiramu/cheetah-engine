@@ -71,7 +71,7 @@ public class Captain extends GameComponent {
 
     private static final Clip seeNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "hailhtlr");
     private static final Clip shootNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "GUN");
-    private static final Clip loadNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "LOAD");
+    private static final Clip loadNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "RELOAD");
     private static final Clip hitNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "hit");
     private static final Clip deathNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "dying");
 
@@ -120,7 +120,6 @@ public class Captain extends GameComponent {
             animation.add(new Texture(RES_LOC + "TRANG0"));
 
             animation.add(new Texture(RES_LOC + "TRANH0"));
-            animation.add(new Texture(RES_LOC + "TRANH1"));
             animation.add(new Texture(RES_LOC + "TRANI0"));
             animation.add(new Texture(RES_LOC + "TRANJ0"));
             animation.add(new Texture(RES_LOC + "TRANK0"));
@@ -352,18 +351,12 @@ public class Captain extends GameComponent {
 
             final float time1 = 0.1f;
             final float time2 = 0.3f;
-            final float time3 = 0.45f;
-            final float time4 = 0.6f;
 
             if (time <= deathTime + 0.2f) {
                 material.setDiffuse(animation.get(9));
             } else if (time > deathTime + time1 && time <= deathTime + time2) {
                 material.setDiffuse(animation.get(10));
-            } else if (time > deathTime + time2 && time <= deathTime + time3) {
-                material.setDiffuse(animation.get(11));
-            } else if (time > deathTime + time3 && time <= deathTime + time4) {
-                material.setDiffuse(animation.get(12));
-            } else if (time > deathTime + time4) {
+            } else if (time > deathTime + time2) {
                 state = STATE_DEAD;
             }
         }
@@ -376,7 +369,7 @@ public class Captain extends GameComponent {
         	bullet.update(delta);
         	key.update(delta);
         	chaingun.update(delta);
-        	material.setDiffuse(animation.get(12));   	
+        	material.setDiffuse(animation.get(11));   	
             dead = true;  
             if (distance < bullet.PICKUP_THRESHHOLD && distance < key.PICKUP_THRESHHOLD
             		&& distance < chaingun.PICKUP_THRESHHOLD)
@@ -385,7 +378,7 @@ public class Captain extends GameComponent {
         
         if (state == STATE_POST_DEATH) {
         	isQuiet = false;
-        	material.setDiffuse(animation.get(12)); 
+        	material.setDiffuse(animation.get(11)); 
         }
         
         if (state == STATE_DONE) {

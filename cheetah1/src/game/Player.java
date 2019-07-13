@@ -529,7 +529,7 @@ public class Player extends GameComponent {
         goldkey = false;
         bronzekey = false;
         Debug.init(this);
-        Debug.enableGod(true);
+        //Debug.enableGod(true);
     }
 
     private float upAngle = 0;

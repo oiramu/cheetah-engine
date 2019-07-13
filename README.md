@@ -18,8 +18,7 @@ Auschwitz its an FPS based on world war II taking place at one of the concentrat
 
 ## About the licence and usage:
 
-All of the current base code and resources belong to cheetah software, the default game assets are copyrighted so you could NOT use it for 
-your game to publish for example. The engine has been shared using the Apache licence 2.0 so check it out at 
+All of the current base code and resources belong to cheetah software, the default game assets are protected, but feel free to use them, also make your own if you wan't to. The engine has been shared using the Apache licence 2.0 so check it out at 
 http://www.apache.org/licenses/LICENSE-2.0.
 
 If you get to extend, upgrade or modify the base engine, feel free to be the owner of such additions. If you want to publish a game with our engine please be sure to add our name as yours as owners of the original code and any extension of this in the header of the classes and in the final program, and also write us, we'll be glad to see your work ;).

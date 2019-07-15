@@ -91,7 +91,7 @@ public class Auschwitz implements Game {
         text = gameMenu.text;
         track = startingLevel - 1;
         levelNum = startingLevel - 1;
-        loadLevel(1, true);
+        loadLevel(6, true);
     }
 	
 	/**

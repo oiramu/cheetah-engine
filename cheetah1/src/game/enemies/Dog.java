@@ -299,11 +299,9 @@ public class Dog extends GameComponent {
                                 || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
 
                         	float damage;
-                            if(player.getHealth() <= 0) {
-                            	damage = 0;
-                            	state = STATE_DONE;
-                            } else {
+                             if(player.getHealth() > 0) {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
+                            	AudioUtil.playAudio(atackSound.get(new Random().nextInt(atackSound.size())), distance);
                             	if(player.isArmor() == false) {
                             		player.addHealth((int) -damage, "Dog");
                             	}else {
@@ -311,7 +309,6 @@ public class Dog extends GameComponent {
                             	}
                             }
                         }
-                        AudioUtil.playAudio(atackSound.get(new Random().nextInt(atackSound.size())), distance);
                     }
 
                     material.setDiffuse(animation.get(6));

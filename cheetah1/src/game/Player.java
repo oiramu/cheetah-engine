@@ -239,13 +239,10 @@ public class Player extends GameComponent {
      */
     public Player(Vector3f position) {
     	
-    	if(camera == null) {
-    		camera = new Camera((float) Math.toRadians(70.0f), (float)Window.getWidth()/(float)Window.getHeight(), 0.01f, 1000f);
-    		camera.setPos(position);
-    	}
+    	camera = new Camera((float) Math.toRadians(70.0f), (float)Window.getWidth()/(float)Window.getHeight(), 0.01f, 1000f);
+    	camera.setPos(position);
     	
-    	if(gunsAnimationMaterial0 == null) {
-    		gunsAnimationMaterial0 = new ArrayList<Texture>();
+		gunsAnimationMaterial0 = new ArrayList<Texture>();
     		
     		gunsAnimationMaterial0.add(new Texture(HAND_RES_LOC + PISGB0));
     		gunsAnimationMaterial0.add(new Texture(PISTOL_RES_LOC + PISGB0));
@@ -255,10 +252,8 @@ public class Player extends GameComponent {
     		gunsAnimationMaterial0.add(new Texture(CHAINGUN_RES_LOC + PISGB0));
     		gunsAnimationMaterial0.add(new Texture(ROCKET_LAUNCHER_RES_LOC + PISGB0));
     		gunsAnimationMaterial0.add(new Texture(FLAME_THROWER_RES_LOC + PISGB0));
-    	}
     	
-    	if(gunsAnimationMaterial1 == null) {
-    		gunsAnimationMaterial1 = new ArrayList<Texture>();
+		gunsAnimationMaterial1 = new ArrayList<Texture>();
     		
     		gunsAnimationMaterial1.add(new Texture(HAND_RES_LOC + PISFA0));
     		gunsAnimationMaterial1.add(new Texture(PISTOL_RES_LOC + PISFA0));
@@ -268,10 +263,8 @@ public class Player extends GameComponent {
     		gunsAnimationMaterial1.add(new Texture(CHAINGUN_RES_LOC + PISFA0));
     		gunsAnimationMaterial1.add(new Texture(ROCKET_LAUNCHER_RES_LOC + PISFA0));
     		gunsAnimationMaterial1.add(new Texture(FLAME_THROWER_RES_LOC + PISFA0));
-    	}
     	
-    	if(gunsAnimationMaterial2 == null) {
-    		gunsAnimationMaterial2 = new ArrayList<Texture>();
+		gunsAnimationMaterial2 = new ArrayList<Texture>();
     		
     		gunsAnimationMaterial2.add(new Texture(HAND_RES_LOC + PISFC0));
     		gunsAnimationMaterial2.add(new Texture(PISTOL_RES_LOC + PISFC0));
@@ -281,10 +274,8 @@ public class Player extends GameComponent {
     		gunsAnimationMaterial2.add(new Texture(CHAINGUN_RES_LOC + PISFC0));
     		gunsAnimationMaterial2.add(new Texture(ROCKET_LAUNCHER_RES_LOC + PISFC0));
     		gunsAnimationMaterial2.add(new Texture(FLAME_THROWER_RES_LOC + PISFC0));
-    	}
     	
-    	if(gunsAnimationMaterial3 == null) {
-    		gunsAnimationMaterial3 = new ArrayList<Texture>();
+		gunsAnimationMaterial3 = new ArrayList<Texture>();
     		
     		gunsAnimationMaterial3.add(null);
     		gunsAnimationMaterial3.add(null);
@@ -294,10 +285,8 @@ public class Player extends GameComponent {
     		gunsAnimationMaterial3.add(new Texture(CHAINGUN_RES_LOC + PISFD0));
     		gunsAnimationMaterial3.add(new Texture(ROCKET_LAUNCHER_RES_LOC + PISFD0));
     		gunsAnimationMaterial3.add(new Texture(FLAME_THROWER_RES_LOC + PISFD0));
-    	}
     	
-    	if(gunsAnimationMaterial4 == null) {
-    		gunsAnimationMaterial4 = new ArrayList<Texture>();
+		gunsAnimationMaterial4 = new ArrayList<Texture>();
     		
     		gunsAnimationMaterial4.add(null);
     		gunsAnimationMaterial4.add(null);
@@ -307,10 +296,8 @@ public class Player extends GameComponent {
     		gunsAnimationMaterial4.add(new Texture(CHAINGUN_RES_LOC + PISFE0));
     		gunsAnimationMaterial4.add(null);
     		gunsAnimationMaterial4.add(new Texture(FLAME_THROWER_RES_LOC + PISFE0));
-    	}
     	
-    	if(gunsAnimationMaterial5 == null) {
-    		gunsAnimationMaterial5 = new ArrayList<Texture>();
+		gunsAnimationMaterial5 = new ArrayList<Texture>();
     		
     		gunsAnimationMaterial5.add(null);
     		gunsAnimationMaterial5.add(null);
@@ -319,10 +306,8 @@ public class Player extends GameComponent {
     		gunsAnimationMaterial5.add(null);
     		gunsAnimationMaterial5.add(new Texture(CHAINGUN_RES_LOC + UMGGD0));
     		gunsAnimationMaterial5.add(null);
-    	}
     	
-    	if(gunsAnimationMaterial6 == null) {
-    		gunsAnimationMaterial6 = new ArrayList<Texture>();
+		gunsAnimationMaterial6 = new ArrayList<Texture>();
     		
     		gunsAnimationMaterial6.add(null);
     		gunsAnimationMaterial6.add(null);
@@ -331,10 +316,8 @@ public class Player extends GameComponent {
     		gunsAnimationMaterial6.add(null);
     		gunsAnimationMaterial6.add(new Texture(CHAINGUN_RES_LOC + UMGGA0));
     		gunsAnimationMaterial6.add(null);
-    	}
     	
-    	if(gunsAnimationMaterial7 == null) {
-    		gunsAnimationMaterial7 = new ArrayList<Texture>();
+		gunsAnimationMaterial7 = new ArrayList<Texture>();
     		
     		gunsAnimationMaterial7.add(null);
     		gunsAnimationMaterial7.add(null);
@@ -343,17 +326,14 @@ public class Player extends GameComponent {
     		gunsAnimationMaterial7.add(null);
     		gunsAnimationMaterial7.add(new Texture(CHAINGUN_RES_LOC + UMGGB0));
     		gunsAnimationMaterial7.add(null);
-    	}
     	
-    	if(legMaterials == null) {
-    		legMaterials = new ArrayList<Texture>();
+
+		legMaterials = new ArrayList<Texture>();
     		
     		legMaterials.add(new Texture(WEAPONS_RES_LOC+"kick/"+PISFA0));
     		legMaterials.add(new Texture(WEAPONS_RES_LOC+"kick/"+PISFC0));
-    	}
     	
-    	if(gunsNoiseSounds == null) {
-    		gunsNoiseSounds = new ArrayList<Clip>();
+		gunsNoiseSounds = new ArrayList<Clip>();
     		
     		gunsNoiseSounds.add(AudioUtil.loadAudio(HAND_RES_LOC + GUNSOUND));
     		gunsNoiseSounds.add(AudioUtil.loadAudio(PISTOL_RES_LOC + GUNSOUND));
@@ -363,10 +343,8 @@ public class Player extends GameComponent {
     		gunsNoiseSounds.add(AudioUtil.loadAudio(CHAINGUN_RES_LOC + GUNSOUND));
     		gunsNoiseSounds.add(AudioUtil.loadAudio(ROCKET_LAUNCHER_RES_LOC + GUNSOUND));
     		gunsNoiseSounds.add(AudioUtil.loadAudio(FLAME_THROWER_RES_LOC + GUNSOUND));
-    	}
     	
-    	if(gunsReloadSounds == null) {
-    		gunsReloadSounds = new ArrayList<Clip>();
+		gunsReloadSounds = new ArrayList<Clip>();
     		
     		gunsReloadSounds.add(null);
     		gunsReloadSounds.add(null);
@@ -375,10 +353,8 @@ public class Player extends GameComponent {
     		gunsReloadSounds.add(AudioUtil.loadAudio(SUPER_SHOTGUN_RES_LOC + RELOADSOUND));
     		gunsReloadSounds.add(AudioUtil.loadAudio(CHAINGUN_RES_LOC + RELOADSOUND));
     		gunsReloadSounds.add(null);
-    	}
     	
-    	if(gunsClippingSounds == null) {
-    		gunsClippingSounds = new ArrayList<Clip>();
+		gunsClippingSounds = new ArrayList<Clip>();
     		
     		gunsClippingSounds.add(null);
     		gunsClippingSounds.add(null);
@@ -388,10 +364,8 @@ public class Player extends GameComponent {
     		gunsClippingSounds.add(AudioUtil.loadAudio(CHAINGUN_RES_LOC + CLIPSOUND));
     		gunsClippingSounds.add(null);
     		gunsClippingSounds.add(AudioUtil.loadAudio(FLAME_THROWER_RES_LOC + CLIPSOUND));
-    	}
     	
-    	if(gunsEmptyNoiseSounds == null) {
-    		gunsEmptyNoiseSounds = new ArrayList<Clip>();
+		gunsEmptyNoiseSounds = new ArrayList<Clip>();
     		
     		gunsEmptyNoiseSounds.add(null);
     		gunsEmptyNoiseSounds.add(AudioUtil.loadAudio(PISTOL_RES_LOC + EMPTY));
@@ -401,10 +375,8 @@ public class Player extends GameComponent {
     		gunsEmptyNoiseSounds.add(AudioUtil.loadAudio(CHAINGUN_RES_LOC + EMPTY));
     		gunsEmptyNoiseSounds.add(AudioUtil.loadAudio(ROCKET_LAUNCHER_RES_LOC + EMPTY));
     		gunsEmptyNoiseSounds.add(AudioUtil.loadAudio(FLAME_THROWER_RES_LOC + EMPTY));
-    	}
     	
-    	if(gunsLoadingSounds == null) {
-    		gunsLoadingSounds = new ArrayList<Clip>();
+		gunsLoadingSounds = new ArrayList<Clip>();
     		
     		gunsLoadingSounds.add(null);
     		gunsLoadingSounds.add(null);
@@ -413,10 +385,8 @@ public class Player extends GameComponent {
     		gunsLoadingSounds.add(null);
     		gunsLoadingSounds.add(AudioUtil.loadAudio(CHAINGUN_RES_LOC + LOADSOUND));
     		gunsLoadingSounds.add(null);
-    	}
     	
-    	if(playerNoises == null) {
-    		playerNoises = new ArrayList<Clip>();
+		playerNoises = new ArrayList<Clip>();
     		
     		playerNoises.add(AudioUtil.loadAudio(PLAYER_RES_LOC + "MOVE"));
     		playerNoises.add(AudioUtil.loadAudio(PLAYER_RES_LOC + "OOF"));
@@ -424,31 +394,23 @@ public class Player extends GameComponent {
     		playerNoises.add(AudioUtil.loadAudio(PLAYER_RES_LOC + "PLDETH"));
     		playerNoises.add(AudioUtil.loadAudio(PLAYER_RES_LOC + "jump/PLLAND"));
     		playerNoises.add(AudioUtil.loadAudio(PLAYER_RES_LOC + "KICK"));
-    	}
     	
-    	if(playerMovementNoises == null) {
-    		playerMovementNoises = new ArrayList<Clip>();
+		playerMovementNoises = new ArrayList<Clip>();
     		
     		for (int i = 1; i < 7; i++)
     			playerMovementNoises.add(AudioUtil.loadAudio(PLAYER_RES_LOC + "walking/FSHARD" + i));
-    	}
     	
-    	if(playerJumpNoises == null) {
-    		playerJumpNoises = new ArrayList<Clip>();
+		playerJumpNoises = new ArrayList<Clip>();
     		
     		for (int i = 1; i < 3; i++)
     			playerJumpNoises.add(AudioUtil.loadAudio(PLAYER_RES_LOC + "jump/PLJUMP" + i));
-    	}
     	
-    	if(flashLightNoises == null) {
-    		flashLightNoises = new ArrayList<Clip>();
+		flashLightNoises = new ArrayList<Clip>();
     		
     		flashLightNoises.add(AudioUtil.loadAudio(FLASHLIGHT_RES_LOC + "FLASHON"));
     		flashLightNoises.add(AudioUtil.loadAudio(FLASHLIGHT_RES_LOC + "FLASHOFF"));
-    	}
     	
-    	if(playerText == null) {
-    		playerText = new HashMap<String, HUD>();
+		playerText = new HashMap<String, HUD>();
     		
     		playerText.put("Life", new HUD("", new Vector2f(-0.6f,-0.235f), new Vector2f(1f,4f)));
     		playerText.put("Armor", new HUD("", new Vector2f(-0.6f,-0.175f), new Vector2f(1f,4f)));
@@ -458,7 +420,6 @@ public class Player extends GameComponent {
     		playerText.put("LifeHUD", new HUD(new Material(new Texture("medkit/MEDIA")), new Vector2f(-3.8f,-4.4f), new Vector2f(0.2f,0.2f)));
     		playerText.put("ArmorHUD", new HUD(new Material(new Texture("armor/MEDIA")), new Vector2f(-3.8f,-3.2f), new Vector2f(0.2f,0.2f)));
     		playerText.put("AmmoHUD", new HUD(new Material(new Texture("EMPTY")), new Vector2f(4.9f,-4.3f), new Vector2f(0.125f,0.2f)));
-    	}
     	
         if (gunMesh == null) {
             float sizeY = GUN_SIZE;

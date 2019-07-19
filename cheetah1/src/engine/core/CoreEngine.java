@@ -18,7 +18,10 @@ package engine.core;
 import static org.lwjgl.opengl.GL11.*;
 //import static org.lwjgl.openal.AL10.*;
 
+import javax.swing.JOptionPane;
+
 import engine.audio.AudioUtil;
+import engine.core.crash.CrashReport;
 import engine.core.utils.Log;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Window;
@@ -48,11 +51,17 @@ public class CoreEngine {
 	 * @param framerate of the display.
 	 */
 	public CoreEngine(int width, int height, double framerate, Game game) {
-		this.width = width;
-		this.height = height;
-		this.frameTime = 1.0/framerate;
-		this.game = game;
-		coreEngine = this;
+		try {
+			this.width = width;
+			this.height = height;
+			this.frameTime = 1.0/framerate;
+			this.game = game;
+			coreEngine = this;
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), 
+					e.getCause().getMessage(), JOptionPane.ERROR_MESSAGE);
+			Debug.crash(new CrashReport(e));
+		}
 	}
 	
 	/**

@@ -56,7 +56,6 @@ public class Lamp extends GameComponent {
     private float 						sizeX;
     private double 						health;
     private boolean 					dead;
-    private double						fireTime;
     private static ArrayList<Texture> 	animation;
     private Transform 					transform;
 
@@ -99,14 +98,13 @@ public class Lamp extends GameComponent {
 
             mesh = new Mesh(verts, indices, true);
         }
-        this.fireTime = 0;
         this.material = new Material(animation.get(0));
         this.state = STATE_IDLE;
         this.transform = transform;
-        if(light == null)
-	        this.light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
-	        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.1f, 
-	        				getTransform().getPosition().getZ()));
+        this.light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
+        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.1f, 
+        				getTransform().getPosition().getZ()));
+        light.addToEngine();
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         this.dead = false;
         this.health = 20;
@@ -135,6 +133,7 @@ public class Lamp extends GameComponent {
         if (!dead && health <= 0) {
             dead = true;
             state = STATE_DEAD;
+            light.removeToEngine();
             AudioUtil.playAudio(breakNoice, distance);
         }
         
@@ -159,7 +158,6 @@ public class Lamp extends GameComponent {
         }
         
         if (state == STATE_DEAD) {
-        	fireTime = (double) Time.getTime();
             dead = true;
             material.setDiffuse(animation.get(4));
         }
@@ -171,14 +169,7 @@ public class Lamp extends GameComponent {
      * @param shader to render
      * @param renderingEngine to use
      */
-    public void render(Shader shader, RenderingEngine renderingEngine) {
-    	double time = (double) Time.getTime();
-    	if((double)time < fireTime + 0.1f)
-    		renderingEngine.removeLight(light);
-    	else
-    		renderingEngine.addLight(light);
-    	meshRenderer.render(shader, renderingEngine);
-    }
+    public void render(Shader shader, RenderingEngine renderingEngine) {meshRenderer.render(shader, renderingEngine);}
     
     /**
      * Gets the transform of the object in projection.

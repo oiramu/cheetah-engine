@@ -463,7 +463,7 @@ public class Player extends GameComponent {
         legRenderer = new MeshRenderer(gunMesh, gunTransform, legMaterial);
         if (weaponState == null) { gotPistol(); }
         
-    	flashLight = new SpotLight(new Vector3f(0.3f,0.3f,0.175f), 0.8f, 
+    	flashLight = new SpotLight(new Vector3f(0.5f,0.5f,0.275f), 0.8f, 
     	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
 		fireLight = new SpotLight(gunLightColor, 1.6f, 
         		new Attenuation(attenuation,0,attenuation), getCamera().getPos(), new Vector3f(1,1,1), 0.7f);
@@ -889,14 +889,6 @@ public class Player extends GameComponent {
 	            	isFlashLightOn = true;
             	}
             }
-	        
-	        if(Debug.state) {
-				if (Input.getKeyDown(Input.KEY_F3))
-					Debug.state = false;
-            } else {
-            	if (Input.getKeyDown(Input.KEY_F3))
-            		Debug.state = true;
-            }
 	
 	        movementVector = zeroVector;
 	        if(!isInAir) {
@@ -929,7 +921,7 @@ public class Player extends GameComponent {
             if (Input.getKey(Input.KEY_SPACE)) {
             	if(!isInAir) {
             		AudioUtil.playAudio(playerJumpNoises.get(new Random().nextInt(playerJumpNoises.size())), 0);
-            		upAmt = 10.0f;
+            		upAmt = 50.0f;
             		movementVector = movementVector.add(camera.getForward());
             		isInAir = true;
             	}

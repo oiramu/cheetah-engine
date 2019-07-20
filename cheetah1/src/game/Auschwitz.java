@@ -172,6 +172,13 @@ public class Auschwitz implements Game {
         		AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
         		isPaused = true;
         	}
+        	if(Debug.state) {
+				if (Input.getKeyDown(Input.KEY_F3))
+					Debug.state = false;
+            } else {
+            	if (Input.getKeyDown(Input.KEY_F3))
+            		Debug.state = true;
+            }
         }
     }
 
@@ -309,14 +316,14 @@ public class Auschwitz implements Game {
                 getRenderingEngine().clearLights();
             }
 
+            levelNum += offset;
+            
             if(levelNum > 9)
             	currentEpisode = EPISODE_2;
             else if(levelNum > 19)
             	currentEpisode = EPISODE_3;
             else
             	currentEpisode = EPISODE_1;
-
-            levelNum += offset;
             
             switch(GAME_GRAPHICS) {
             	case "Low":

@@ -18,6 +18,7 @@ package game.walls;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Transform;
+import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
@@ -38,12 +39,13 @@ public class Wall extends GameComponent {
 	
 	/**
 	 * Chunk's wall constructor.
-	 * @param direction of the face
+	 * @param transform of wall
+	 * @param material of wall
+	 * @param mesh of wall
 	 */
 	public Wall(Transform transform, Material material, Mesh mesh) {
 		this.transform = transform;
-		if(meshRenderer == null)
-			meshRenderer = new MeshRenderer(mesh, new Transform(), material);
+		this.meshRenderer = new MeshRenderer(mesh, new Transform(), material);
 	}
 	
 	/**
@@ -65,5 +67,17 @@ public class Wall extends GameComponent {
      * @param renderingEngine to use
      */
     public void render(Shader shader, RenderingEngine renderingEngine) {meshRenderer.render(shader, renderingEngine);}
+
+    /**
+     * Returns the size of the door in the level.
+     * @return Size of the door.
+     */
+	public Vector2f getSize() {
+		if (transform.getRotation().getY() == 0) {
+            return new Vector2f(Level.LEVEL_HEIGHT, Level.SPOT_WIDTH);
+        } else {
+            return new Vector2f(Level.SPOT_WIDTH, Level.LEVEL_HEIGHT);
+        }
+	}
 
 }

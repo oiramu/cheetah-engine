@@ -31,7 +31,7 @@ import game.Level;
 /**
  *
  * @author Julio Vergara.
- * @version 1.1
+ * @version 1.2
  * @since 2017
  */
 public class Tree extends GameComponent {
@@ -41,18 +41,17 @@ public class Tree extends GameComponent {
     private MeshRenderer 		meshRenderer;
     
     private float 				sizeX;
-    
-    private static final String RES_LOC = "tree/MEDIA";
 
     private Transform 			transform;
 
     /**
-     * Constructor of the actual object.
+     * Constructor of the tree object.
      * @param transform the transform of the data.
+     * @param textureResLoc location of resources
+     * @param sizeY size of tree
      */
-    public Tree(Transform transform) {
+    public Tree(Transform transform, String textureResLoc, float sizeY) {
         if (mesh == null) {
-            float sizeY = 0.8f;
             sizeX = (float) ((double) sizeY / (1.12835820896f * 2.0));
 
             float offsetX = 0.0f;
@@ -75,7 +74,7 @@ public class Tree extends GameComponent {
         }
 
         if (material == null) {
-			material = new Material(new Texture(RES_LOC));
+			material = new Material(new Texture(textureResLoc));
         }
 
         this.transform = transform;

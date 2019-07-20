@@ -76,9 +76,22 @@ public class GameObject {
 	 * @param renderingEngine to render
 	 */
 	public void render(Shader shader, RenderingEngine renderingEngine) {
-		for(GameComponent component : components)
-			if(component.getDistance() < POP_IN)
-				component.render(shader, renderingEngine);
+		for(GameComponent component : components) {
+			switch(component.componentType) {
+				case "particle":
+					if(component.getDistance() < PARTICLES_POP_IN)
+						component.render(shader, renderingEngine);
+					break;
+				case "grass":
+					if(component.getDistance() < GRASS_POP_IN)
+						component.render(shader, renderingEngine);
+					break;
+				default:
+					if(component.getDistance() < POP_IN)
+						component.render(shader, renderingEngine);
+					break;
+			}
+		}	
 	}
 	
 	/**

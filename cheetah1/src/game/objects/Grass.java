@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Julio Vergara.
+ * Copyright 2019 Carlos Rodriguez.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,12 @@
  */
 package game.objects;
 
-import engine.components.Attenuation;
-import engine.components.BaseLight;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
-import engine.components.PointLight;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
+import engine.core.utils.Util;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
 import engine.rendering.RenderingEngine;
@@ -33,30 +31,27 @@ import game.Level;
 
 /**
  *
- * @author Julio Vergara
- * @version 1.2
- * @since 2017
+ * @author Carlos Rodriguez.
+ * @version 1.0
+ * @since 2019
  */
-public class Lantern extends GameComponent {
+public class Grass extends GameComponent {
     
     private Mesh 				mesh;
     private Material 			material;
     private MeshRenderer 		meshRenderer;
-    private BaseLight			light;
-    private float 				sizeX;
-    
-    private static final String RES_LOC = "lantern/MEDIA";
-
     private Transform 			transform;
+    private float 				sizeX;
+    private int					grassSeed;
 
     /**
-     * Constructor of the actual object.
-     * @param transform the transform of the object in a 3D space.
+     * Constructor of the grass object.
+     * @param transform the transform of the data.
      */
-    public Lantern(Transform transform) {
+    public Grass(Transform transform) {
         if (mesh == null) {
-            float sizeY = 0.3f;
-            sizeX = (float) ((double) sizeY / (1.5f * 2.0));
+        	float sizeY = 0.5f;
+            sizeX = (float) ((double) sizeY / (1.12835820896f * 2.0));
 
             float offsetX = 0.0f;
             float offsetY = 0.0f;
@@ -76,37 +71,39 @@ public class Lantern extends GameComponent {
 
             mesh = new Mesh(verts, indices, true);
         }
-
-        if (material == null) {
-            material = new Material(new Texture(RES_LOC));
-        }
-        
-        this.transform = transform;
+        this.grassSeed = Util.randomInRange(1, 2);
+        this.componentType = "grass";
+		switch(grassSeed) {
+			case 1:
+				this.material = new Material(new Texture("grass/SPDCY0"));
+				break;
+			case 2:
+				this.material = new Material(new Texture("grass/SPDCM0"));
+				break;
+		}
+		this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
-
-    	light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
-        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.25f, 
-        				getTransform().getPosition().getZ()));
-        light.addToEngine();
     }
 
     /**
-     * Method that updates the object's data.
+     * Updates the object every single frame.
      * @param delta of time
      */
     public void update(double delta) {
     	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
         Vector3f orientation = playerDistance.normalized();
 		float distance = playerDistance.length();
-		setDistance(distance);
+        setDistance(distance);
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
         if (orientation.getX() > 0) {
             angle = 180 + angle;
         }
+
         transform.setRotation(0, angle + 90, 0);
-       }
+
+    }
 
     /**
      * Method that renders the object's mesh.

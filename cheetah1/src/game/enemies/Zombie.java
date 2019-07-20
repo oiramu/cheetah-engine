@@ -27,6 +27,7 @@ import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
+import engine.core.utils.Util;
 import engine.physics.PhysicsUtil;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
@@ -104,11 +105,9 @@ public class Zombie extends GameComponent {
      * @param drops if it does
      */
     public Zombie(Transform transform, boolean drops) {
-        if (rand == null) {
-            rand = new Random();
-        }
+        rand = new Random();
 
-        this.zombieSeed = new Random().nextInt(2) + 1;
+        this.zombieSeed = Util.randomInRange(1, 2);
         
 		if (animation1 == null) {
             animation1 = new ArrayList<Texture>();
@@ -164,10 +163,14 @@ public class Zombie extends GameComponent {
             animation2.add(new Texture(RES_LOC + "ZODTE2"));
         }
 		
-		if(zombieSeed == 1)
-        	animation = animation1;
-        else if(zombieSeed == 2)
-        	animation = animation2;
+		switch(zombieSeed) {
+			case 1:
+				animation = animation1;
+				break;
+			case 2:
+				animation = animation2;
+				break;
+		}
         
         if (seeNoises == null) {
         	seeNoises = new ArrayList<Clip>();
@@ -197,11 +200,9 @@ public class Zombie extends GameComponent {
         		deathNoises.add(AudioUtil.loadAudio(RES_LOC + "death" + i));
         }
         
-        if(gibs == null)
-        	gibs = new ArrayList<ZombieMeat>();
+        gibs = new ArrayList<ZombieMeat>();
         
-        if(removeGibs == null)
-        	removeGibs = new ArrayList<ZombieMeat>();
+        removeGibs = new ArrayList<ZombieMeat>();
 
         if (mesh == null) {
             final float sizeY = 0.9f;

@@ -30,6 +30,7 @@ import game.Level;
 public abstract class GameComponent {
 	
 	private float distance;
+	public String componentType = "";
 
 	private Transform transform;
 	public void input() {}

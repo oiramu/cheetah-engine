@@ -19,6 +19,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.lwjgl.BufferUtils;
 
@@ -157,6 +158,16 @@ public class Util {
      */
     public static int clamp(int max, int value) {
     	return Math.max(0,Math.min(max, value));
+    }
+    
+    /**
+     * Generates a random number in a variable range.
+     * @param min number
+     * @param max number
+     * @return random number
+     */
+    public static int randomInRange(int min, int max) {
+    	return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
     
 }

@@ -154,6 +154,7 @@ public class Bleed extends GameComponent {
 
             mesh = new Mesh(verts, indices, true);
         }
+        this.componentType = "particle";
         this.material = new Material(animation.get(0));
         this.state = STATE_BLEED;
         this.transform = transform;

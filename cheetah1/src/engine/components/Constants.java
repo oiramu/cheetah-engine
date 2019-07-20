@@ -37,6 +37,7 @@ public class Constants {
 	public static float 	POP_IN;
 	public static float 	PARTICLES_POP_IN;
 	public static float 	LIGHT_POP_IN;
+	public static float 	GRASS_POP_IN;
 	public static float 	GRAVITY;
 	public static short 	PARTICLES_LEVEL;
 	
@@ -107,6 +108,12 @@ public class Constants {
 						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
 						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
 						    		LIGHT_POP_IN = Float.parseFloat(treatment[0]);
+						    		break;
+						    	case "GRASS_POP_IN":
+						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='
+						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
+						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
+						    		GRASS_POP_IN = Float.parseFloat(treatment[0]);
 						    		break;
 						    	case "GRAVITY":
 						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='

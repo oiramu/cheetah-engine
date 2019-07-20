@@ -55,6 +55,7 @@ import game.objects.Clock;
 import game.objects.DeadJew;
 import game.objects.Explosion;
 import game.objects.Fire;
+import game.objects.Grass;
 import game.objects.Oven;
 import game.objects.Hanged;
 import game.objects.Kitchen;
@@ -78,6 +79,7 @@ import game.pickUps.RocketLauncher;
 import game.pickUps.Shell;
 import game.pickUps.Shotgun;
 import game.pickUps.SuperShotgun;
+import game.walls.BarsWall;
 import game.walls.Door;
 import game.walls.LockedDoor;
 import game.walls.SecretWall;
@@ -143,11 +145,12 @@ public class Level extends GameComponent {
     private ArrayList<Vector2f> collisionPosStart;
     private ArrayList<Vector2f> collisionPosEnd;
     
-    //Doors
+    //Walls
     private ArrayList<Door> doors;
     private ArrayList<SecretWall> secretWalls;
     private ArrayList<LockedDoor> lockedDoors;
-    private ArrayList<Wall>  walls;
+    private ArrayList<Wall> walls;
+    private ArrayList<BarsWall> barsWalls;
     
     //Pick-Ups
     private ArrayList<Shotgun> shotguns;
@@ -180,6 +183,7 @@ public class Level extends GameComponent {
     private ArrayList<Oven> furnaces;
     private ArrayList<Kitchen> kitchens;
     private ArrayList<Barrel> barrels;
+    private ArrayList<Grass> grass;
     
     //Active objects
     @SuppressWarnings("unused")
@@ -204,6 +208,8 @@ public class Level extends GameComponent {
     private BaseLight directionalLight;
     private GameObject objects;
     private GameComponent shootingObjective;
+	private boolean dayTransition = false;
+	private float dayLightValue;
 
     /**
      * Constructor of the level in the game.
@@ -234,6 +240,8 @@ public class Level extends GameComponent {
         objects.add(captains);
         //Objects
         objects.add(doors);
+        objects.add(barsWalls);
+        objects.add(walls);
         objects.add(secretWalls);
         objects.add(trees);
         objects.add(flares);
@@ -251,6 +259,7 @@ public class Level extends GameComponent {
         objects.add(kitchens);
         objects.add(barrels);
         objects.add(lockedDoors);
+        objects.add(grass);
         //Power-ups
         objects.add(medkits);
         objects.add(foods);
@@ -265,8 +274,6 @@ public class Level extends GameComponent {
         objects.add(superShotguns); 
         objects.add(keys);
         objects.add(rocketLaunchers);
-  
-        objects.add(walls);
         
         renderingEngine.setMainCamera(player.getCamera());
     }
@@ -307,6 +314,8 @@ public class Level extends GameComponent {
         	checkDamage(furnaces, punchSolidNoise, 69);
         	checkDamage(kitchens, punchSolidNoise, 69);
         	checkDamage(lockedDoors, punchSolidNoise, 69);
+        	checkDamage(barsWalls, punchSolidNoise, 69);
+        	checkDamage(trees, punchSolidNoise, 69);
         }
 
         player.input();
@@ -341,6 +350,19 @@ public class Level extends GameComponent {
         objects.removeComponents(removeRocketLauncherList);
         objects.removeComponents(removeBleedingList);
         objects.removeComponents(removeFireList);
+        
+        if(dayTransition) {
+        	float oscillate = (float) Math.sin(Time.getTime() * 0.0035f * (2 * Math.PI));
+        	dayLightValue += oscillate/500;
+        	renderingEngine.setFogDensity(0.0035f);
+            renderingEngine.setFogGradient(5.0f);
+            if(dayLightValue >= 1.25f)
+            	dayLightValue = 1.25f;
+            else if(dayLightValue <= 0.1f)
+            	dayLightValue = 0.1f;
+        	renderingEngine.setAmbientLight(new Vector3f(dayLightValue, dayLightValue, dayLightValue));
+        	renderingEngine.setFogColor(new Vector3f(dayLightValue/20, dayLightValue/2, dayLightValue));
+        }
         
         removeMedkitList.clear();
         removeFoodList.clear();
@@ -432,6 +454,9 @@ public class Level extends GameComponent {
             for (int i = 0; i < exitPoints.size(); i++) {
                 if (Math.abs(exitPoints.get(i).sub(position).length()) < 1f) {
                 	Auschwitz.loadLevel(exitOffsets.get(i), true);
+                } else if (Math.abs(exitPoints.get(i).sub(position).length()) < 1.25f) {
+                	player.playerText.get("Notification").setText("Press e to scape to other floor");
+                    player.notificationTime = Time.getTime();
                 }
             }
         }
@@ -535,6 +560,9 @@ public class Level extends GameComponent {
             for (LockedDoor lockedDoor : lockedDoors)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, lockedDoor.getTransform().getPosition().getXZ(), lockedDoor.getSize()));
             
+            for (BarsWall barsWall : barsWalls)
+                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, barsWall.getTransform().getPosition().getXZ(), barsWall.getSize()));
+            
             for (Zombie zombie : zombies)
             	if(zombie.isQuiet)
             		collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, zombie.getTransform().getPosition().getXZ(), zombie.getSize()));
@@ -587,6 +615,15 @@ public class Level extends GameComponent {
         
         for (LockedDoor lockedDoor : lockedDoors) {
             Vector2f collision = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, lockedDoor.getTransform().getPosition().getXZ(), lockedDoor.getSize());
+
+            if (collision != null && (nearestIntersect == null
+                    || nearestIntersect.sub(lineStart).length() > collision.sub(lineStart).length())) {
+                nearestIntersect = collision;
+            }
+        }
+        
+        for (BarsWall barsWall : barsWalls) {
+            Vector2f collision = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, barsWall.getTransform().getPosition().getXZ(), barsWall.getSize());
 
             if (collision != null && (nearestIntersect == null
                     || nearestIntersect.sub(lineStart).length() > collision.sub(lineStart).length())) {
@@ -1015,8 +1052,10 @@ public class Level extends GameComponent {
         this.bleeding = new ArrayList<Bleed>();
         this.fire = new ArrayList<Fire>();
         this.walls = new ArrayList<Wall>();
+        this.barsWalls = new ArrayList<BarsWall>();
+        this.grass = new ArrayList<Grass>();
 
-    	ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+        ArrayList<Vertex> vertices = new ArrayList<Vertex>();
     	ArrayList<Integer> indices = new ArrayList<Integer>();
         
         for (int i = 1; i < bitmap.getWidth() - 1; i++) {
@@ -1098,6 +1137,27 @@ public class Level extends GameComponent {
                         	lockedTransform.setRotation(0, 90, 0);
                             lockedDoors.add(new LockedDoor(lockedTransform, lockedTransform.getPosition().add(new Vector3f(0, 0, -0.9f)), false));
                         }
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 30) {
+                        Transform barTransform = new Transform();
+
+                        if ((bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0) {
+                        	barTransform.setPosition(i, 0,j + SPOT_LENGTH / 2);
+                            barsWalls.add(new BarsWall(barTransform));
+                        }
+                        if ((bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0) {
+                        	barTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
+                        	barTransform.setRotation(0, 90, 0);
+                        	barsWalls.add(new BarsWall(barTransform));
+                        }
+                        if ((bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0) {
+                        	barTransform.setPosition(i, 0,j + SPOT_LENGTH / 2);
+                            barsWalls.add(new BarsWall(barTransform));
+                        }
+                        if ((bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0) {
+                        	barTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
+                        	barTransform.setRotation(0, 90, 0);
+                        	barsWalls.add(new BarsWall(barTransform));
+                        }
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 128) {
                     	naziSoldiers.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 1) {
@@ -1105,7 +1165,11 @@ public class Level extends GameComponent {
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 192) {
                         medkits.add(new Medkit(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 100) {
-                        trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                        trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), "tree/MEDIA", 0.8f));
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 101) {
+                        trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), "tree/SPDCQ0", Util.randomInRange(1, 3)));
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 102) {
+                        grass.add(new Grass(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 50) {
                     	flares.add(new Lantern(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, LEVEL_HEIGHT * 0.75f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 51) {
@@ -1183,6 +1247,8 @@ public class Level extends GameComponent {
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 180) {
                     	//who do drop a key
                     	ghosts.add(new Ghost(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                    } else if ((bitmap.getPixel(i, j) & 0xFF0000) == 0) {
+                    	dayTransition = true;
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) < 128 && (bitmap.getPixel(i, j) & 0x0000FF) > 96) {
                         int offset = (bitmap.getPixel(i, j) & 0x0000FF) - 96;
                         exitPoints.add(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0f, (j + 0.5f) * SPOT_LENGTH));
@@ -1195,10 +1261,13 @@ public class Level extends GameComponent {
                     addFace(indices, vertices.size(), true);
     				addVertices(vertices, i, j, 0, true, false, true, texCoords);
     				
-    				//Generate Ceiling
-                    addFace(indices, vertices.size(), false);
-    				addVertices(vertices, i, j, 1, true, false, true, texCoords);                    
-                    texCoords = calcTextCoords((bitmap.getPixel(i, j) & 0xFF0000) >> 16);
+					//Generate Ceiling
+    				if (((bitmap.getPixel(i, j) & 0xFF0000) != 0)) {
+	                    addFace(indices, vertices.size(), false);
+	    				addVertices(vertices, i, j, 1, true, false, true, texCoords);
+    				}
+    				
+    				texCoords = calcTextCoords((bitmap.getPixel(i, j) & 0xFF0000) >> 16);
                     
                     SecretWall.xHigher = texCoords[0];
                     SecretWall.xLower = texCoords[1];
@@ -1233,14 +1302,13 @@ public class Level extends GameComponent {
                     
             }
         }
-        Vertex[] vertArray = new Vertex[vertices.size()];
-        Integer[] intArray = new Integer[indices.size()];
         
-        vertices.toArray(vertArray);
-        indices.toArray(intArray);
+        Vertex[] vertaArray = new Vertex[vertices.size()];
+        Integer[] intaArray = new Integer[indices.size()];
+        vertices.toArray(vertaArray);
+        indices.toArray(intaArray);
+        walls.add(new Wall(new Transform(), material, new Mesh(vertaArray, Util.toIntArray(intaArray), true, true)));
         
-        Mesh geometry = new Mesh(vertArray, Util.toIntArray(intArray), true, true);
-        walls.add(new Wall(new Transform(), material, geometry));
         if(directionalLight == null)
         	directionalLight = new DirectionalLight(new Vector3f(0.75f,0.75f,0.75f), 
             		1f, new Vector3f(bitmap.getWidth()/2,10,bitmap.getHeight()/2));

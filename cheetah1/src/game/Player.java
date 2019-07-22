@@ -921,7 +921,7 @@ public class Player extends GameComponent {
             if (Input.getKey(Input.KEY_SPACE)) {
             	if(!isInAir) {
             		AudioUtil.playAudio(playerJumpNoises.get(new Random().nextInt(playerJumpNoises.size())), 0);
-            		upAmt = 50.0f;
+            		upAmt = 10.0f;
             		movementVector = movementVector.add(camera.getForward());
             		isInAir = true;
             	}

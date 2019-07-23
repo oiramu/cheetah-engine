@@ -131,8 +131,8 @@ public class Explosion extends GameComponent {
         }
     	AudioUtil.playAudio(boomNoice.get(new Random().nextInt(boomNoice.size())),
     			transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
-    	if(transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length() < 1.0f && !Level.getPlayer().isShooting) {
-			if(Level.getPlayer().isArmor() == false)
+    	if(getTransform().getPosition().sub(Level.getPlayer().getCamera().getPos()).length() < 1.0f) {
+			if(!Level.getPlayer().isArmor())
 				Level.getPlayer().addHealth((int) -85, "Explosion");
         	else
         		Level.getPlayer().addArmor((int) -85);

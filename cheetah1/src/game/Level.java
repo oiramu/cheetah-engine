@@ -42,6 +42,7 @@ import engine.rendering.Vertex;
 import engine.core.utils.Log;
 import engine.core.utils.Util;
 import game.enemies.Captain;
+import game.enemies.Commander;
 import game.enemies.Dog;
 import game.enemies.Ghost;
 import game.enemies.NaziSergeant;
@@ -61,9 +62,11 @@ import game.objects.Hanged;
 import game.objects.Kitchen;
 import game.objects.Lamp;
 import game.objects.Lantern;
+import game.objects.LightPost;
 import game.objects.Pendule;
 import game.objects.Pillar;
 import game.objects.Pipe;
+import game.objects.Sign;
 import game.objects.Table;
 import game.objects.Tree;
 import game.pickUps.Armor;
@@ -160,6 +163,7 @@ public class Level extends GameComponent {
     private ArrayList<Shell> shells;
     private ArrayList<Bag> bags;
     private ArrayList<Machinegun> machineguns;
+    private ArrayList<Rocket> rockets;
     private ArrayList<Armor> armors;
     private ArrayList<SuperShotgun> superShotguns;
     private ArrayList<Helmet> helmets;
@@ -184,11 +188,12 @@ public class Level extends GameComponent {
     private ArrayList<Kitchen> kitchens;
     private ArrayList<Barrel> barrels;
     private ArrayList<Grass> grass;
+    private ArrayList<LightPost> lightPosts;
+    private ArrayList<Sign> signs;
     
     //Active objects
     @SuppressWarnings("unused")
 	private ArrayList<Explosion> explosions;
-    private ArrayList<Rocket> rockets;
     private ArrayList<Bleed> bleeding;
     private ArrayList<Fire> fire;
    
@@ -200,6 +205,7 @@ public class Level extends GameComponent {
     private ArrayList<Ghost> ghosts;
     private ArrayList<Zombie> zombies;
     private ArrayList<Captain> captains;
+    private ArrayList<Commander> commanders;
 
     //Level
     private Bitmap bitmap;
@@ -208,6 +214,7 @@ public class Level extends GameComponent {
     private BaseLight directionalLight;
     private GameObject objects;
     private GameComponent shootingObjective;
+    
 	private boolean dayTransition = false;
 	private float dayLightValue;
 
@@ -238,6 +245,7 @@ public class Level extends GameComponent {
         objects.add(ghosts);
         objects.add(zombies);
         objects.add(captains);
+        objects.add(commanders);
         //Objects
         objects.add(doors);
         objects.add(barsWalls);
@@ -260,6 +268,8 @@ public class Level extends GameComponent {
         objects.add(barrels);
         objects.add(lockedDoors);
         objects.add(grass);
+        objects.add(lightPosts);
+        objects.add(signs);
         //Power-ups
         objects.add(medkits);
         objects.add(foods);
@@ -274,6 +284,7 @@ public class Level extends GameComponent {
         objects.add(superShotguns); 
         objects.add(keys);
         objects.add(rocketLaunchers);
+        objects.add(rockets);
         
         renderingEngine.setMainCamera(player.getCamera());
     }
@@ -303,6 +314,7 @@ public class Level extends GameComponent {
         	checkDamage(ghosts, null, 255);
         	checkDamage(zombies, punchNoise, 1);
         	checkDamage(captains, punchSolidNoise, 1);
+        	checkDamage(commanders, punchSolidNoise, 1);
         	checkDamage(lamps, punchSolidNoise, 1);
         	checkDamage(pillars, punchSolidNoise, 1);
         	checkDamage(barrels, barrelNoise, 3);
@@ -316,6 +328,8 @@ public class Level extends GameComponent {
         	checkDamage(lockedDoors, punchSolidNoise, 69);
         	checkDamage(barsWalls, punchSolidNoise, 69);
         	checkDamage(trees, punchSolidNoise, 69);
+        	checkDamage(lightPosts, punchSolidNoise, 69);
+        	checkDamage(signs, punchSolidNoise, 69);
         }
 
         player.input();
@@ -350,6 +364,15 @@ public class Level extends GameComponent {
         objects.removeComponents(removeRocketLauncherList);
         objects.removeComponents(removeBleedingList);
         objects.removeComponents(removeFireList);
+        
+        objects.sortNumberComponents(secretWalls);
+   		objects.sortNumberComponents(naziSoldiers);
+   		objects.sortNumberComponents(dogs);
+   		objects.sortNumberComponents(ssSoldiers);
+   		objects.sortNumberComponents(naziSeargeants);
+   		objects.sortNumberComponents(zombies);
+   		objects.sortNumberComponents(captains);
+   		objects.sortNumberComponents(commanders);
         
         if(dayTransition) {
         	float oscillate = (float) Math.sin(Time.getTime() * 0.0035f * (2 * Math.PI));
@@ -390,17 +413,7 @@ public class Level extends GameComponent {
      * @param shader to render
      * @param renderingEngine to use
      */
-    public void render(Shader shader, RenderingEngine renderingEngine) {
-    	objects.render(shader, renderingEngine);
-        
-   		objects.sortNumberComponents(secretWalls);
-   		objects.sortNumberComponents(naziSoldiers);
-   		objects.sortNumberComponents(dogs);
-   		objects.sortNumberComponents(ssSoldiers);
-   		objects.sortNumberComponents(naziSeargeants);
-   		objects.sortNumberComponents(zombies);
-   		objects.sortNumberComponents(captains);
-    }
+    public void render(Shader shader, RenderingEngine renderingEngine) { objects.render(shader, renderingEngine); }
     
     /**
      * Method that opens the accessible doors in the level.
@@ -563,6 +576,12 @@ public class Level extends GameComponent {
             for (BarsWall barsWall : barsWalls)
                 collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, barsWall.getTransform().getPosition().getXZ(), barsWall.getSize()));
             
+            for (LightPost lightPost : lightPosts)
+                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, lightPost.getTransform().getPosition().getXZ(), lightPost.getSize()));
+            
+            for (Sign sign : signs)
+                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, sign.getTransform().getPosition().getXZ(), sign.getSize()));
+            
             for (Zombie zombie : zombies)
             	if(zombie.isQuiet)
             		collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, zombie.getTransform().getPosition().getXZ(), zombie.getSize()));
@@ -570,6 +589,10 @@ public class Level extends GameComponent {
             for (Captain captain : captains)
             	if(captain.isQuiet)
             		collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, captain.getTransform().getPosition().getXZ(), captain.getSize()));
+            
+            for (Commander commander : commanders)
+            	if(commander.isQuiet)
+            		collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, commander.getTransform().getPosition().getXZ(), commander.getSize()));
             
         }
 
@@ -652,6 +675,9 @@ public class Level extends GameComponent {
             
             Vector2f captainIntersect = null;
             Captain nearestCaptain = null;
+            
+            Vector2f commanderIntersect = null;
+            Commander nearestCommander = null;
 
             for (NaziSoldier naziSoldier : naziSoldiers) {
                 Vector2f collision = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, naziSoldier.getTransform().getPosition().getXZ(), naziSoldier.getSize());
@@ -723,6 +749,16 @@ public class Level extends GameComponent {
                 	nearestCaptain= captain;
                 }
             }
+            
+            for (Commander commander : commanders) {
+                Vector2f collision = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, commander.getTransform().getPosition().getXZ(), commander.getSize());
+
+                if (collision != null && (commanderIntersect == null
+                        || commanderIntersect.sub(lineStart).length() > collision.sub(lineStart).length())) {
+                	commanderIntersect = collision;
+                	nearestCommander= commander;
+                }
+            }
 
             if((player.weaponType == player.BULLET && player.getWeaponState() != "chaingun" && player.getBullets() > 0) || player.weaponType == player.SHELL && player.getShells() > 0 || (player.weaponType == player.BULLET && player.chaingunCanFire && player.getWeaponState() == "chaingun" && player.getBullets() > 0)) {
 	            if (naziIntersect != null && (nearestIntersect == null
@@ -760,6 +796,11 @@ public class Level extends GameComponent {
 	                    || nearestIntersect.sub(lineStart).length() > captainIntersect.sub(lineStart).length())) {
 	            	nearestCaptain.damage(player.getDamage());
 	            	addBleeding(nearestCaptain);
+	            }
+	            if (commanderIntersect != null && (nearestIntersect == null
+	                    || nearestIntersect.sub(lineStart).length() > commanderIntersect.sub(lineStart).length())) {
+	            	nearestCommander.damage(player.getDamage());
+	            	addBleeding(nearestCommander);
 	            }
         	}
             if(player.weaponType == player.ROCKET || player.weaponType == player.GAS) {
@@ -805,6 +846,12 @@ public class Level extends GameComponent {
 	            	setShootingObjective(nearestCaptain);
 	            	if(player.weaponType == player.GAS && player.getGas() > 0 && nearestCaptain.getDistance() < FLAME_RANGE)
 	            		addFire(nearestCaptain, false);
+	            }         
+	            if (commanderIntersect != null && (nearestIntersect == null
+	                    || nearestIntersect.sub(lineStart).length() > commanderIntersect.sub(lineStart).length())) {
+	            	setShootingObjective(nearestCommander);
+	            	if(player.weaponType == player.GAS && player.getGas() > 0 && nearestCommander.getDistance() < FLAME_RANGE)
+	            		addFire(nearestCommander, false);
 	            }
         	}
             if(player.weaponType == player.MELEE) {
@@ -841,6 +888,11 @@ public class Level extends GameComponent {
 	            if (captainIntersect != null && (nearestIntersect == null
 	                    || /*nearestIntersect.sub(lineStart).length() >*/ captainIntersect.sub(lineStart).length() < MELEE_RANGE)) {
 	            	nearestCaptain.damage(player.getMeleeDamage());
+	            }
+	            
+	            if (commanderIntersect != null && (nearestIntersect == null
+	                    || /*nearestIntersect.sub(lineStart).length() >*/ commanderIntersect.sub(lineStart).length() < MELEE_RANGE)) {
+	            	nearestCommander.damage(player.getMeleeDamage());
 	            }
         	}
             
@@ -885,6 +937,13 @@ public class Level extends GameComponent {
     	            	nearestCaptain.damage(barrel.damage);
     	            	addBleeding(nearestCaptain);
     	            	addFire(nearestCaptain, false);
+    	            }
+                    
+                    if (commanderIntersect != null && (nearestIntersect == null
+    	                    || nearestIntersect.sub(lineStart).length() > commanderIntersect.sub(lineStart).length())) {
+    	            	nearestCommander.damage(barrel.damage);
+    	            	addBleeding(nearestCommander);
+    	            	addFire(nearestCommander, false);
     	            }
                 }
             }
@@ -1017,6 +1076,7 @@ public class Level extends GameComponent {
         this.ghosts = new ArrayList<Ghost>();
         this.zombies = new ArrayList<Zombie>();
         this.captains = new ArrayList<Captain>();
+        this.commanders = new ArrayList<Commander>();
         //Power-ups
         this.medkits = new ArrayList<Medkit>();
         this.foods = new ArrayList<Food>();
@@ -1054,6 +1114,8 @@ public class Level extends GameComponent {
         this.walls = new ArrayList<Wall>();
         this.barsWalls = new ArrayList<BarsWall>();
         this.grass = new ArrayList<Grass>();
+        this.lightPosts = new ArrayList<LightPost>();
+        this.signs = new ArrayList<Sign>();
 
         ArrayList<Vertex> vertices = new ArrayList<Vertex>();
     	ArrayList<Integer> indices = new ArrayList<Integer>();
@@ -1174,6 +1236,12 @@ public class Level extends GameComponent {
                     	flares.add(new Lantern(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, LEVEL_HEIGHT * 0.75f, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 51) {
                     	lamps.add(new Lamp(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 52) {
+                    	//left
+                    	lightPosts.add(new LightPost(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), "/LightPost/Left"));
+                    }else if ((bitmap.getPixel(i, j) & 0x0000FF) == 53) {
+                    	//Right
+                    	lightPosts.add(new LightPost(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), "/LightPost/Right"));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 55) {
                         bones.add(new Bones(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 60) {
@@ -1196,6 +1264,8 @@ public class Level extends GameComponent {
                         captains.add(new Captain(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 92) {
                         captains.add(new Captain(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), false));
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 93) {
+                        commanders.add(new Commander(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 110) {
                         ssSoldiers.add(new SsSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 120) {
@@ -1236,6 +1306,8 @@ public class Level extends GameComponent {
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 170) {
                     	//BronzeKey
                     	keys.add(new Key(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), false, true));
+                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 175) {
+                        signs.add(new Sign(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 160) {
                         barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 166) {

@@ -103,9 +103,7 @@ public class Captain extends GameComponent {
      * @param dropsKey if he does
      */
     public Captain(Transform transform, boolean dropsKey) {
-        if (rand == null) {
-            rand = new Random();
-        }
+        rand = new Random();
 
         if (animation == null) {
             animation = new ArrayList<Texture>();
@@ -131,8 +129,8 @@ public class Captain extends GameComponent {
             final float sizeY = 1.0f;
             sizeX = (float) ((double) sizeY / (sizeY * 2.0));
 
-            final float offsetX = 0.05f;
-            final float offsetY = 0.01f;
+            final float offsetX = 0.0f;
+            final float offsetY = 0.0f;
 
             final float texMinX = -offsetX;
             final float texMaxX = -1 - offsetX;
@@ -153,10 +151,8 @@ public class Captain extends GameComponent {
         this.transform = transform;
         this.material = new Material(animation.get(0));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
-        if(light == null)
-        	light = new SpotLight(new Vector3f(0.5f,0.3f,0.1f), 0.8f, 
-        	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f); 
-        
+        this.light = new SpotLight(new Vector3f(0.5f,0.3f,0.1f), 0.8f, 
+        	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);    
         this.state = 0;
         this.canAttack = true;
         this.canLook = true;
@@ -244,9 +240,9 @@ public class Captain extends GameComponent {
                     state = STATE_ATTACK;
                 }
 
-                if (distance > 1.3f) {
+                if (distance > 1.5f) {
                     orientation.setY(0);
-                    float moveSpeed = 1.5f;
+                    float moveSpeed = 1.75f;
 
                     Vector3f oldPos = transform.getPosition();
                     Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * delta)));
@@ -323,7 +319,7 @@ public class Captain extends GameComponent {
                             	light.removeToEngine();
                             } else {
                             	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
-                            	if(player.isArmor() == false) {
+                            	if(!player.isArmor()) {
                             		player.addHealth((int) -damage, "Schutzstaffel Captain");
                             	}else {
                             		player.addArmor((int) -damage);
@@ -364,15 +360,16 @@ public class Captain extends GameComponent {
         if (state == STATE_DEAD) {
         	isQuiet = true;
         	chaingun = new Chaingun(new Transform(transform.getPosition()), false);
-            bullet = new Bullet(new Transform(transform.getPosition()), false);
-        	key = new Key(new Transform(transform.getPosition()), true, false);
-        	bullet.update(delta);
-        	key.update(delta);
         	chaingun.update(delta);
+            bullet = new Bullet(new Transform(transform.getPosition()), false);
+            bullet.update(delta);
+            if(dropsKey) {
+            	key = new Key(new Transform(transform.getPosition()), true, false);
+            	key.update(delta);
+            }
         	material.setDiffuse(animation.get(11));   	
             dead = true;  
-            if (distance < bullet.PICKUP_THRESHHOLD && distance < key.PICKUP_THRESHHOLD
-            		&& distance < chaingun.PICKUP_THRESHHOLD)
+            if (distance < bullet.PICKUP_THRESHHOLD && distance < chaingun.PICKUP_THRESHHOLD)
             	state = STATE_POST_DEATH;
         }
         

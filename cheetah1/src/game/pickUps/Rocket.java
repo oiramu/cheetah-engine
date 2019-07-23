@@ -61,8 +61,8 @@ public class Rocket extends GameComponent {
     public Rocket(Transform transform, boolean shouldFloat, int amount) {
     	if(amount == 1) {
 	        if (mesh == null) {
-	        	float sizeY = 0.15f;
-	            float sizeX = (float) ((double) sizeY / (0.2666666666666667f * 4.0));
+	        	float sizeY = 0.3f;
+	            float sizeX = 0.1f;
 	
 	            float offsetX = 0.0f;
 	            float offsetY = 0.0f;
@@ -83,9 +83,7 @@ public class Rocket extends GameComponent {
 	            mesh = new Mesh(verts, indices, true);
 	        }
 	
-	        if (material == null) {
-	            material = new Material(new Texture(RES_LOC+"1"));
-	        }
+	        material = new Material(new Texture(RES_LOC+"1"));
     	} else {
     		if (mesh == null) {
 	        	float sizeY = 1.0f;
@@ -110,9 +108,7 @@ public class Rocket extends GameComponent {
 	            mesh = new Mesh(verts, indices, true);
 	        }
 	
-	        if (material == null) {
-	            material = new Material(new Texture(RES_LOC+"2"));
-	        }
+	        material = new Material(new Texture(RES_LOC+"2"));
     	}
         
         this.shouldFloat = shouldFloat;
@@ -133,9 +129,8 @@ public class Rocket extends GameComponent {
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
-        if (orientation.getX() > 0) {
+        if (orientation.getX() > 0)
             angle = 180 + angle;
-        }
 
         transform.setRotation(0, angle + 90, 0);
         

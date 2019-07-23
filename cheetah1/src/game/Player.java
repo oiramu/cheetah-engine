@@ -47,7 +47,7 @@ import engine.rendering.Vertex;
 import engine.rendering.Window;
 import game.objects.Bleed;
 import game.projectiles.Flame;
-import game.projectiles.Rocket;
+import game.projectiles.pRocket;
 
 /**
  *
@@ -144,8 +144,8 @@ public class Player extends GameComponent {
     private static ArrayList<Clip> playerJumpNoises;
     private static ArrayList<Clip> flashLightNoises;
     
-    private static ArrayList<Rocket> rocketsArray;
-    private static ArrayList<Rocket> removeRockets;
+    private static ArrayList<pRocket> rocketsArray;
+    private static ArrayList<pRocket> removeRockets;
     private static ArrayList<Flame> flamesArray;
     private static ArrayList<Flame> removeFlames;
     private static ArrayList<Bleed> bleedingArray;
@@ -468,8 +468,8 @@ public class Player extends GameComponent {
 		fireLight = new SpotLight(gunLightColor, 1.6f, 
         		new Attenuation(attenuation,0,attenuation), getCamera().getPos(), new Vector3f(1,1,1), 0.7f);
         
-        rocketsArray = new ArrayList<Rocket>();
-        removeRockets = new ArrayList<Rocket>();
+        rocketsArray = new ArrayList<pRocket>();
+        removeRockets = new ArrayList<pRocket>();
         flamesArray = new ArrayList<Flame>();
         removeFlames = new ArrayList<Flame>();
         bleedingArray = new ArrayList<Bleed>();
@@ -490,7 +490,7 @@ public class Player extends GameComponent {
         goldkey = false;
         bronzekey = false;
         Debug.init(this);
-        //Debug.enableGod(true);
+        Debug.enableGod(true);
     }
 
     private float upAngle = 0;
@@ -865,7 +865,7 @@ public class Player extends GameComponent {
 		            } else if(rockets != 0 && weaponType == ROCKET) {
 		            	AudioUtil.playAudio(gunNoise, 0);
 		            	addRockets(-1);
-		            	rocketsArray.add(new Rocket(new Transform(gunTransform.getPosition()), true));
+		            	rocketsArray.add(new pRocket(new Transform(gunTransform.getPosition()), true));
 		            	gunFireTime = Time.getTime();
 		            } else if(gas != 0 && weaponType == GAS) {
 		            	AudioUtil.playAudio(gunNoise, 0);
@@ -1028,7 +1028,7 @@ public class Player extends GameComponent {
     	double gunTime4 = gunTime3 + gunFireAnimationTime;
     	
     	if(!rocketsArray.isEmpty())
-    		for(Rocket rocket : rocketsArray)
+    		for(pRocket rocket : rocketsArray)
     			rocket.update(delta);
     	if(!flamesArray.isEmpty())
     		for(Flame flame : flamesArray)
@@ -1212,7 +1212,7 @@ public class Player extends GameComponent {
 		}
 		
 		if(!removeRockets.isEmpty())
-			for (Rocket rocketToDelete : removeRockets) 
+			for (pRocket rocketToDelete : removeRockets) 
 				rocketsArray.remove(rocketToDelete);
 		if(!removeFlames.isEmpty())
 			for (Flame flameToDelete : removeFlames) 
@@ -1252,7 +1252,7 @@ public class Player extends GameComponent {
     	}
 
     	if(!rocketsArray.isEmpty())
-    		for(Rocket rocket : rocketsArray)
+    		for(pRocket rocket : rocketsArray)
     			rocket.render(shader, renderingEngine);
     	if(!flamesArray.isEmpty())
     		for(Flame flame : flamesArray)
@@ -1847,7 +1847,7 @@ public class Player extends GameComponent {
 	 * Removes the rocket when disappears.
 	 * @param rocket rocket.
 	 */
-	public void removeRocket(Rocket rocket) { removeRockets.add(rocket); }
+	public void removeRocket(pRocket rocket) { removeRockets.add(rocket); }
 	
 	/**
 	 * Removes the flame when disappears.

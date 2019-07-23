@@ -43,17 +43,17 @@ import game.pickUps.Bullet;
 import game.pickUps.Chaingun;
 import game.pickUps.Key;
 import game.pickUps.RocketLauncher;
-import game.projectiles.Rocket;
+import game.projectiles.pRocket;
 
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.1
+ * @version 1.2
  * @since 2019
  */
 public class Commander extends GameComponent {
 
-    private static final float MAX_HEALTH = 20000f;
+    private static final float MAX_HEALTH = 10000f;
     private static final float SHOT_ANGLE = 30.0f;
     private static final float DAMAGE_MIN = 50f;
     private static final float DAMAGE_RANGE = 60f;
@@ -75,13 +75,13 @@ public class Commander extends GameComponent {
     private static final Clip seeNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "hailhtlr");
     private static final Clip shootNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "GUN");
     private static final Clip rocketNoise = AudioUtil.loadAudio("weapons/rocketLauncher/GUN");
-    private static final Clip loadNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "LOAD");
+    private static final Clip loadNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "RELOAD");
     private static final Clip hitNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "hit");
     private static final Clip deathNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "dying");
 
     private static ArrayList<Texture> animation;
-    private static ArrayList<Rocket> rockets;
-    private static ArrayList<Rocket> removeRockets;
+    private static ArrayList<pRocket> rockets;
+    private static ArrayList<pRocket> removeRockets;
     private static Mesh mesh;
     private static Random rand;
     private float sizeX;
@@ -108,17 +108,10 @@ public class Commander extends GameComponent {
      * @param transform the transform of the data.
      */
     public Commander(Transform transform) {
-        if (rand == null) {
-            rand = new Random();
-        }
-        
-        if (rockets == null) {
-        	rockets = new ArrayList<Rocket>();
-        }
-        
-        if (removeRockets == null) {
-        	removeRockets = new ArrayList<Rocket>();
-        }
+        rand = new Random();
+    
+    	rockets = new ArrayList<pRocket>();
+    	removeRockets = new ArrayList<pRocket>();
 
         if (animation == null) {
             animation = new ArrayList<Texture>();
@@ -149,8 +142,8 @@ public class Commander extends GameComponent {
             final float sizeY = 1.0f;
             sizeX = (float) ((double) sizeY / (sizeY * 2.0));
 
-            final float offsetX = 0.05f;
-            final float offsetY = 0.01f;
+            final float offsetX = 0.0f;
+            final float offsetY = 0.0f;
 
             final float texMinX = -offsetX;
             final float texMaxX = -1 - offsetX;
@@ -171,10 +164,8 @@ public class Commander extends GameComponent {
         this.transform = transform;
         this.material = new Material(animation.get(0));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
-        if(light == null)
-        	light = new SpotLight(new Vector3f(0.5f,0.3f,0.1f), 0.8f, 
-        	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f); 
-        
+        this.light = new SpotLight(new Vector3f(0.5f,0.3f,0.1f), 0.8f, 
+        	    new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);  
         this.state = 0;
         this.canAttack = true;
         this.canLook = true;
@@ -203,15 +194,13 @@ public class Commander extends GameComponent {
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
-        if (orientation.getX() > 0) {
+        if (orientation.getX() > 0)
             angle = 180 + angle;
-        }
 
         transform.setRotation(0, angle + 90, 0);
         
-        if(rockets.size()>0)
-    		for(Rocket rocket : rockets)
-    			rocket.update(delta);
+    	for(pRocket rocket : rockets)
+    		rocket.update(delta);
 
         //Action/Animation
         double time = Time.getTime();
@@ -266,9 +255,9 @@ public class Commander extends GameComponent {
                     state = STATE_ATTACK;
                 }
 
-                if (distance > 1.33f) {
+                if (distance > 3.0f) {
                     orientation.setY(0);
-                    float moveSpeed = 1.5f;
+                    float moveSpeed = 1.75f;
 
                     Vector3f oldPos = transform.getPosition();
                     Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * delta)));
@@ -358,11 +347,18 @@ public class Commander extends GameComponent {
                     }
                     material.setDiffuse(animation.get(6));
                 } else {
-                    canAttack = true;
                     material.setDiffuse(animation.get(5));
                     AudioUtil.playAudio(shootNoise, distance);
                     AudioUtil.playAudio(loadNoise, distance);
                     state = STATE_ROCKET;
+                    if (canAttack) {
+                    	light.setPosition(transform.getPosition());
+                        light.setDirection(orientation.mul(-1));
+                        light.addToEngine();
+                        rockets.add(new pRocket(new Transform(new Vector3f(getTransform().getPosition().getX(), 0.5f, getTransform().getPosition().getZ())), false));
+                        AudioUtil.playAudio(rocketNoise, distance);
+                        canAttack = false;
+                    }
                 }
             }
             
@@ -374,14 +370,7 @@ public class Commander extends GameComponent {
                     material.setDiffuse(animation.get(7));
                 } else if (timeDecimals <= 0.5f) {
                     material.setDiffuse(animation.get(8));
-                } else if (timeDecimals <= 0.7f) {
-                    if (canAttack) {
-                    	light.setPosition(transform.getPosition());
-                        light.setDirection(orientation.mul(-1));
-                        light.addToEngine();
-                        rockets.add(new Rocket(new Transform(getTransform().getPosition()), false));
-                        AudioUtil.playAudio(rocketNoise, distance);
-                    }
+                } else if (timeDecimals <= 0.65f) {
                     material.setDiffuse(animation.get(9));
                 } else {
                     canAttack = true;
@@ -390,8 +379,6 @@ public class Commander extends GameComponent {
                 }
             }
         }
-        
-        
 
         if (state == STATE_DYING) {
         	isQuiet = true;
@@ -420,7 +407,7 @@ public class Commander extends GameComponent {
         	rocketLauncher = new RocketLauncher(new Transform(transform.getPosition()), false);
         	chaingun = new Chaingun(new Transform(transform.getPosition()), false);
             bullet = new Bullet(new Transform(transform.getPosition()), false);
-        	key = new Key(new Transform(transform.getPosition()), true, false);
+        	key = new Key(new Transform(transform.getPosition()), false, false);
         	rocketLauncher.update(delta);
         	bullet.update(delta);
         	key.update(delta);
@@ -458,9 +445,8 @@ public class Commander extends GameComponent {
             }
         }
         
-        if(removeRockets.size()>0)
-			for (Rocket rocketToDelete : removeRockets) 
-				rockets.remove(rocketToDelete);   
+		for (pRocket rocketToDelete : removeRockets) 
+			rockets.remove(rocketToDelete);   
 		
 		removeRockets.clear();
     }
@@ -491,9 +477,8 @@ public class Commander extends GameComponent {
         Vector3f prevPosition = transform.getPosition();
         transform.setPosition(new Vector3f(transform.getPosition().getX() + offsetX, transform.getPosition().getY() + offsetY, transform.getPosition().getZ()));
         
-        if(rockets.size()>0)
-    		for(Rocket rocket : rockets)
-    			rocket.render(shader, renderingEngine);
+    	for(pRocket rocket : rockets)
+    		rocket.render(shader, renderingEngine);
         
         if (state == STATE_DEAD) {
         	rocketLauncher.render(shader, renderingEngine);
@@ -542,6 +527,6 @@ public class Commander extends GameComponent {
 	 * Removes the rocket when disappears.
 	 * @param rocket rocket.
 	 */
-	public static void removeRocket(Rocket rocket) { removeRockets.add(rocket); }
+	public static void removeRocket(pRocket rocket) { removeRockets.add(rocket); }
     
 }

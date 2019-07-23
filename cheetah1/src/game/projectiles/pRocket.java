@@ -41,7 +41,7 @@ import game.objects.Explosion;
  * @version 1.0
  * @since 2018
  */
-public class Rocket extends GameComponent {
+public class pRocket extends GameComponent {
     
 	private static final String RES_LOC = "Rocket/";
 	private static final float	SPEED = 7.5f;
@@ -63,7 +63,7 @@ public class Rocket extends GameComponent {
      * Constructor of the actual object.
      * @param transform the transform of the data.
      */
-    public Rocket(Transform transform, boolean playerShoots) {
+    public pRocket(Transform transform, boolean playerShoots) {
         if (mesh == null) {
             float sizeY = 0.25f;
             sizeX = sizeY;
@@ -87,25 +87,21 @@ public class Rocket extends GameComponent {
             mesh = new Mesh(verts, indices, true);
         }
 
-        if (material == null) {
-        	if(playerShoots)
-        		material = new Material(new Texture(RES_LOC+"MISLA5"));
-        	else
-        		material = new Material(new Texture(RES_LOC+"MISLA1"));
-        }
+    	if(playerShoots)
+    		material = new Material(new Texture(RES_LOC+"MISLA5"));
+    	else
+    		material = new Material(new Texture(RES_LOC+"MISLA1"));
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         if(playerShoots)
-        	objetiveOrientation = this.transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).mul(-1).normalized();
-        else
-        	objetiveOrientation = this.transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).normalized();
+        	objetiveOrientation = this.transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).mul(-1);
+    	else
+        	objetiveOrientation = this.transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
         this.state = 0;
         this.playerShoots = playerShoots;
-        if(light == null) {
-	        light = new PointLight(new Vector3f(0.5f,0.5f,0.1f), 0.2f, 
-	 			   new Attenuation(0,0,1), getTransform().getPosition());
-	        light.addToEngine();
-        }
+        this.light = new PointLight(new Vector3f(0.5f,0.5f,0.1f), 0.2f, 
+ 			   new Attenuation(0,0,1), getTransform().getPosition());
+        this.light.addToEngine();
     }
 
     /**
@@ -148,11 +144,15 @@ public class Rocket extends GameComponent {
 	        if (movementVector.length() > 0.33f)
 	            transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * delta))));
 	        else
-	        	state = 1;
-	        
-	        if(Auschwitz.getLevel().getShootingObjective() != null)
+	        	state = 1; 
+
+	        if(playerShoots && Auschwitz.getLevel().getShootingObjective() != null) {
 		        if(getTransform().getPosition().sub(Auschwitz.getLevel().getShootingObjective().getTransform().getPosition()).length() < 1.0f)
 		        	state = 1;
+	        } else if(!playerShoots) {
+	        	if(getTransform().getPosition().sub(Level.getPlayer().getTransform().getPosition()).length() < 0.33f)
+		        	state = 1;
+	        }
     	}
     	if(state == 1){
     		light.removeToEngine();

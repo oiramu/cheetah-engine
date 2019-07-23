@@ -87,11 +87,11 @@ public class Auschwitz implements Game {
 	public void init() {
 		Constants.load("res/config.txt");
 		gameMenu = new InGameMenu();
-        for (int i = 0; i < 13; i++) playlist.add(AudioUtil.loadMidi("THEME" + i));
+        for (int i = 0; i < 19; i++) playlist.add(AudioUtil.loadMidi("THEME" + i));
         text = gameMenu.text;
         track = startingLevel - 1;
         levelNum = startingLevel - 1;
-        loadLevel(1, true);
+        loadLevel(18, true);
     }
 	
 	/**
@@ -320,7 +320,7 @@ public class Auschwitz implements Game {
             
             if(levelNum > 9)
             	currentEpisode = EPISODE_2;
-            else if(levelNum > 19)
+            else if(levelNum > 18)
             	currentEpisode = EPISODE_3;
             else
             	currentEpisode = EPISODE_1;

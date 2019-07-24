@@ -60,21 +60,19 @@ public class Pendule extends GameComponent {
      */
     public Pendule(Transform transform) {
     	
-    	if (animation == null) {
-            animation = new ArrayList<Texture>();
+        animation = new ArrayList<Texture>();
 
-            animation.add(new Texture(RES_LOC + "SPDFI0"));
-            animation.add(new Texture(RES_LOC + "SPDFJ0"));
-            animation.add(new Texture(RES_LOC + "SPDFK0"));
-            animation.add(new Texture(RES_LOC + "SPDFL0"));
-            animation.add(new Texture(RES_LOC + "SPDFM0"));
-            animation.add(new Texture(RES_LOC + "SPDFN0"));
-            animation.add(new Texture(RES_LOC + "SPDFO0"));
-            animation.add(new Texture(RES_LOC + "SPDFP0"));
-            animation.add(new Texture(RES_LOC + "SPDFQ0"));
-            animation.add(new Texture(RES_LOC + "SPDFR0"));
-            animation.add(new Texture(RES_LOC + "SPDFS0"));
-        }
+        animation.add(new Texture(RES_LOC + "SPDFI0"));
+        animation.add(new Texture(RES_LOC + "SPDFJ0"));
+        animation.add(new Texture(RES_LOC + "SPDFK0"));
+        animation.add(new Texture(RES_LOC + "SPDFL0"));
+        animation.add(new Texture(RES_LOC + "SPDFM0"));
+        animation.add(new Texture(RES_LOC + "SPDFN0"));
+        animation.add(new Texture(RES_LOC + "SPDFO0"));
+        animation.add(new Texture(RES_LOC + "SPDFP0"));
+        animation.add(new Texture(RES_LOC + "SPDFQ0"));
+        animation.add(new Texture(RES_LOC + "SPDFR0"));
+        animation.add(new Texture(RES_LOC + "SPDFS0"));
     	
         if (mesh == null) {
             float sizeY = 1f;

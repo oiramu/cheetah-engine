@@ -79,15 +79,12 @@ public class DeadJew extends GameComponent {
             mesh = new Mesh(verts, indices, true);
         }
         
-        if(materialArray == null) {
-        	materialArray = new ArrayList<Texture>();
-        	
-        	materialArray.add(new Texture(RES_LOC+"deadA"));
-        	materialArray.add(new Texture(RES_LOC+"deadB"));
-        }
+    	materialArray = new ArrayList<Texture>();
+    	
+    	materialArray.add(new Texture(RES_LOC+"deadA"));
+    	materialArray.add(new Texture(RES_LOC+"deadB"));
 
-        if (material == null)
-			material = new Material(materialArray.get(new Random().nextInt(materialArray.size())));
+		material = new Material(materialArray.get(new Random().nextInt(materialArray.size())));
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
     }
@@ -104,9 +101,8 @@ public class DeadJew extends GameComponent {
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
-        if (orientation.getX() > 0) {
+        if (orientation.getX() > 0)
             angle = 180 + angle;
-        }
 
         transform.setRotation(0, angle + 90, 0);
    

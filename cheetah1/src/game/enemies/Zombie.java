@@ -109,8 +109,7 @@ public class Zombie extends GameComponent {
 
         this.zombieSeed = Util.randomInRange(1, 2);
         
-		if (animation1 == null) {
-            animation1 = new ArrayList<Texture>();
+        animation1 = new ArrayList<Texture>();
 
             animation1.add(new Texture(RES_LOC + "ZOCHA0"));
             animation1.add(new Texture(RES_LOC + "ZOCHB0"));
@@ -133,9 +132,8 @@ public class Zombie extends GameComponent {
             animation1.add(new Texture(RES_LOC + "ZODTF0"));
             animation1.add(new Texture(RES_LOC + "ZODTG0"));
             animation1.add(new Texture(RES_LOC + "ZODTH0"));
-        }
-		if (animation2 == null) {
-            animation2 = new ArrayList<Texture>();
+
+        animation2 = new ArrayList<Texture>();
 
             animation2.add(new Texture(RES_LOC + "ZOCHA1"));
             animation2.add(new Texture(RES_LOC + "ZOCHB1"));
@@ -161,7 +159,6 @@ public class Zombie extends GameComponent {
             animation2.add(new Texture(RES_LOC + "ZODTC2"));
             animation2.add(new Texture(RES_LOC + "ZODTD2"));
             animation2.add(new Texture(RES_LOC + "ZODTE2"));
-        }
 		
 		switch(zombieSeed) {
 			case 1:
@@ -172,33 +169,25 @@ public class Zombie extends GameComponent {
 				break;
 		}
         
-        if (seeNoises == null) {
-        	seeNoises = new ArrayList<Clip>();
+    	seeNoises = new ArrayList<Clip>();
         	
         	for(int i = 0; i < 3; i++)
         		seeNoises.add(AudioUtil.loadAudio(RES_LOC + "see" + i));
-        }
         
-        if (attackNoises == null) {
-        	attackNoises = new ArrayList<Clip>();
+    	attackNoises = new ArrayList<Clip>();
         	
         	for(int i = 0; i < 3; i++)
         		attackNoises.add(AudioUtil.loadAudio(RES_LOC + "atack" + i));
-        }
         
-        if (hitNoises == null) {
-        	hitNoises = new ArrayList<Clip>();
+    	hitNoises = new ArrayList<Clip>();
         	
         	for(int i = 0; i < 3; i++)
         		hitNoises.add(AudioUtil.loadAudio(RES_LOC + "hit" + i));
-        }
         
-        if (deathNoises == null) {
-        	deathNoises = new ArrayList<Clip>();
+    	deathNoises = new ArrayList<Clip>();
         	
         	for(int i = 0; i < 3; i++)
         		deathNoises.add(AudioUtil.loadAudio(RES_LOC + "death" + i));
-        }
         
         gibs = new ArrayList<ZombieMeat>();
         

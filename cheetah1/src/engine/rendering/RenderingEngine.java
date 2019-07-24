@@ -93,13 +93,21 @@ public class RenderingEngine extends MappedValues {
 					case"forward-point":
 						if(((PointLight) light).getDistance() < LIGHT_POP_IN) {
 							activeLight = light;
-							component.render(light.getShader(), this);
+							float distance = 0;
+							if(component.getTransform() != null)
+								distance = ((PointLight) light).getPosition().sub(component.getTransform().getPosition()).length();
+							if(distance < ((PointLight) light).getRange())
+								component.render(light.getShader(), this);
 						}
 					break;
 					case"forward-spot":
 						if(((SpotLight) light).getDistance() < LIGHT_POP_IN) {
 							activeLight = light;
-							component.render(light.getShader(), this);
+							float distance = 0;
+							if(component.getTransform() != null)
+								distance = ((SpotLight) light).getPosition().sub(component.getTransform().getPosition()).length();
+							if(distance < ((SpotLight) light).getRange())
+								component.render(light.getShader(), this);
 						}
 					break;
 				}

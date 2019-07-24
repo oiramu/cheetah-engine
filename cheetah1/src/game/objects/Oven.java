@@ -69,17 +69,15 @@ public class Oven extends GameComponent {
      */
     public Oven(Transform transform) {
     	
-    	if (animation == null) {
-            animation = new ArrayList<Texture>();
+        animation = new ArrayList<Texture>();
 
-            animation.add(new Texture(RES_LOC + "OVENA0"));
-            animation.add(new Texture(RES_LOC + "OVENB0"));
-            animation.add(new Texture(RES_LOC + "OVENC0"));
-            animation.add(new Texture(RES_LOC + "OVEND0"));
-            animation.add(new Texture(RES_LOC + "OVENE0"));
-            
-            animation.add(new Texture(RES_LOC + "OVENF0"));
-        }
+        animation.add(new Texture(RES_LOC + "OVENA0"));
+        animation.add(new Texture(RES_LOC + "OVENB0"));
+        animation.add(new Texture(RES_LOC + "OVENC0"));
+        animation.add(new Texture(RES_LOC + "OVEND0"));
+        animation.add(new Texture(RES_LOC + "OVENE0"));
+        
+        animation.add(new Texture(RES_LOC + "OVENF0"));
     	
         if (mesh == null) {
             float sizeY = 1.0f;
@@ -107,13 +105,10 @@ public class Oven extends GameComponent {
         this.state = STATE_IDLE;
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
-        
-        if(light == null) {
-	        light = new PointLight(new Vector3f(1.0f,0.5f,0.2f), 0.8f, 
-	        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.25f, 
-	        				getTransform().getPosition().getZ()));
-	        light.addToEngine();
-    	}
+        this.light = new PointLight(new Vector3f(1.0f,0.5f,0.2f), 0.8f, 
+        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.25f, 
+        				getTransform().getPosition().getZ()));
+        this.light.addToEngine();
         this.health = 200;
         this.dead = false;
     }

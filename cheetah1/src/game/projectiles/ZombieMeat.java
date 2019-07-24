@@ -76,11 +76,8 @@ public class ZombieMeat extends GameComponent {
 
             mesh = new Mesh(verts, indices, true);
         }
-
-        if (material == null) {
-        	material = new Material(new Texture(RES_LOC+"ZOMBMEAT"));
-        }
-
+        
+        material = new Material(new Texture(RES_LOC+"ZOMBMEAT"));
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         this.objetiveOrientation = this.transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).normalized();

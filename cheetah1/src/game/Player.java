@@ -461,7 +461,7 @@ public class Player extends GameComponent {
         gunTransform = new Transform(camera.getPos());
         gunRenderer = new MeshRenderer(gunMesh, gunTransform, gunMaterial);
         legRenderer = new MeshRenderer(gunMesh, gunTransform, legMaterial);
-        if (weaponState == null) { gotPistol(); }
+        gotPistol();
         
     	flashLight = new SpotLight(new Vector3f(0.5f,0.5f,0.275f), 0.8f, 
     	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
@@ -490,7 +490,7 @@ public class Player extends GameComponent {
         goldkey = false;
         bronzekey = false;
         Debug.init(this);
-        Debug.enableGod(true);
+        //Debug.enableGod(true);
     }
 
     private float upAngle = 0;

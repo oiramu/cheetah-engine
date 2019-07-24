@@ -96,29 +96,25 @@ public class NaziSergeant extends GameComponent {
      * @param transform the transform of the data.
      */
     public NaziSergeant(Transform transform) {
-        if (rand == null) {
-            rand = new Random();
-        }
+        rand = new Random();
 
-        if (animation == null) {
-            animation = new ArrayList<Texture>();
+        animation = new ArrayList<Texture>();
 
-            animation.add(new Texture(RES_LOC + "TRANA0"));
-            animation.add(new Texture(RES_LOC + "TRANB0"));
-            animation.add(new Texture(RES_LOC + "TRANC0"));
-            animation.add(new Texture(RES_LOC + "TRAND0"));
+        animation.add(new Texture(RES_LOC + "TRANA0"));
+        animation.add(new Texture(RES_LOC + "TRANB0"));
+        animation.add(new Texture(RES_LOC + "TRANC0"));
+        animation.add(new Texture(RES_LOC + "TRAND0"));
 
-            animation.add(new Texture(RES_LOC + "TRANE0"));
-            animation.add(new Texture(RES_LOC + "TRANF0"));
-            animation.add(new Texture(RES_LOC + "TRANG0"));
+        animation.add(new Texture(RES_LOC + "TRANE0"));
+        animation.add(new Texture(RES_LOC + "TRANF0"));
+        animation.add(new Texture(RES_LOC + "TRANG0"));
 
-            animation.add(new Texture(RES_LOC + "TRANH0"));
-            animation.add(new Texture(RES_LOC + "TRANH1"));
-            animation.add(new Texture(RES_LOC + "TRANH2"));
-            animation.add(new Texture(RES_LOC + "TRANI0"));
-            animation.add(new Texture(RES_LOC + "TRANJ0"));
-            animation.add(new Texture(RES_LOC + "TRANK0"));
-        }
+        animation.add(new Texture(RES_LOC + "TRANH0"));
+        animation.add(new Texture(RES_LOC + "TRANH1"));
+        animation.add(new Texture(RES_LOC + "TRANH2"));
+        animation.add(new Texture(RES_LOC + "TRANI0"));
+        animation.add(new Texture(RES_LOC + "TRANJ0"));
+        animation.add(new Texture(RES_LOC + "TRANK0"));
 
         if (mesh == null) {
             final float sizeY = 0.9f;
@@ -146,9 +142,8 @@ public class NaziSergeant extends GameComponent {
         this.transform = transform;
         this.material = new Material(animation.get(0));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
-        if(light == null)
-        	light = new SpotLight(new Vector3f(0.45f,0.35f,0.1f), 1.6f, 
-        	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
+    	this.light = new SpotLight(new Vector3f(0.45f,0.35f,0.1f), 1.6f, 
+    	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
         this.state = 0;
         this.canAttack = true;
         this.canLook = true;

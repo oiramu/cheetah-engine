@@ -65,16 +65,14 @@ public class Lamp extends GameComponent {
      */
     public Lamp(Transform transform) {
     	
-    	if (animation == null) {
-            animation = new ArrayList<Texture>();
+        animation = new ArrayList<Texture>();
 
-            animation.add(new Texture(RES_LOC + "TLMPA0"));
-            animation.add(new Texture(RES_LOC + "TLMPB0"));
-            animation.add(new Texture(RES_LOC + "TLMPC0"));
-            animation.add(new Texture(RES_LOC + "TLMPD0"));
-            
-            animation.add(new Texture(RES_LOC + "TLMPE0"));
-        }
+        animation.add(new Texture(RES_LOC + "TLMPA0"));
+        animation.add(new Texture(RES_LOC + "TLMPB0"));
+        animation.add(new Texture(RES_LOC + "TLMPC0"));
+        animation.add(new Texture(RES_LOC + "TLMPD0"));
+        
+        animation.add(new Texture(RES_LOC + "TLMPE0"));
     	
         if (mesh == null) {
             float sizeY = 1f;

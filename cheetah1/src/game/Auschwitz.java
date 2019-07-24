@@ -91,7 +91,7 @@ public class Auschwitz implements Game {
         text = gameMenu.text;
         track = startingLevel - 1;
         levelNum = startingLevel - 1;
-        loadLevel(18, true);
+        loadLevel(1, true);
     }
 	
 	/**
@@ -441,8 +441,14 @@ public class Auschwitz implements Game {
             }
             
         } catch (RuntimeException ex) {
-        	ex.printStackTrace();
-            menu = new CreditsMenu();
+        	try {
+				Thread.sleep(1);
+				menu = new CreditsMenu();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	//ex.printStackTrace();
         }
 
     }

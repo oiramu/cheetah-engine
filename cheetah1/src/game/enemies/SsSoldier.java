@@ -96,33 +96,29 @@ public class SsSoldier extends GameComponent {
      * @param transform the transform of the data.
      */
     public SsSoldier(Transform transform) {
-        if (rand == null) {
-            rand = new Random();
-        }
+        rand = new Random();
 
-        if (animation == null) {
-            animation = new ArrayList<Texture>();
-            //IDLE
-            animation.add(new Texture(RES_LOC + "SSWVA1"));
-            //RUNNING
-            animation.add(new Texture(RES_LOC + "SSWVB1"));
-            animation.add(new Texture(RES_LOC + "SSWVC1"));
-            animation.add(new Texture(RES_LOC + "SSWVD1"));
-            animation.add(new Texture(RES_LOC + "SSWVD2"));
-            //ATACK
-            animation.add(new Texture(RES_LOC + "SSWVE0"));
-            animation.add(new Texture(RES_LOC + "SSWVF0"));
-            animation.add(new Texture(RES_LOC + "SSWVG0"));
-            animation.add(new Texture(RES_LOC + "SSWVG1"));
-            //DYING
-            animation.add(new Texture(RES_LOC + "SSWVH0"));
-            animation.add(new Texture(RES_LOC + "SSWVH1"));
-            animation.add(new Texture(RES_LOC + "SSWVI0"));
-            animation.add(new Texture(RES_LOC + "SSWVJ0"));
-            animation.add(new Texture(RES_LOC + "SSWVK0"));
-            animation.add(new Texture(RES_LOC + "SSWVL0"));
-            animation.add(new Texture(RES_LOC + "SSWVM0"));
-        }
+        animation = new ArrayList<Texture>();
+        //IDLE
+        animation.add(new Texture(RES_LOC + "SSWVA1"));
+        //RUNNING
+        animation.add(new Texture(RES_LOC + "SSWVB1"));
+        animation.add(new Texture(RES_LOC + "SSWVC1"));
+        animation.add(new Texture(RES_LOC + "SSWVD1"));
+        animation.add(new Texture(RES_LOC + "SSWVD2"));
+        //ATACK
+        animation.add(new Texture(RES_LOC + "SSWVE0"));
+        animation.add(new Texture(RES_LOC + "SSWVF0"));
+        animation.add(new Texture(RES_LOC + "SSWVG0"));
+        animation.add(new Texture(RES_LOC + "SSWVG1"));
+        //DYING
+        animation.add(new Texture(RES_LOC + "SSWVH0"));
+        animation.add(new Texture(RES_LOC + "SSWVH1"));
+        animation.add(new Texture(RES_LOC + "SSWVI0"));
+        animation.add(new Texture(RES_LOC + "SSWVJ0"));
+        animation.add(new Texture(RES_LOC + "SSWVK0"));
+        animation.add(new Texture(RES_LOC + "SSWVL0"));
+        animation.add(new Texture(RES_LOC + "SSWVM0"));
 
         if (mesh == null) {
             final float sizeY = 0.85f;
@@ -150,9 +146,8 @@ public class SsSoldier extends GameComponent {
         this.transform = transform;
         this.material = new Material(animation.get(0));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);    
-        if(light == null)
-        	light = new SpotLight(new Vector3f(0.5f,0.3f,0.1f), 1.6f, 
-        	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
+    	this.light = new SpotLight(new Vector3f(0.5f,0.3f,0.1f), 1.6f, 
+    	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);
         this.state = 0;
         this.canAttack = true;
         this.canLook = true;
@@ -181,9 +176,8 @@ public class SsSoldier extends GameComponent {
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
-        if (orientation.getX() > 0) {
+        if (orientation.getX() > 0)
             angle = 180 + angle;
-        }
 
         transform.setRotation(0, angle + 90, 0);
 

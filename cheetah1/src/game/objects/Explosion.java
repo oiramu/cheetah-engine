@@ -72,31 +72,27 @@ public class Explosion extends GameComponent {
      */
 	public Explosion(Transform transform) {
     	
-    	if (animation == null) {
-            animation = new ArrayList<Texture>();
-            
-            animation.add(new Texture(RES_LOC + "BEXPD0"));
-            animation.add(new Texture(RES_LOC + "BEXPE0"));
-            animation.add(new Texture(RES_LOC + "BEXPF0"));
-            animation.add(new Texture(RES_LOC + "BEXPG0"));
-            animation.add(new Texture(RES_LOC + "BEXPH0"));
-            animation.add(new Texture(RES_LOC + "BEXPI0"));
-            animation.add(new Texture(RES_LOC + "BEXPJ0"));
-            animation.add(new Texture(RES_LOC + "BEXPK0"));
-            animation.add(new Texture(RES_LOC + "BEXPL0"));
-            animation.add(new Texture(RES_LOC + "BEXPM0"));
-            animation.add(new Texture(RES_LOC + "BEXPN0"));
-            animation.add(new Texture(RES_LOC + "BEXPO0"));
-            animation.add(new Texture(RES_LOC + "BEXPP0"));
-            animation.add(new Texture(RES_LOC + "BEXPQ0"));
-        }
+        animation = new ArrayList<Texture>();
+        
+        animation.add(new Texture(RES_LOC + "BEXPD0"));
+        animation.add(new Texture(RES_LOC + "BEXPE0"));
+        animation.add(new Texture(RES_LOC + "BEXPF0"));
+        animation.add(new Texture(RES_LOC + "BEXPG0"));
+        animation.add(new Texture(RES_LOC + "BEXPH0"));
+        animation.add(new Texture(RES_LOC + "BEXPI0"));
+        animation.add(new Texture(RES_LOC + "BEXPJ0"));
+        animation.add(new Texture(RES_LOC + "BEXPK0"));
+        animation.add(new Texture(RES_LOC + "BEXPL0"));
+        animation.add(new Texture(RES_LOC + "BEXPM0"));
+        animation.add(new Texture(RES_LOC + "BEXPN0"));
+        animation.add(new Texture(RES_LOC + "BEXPO0"));
+        animation.add(new Texture(RES_LOC + "BEXPP0"));
+        animation.add(new Texture(RES_LOC + "BEXPQ0"));
     	
-    	if(boomNoice == null) {
-    		boomNoice = new ArrayList<Clip>();
-    		
-    		for (int i = 1; i < 3; i++)
-    			boomNoice.add(AudioUtil.loadAudio(RES_LOC + "Explode"+i));
-    	}
+		boomNoice = new ArrayList<Clip>();
+		
+		for (int i = 1; i < 3; i++)
+			boomNoice.add(AudioUtil.loadAudio(RES_LOC + "Explode"+i));
     	
         if (mesh == null) {
             float sizeY = 1.2f;
@@ -124,11 +120,9 @@ public class Explosion extends GameComponent {
         this.state = STATE_BOOM;
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
-        if(light == null) {
-	        light = new PointLight(new Vector3f(0.9f,0.7f,0.2f), 0.8f, 
-				   new Attenuation(0,0,1), getTransform().getPosition());
-	        light.addToEngine();
-        }
+        this.light = new PointLight(new Vector3f(0.9f,0.7f,0.2f), 0.8f, 
+			   new Attenuation(0,0,1), getTransform().getPosition());
+        this.light.addToEngine();
     	AudioUtil.playAudio(boomNoice.get(new Random().nextInt(boomNoice.size())),
     			transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
     	if(getTransform().getPosition().sub(Level.getPlayer().getCamera().getPos()).length() < 1.0f) {

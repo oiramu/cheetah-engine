@@ -68,19 +68,17 @@ public class Pillar extends GameComponent {
      * @param transform the transform of the object in a 3D space.
      */
     public Pillar(Transform transform) {
-    	
-    	if (animation == null) {
-            animation = new ArrayList<Texture>();
-            
-            animation.add(new Texture(RES_LOC + "COLWA0"));
 
-            animation.add(new Texture(RES_LOC + "CFALE0"));
-            animation.add(new Texture(RES_LOC + "CFALA0"));
-            animation.add(new Texture(RES_LOC + "CFALB0"));
-            animation.add(new Texture(RES_LOC + "CFALC0"));
-            
-            animation.add(new Texture(RES_LOC + "CFALD0"));
-        }
+        animation = new ArrayList<Texture>();
+        
+        animation.add(new Texture(RES_LOC + "COLWA0"));
+
+        animation.add(new Texture(RES_LOC + "CFALE0"));
+        animation.add(new Texture(RES_LOC + "CFALA0"));
+        animation.add(new Texture(RES_LOC + "CFALB0"));
+        animation.add(new Texture(RES_LOC + "CFALC0"));
+        
+        animation.add(new Texture(RES_LOC + "CFALD0"));
     	
         if (mesh == null) {
             float sizeY = 1f;

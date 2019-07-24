@@ -78,15 +78,11 @@ public class Bones extends GameComponent {
             mesh = new Mesh(verts, indices, true);
         }
 
-        if(materialArray == null) {
-        	materialArray = new ArrayList<Texture>();
-        	
+    	materialArray = new ArrayList<Texture>();
         	for (int i = 0; i < 2; i++)
         		materialArray.add(new Texture(RES_LOC+"MEDIA"+i));
-        }
 
-        if (material == null)
-			material = new Material(materialArray.get(new Random().nextInt(materialArray.size())));
+		material = new Material(materialArray.get(new Random().nextInt(materialArray.size())));
 
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);

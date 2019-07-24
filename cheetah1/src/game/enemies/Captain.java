@@ -105,25 +105,22 @@ public class Captain extends GameComponent {
     public Captain(Transform transform, boolean dropsKey) {
         rand = new Random();
 
-        if (animation == null) {
-            animation = new ArrayList<Texture>();
+        animation = new ArrayList<Texture>();
 
-            animation.add(new Texture(RES_LOC + "TRANA0"));
-            animation.add(new Texture(RES_LOC + "TRANB0"));
-            animation.add(new Texture(RES_LOC + "TRANC0"));
-            animation.add(new Texture(RES_LOC + "TRAND0"));
+        animation.add(new Texture(RES_LOC + "TRANA0"));
+        animation.add(new Texture(RES_LOC + "TRANB0"));
+        animation.add(new Texture(RES_LOC + "TRANC0"));
+        animation.add(new Texture(RES_LOC + "TRAND0"));
 
-            animation.add(new Texture(RES_LOC + "TRANE0"));
-            animation.add(new Texture(RES_LOC + "TRANF0"));
-            animation.add(new Texture(RES_LOC + "TRANG0"));
+        animation.add(new Texture(RES_LOC + "TRANE0"));
+        animation.add(new Texture(RES_LOC + "TRANF0"));
+        animation.add(new Texture(RES_LOC + "TRANG0"));
 
-            animation.add(new Texture(RES_LOC + "TRANH0"));
-            animation.add(new Texture(RES_LOC + "TRANI0"));
-            animation.add(new Texture(RES_LOC + "TRANJ0"));
-            animation.add(new Texture(RES_LOC + "TRANK0"));
-            animation.add(new Texture(RES_LOC + "TRANL0"));
-            
-        }
+        animation.add(new Texture(RES_LOC + "TRANH0"));
+        animation.add(new Texture(RES_LOC + "TRANI0"));
+        animation.add(new Texture(RES_LOC + "TRANJ0"));
+        animation.add(new Texture(RES_LOC + "TRANK0"));
+        animation.add(new Texture(RES_LOC + "TRANL0"));
 
         if (mesh == null) {
             final float sizeY = 1.0f;

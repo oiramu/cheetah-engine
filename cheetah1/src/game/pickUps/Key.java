@@ -82,12 +82,10 @@ public class Key extends GameComponent {
             mesh = new Mesh(verts, indices, true);
         }
 
-        if (material == null) {
-        	if(isGoldKey)
-        		material = new Material(new Texture("key/YSKUA0"));
-        	else
-        		material = new Material(new Texture("key/YSKUA1"));
-        }
+    	if(isGoldKey)
+    		material = new Material(new Texture("key/YSKUA0"));
+    	else
+    		material = new Material(new Texture("key/YSKUA1"));
         this.isGoldKey = isGoldKey;
         this.shouldFloat = shouldFloat;
         this.transform = transform;

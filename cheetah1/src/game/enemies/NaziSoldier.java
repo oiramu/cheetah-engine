@@ -96,32 +96,28 @@ public class NaziSoldier extends GameComponent {
      * @param renderingEngine of the enemy.
      */
     public NaziSoldier(Transform transform) {
-        if (rand == null) {
-            rand = new Random();
-        }
+        rand = new Random();
 
-        if (animation == null) {
-            animation = new ArrayList<Texture>();
+        animation = new ArrayList<Texture>();
 
-            animation.add(new Texture(RES_LOC + "TRANA0"));
-            animation.add(new Texture(RES_LOC + "TRANB0"));
-            animation.add(new Texture(RES_LOC + "TRANC0"));
-            animation.add(new Texture(RES_LOC + "TRAND0"));
+        animation.add(new Texture(RES_LOC + "TRANA0"));
+        animation.add(new Texture(RES_LOC + "TRANB0"));
+        animation.add(new Texture(RES_LOC + "TRANC0"));
+        animation.add(new Texture(RES_LOC + "TRAND0"));
 
-            animation.add(new Texture(RES_LOC + "TRANE0"));
-            animation.add(new Texture(RES_LOC + "TRANF0"));
-            animation.add(new Texture(RES_LOC + "TRANG0"));
+        animation.add(new Texture(RES_LOC + "TRANE0"));
+        animation.add(new Texture(RES_LOC + "TRANF0"));
+        animation.add(new Texture(RES_LOC + "TRANG0"));
 
-            animation.add(new Texture(RES_LOC + "TRANH0"));
-            animation.add(new Texture(RES_LOC + "TRANH1"));
-            animation.add(new Texture(RES_LOC + "TRANI0"));
-            animation.add(new Texture(RES_LOC + "TRANJ0"));
-            animation.add(new Texture(RES_LOC + "TRANK0"));
-            animation.add(new Texture(RES_LOC + "TRANL0"));
-            
-            animation.add(new Texture(RES_LOC + "SSWVN0"));
-            animation.add(new Texture(RES_LOC + "SSWVO0"));
-        }
+        animation.add(new Texture(RES_LOC + "TRANH0"));
+        animation.add(new Texture(RES_LOC + "TRANH1"));
+        animation.add(new Texture(RES_LOC + "TRANI0"));
+        animation.add(new Texture(RES_LOC + "TRANJ0"));
+        animation.add(new Texture(RES_LOC + "TRANK0"));
+        animation.add(new Texture(RES_LOC + "TRANL0"));
+        
+        animation.add(new Texture(RES_LOC + "SSWVN0"));
+        animation.add(new Texture(RES_LOC + "SSWVO0"));
 
         if (mesh == null) {
             final float sizeY = 0.8f;
@@ -149,10 +145,8 @@ public class NaziSoldier extends GameComponent {
         this.transform = transform;
         this.material = new Material(animation.get(0));
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
-        if(light == null)
-        	light = new SpotLight(new Vector3f(0.5f,0.3f,0.1f), 0.8f, 
-        	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f); 
-        
+        this.light = new SpotLight(new Vector3f(0.5f,0.3f,0.1f), 0.8f, 
+        	    	new Attenuation(0.1f,0.1f,0.1f), new Vector3f(-2,0,5f), new Vector3f(1,1,1), 0.7f);   
         this.state = 0;
         this.canAttack = true;
         this.canLook = true;
@@ -180,9 +174,8 @@ public class NaziSoldier extends GameComponent {
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
-        if (orientation.getX() > 0) {
+        if (orientation.getX() > 0)
             angle = 180 + angle;
-        }
 
         transform.setRotation(0, angle + 90, 0);
 

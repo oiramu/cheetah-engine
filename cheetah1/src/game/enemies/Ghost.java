@@ -86,23 +86,19 @@ public class Ghost extends GameComponent {
      * @param transform the transform of the data.
      */
     public Ghost(Transform transform) {
-        if (rand == null) {
-            rand = new Random();
-        }
+        rand = new Random();
 
-        if (animation == null) {
-            animation = new ArrayList<Texture>();
+        animation = new ArrayList<Texture>();
 
-            animation.add(new Texture(RES_LOC + "GHSTA0"));
-            //animation.add(new Texture(RES_LOC + "GHSTB0"));
-            animation.add(new Texture(RES_LOC + "GHSTC0"));
-            //animation.add(new Texture(RES_LOC + "GHSTD0"));
-            
-            animation.add(new Texture(RES_LOC + "GHSTE0"));
-            animation.add(new Texture(RES_LOC + "GHSTF0"));
-            animation.add(new Texture(RES_LOC + "GHSTG0"));
-            animation.add(new Texture(RES_LOC + "GHSTH0"));
-        }
+        animation.add(new Texture(RES_LOC + "GHSTA0"));
+        //animation.add(new Texture(RES_LOC + "GHSTB0"));
+        animation.add(new Texture(RES_LOC + "GHSTC0"));
+        //animation.add(new Texture(RES_LOC + "GHSTD0"));
+        
+        animation.add(new Texture(RES_LOC + "GHSTE0"));
+        animation.add(new Texture(RES_LOC + "GHSTF0"));
+        animation.add(new Texture(RES_LOC + "GHSTG0"));
+        animation.add(new Texture(RES_LOC + "GHSTH0"));
 
         if (mesh == null) {
             final float sizeY = 0.75f;

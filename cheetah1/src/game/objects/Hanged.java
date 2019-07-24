@@ -70,20 +70,18 @@ public class Hanged extends GameComponent {
      * @param transform the transform of the object in a 3D space.
      */
     public Hanged(Transform transform) {
-    	
-    	if (animation == null) {
-            animation = new ArrayList<Texture>();
 
-            animation.add(new Texture(RES_LOC + "HANGJEW0"));
-            animation.add(new Texture(RES_LOC + "HANGJEW1"));
-            animation.add(new Texture(RES_LOC + "HANGJEW2"));
-            
-            animation.add(new Texture(RES_LOC + "HANGJEW3"));
-            animation.add(new Texture(RES_LOC + "HANGJEW4"));
-            animation.add(new Texture(RES_LOC + "HANGJEW5"));
-            
-            animation.add(new Texture(RES_LOC + "HANGJEW6"));
-        }
+        animation = new ArrayList<Texture>();
+
+        animation.add(new Texture(RES_LOC + "HANGJEW0"));
+        animation.add(new Texture(RES_LOC + "HANGJEW1"));
+        animation.add(new Texture(RES_LOC + "HANGJEW2"));
+        
+        animation.add(new Texture(RES_LOC + "HANGJEW3"));
+        animation.add(new Texture(RES_LOC + "HANGJEW4"));
+        animation.add(new Texture(RES_LOC + "HANGJEW5"));
+        
+        animation.add(new Texture(RES_LOC + "HANGJEW6"));
     	
         if (mesh == null) {
             float sizeY = 1f;

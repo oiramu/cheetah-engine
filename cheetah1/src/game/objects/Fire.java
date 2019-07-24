@@ -76,54 +76,44 @@ public class Fire extends GameComponent {
 	public Fire(Transform transform) {
 		
 		this.fireSeed = new Random().nextInt(3) + 1;
+		animation = new ArrayList<Texture>();
     	
 		if(fireSeed == 1) {
-	    	if (animation == null) {
-	            animation = new ArrayList<Texture>();
-	            
-	            animation.add(new Texture(RES_LOC + "F1REA0"));
-	            animation.add(new Texture(RES_LOC + "F1REB0"));
-	            animation.add(new Texture(RES_LOC + "F1REC0"));
-	            animation.add(new Texture(RES_LOC + "F1RED0"));
-	            animation.add(new Texture(RES_LOC + "F1REE0"));
-	            animation.add(new Texture(RES_LOC + "F1REF0"));
-	            animation.add(new Texture(RES_LOC + "F1REG0"));
-	            animation.add(new Texture(RES_LOC + "F1REH0"));
-	        }
+    
+            animation.add(new Texture(RES_LOC + "F1REA0"));
+            animation.add(new Texture(RES_LOC + "F1REB0"));
+            animation.add(new Texture(RES_LOC + "F1REC0"));
+            animation.add(new Texture(RES_LOC + "F1RED0"));
+            animation.add(new Texture(RES_LOC + "F1REE0"));
+            animation.add(new Texture(RES_LOC + "F1REF0"));
+            animation.add(new Texture(RES_LOC + "F1REG0"));
+            animation.add(new Texture(RES_LOC + "F1REH0"));
 		} else if(fireSeed == 2) {
-			if (animation == null) {
-	            animation = new ArrayList<Texture>();
-	            
-	            animation.add(new Texture(RES_LOC + "F2REA0"));
-	            animation.add(new Texture(RES_LOC + "F2REB0"));
-	            animation.add(new Texture(RES_LOC + "F2REC0"));
-	            animation.add(new Texture(RES_LOC + "F2RED0"));
-	            animation.add(new Texture(RES_LOC + "F2REE0"));
-	            animation.add(new Texture(RES_LOC + "F2REF0"));
-	            animation.add(new Texture(RES_LOC + "F2REG0"));
-	            animation.add(new Texture(RES_LOC + "F2REH0"));
-	        }
+
+            animation.add(new Texture(RES_LOC + "F2REA0"));
+            animation.add(new Texture(RES_LOC + "F2REB0"));
+            animation.add(new Texture(RES_LOC + "F2REC0"));
+            animation.add(new Texture(RES_LOC + "F2RED0"));
+            animation.add(new Texture(RES_LOC + "F2REE0"));
+            animation.add(new Texture(RES_LOC + "F2REF0"));
+            animation.add(new Texture(RES_LOC + "F2REG0"));
+            animation.add(new Texture(RES_LOC + "F2REH0"));
 		} else if(fireSeed == 3) {
-			if (animation == null) {
-	            animation = new ArrayList<Texture>();
-	            
-	            animation.add(new Texture(RES_LOC + "FLMEA0"));
-	            animation.add(new Texture(RES_LOC + "FLMEB0"));
-	            animation.add(new Texture(RES_LOC + "FLMEC0"));
-	            animation.add(new Texture(RES_LOC + "FLMED0"));
-	            animation.add(new Texture(RES_LOC + "FLMEE0"));
-	            animation.add(new Texture(RES_LOC + "FLMEF0"));
-	            animation.add(new Texture(RES_LOC + "FLMEG0"));
-	            animation.add(new Texture(RES_LOC + "FLMEH0"));
-	        }
+
+            animation.add(new Texture(RES_LOC + "FLMEA0"));
+            animation.add(new Texture(RES_LOC + "FLMEB0"));
+            animation.add(new Texture(RES_LOC + "FLMEC0"));
+            animation.add(new Texture(RES_LOC + "FLMED0"));
+            animation.add(new Texture(RES_LOC + "FLMEE0"));
+            animation.add(new Texture(RES_LOC + "FLMEF0"));
+            animation.add(new Texture(RES_LOC + "FLMEG0"));
+            animation.add(new Texture(RES_LOC + "FLMEH0"));
 		}
 		
-		if(sounds == null) {
-			sounds = new ArrayList<Clip>();
-			
-			for (int i = 1; i < 3; i++)
-				sounds.add(AudioUtil.loadAudio(RES_LOC + "FIRE" + i));
-		}
+		sounds = new ArrayList<Clip>();
+		
+		for (int i = 1; i < 3; i++)
+			sounds.add(AudioUtil.loadAudio(RES_LOC + "FIRE" + i));
     	
         if (mesh == null) {
             float sizeY = 0.75f;
@@ -155,11 +145,9 @@ public class Fire extends GameComponent {
         this.state = STATE_FIRE;
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
-        if(light == null) {
-	        light = new PointLight(new Vector3f(0.75f,0.5f,0.1f), 0.8f, 
+	    this.light = new PointLight(new Vector3f(0.75f,0.5f,0.1f), 0.8f, 
 				   new Attenuation(0,0,1), getTransform().getPosition());
-	        light.addToEngine();
-        }
+	    this.light.addToEngine();
         this.fireSound = sounds.get(new Random().nextInt(sounds.size()));
     	AudioUtil.playAudio(fireSound, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
     }

@@ -87,39 +87,33 @@ public class Dog extends GameComponent {
      * @param transform the transform of the data.
      */
     public Dog(Transform transform) {
-        if (rand == null) {
-            rand = new Random();
-        }
+        rand = new Random();
 
-        if (animation == null) {
-            animation = new ArrayList<Texture>();
+        animation = new ArrayList<Texture>();
 
-            //Chase
-            animation.add(new Texture(RES_LOC + "DOGSA1"));
-            animation.add(new Texture(RES_LOC + "DOGSB1"));
-            animation.add(new Texture(RES_LOC + "DOGSC1"));
-            animation.add(new Texture(RES_LOC + "DOGSD1"));
-            animation.add(new Texture(RES_LOC + "DOGSE1"));
-            //Atack
-            animation.add(new Texture(RES_LOC + "DOGSF1"));
-            animation.add(new Texture(RES_LOC + "DOGSG1"));
-            animation.add(new Texture(RES_LOC + "DOGSH1"));
-            //Dying
-            animation.add(new Texture(RES_LOC + "DOGSI0"));       
-            animation.add(new Texture(RES_LOC + "DOGSJ0"));
-            animation.add(new Texture(RES_LOC + "DOGSK0"));
-            animation.add(new Texture(RES_LOC + "DOGSL0"));
-            animation.add(new Texture(RES_LOC + "DOGSM0"));
-            //Dead
-            animation.add(new Texture(RES_LOC + "DOGSN0"));
-        }
-        
-        if(atackSound == null) {
-        	atackSound = new ArrayList<Clip>();
-        	
-        	atackSound.add(AudioUtil.loadAudio(RES_LOC + "dgact"));
-        	atackSound.add(AudioUtil.loadAudio(RES_LOC + "dgatk"));
-        }
+        //Chase
+        animation.add(new Texture(RES_LOC + "DOGSA1"));
+        animation.add(new Texture(RES_LOC + "DOGSB1"));
+        animation.add(new Texture(RES_LOC + "DOGSC1"));
+        animation.add(new Texture(RES_LOC + "DOGSD1"));
+        animation.add(new Texture(RES_LOC + "DOGSE1"));
+        //Atack
+        animation.add(new Texture(RES_LOC + "DOGSF1"));
+        animation.add(new Texture(RES_LOC + "DOGSG1"));
+        animation.add(new Texture(RES_LOC + "DOGSH1"));
+        //Dying
+        animation.add(new Texture(RES_LOC + "DOGSI0"));       
+        animation.add(new Texture(RES_LOC + "DOGSJ0"));
+        animation.add(new Texture(RES_LOC + "DOGSK0"));
+        animation.add(new Texture(RES_LOC + "DOGSL0"));
+        animation.add(new Texture(RES_LOC + "DOGSM0"));
+        //Dead
+        animation.add(new Texture(RES_LOC + "DOGSN0"));
+    
+    	atackSound = new ArrayList<Clip>();
+    	
+    	atackSound.add(AudioUtil.loadAudio(RES_LOC + "dgact"));
+    	atackSound.add(AudioUtil.loadAudio(RES_LOC + "dgatk"));
 
         if (mesh == null) {
             final float sizeY = 0.9f;	//Could be 1.0f

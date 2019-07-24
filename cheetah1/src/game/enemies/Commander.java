@@ -113,30 +113,27 @@ public class Commander extends GameComponent {
     	rockets = new ArrayList<pRocket>();
     	removeRockets = new ArrayList<pRocket>();
 
-        if (animation == null) {
-            animation = new ArrayList<Texture>();
+        animation = new ArrayList<Texture>();
 
-            animation.add(new Texture(RES_LOC + "HASSA0"));
-            animation.add(new Texture(RES_LOC + "HASSB0"));
-            animation.add(new Texture(RES_LOC + "HASSC0"));
-            animation.add(new Texture(RES_LOC + "HASSD0"));
+        animation.add(new Texture(RES_LOC + "HASSA0"));
+        animation.add(new Texture(RES_LOC + "HASSB0"));
+        animation.add(new Texture(RES_LOC + "HASSC0"));
+        animation.add(new Texture(RES_LOC + "HASSD0"));
 
-            animation.add(new Texture(RES_LOC + "HASSE0"));
-            animation.add(new Texture(RES_LOC + "HASSF0"));
-            animation.add(new Texture(RES_LOC + "HASSG0"));
-            
-            animation.add(new Texture(RES_LOC + "HASSH0"));
-            animation.add(new Texture(RES_LOC + "HASSM0"));
-            animation.add(new Texture(RES_LOC + "HASSN0"));
-            animation.add(new Texture(RES_LOC + "HASSO0"));
+        animation.add(new Texture(RES_LOC + "HASSE0"));
+        animation.add(new Texture(RES_LOC + "HASSF0"));
+        animation.add(new Texture(RES_LOC + "HASSG0"));
+        
+        animation.add(new Texture(RES_LOC + "HASSH0"));
+        animation.add(new Texture(RES_LOC + "HASSM0"));
+        animation.add(new Texture(RES_LOC + "HASSN0"));
+        animation.add(new Texture(RES_LOC + "HASSO0"));
 
-            animation.add(new Texture(RES_LOC + "HASSI0"));
-            animation.add(new Texture(RES_LOC + "HASSJ0"));
-            animation.add(new Texture(RES_LOC + "HASSK0"));
-            animation.add(new Texture(RES_LOC + "HASSK0"));
-            animation.add(new Texture(RES_LOC + "HASSL0"));
-            
-        }
+        animation.add(new Texture(RES_LOC + "HASSI0"));
+        animation.add(new Texture(RES_LOC + "HASSJ0"));
+        animation.add(new Texture(RES_LOC + "HASSK0"));
+        animation.add(new Texture(RES_LOC + "HASSK0"));
+        animation.add(new Texture(RES_LOC + "HASSL0"));
 
         if (mesh == null) {
             final float sizeY = 1.0f;

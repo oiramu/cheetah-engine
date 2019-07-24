@@ -75,10 +75,7 @@ public class Kitchen extends GameComponent {
             mesh = new Mesh(verts, indices, true);
         }
         
-        if (material == null) {
-            material = new Material(new Texture(RES_LOC));
-        }
-        
+        this.material = new Material(new Texture(RES_LOC));
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
     }

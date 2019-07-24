@@ -69,22 +69,20 @@ public class Flame extends GameComponent {
      * @param transform the transform of the object in a 3D space.
      */
 	public Flame(Transform transform) {
-    	
-    	if (animation == null) {
-            animation = new ArrayList<Texture>();
-            
-            animation.add(new Texture(RES_LOC + "FBLXA0"));
-            animation.add(new Texture(RES_LOC + "FBLXB0"));
-            animation.add(new Texture(RES_LOC + "FBLXC0"));
-            animation.add(new Texture(RES_LOC + "FBLXD0"));
-            animation.add(new Texture(RES_LOC + "FBLXE0"));
-            animation.add(new Texture(RES_LOC + "FBLXF0"));
-            animation.add(new Texture(RES_LOC + "FBLXG0"));
-            animation.add(new Texture(RES_LOC + "FBLXH0"));
-            animation.add(new Texture(RES_LOC + "FBLXI0"));
-            animation.add(new Texture(RES_LOC + "FBLXJ0"));
-            animation.add(new Texture(RES_LOC + "FBLXK0"));
-        }
+
+        animation = new ArrayList<Texture>();
+        
+        animation.add(new Texture(RES_LOC + "FBLXA0"));
+        animation.add(new Texture(RES_LOC + "FBLXB0"));
+        animation.add(new Texture(RES_LOC + "FBLXC0"));
+        animation.add(new Texture(RES_LOC + "FBLXD0"));
+        animation.add(new Texture(RES_LOC + "FBLXE0"));
+        animation.add(new Texture(RES_LOC + "FBLXF0"));
+        animation.add(new Texture(RES_LOC + "FBLXG0"));
+        animation.add(new Texture(RES_LOC + "FBLXH0"));
+        animation.add(new Texture(RES_LOC + "FBLXI0"));
+        animation.add(new Texture(RES_LOC + "FBLXJ0"));
+        animation.add(new Texture(RES_LOC + "FBLXK0"));
     	
         if (mesh == null) {
             float sizeY = 0.8f;
@@ -112,11 +110,9 @@ public class Flame extends GameComponent {
         this.state = STATE_FIRE;
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
-        if(light == null) {
-	        light = new PointLight(new Vector3f(1.0f,0.5f,0.2f), 0.8f, 
-				   new Attenuation(0,0,1), getTransform().getPosition());
-	        light.addToEngine();
-        }
+        light = new PointLight(new Vector3f(1.0f,0.5f,0.2f), 0.8f, 
+			   new Attenuation(0,0,1), getTransform().getPosition());
+        light.addToEngine();
         if(Auschwitz.getLevel().getShootingObjective() != null)
 	        if(getTransform().getPosition().sub(Auschwitz.getLevel().getShootingObjective().getTransform().getPosition()).length() < 1.0f)
 	        	Auschwitz.getLevel().getShootingObjective().damage(Level.getPlayer().getDamage());

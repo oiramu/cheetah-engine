@@ -129,6 +129,11 @@ public class Camera {
      */
     public Vector3f getForward() {return rotation.getForward();}
 
+    /**
+     * Gets the viewing projection matrix by the camera
+     * and returns it.
+     * @return viewing projection matrix
+     */
 	public Matrix4f getViewProjection() {
 		Matrix4f cameraRotation = getRotation().getRotationMatrix();
         Matrix4f cameraTranslation = new Matrix4f().initTranslation(-getPos().getX(), -getPos().getY(), -getPos().getZ());

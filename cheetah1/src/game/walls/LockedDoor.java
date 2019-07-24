@@ -124,18 +124,16 @@ public class LockedDoor extends GameComponent {
             door = new Mesh(doorVerts, doorIndices, true, true);
         }
         
-        if(material == null) {
-        	if(isGoldKey)
-        		material = new Material(new Texture(RES_LOC+"Gold"), 1, 8, 
-        								new Texture(RES_LOC+"NormalMap"), 
-        								new Texture(RES_LOC+"DisplacementMap"), 0.03f, -0.5f);
-        	else
-        		material = new Material(new Texture(RES_LOC+"Bronze"), 1, 8, 
-						new Texture(RES_LOC+"NormalMap"), 
-						new Texture(RES_LOC+"DisplacementMap"), 0.03f, -0.5f);
-        }
+    	if(isGoldKey)
+    		material = new Material(new Texture(RES_LOC+"Gold"), 1, 8, 
+    								new Texture(RES_LOC+"NormalMap"), 
+    								new Texture(RES_LOC+"DisplacementMap"), 0.03f, -0.5f);
+    	else
+    		material = new Material(new Texture(RES_LOC+"Bronze"), 1, 8, 
+					new Texture(RES_LOC+"NormalMap"), 
+					new Texture(RES_LOC+"DisplacementMap"), 0.03f, -0.5f);
         this.isGoldKey = isGoldKey;
-        if(meshRenderer == null) this.meshRenderer = new MeshRenderer(door, getTransform(), material);
+        this.meshRenderer = new MeshRenderer(door, getTransform(), material);
     }
 
     /**

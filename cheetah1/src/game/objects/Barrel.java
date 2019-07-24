@@ -67,13 +67,10 @@ public class Barrel extends GameComponent {
      */
 	public Barrel(Transform transform) {
     	
-    	if (animation == null) {
-            animation = new ArrayList<Texture>();
+        animation = new ArrayList<Texture>();
 
-            animation.add(new Texture(RES_LOC + "BURBA0"));
-            animation.add(new Texture(RES_LOC + "BEXPC0"));
-            
-        }
+        animation.add(new Texture(RES_LOC + "BURBA0"));
+        animation.add(new Texture(RES_LOC + "BEXPC0"));
     	
         if (mesh == null) {
             float sizeY = 1.2f;
@@ -119,9 +116,8 @@ public class Barrel extends GameComponent {
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
-        if (orientation.getX() > 0) {
+        if (orientation.getX() > 0)
             angle = 180 + angle;
-        }
 
         transform.setRotation(0, angle + 90, 0);
         

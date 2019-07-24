@@ -58,19 +58,16 @@ public class Clock extends GameComponent {
      * @param transform the transform of the object in a 3D space.
      */
     public Clock(Transform transform) {
-    	
-    	if (animation == null) {
-            animation = new ArrayList<Texture>();
+        animation = new ArrayList<Texture>();
 
-            animation.add(new Texture(RES_LOC + "GTCLOCK1"));
-            animation.add(new Texture(RES_LOC + "GTCLOCK2"));
-            animation.add(new Texture(RES_LOC + "GTCLOCK3"));
-            animation.add(new Texture(RES_LOC + "GTCLOCK4"));
-            animation.add(new Texture(RES_LOC + "GTCLOCK5"));
-            animation.add(new Texture(RES_LOC + "GTCLOCK6"));
-            animation.add(new Texture(RES_LOC + "GTCLOCK7"));
-            animation.add(new Texture(RES_LOC + "GTCLOCK8"));
-        }
+        animation.add(new Texture(RES_LOC + "GTCLOCK1"));
+        animation.add(new Texture(RES_LOC + "GTCLOCK2"));
+        animation.add(new Texture(RES_LOC + "GTCLOCK3"));
+        animation.add(new Texture(RES_LOC + "GTCLOCK4"));
+        animation.add(new Texture(RES_LOC + "GTCLOCK5"));
+        animation.add(new Texture(RES_LOC + "GTCLOCK6"));
+        animation.add(new Texture(RES_LOC + "GTCLOCK7"));
+        animation.add(new Texture(RES_LOC + "GTCLOCK8"));
     	
         if (mesh == null) {
             float sizeY = 0.8f;
@@ -113,9 +110,8 @@ public class Clock extends GameComponent {
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
-        if (orientation.getX() > 0) {
+        if (orientation.getX() > 0)
             angle = 180 + angle;
-        }
 
         transform.setRotation(0, angle + 90, 0);
         

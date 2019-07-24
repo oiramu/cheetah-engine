@@ -74,10 +74,7 @@ public class Pipe extends GameComponent {
             mesh = new Mesh(verts, indices, true);
         }
 
-        if (material == null) {
-			material = new Material(new Texture(RES_LOC));
-        }
-
+		material = new Material(new Texture(RES_LOC));
         this.transform = transform;
         this.m_meshRenderer = new MeshRenderer(mesh, getTransform(), material);
     }

@@ -70,67 +70,50 @@ public class Bleed extends GameComponent {
 	public Bleed(Transform transform) {
 		
 		this.bleedSeed = new Random().nextInt(4) + 1;
+		animation = new ArrayList<Texture>();
     	
 		if(bleedSeed == 1) {
-	    	if (animation == null) {
-	            animation = new ArrayList<Texture>();
-	            
-	            animation.add(new Texture(RES_LOC + "BLHTA0"));
-	            animation.add(new Texture(RES_LOC + "BLHTB0"));
-	            animation.add(new Texture(RES_LOC + "BLHTC0"));
-	            animation.add(new Texture(RES_LOC + "BLHTD0"));
-	            animation.add(new Texture(RES_LOC + "BLHTE0"));
-	            animation.add(new Texture(RES_LOC + "BLHTF0"));
-	            animation.add(new Texture(RES_LOC + "BLHTG0"));
-	            animation.add(new Texture(RES_LOC + "BLHTH0"));
-	        }
-		} else if(bleedSeed == 2) {
-			if (animation == null) {
-	            animation = new ArrayList<Texture>();
-	            
-	            animation.add(new Texture(RES_LOC + "BLHMA0"));
-	            animation.add(new Texture(RES_LOC + "BLHMB0"));
-	            animation.add(new Texture(RES_LOC + "BLHMC0"));
-	            animation.add(new Texture(RES_LOC + "BLHMD0"));
-	            animation.add(new Texture(RES_LOC + "BLHME0"));
-	            animation.add(new Texture(RES_LOC + "BLHMF0"));
-	            animation.add(new Texture(RES_LOC + "BLHMG0"));
-	            animation.add(new Texture(RES_LOC + "BLHMH0"));
-	        }
+            animation.add(new Texture(RES_LOC + "BLHTA0"));
+            animation.add(new Texture(RES_LOC + "BLHTB0"));
+            animation.add(new Texture(RES_LOC + "BLHTC0"));
+            animation.add(new Texture(RES_LOC + "BLHTD0"));
+            animation.add(new Texture(RES_LOC + "BLHTE0"));
+            animation.add(new Texture(RES_LOC + "BLHTF0"));
+            animation.add(new Texture(RES_LOC + "BLHTG0"));
+            animation.add(new Texture(RES_LOC + "BLHTH0"));
+		} else if(bleedSeed == 2) { 
+            animation.add(new Texture(RES_LOC + "BLHMA0"));
+            animation.add(new Texture(RES_LOC + "BLHMB0"));
+            animation.add(new Texture(RES_LOC + "BLHMC0"));
+            animation.add(new Texture(RES_LOC + "BLHMD0"));
+            animation.add(new Texture(RES_LOC + "BLHME0"));
+            animation.add(new Texture(RES_LOC + "BLHMF0"));
+            animation.add(new Texture(RES_LOC + "BLHMG0"));
+            animation.add(new Texture(RES_LOC + "BLHMH0"));
 		} else if(bleedSeed == 3) {
-			if (animation == null) {
-	            animation = new ArrayList<Texture>();
-	            
-	            animation.add(new Texture(RES_LOC + "BLHNA0"));
-	            animation.add(new Texture(RES_LOC + "BLHNB0"));
-	            animation.add(new Texture(RES_LOC + "BLHNC0"));
-	            animation.add(new Texture(RES_LOC + "BLHND0"));
-	            animation.add(new Texture(RES_LOC + "BLHNE0"));
-	            animation.add(new Texture(RES_LOC + "BLHNF0"));
-	            animation.add(new Texture(RES_LOC + "BLHNG0"));
-	            animation.add(new Texture(RES_LOC + "BLHNH0"));
-	        }
-		} else if(bleedSeed == 4) {
-			if (animation == null) {
-	            animation = new ArrayList<Texture>();
-	            
-	            animation.add(new Texture(RES_LOC + "BSPRA0"));
-	            animation.add(new Texture(RES_LOC + "BSPRB0"));
-	            animation.add(new Texture(RES_LOC + "BSPRC0"));
-	            animation.add(new Texture(RES_LOC + "BSPRD0"));
-	            animation.add(new Texture(RES_LOC + "BSPRE0"));
-	            animation.add(new Texture(RES_LOC + "BSPRF0"));
-	            animation.add(new Texture(RES_LOC + "BSPRG0"));
-	            animation.add(new Texture(RES_LOC + "BSPRH0"));
-	        }
+            animation.add(new Texture(RES_LOC + "BLHNA0"));
+            animation.add(new Texture(RES_LOC + "BLHNB0"));
+            animation.add(new Texture(RES_LOC + "BLHNC0"));
+            animation.add(new Texture(RES_LOC + "BLHND0"));
+            animation.add(new Texture(RES_LOC + "BLHNE0"));
+            animation.add(new Texture(RES_LOC + "BLHNF0"));
+            animation.add(new Texture(RES_LOC + "BLHNG0"));
+            animation.add(new Texture(RES_LOC + "BLHNH0"));
+		} else if(bleedSeed == 4) { 
+            animation.add(new Texture(RES_LOC + "BSPRA0"));
+            animation.add(new Texture(RES_LOC + "BSPRB0"));
+            animation.add(new Texture(RES_LOC + "BSPRC0"));
+            animation.add(new Texture(RES_LOC + "BSPRD0"));
+            animation.add(new Texture(RES_LOC + "BSPRE0"));
+            animation.add(new Texture(RES_LOC + "BSPRF0"));
+            animation.add(new Texture(RES_LOC + "BSPRG0"));
+            animation.add(new Texture(RES_LOC + "BSPRH0"));
 		}
 		
-		if(sounds == null) {
-			sounds = new ArrayList<Clip>();
+		sounds = new ArrayList<Clip>();
 			
 			for (int i = 1; i < 8; i++)
-			sounds.add(AudioUtil.loadAudio(RES_LOC + "SOUND" + i));
-		}
+				sounds.add(AudioUtil.loadAudio(RES_LOC + "SOUND" + i));
     	
         if (mesh == null) {
             float sizeY = 0.6f;

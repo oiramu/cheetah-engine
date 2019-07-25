@@ -200,11 +200,10 @@ public class Auschwitz implements Game {
 	public void render(RenderingEngine engine) {
     	engine.render(level);
     	printStats(engine);
-    	if(isPaused && !toExit) {
+    	if(isPaused && !toExit)
     		gameMenu.renderPause(engine);
-    	} else if (toExit) {
+    	else if (toExit)
     		gameMenu.renderQuit(engine);
-    	}
     	if(menu != null)
     		menu.draw2D();
     }
@@ -255,40 +254,33 @@ public class Auschwitz implements Game {
                 
                 totalSecrets = level.getSecretWalls().size();
                 
-                for (SecretWall secret : level.getSecretWalls()) {
+                for (SecretWall secret : level.getSecretWalls())
                     if (secret.opens())
                     	secrets++;
-                }
 
-                for (NaziSoldier naziSoldier : level.getNaziSoldiers()) {
+                for (NaziSoldier naziSoldier : level.getNaziSoldiers())
                     if (!naziSoldier.isAlive())
                         deadMonsters++;
-                }
                 
-                for (SsSoldier ssSoldier : level.getSsSoldiers()) {
+                for (SsSoldier ssSoldier : level.getSsSoldiers())
                     if (!ssSoldier.isAlive())
                         deadMonsters++;
-                }
                 
-                for (Dog dog : level.getDogs()) {
+                for (Dog dog : level.getDogs())
                     if (!dog.isAlive())
                         deadMonsters++;
-                }
                 
-                for (NaziSergeant naziSargent : level.getNaziSergeants()) {
+                for (NaziSergeant naziSargent : level.getNaziSergeants())
                     if (!naziSargent.isAlive())
                         deadMonsters++;
-                }
                 
-                for (Zombie zombie : level.getZombies()) {
+                for (Zombie zombie : level.getZombies())
                     if (!zombie.isAlive())
                         deadMonsters++;
-                }
                 
-                for (Captain captain : level.getCaptains()) {
+                for (Captain captain : level.getCaptains())
                     if (!captain.isAlive())
                         deadMonsters++;
-                }
 
                 displayStats = true;
                 

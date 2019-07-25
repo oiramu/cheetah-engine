@@ -1238,10 +1238,10 @@ public class Level extends GameComponent {
                     	lamps.add(new Lamp(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 52) {
                     	//left
-                    	lightPosts.add(new LightPost(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), "/LightPost/Left"));
+                    	lightPosts.add(new LightPost(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), false));
                     }else if ((bitmap.getPixel(i, j) & 0x0000FF) == 53) {
                     	//Right
-                    	lightPosts.add(new LightPost(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), "/LightPost/Right"));
+                    	lightPosts.add(new LightPost(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 55) {
                         bones.add(new Bones(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                     } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 60) {

@@ -33,7 +33,7 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez.
- * @version 1.0
+ * @version 1.1
  * @since 2019
  */
 public class LightPost extends GameComponent {
@@ -45,13 +45,14 @@ public class LightPost extends GameComponent {
     private float 				sizeX;
 
     private Transform 			transform;
+    private Vector3f			position;
 
     /**
      * Constructor of the light's post object.
      * @param transform the transform of the data.
-     * @param textureResLoc location of resources
+     * @param right location of light post
      */
-    public LightPost(Transform transform, String textureResLoc) {
+    public LightPost(Transform transform, boolean right) {
         if (mesh == null) {
         	float sizeY = 1.5f;
             sizeX = (float) ((double) sizeY / (1.12835820896f * 2.0));
@@ -74,14 +75,20 @@ public class LightPost extends GameComponent {
 
             mesh = new Mesh(verts, indices, true);
         }
-
-		material = new Material(new Texture(textureResLoc));
-
+        
         this.transform = transform;
+        if(right) {
+        	material = new Material(new Texture("/LightPost/Right"));
+        	position = new Vector3f(getTransform().getPosition().getX() - 0.275f, 0.1f, 
+    				getTransform().getPosition().getZ());
+        } else {
+        	material = new Material(new Texture("/LightPost/Left"));
+        	position = new Vector3f(getTransform().getPosition().getX() + 0.275f, 0.1f, 
+    				getTransform().getPosition().getZ());
+        }
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
-        		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.1f, 
-        				getTransform().getPosition().getZ())).addToEngine();
+        		new Attenuation(0,0,1), position).addToEngine();
     }
 
     /**

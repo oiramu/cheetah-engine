@@ -218,8 +218,8 @@ public class Player extends GameComponent {
     private boolean flameThrower;
     private boolean isInAir = false;
     
-    public static boolean mouseLocked;
-    public static boolean isFlashLightOn;
+    public boolean mouseLocked;
+    public boolean isFlashLightOn;
     
     public String weaponType;
     

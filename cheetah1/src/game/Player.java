@@ -68,6 +68,7 @@ public class Player extends GameComponent {
     private static final float SHELL_DAMAGE = 50f;
     private static final float ROCKET_DAMAGE = 200f;
     private static final float FLAME_DAMAGE = 300f;
+    private static final float JUMP_POWER = 10.0f;
     
     private static float gunTransformMultiplicator;
     private static float moveSpeed;
@@ -921,7 +922,7 @@ public class Player extends GameComponent {
             if (Input.getKey(Input.KEY_SPACE)) {
             	if(!isInAir) {
             		AudioUtil.playAudio(playerJumpNoises.get(new Random().nextInt(playerJumpNoises.size())), 0);
-            		upAmt = 10.0f;
+            		upAmt = JUMP_POWER;
             		movementVector = movementVector.add(camera.getForward());
             		isInAir = true;
             	}
@@ -1007,7 +1008,7 @@ public class Player extends GameComponent {
         if (orientation.getX() >= 0)
             angle = 180 + angle;
 
-        gunTransform.setRotation(0, angle + 90, 0);     
+        gunTransform.setRotation(0, angle + 90, 0);  
         
         if(isFlashLightOn) {
 	        flashLight.setPosition(getCamera().getPos());

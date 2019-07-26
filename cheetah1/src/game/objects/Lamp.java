@@ -39,7 +39,7 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez.
- * @version 1.1
+ * @version 1.2
  * @since 2017
  */
 public class Lamp extends GameComponent {
@@ -47,16 +47,23 @@ public class Lamp extends GameComponent {
 	private static final String 		RES_LOC = "lamp/";
 	private static final int 			STATE_IDLE = 0;
 	private static final int 			STATE_DEAD = 1;
+	
 	private int 						state;
+	private float 						temp = 0;
+	
 	private static final Clip 			breakNoice = AudioUtil.loadAudio(RES_LOC + "WINBREA");
+	
     private static Mesh 				mesh;
     private Material 					material;
     private MeshRenderer 				meshRenderer;
     private PointLight 					light;
+    
     private float 						sizeX;
     private double 						health;
     private boolean 					dead;
+    
     private static ArrayList<Texture> 	animation;
+    
     private Transform 					transform;
 
     /**
@@ -102,7 +109,7 @@ public class Lamp extends GameComponent {
         this.light = new PointLight(new Vector3f(0.5f,0.5f,0.6f), 0.8f, 
         		new Attenuation(0,0,1), new Vector3f(getTransform().getPosition().getX(), 0.1f, 
         				getTransform().getPosition().getZ()));
-        light.addToEngine();
+        this.light.addToEngine();
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
         this.dead = false;
         this.health = 20;
@@ -120,9 +127,10 @@ public class Lamp extends GameComponent {
 
         float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
 
-        if (orientation.getX() > 0) {
+        if (orientation.getX() > 0)
             angle = 180 + angle;
-        }
+        
+        temp += delta;
 
         transform.setRotation(0, angle + 90, 0);
         
@@ -138,8 +146,10 @@ public class Lamp extends GameComponent {
         if (state == STATE_IDLE) {
         	double timeDecimals = (time - (double) ((int) time));
 
+            light.setPosition(new Vector3f(light.getPosition().getX(), 0.01f * (float)(Math.sin(temp*7.5)+1.0/2.0) + 0.01f, light.getPosition().getZ()));
+        	
             timeDecimals *= 1.25f;
-
+            
         	if (timeDecimals <= 0.25f) {
                 material.setDiffuse(animation.get(0));
             } else if (timeDecimals <= 0.5f) {

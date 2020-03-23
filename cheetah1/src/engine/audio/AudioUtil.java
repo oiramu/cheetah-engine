@@ -28,6 +28,7 @@ import javax.sound.sampled.FloatControl;
 
 import engine.core.Debug;
 import engine.core.crash.CrashReport;
+import static engine.components.Constants.*;
 
 /**
  *
@@ -52,8 +53,8 @@ public class AudioUtil {
 
         float volumeAmount = AUDIO_VOLUME - (distance * distance * DECAY_FACTOR);
 
-        if (volumeAmount < -80) {
-            volumeAmount = -80;
+        if (volumeAmount < -EFFECTS_AUDIO_LEVEL) {
+            volumeAmount = -EFFECTS_AUDIO_LEVEL;
         }
 
         volume.setValue(volumeAmount);

@@ -44,7 +44,7 @@ import game.projectiles.ZombieMeat;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
 public class Zombie extends GameComponent {
@@ -258,6 +258,8 @@ public class Zombie extends GameComponent {
         double time = Time.getTime();
 
         if (!dead && health <= 0) {
+        	if(drops)
+	            key = new Key(new Transform(transform.getPosition()), true, false);
             dead = true;
             deathTime = time;
             state = STATE_DYING;
@@ -276,64 +278,65 @@ public class Zombie extends GameComponent {
     	            Vector2f playerDirection = transform.getPosition().sub(
     	                    player.getCamera().getPos().add(
     	                            new Vector3f(player.getSize().getX(), 0, player.getSize().getY()).mul(0.5f))).getXZ().normalized();
-    	            if (state == STATE_IDLE) {
-    	            	isQuiet = true;
-    	                double timeDecimals = (time - (double) ((int) time));
+    	            switch(state) {
+    	            	case STATE_IDLE:
+    	            		isQuiet = true;
+        	                double timeDecimals = (time - (double) ((int) time));
 
-    	                if (timeDecimals >= 0.5) {
-    	                	transform.setScale(1.372093023255814f,0.728813559322034f,1);
-    	                    material.setDiffuse(animation.get(1));
-    	                    canLook = true;
-    	                } else {
-    	                	transform.setScale(1.558139534883721f,0.641791044776119f,1);
-    	                    material.setDiffuse(animation.get(0));
-    	                    if (canLook) {
-    	                        Vector2f lineStart = transform.getPosition().getXZ();
-    	                        Vector2f lineEnd = lineStart.sub(playerDirection.mul(1000.0f));
+        	                if (timeDecimals >= 0.5) {
+        	                	transform.setScale(1.372093023255814f,0.728813559322034f,1);
+        	                    material.setDiffuse(animation.get(1));
+        	                    canLook = true;
+        	                } else {
+        	                	transform.setScale(1.558139534883721f,0.641791044776119f,1);
+        	                    material.setDiffuse(animation.get(0));
+        	                    if (canLook) {
+        	                        Vector2f lineStart = transform.getPosition().getXZ();
+        	                        Vector2f lineEnd = lineStart.sub(playerDirection.mul(1000.0f));
 
-    	                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
-    	                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
+        	                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
+        	                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
 
-    	                        if (playerIntersect != null && (nearestIntersect == null
-    	                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
-    	                        	seeNoise = seeNoises.get(new Random().nextInt(seeNoises.size()));
-    	                        	AudioUtil.playAudio(seeNoise, distance);
-    	                            state = STATE_CHASE;
-    	                        }
+        	                        if (playerIntersect != null && (nearestIntersect == null
+        	                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
+        	                        	seeNoise = seeNoises.get(new Random().nextInt(seeNoises.size()));
+        	                        	AudioUtil.playAudio(seeNoise, distance);
+        	                            state = STATE_CHASE;
+        	                        }
 
-    	                        canLook = false;
-    	                    }
-    	                }
-    	            } else if (state == STATE_CHASE) {
-    	            	isQuiet = false;
+        	                        canLook = false;
+        	                    }
+        	                }
+    	            		break;
+    	            	case STATE_CHASE:
+    	            		isQuiet = false;
 
-    	                if (distance > 0.55f) {
-    	                	if (rand.nextDouble() < 0.5f * delta)
+        	                if (distance > 0.55f) {
+        	                	if (rand.nextDouble() < 0.5f * delta)
+            	                    state = STATE_ATTACK;
+        	                    orientation.setY(0);
+        	                    float moveSpeed = 1.5f;
+
+        	                    Vector3f oldPos = transform.getPosition();
+        	                    Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * delta)));
+
+        	                    Vector3f collisionVector = Auschwitz.getLevel().checkCollisions(oldPos, newPos, ZOMBIE_WIDTH, ZOMBIE_WIDTH);
+
+        	                    Vector3f movementVector = collisionVector.mul(orientation.normalized());
+
+        	                    if (!movementVector.equals(orientation.normalized())) {
+        	                        Auschwitz.getLevel().openDoors(transform.getPosition(), false);
+        	                    }
+
+        	                    if (movementVector.length() > 0) {
+        	                        transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * delta))));
+        	                    }
+        	                } else {
         	                    state = STATE_ATTACK;
-    	                    orientation.setY(0);
-    	                    float moveSpeed = 1.5f;
-
-    	                    Vector3f oldPos = transform.getPosition();
-    	                    Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * delta)));
-
-    	                    Vector3f collisionVector = Auschwitz.getLevel().checkCollisions(oldPos, newPos, ZOMBIE_WIDTH, ZOMBIE_WIDTH);
-
-    	                    Vector3f movementVector = collisionVector.mul(orientation.normalized());
-
-    	                    if (!movementVector.equals(orientation.normalized())) {
-    	                        Auschwitz.getLevel().openDoors(transform.getPosition(), false);
-    	                    }
-
-    	                    if (movementVector.length() > 0) {
-    	                        transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * delta))));
-    	                    }
-    	                } else {
-    	                    state = STATE_ATTACK;
-    	                }
-
-    	                if (state == STATE_CHASE) {
+        	                }
+        	                
     	                	isQuiet = false;
-    	                    double timeDecimals = (time - (double) ((int) time));
+    	                    timeDecimals = (time - (double) ((int) time));
 
     	                    while (timeDecimals > 0.5) {
     	                        timeDecimals -= 0.5;
@@ -360,142 +363,138 @@ public class Zombie extends GameComponent {
     	                    	transform.setScale(1.560975609756098f,0.640625f,1);
     	                        material.setDiffuse(animation.get(5));
     	                    }
-    	                }
-    	            }
+    	            		break;
+    	            	case STATE_ATTACK:
+    	            		isQuiet = true;
+        	                timeDecimals = (time - (double) ((int) time));
 
-    	            if (state == STATE_ATTACK) {
-    	            	isQuiet = true;
-    	                double timeDecimals = (time - (double) ((int) time));
+        	                if (timeDecimals <= 0.25f) {
+        	                	//transform.setScale(2.296296296296296f,0.435483870967742f,1);
+        	                    material.setDiffuse(animation.get(6));
+        	                } else if (timeDecimals <= 0.5f) {
+        	                	transform.setScale(1.333333333333333f,0.75f,1);
+        	                    material.setDiffuse(animation.get(7));
+        	                } else if (timeDecimals <= 0.7f) {
+        	                    if (canAttack) {
+        	                        Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
 
-    	                if (timeDecimals <= 0.25f) {
-    	                	//transform.setScale(2.296296296296296f,0.435483870967742f,1);
-    	                    material.setDiffuse(animation.get(6));
-    	                } else if (timeDecimals <= 0.5f) {
-    	                	transform.setScale(1.333333333333333f,0.75f,1);
-    	                    material.setDiffuse(animation.get(7));
-    	                } else if (timeDecimals <= 0.7f) {
-    	                    if (canAttack) {
-    	                        Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
+        	                        Vector2f lineStart = transform.getPosition().getXZ();
+        	                        Vector2f lineEnd = lineStart.sub(shootDirection.mul(1000.0f));
 
-    	                        Vector2f lineStart = transform.getPosition().getXZ();
-    	                        Vector2f lineEnd = lineStart.sub(shootDirection.mul(1000.0f));
+        	                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
+        	                        canAttack = false;
 
-    	                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
-    	                        canAttack = false;
+        	                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
 
-    	                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
+        	                        if (playerIntersect != null && (nearestIntersect == null
+        	                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
 
-    	                        if (playerIntersect != null && (nearestIntersect == null
-    	                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
+        	                        	float damage;
+        	                            if(player.getHealth() <= 0) {
+        	                            	state = STATE_DONE;
+        	                            }else {
+        	                            	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
+        	                            	if(player.isArmor() == false) {
+        	                            		player.addHealth((int) -damage, "Zombie");
+        	                            	}else {
+        	                            		player.addArmor((int) -damage);
+        	                            	}
+        	                            }
+        	                            
+        	                        }
+        	                        attackNoise = attackNoises.get(new Random().nextInt(attackNoises.size()));
+        	                        AudioUtil.playAudio(attackNoise, distance);
+        	                    }
+        	                    transform.setScale(1.580645161290323f,0.75f,1);
+        	                    material.setDiffuse(animation.get(8));
+        	                } else {
+        	                    canAttack = true;
+        	                    transform.setScale(1.333333333333333f,0.63265306122449f,1);
+        	                    material.setDiffuse(animation.get(7));
+        	                    state = STATE_CHASE;
+        	                }
+    	            		break;
+    	            	case STATE_DONE:
+    	            		isQuiet = true;
+    	    	        	timeDecimals = (time - (double) ((int) time));
 
-    	                        	float damage;
-    	                            if(player.getHealth() <= 0) {
-    	                            	state = STATE_DONE;
-    	                            }else {
-    	                            	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
-    	                            	if(player.isArmor() == false) {
-    	                            		player.addHealth((int) -damage, "Zombie");
-    	                            	}else {
-    	                            		player.addArmor((int) -damage);
-    	                            	}
-    	                            }
-    	                            
-    	                        }
-    	                        attackNoise = attackNoises.get(new Random().nextInt(attackNoises.size()));
-    	                        AudioUtil.playAudio(attackNoise, distance);
-    	                    }
-    	                    transform.setScale(1.580645161290323f,0.75f,1);
-    	                    material.setDiffuse(animation.get(8));
-    	                } else {
-    	                    canAttack = true;
-    	                    transform.setScale(1.333333333333333f,0.63265306122449f,1);
-    	                    material.setDiffuse(animation.get(7));
-    	                    state = STATE_CHASE;
-    	                }
-    	            }
-    	        }
+    	    	        	timeDecimals *= 1.5f;
 
-    	        if (state == STATE_DYING) {
-    	        	isQuiet = true;
-    	            dead = true;
-
-    	            final float time1 = 0.1f;
-    	            final float time2 = 0.3f;
-    	            final float time3 = 0.5f;
-    	            final float time4 = 0.7f;
-    	            final float time5 = 0.9f;
-    	            final float time6 = 1.1f;
-
-    	            if (time <= deathTime + 0.2f) {
-    	            	transform.setScale(1.710526315789474f,0.584615384615385f,1);
-    	                material.setDiffuse(animation.get(10));
-    	            } else if (time > deathTime + time1 && time <= deathTime + time2) {
-    	            	transform.setScale(2.096774193548387f,0.476923076923077f,1);
-    	                material.setDiffuse(animation.get(11));
-    	            } else if (time > deathTime + time2 && time <= deathTime + time3) {
-    	            	transform.setScale(1.896551724137931f,0.527272727272727f,1);
-    	                material.setDiffuse(animation.get(12));
-    	            } else if (time > deathTime + time3 && time <= deathTime + time4) {
-    	            	transform.setScale(1.793103448275862f,0.557692307692308f,1);
-    	                material.setDiffuse(animation.get(13));
-    	            } else if (time > deathTime + time4 && time <= deathTime + time5) {
-    	            	transform.setScale(1.586206896551724f,0.630434782608696f,1);
-    	                material.setDiffuse(animation.get(14));
-    	            } else if (time > deathTime + time4 && time <= deathTime + time6) {
-    	            	transform.setScale(1.586206896551724f,0.630434782608696f,1);
-    	                material.setDiffuse(animation.get(15));
-    	            } else if (time > deathTime + time6) {
-    	                state = STATE_DEAD;
-    	            }
-    	        }
-
-    	        if (state == STATE_DEAD) {
-    	        	isQuiet = true;
-    	            dead = true;
-    	            if(drops) {
-    		            key = new Key(new Transform(transform.getPosition()), true, false);
-    		            key.update(delta);
-    		            if (distance < key.PICKUP_THRESHHOLD && drops)
-    		            	state = STATE_POST_DEATH;
-    	            }
-    	            transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
-    	            material.setDiffuse(animation.get(16));
-    	        }
-    	        
-    	        if (state == STATE_POST_DEATH) {
-    	        	transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
-    	            material.setDiffuse(animation.get(17));
-    	        }
-    	        
-    	        if (state == STATE_DONE) {
-    	        	isQuiet = true;
-    	        	double timeDecimals = (time - (double) ((int) time));
-
-    	        	timeDecimals *= 1.5f;
-
-    	            if (timeDecimals <= 0.25f) {
-    	            	transform.setScale(1.558139534883721f,0.641791044776119f,1);
-    	                material.setDiffuse(animation.get(0));
-    	            } else if (timeDecimals <= 0.5f) {
-    	            	transform.setScale(1.372093023255814f,0.728813559322034f,1);
-    	                material.setDiffuse(animation.get(1));
-    	            } else if (timeDecimals <= 0.75f) {
-    	            	transform.setScale(1.5f,0.666666666666667f,1);
-    	                material.setDiffuse(animation.get(2));
-    	            } else {
-    	            	transform.setScale(1.523809523809524f,0.65625f,1);
-    	                material.setDiffuse(animation.get(3));
+    	    	            if (timeDecimals <= 0.25f) {
+    	    	            	transform.setScale(1.558139534883721f,0.641791044776119f,1);
+    	    	                material.setDiffuse(animation.get(0));
+    	    	            } else if (timeDecimals <= 0.5f) {
+    	    	            	transform.setScale(1.372093023255814f,0.728813559322034f,1);
+    	    	                material.setDiffuse(animation.get(1));
+    	    	            } else if (timeDecimals <= 0.75f) {
+    	    	            	transform.setScale(1.5f,0.666666666666667f,1);
+    	    	                material.setDiffuse(animation.get(2));
+    	    	            } else {
+    	    	            	transform.setScale(1.523809523809524f,0.65625f,1);
+    	    	                material.setDiffuse(animation.get(3));
+    	    	            }
+    	            		break;
+    	            	case STATE_HIT:
+    	            		timeDecimals = (time - (double) ((int) time));
+    	    	            if (timeDecimals <= 0.5f) {
+    	    	            	transform.setScale(1.25f,0.8f,1);
+    	    	                material.setDiffuse(animation.get(10));
+    	    	            } else {
+    	    	                state = STATE_CHASE;
+    	    	            }
+    	            		break;
     	            }
     	        }
     	        
-    	        if (state == STATE_HIT) {
-    	        	double timeDecimals = (time - (double) ((int) time));
-    	            if (timeDecimals <= 0.5f) {
-    	            	transform.setScale(1.25f,0.8f,1);
-    	                material.setDiffuse(animation.get(10));
-    	            } else {
-    	                state = STATE_CHASE;
-    	            }
+    	        switch(state) {
+    	        	case STATE_DYING:
+    	        		isQuiet = true;
+        	            dead = true;
+
+        	            final float time1 = 0.1f;
+        	            final float time2 = 0.3f;
+        	            final float time3 = 0.5f;
+        	            final float time4 = 0.7f;
+        	            final float time5 = 0.9f;
+        	            final float time6 = 1.1f;
+
+        	            if (time <= deathTime + 0.2f) {
+        	            	transform.setScale(1.710526315789474f,0.584615384615385f,1);
+        	                material.setDiffuse(animation.get(10));
+        	            } else if (time > deathTime + time1 && time <= deathTime + time2) {
+        	            	transform.setScale(2.096774193548387f,0.476923076923077f,1);
+        	                material.setDiffuse(animation.get(11));
+        	            } else if (time > deathTime + time2 && time <= deathTime + time3) {
+        	            	transform.setScale(1.896551724137931f,0.527272727272727f,1);
+        	                material.setDiffuse(animation.get(12));
+        	            } else if (time > deathTime + time3 && time <= deathTime + time4) {
+        	            	transform.setScale(1.793103448275862f,0.557692307692308f,1);
+        	                material.setDiffuse(animation.get(13));
+        	            } else if (time > deathTime + time4 && time <= deathTime + time5) {
+        	            	transform.setScale(1.586206896551724f,0.630434782608696f,1);
+        	                material.setDiffuse(animation.get(14));
+        	            } else if (time > deathTime + time4 && time <= deathTime + time6) {
+        	            	transform.setScale(1.586206896551724f,0.630434782608696f,1);
+        	                material.setDiffuse(animation.get(15));
+        	            } else if (time > deathTime + time6) {
+        	                state = STATE_DEAD;
+        	            }
+    	        		break;
+    	        	case STATE_DEAD:
+    	        		isQuiet = true;
+        	            dead = true;
+        	            if(drops) {
+        		            key.update(delta);
+        		            if (distance < key.PICKUP_THRESHHOLD && drops)
+        		            	state = STATE_POST_DEATH;
+        	            }
+        	            transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
+        	            material.setDiffuse(animation.get(16));
+    	        		break;
+    	        	case STATE_POST_DEATH:
+    	        		transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
+        	            material.setDiffuse(animation.get(17));
+        	            break;
     	        }
     			break;
     		case 2:
@@ -509,69 +508,67 @@ public class Zombie extends GameComponent {
     	        	Vector2f playerDirection = transform.getPosition().sub(
     	                    player.getCamera().getPos().add(
     	                            new Vector3f(player.getSize().getX(), 0, player.getSize().getY()).mul(0.5f))).getXZ().normalized();
-    	           
-    	        	if (state == STATE_IDLE) {
-    	            	isQuiet = true;
-    	                double timeDecimals = (time - (double) ((int) time));
+    	           switch(state) {
+    	           		case STATE_IDLE:
+    	           			isQuiet = true;
+        	                double timeDecimals = (time - (double) ((int) time));
 
-    	                if (timeDecimals >= 0.5) {
-    	                	transform.setScale(1.341935483870968f,0.774074074074074f,1);
-    	                    material.setDiffuse(animation.get(1));
-    	                    canLook = true;
-    	                } else {
-    	                	transform.setScale(1.374193548387097f,0.763636363636364f,1);
-    	                    material.setDiffuse(animation.get(0));
-    	                    if (canLook) {
-    	                        Vector2f lineStart = transform.getPosition().getXZ();
-    	                        Vector2f lineEnd = lineStart.sub(playerDirection.mul(1000.0f));
+        	                if (timeDecimals >= 0.5) {
+        	                	transform.setScale(1.341935483870968f,0.774074074074074f,1);
+        	                    material.setDiffuse(animation.get(1));
+        	                    canLook = true;
+        	                } else {
+        	                	transform.setScale(1.374193548387097f,0.763636363636364f,1);
+        	                    material.setDiffuse(animation.get(0));
+        	                    if (canLook) {
+        	                        Vector2f lineStart = transform.getPosition().getXZ();
+        	                        Vector2f lineEnd = lineStart.sub(playerDirection.mul(1000.0f));
 
-    	                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
-    	                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
+        	                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
+        	                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
 
-    	                        if (playerIntersect != null && (nearestIntersect == null
-    	                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
-    	                        	seeNoise = seeNoises.get(new Random().nextInt(seeNoises.size()));
-    	                        	AudioUtil.playAudio(seeNoise, distance);
-    	                            state = STATE_CHASE;
-    	                        }
+        	                        if (playerIntersect != null && (nearestIntersect == null
+        	                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
+        	                        	seeNoise = seeNoises.get(new Random().nextInt(seeNoises.size()));
+        	                        	AudioUtil.playAudio(seeNoise, distance);
+        	                            state = STATE_CHASE;
+        	                        }
 
-    	                        canLook = false;
-    	                    }
-    	                }
-    	            } else if (state == STATE_CHASE) {
-    	            	isQuiet = false;
-    	                if (rand.nextDouble() < 0.5f * delta)
-    	                    state = STATE_ATTACK;
+        	                        canLook = false;
+        	                    }
+        	                }
+    	           			break;
+    	           		case STATE_CHASE:
+    	           			isQuiet = false;
+        	                if (rand.nextDouble() < 0.5f * delta)
+        	                    state = STATE_ATTACK;
 
-    	                if (distance > 2.0f) {
-    	                    orientation.setY(0);
-    	                    float moveSpeed = 1.0f;
+        	                if (distance > 2.0f) {
+        	                    orientation.setY(0);
+        	                    float moveSpeed = 1.0f;
 
-    	                    Vector3f oldPos = transform.getPosition();
-    	                    Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * delta)));
+        	                    Vector3f oldPos = transform.getPosition();
+        	                    Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * delta)));
 
-    	                    Vector3f collisionVector = Auschwitz.getLevel().checkCollisions(oldPos, newPos, ZOMBIE_WIDTH, ZOMBIE_WIDTH);
+        	                    Vector3f collisionVector = Auschwitz.getLevel().checkCollisions(oldPos, newPos, ZOMBIE_WIDTH, ZOMBIE_WIDTH);
 
-    	                    Vector3f movementVector = collisionVector.mul(orientation.normalized());
+        	                    Vector3f movementVector = collisionVector.mul(orientation.normalized());
 
-    	                    if (!movementVector.equals(orientation.normalized())) {
-    	                        Auschwitz.getLevel().openDoors(transform.getPosition(), false);
-    	                    }
+        	                    if (!movementVector.equals(orientation.normalized())) {
+        	                        Auschwitz.getLevel().openDoors(transform.getPosition(), false);
+        	                    }
 
-    	                    if (movementVector.length() > 0) {
-    	                        transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * delta))));
-    	                    }
-    	                } else {
-    	                    state = STATE_ATTACK;
-    	                }
+        	                    if (movementVector.length() > 0) {
+        	                        transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * delta))));
+        	                    }
+        	                } else {
+        	                    state = STATE_ATTACK;
+        	                }
 
-    	                if (state == STATE_CHASE) {
     	                	isQuiet = false;
-    	                    double timeDecimals = (time - (double) ((int) time));
+    	                    timeDecimals = (time - (double) ((int) time));
 
-    	                    while (timeDecimals > 0.5) {
-    	                        timeDecimals -= 0.5;
-    	                    }
+    	                    while (timeDecimals > 0.5) { timeDecimals -= 0.5; }
     	                    
     	                    timeDecimals *= 1.5f;
 
@@ -587,174 +584,166 @@ public class Zombie extends GameComponent {
     	                    } else {
     	                    	transform.setScale(1.406451612903226f,0.753571428571429f,1);
     	                        material.setDiffuse(animation.get(3));
-    	                    }
-    	                }
-    	            }
+    	                    }             
+    	           			break;
+    	           		case STATE_ATTACK:
+    	           			isQuiet = true;
+        	                timeDecimals = (time - (double) ((int) time));
 
-    	            if (state == STATE_ATTACK) {
-    	            	isQuiet = true;
-    	                double timeDecimals = (time - (double) ((int) time));
+        	                if (timeDecimals <= 0.25f) {
+        	                	transform.setScale(1.370967741935484f,0.73448275862069f,1);
+        	                    material.setDiffuse(animation.get(4));
+        	                } else if (timeDecimals <= 0.5f) {
+        	                	transform.setScale(1.318181818181818f,0.758620689655172f,1);
+        	                    material.setDiffuse(animation.get(5));
+        	                } else if (timeDecimals <= 0.7f) {
+        	                    transform.setScale(1.318181818181818f,0.758620689655172f,1);
+        	                    material.setDiffuse(animation.get(6));
+        	                } else if (timeDecimals <= 0.9f) {
+        	                    if (canAttack) {
+        	                    	gibs.add(new ZombieMeat(new Transform(getTransform().getPosition())));
+        	                        canAttack = false;
+        	                        attackNoise = attackNoises.get(new Random().nextInt(attackNoises.size()));
+        	                        AudioUtil.playAudio(attackNoise, distance);
+        	                        if(player.getHealth() <= 0)
+    	                            	state = STATE_DONE;
+        	                    }
+        	                    transform.setScale(1.318181818181818f,0.758620689655172f,1);
+        	                    material.setDiffuse(animation.get(7));
+        	                } else {
+        	                    canAttack = true;
+        	                    transform.setScale(1.318181818181818f,0.758620689655172f,1);
+        	                    material.setDiffuse(animation.get(8));
+        	                    state = STATE_CHASE;
+        	                }
+    	           			break;
+    	           		case STATE_DONE:
+    	           			isQuiet = true;
+    	    	        	timeDecimals = (time - (double) ((int) time));
 
-    	                if (timeDecimals <= 0.25f) {
-    	                	transform.setScale(1.370967741935484f,0.73448275862069f,1);
-    	                    material.setDiffuse(animation.get(4));
-    	                } else if (timeDecimals <= 0.5f) {
-    	                	transform.setScale(1.318181818181818f,0.758620689655172f,1);
-    	                    material.setDiffuse(animation.get(5));
-    	                } else if (timeDecimals <= 0.7f) {
-    	                    transform.setScale(1.318181818181818f,0.758620689655172f,1);
-    	                    material.setDiffuse(animation.get(6));
-    	                } else if (timeDecimals <= 0.9f) {
-    	                    if (canAttack) {
-    	                    	gibs.add(new ZombieMeat(new Transform(getTransform().getPosition())));
-    	                        canAttack = false;
-    	                        attackNoise = attackNoises.get(new Random().nextInt(attackNoises.size()));
-    	                        AudioUtil.playAudio(attackNoise, distance);
-    	                        if(player.getHealth() <= 0)
-	                            	state = STATE_DONE;
-    	                    }
-    	                    transform.setScale(1.318181818181818f,0.758620689655172f,1);
-    	                    material.setDiffuse(animation.get(7));
-    	                } else {
-    	                    canAttack = true;
-    	                    transform.setScale(1.318181818181818f,0.758620689655172f,1);
-    	                    material.setDiffuse(animation.get(8));
-    	                    state = STATE_CHASE;
-    	                }
-    	            }
+    	    	        	timeDecimals *= 1.5f;
+
+    	    	            if (timeDecimals <= 0.25f) {
+    	    	            	transform.setScale(1.374193548387097f,0.763636363636364f,1);
+    	    	                material.setDiffuse(animation.get(0));
+    	    	            } else if (timeDecimals <= 0.5f) {
+    	    	            	transform.setScale(1.341935483870968f,0.774074074074074f,1);
+    	    	                material.setDiffuse(animation.get(1));
+    	    	            } else if (timeDecimals <= 0.75f) {
+    	    	            	transform.setScale(1.470967741935484f,0.73448275862069f,1);
+    	    	                material.setDiffuse(animation.get(2));
+    	    	            } else {
+    	    	            	transform.setScale(1.406451612903226f,0.753571428571429f,1);
+    	    	                material.setDiffuse(animation.get(3));
+    	    	            }
+    	    	            break;
+    	           		case STATE_HIT:
+    	           			timeDecimals = (time - (double) ((int) time));
+    	    	            if (timeDecimals <= 0.5f) {
+    	    	            	transform.setScale(1.355555555555556f,0.742857142857143f,1);
+    	    	                material.setDiffuse(animation.get(9));
+    	    	            } else {
+    	    	                state = STATE_CHASE;
+    	    	            }
+    	           			break;
+    	           			
+    	           }
     	        }
 
     	        if(Level.getPlayer().getWeaponState() != "rocketLauncher") {
-    		        if (state == STATE_DYING) {
-    		        	isQuiet = true;
-    		            dead = true;
-    		
-    		            final float time1 = 0.1f;
-    		            final float time2 = 0.3f;
-    		            final float time3 = 0.5f;
-    		            final float time4 = 0.7f;
-    		
-    		            if (time <= deathTime + 0.2f) {
-        	            	transform.setScale(1.710526315789474f,0.584615384615385f,1);
-        	                material.setDiffuse(animation.get(10));
-        	            } else if (time > deathTime + time1 && time <= deathTime + time2) {
-        	            	transform.setScale(2.096774193548387f,0.476923076923077f,1);
-        	                material.setDiffuse(animation.get(11));
-        	            } else if (time > deathTime + time2 && time <= deathTime + time3) {
-        	            	transform.setScale(1.896551724137931f,0.527272727272727f,1);
-        	                material.setDiffuse(animation.get(12));
-        	            } else if (time > deathTime + time3 && time <= deathTime + time4) {
-        	            	transform.setScale(1.793103448275862f,0.557692307692308f,1);
-        	                material.setDiffuse(animation.get(13));
-        	            } else if (time > deathTime + time4) {
-        	                state = STATE_DEAD;
-        	            }
-    		        }
-    		
-    		        if (state == STATE_DEAD) {
-    		        	isQuiet = true;
-    		            dead = true;
-    		            if(drops) {
-    			            key = new Key(new Transform(transform.getPosition()), true, false);
-    			            key.update(delta);
-    		            }
-    		            transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
-    		            material.setDiffuse(animation.get(14));
-    		            if(drops && distance < key.PICKUP_THRESHHOLD)
-    		            	state = STATE_POST_DEATH;
-    		        }
-    		        
-    		        if (state == STATE_POST_DEATH) {
-    		        	transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
-    		            material.setDiffuse(animation.get(14));
-    		        }
+    	        	switch(state) {
+    	        		case STATE_DYING:
+    	        			isQuiet = true;
+        		            dead = true;
+        		
+        		            final float time1 = 0.1f;
+        		            final float time2 = 0.3f;
+        		            final float time3 = 0.5f;
+        		            final float time4 = 0.7f;
+        		
+        		            if (time <= deathTime + 0.2f) {
+            	            	transform.setScale(1.710526315789474f,0.584615384615385f,1);
+            	                material.setDiffuse(animation.get(10));
+            	            } else if (time > deathTime + time1 && time <= deathTime + time2) {
+            	            	transform.setScale(2.096774193548387f,0.476923076923077f,1);
+            	                material.setDiffuse(animation.get(11));
+            	            } else if (time > deathTime + time2 && time <= deathTime + time3) {
+            	            	transform.setScale(1.896551724137931f,0.527272727272727f,1);
+            	                material.setDiffuse(animation.get(12));
+            	            } else if (time > deathTime + time3 && time <= deathTime + time4) {
+            	            	transform.setScale(1.793103448275862f,0.557692307692308f,1);
+            	                material.setDiffuse(animation.get(13));
+            	            } else if (time > deathTime + time4) {
+            	                state = STATE_DEAD;
+            	            }
+    	        			break;
+    	        		case STATE_DEAD:
+    	        			isQuiet = true;
+        		            dead = true;
+        		            if(drops)
+        			            key.update(delta);
+        		            transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
+        		            material.setDiffuse(animation.get(14));
+        		            if(drops && distance < key.PICKUP_THRESHHOLD)
+        		            	state = STATE_POST_DEATH;
+    	        			break;
+    	        		case STATE_POST_DEATH:
+    	        			transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
+        		            material.setDiffuse(animation.get(14));
+    	        			break;
+    	        	}
     	        } else {
-    	        	if (state == STATE_DYING) {
-    		        	isQuiet = true;
-    		            dead = true;
-    		
-    		            final float time1 = 0.1f;
-    		            final float time2 = 0.3f;
-    		            final float time3 = 0.5f;
-    		            final float time4 = 0.7f;
-    		
-    		            if (time <= deathTime + 0.2f) {
-    		            	transform.setScale(1.157894736842105f,0.863636363636364f,1);
-    		                material.setDiffuse(animation.get(15));
-    		            } else if (time > deathTime + time1 && time <= deathTime + time2) {
-    		            	transform.setScale(0.975f,1.025641025641026f,1);
-    		                material.setDiffuse(animation.get(16));
-    		            } else if (time > deathTime + time2 && time <= deathTime + time3) {
-    		            	transform.setScale(0.532258064516129f,1.878787878787879f,1);
-    		                material.setDiffuse(animation.get(17));
-    		            } else if (time > deathTime + time3 && time <= deathTime + time4) {
-    		            	transform.setScale(0.508196721311475f,1.967741935483871f,1);
-    		                material.setDiffuse(animation.get(18));
-    		            } else if (time > deathTime + time4) {
-    		                state = STATE_DEAD;
-    		            }
-    		        }
-    	        	
-    	        	if (state == STATE_DEAD) {
-    		        	isQuiet = true;
-    		            dead = true;
-    		            if(drops) {
-    			            key = new Key(new Transform(transform.getPosition().add(-0.01f)), true, false);
-    			            key.update(delta);
-    		            }
-    		            transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
-    		            material.setDiffuse(animation.get(19));
-    		            if(drops && distance < key.PICKUP_THRESHHOLD)
-    		            	state = STATE_POST_DEATH;
-    		        }
-    		        
-    		        if (state == STATE_POST_DEATH) {
-    		        	transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
-    		            material.setDiffuse(animation.get(19));
-    		        }
-    	        	
+    	        	switch(state) {
+    	        		case STATE_DYING:
+    	        			isQuiet = true;
+        		            dead = true;
+        		
+        		            final float time1 = 0.1f;
+        		            final float time2 = 0.3f;
+        		            final float time3 = 0.5f;
+        		            final float time4 = 0.7f;
+        		
+        		            if (time <= deathTime + 0.2f) {
+        		            	transform.setScale(1.157894736842105f,0.863636363636364f,1);
+        		                material.setDiffuse(animation.get(15));
+        		            } else if (time > deathTime + time1 && time <= deathTime + time2) {
+        		            	transform.setScale(0.975f,1.025641025641026f,1);
+        		                material.setDiffuse(animation.get(16));
+        		            } else if (time > deathTime + time2 && time <= deathTime + time3) {
+        		            	transform.setScale(0.532258064516129f,1.878787878787879f,1);
+        		                material.setDiffuse(animation.get(17));
+        		            } else if (time > deathTime + time3 && time <= deathTime + time4) {
+        		            	transform.setScale(0.508196721311475f,1.967741935483871f,1);
+        		                material.setDiffuse(animation.get(18));
+        		            } else if (time > deathTime + time4) {
+        		                state = STATE_DEAD;
+        		            }
+    	        			break;
+    	        		case STATE_DEAD:
+    	        			isQuiet = true;
+        		            dead = true;
+        		            if(drops)
+        			            key.update(delta);
+        		            transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
+        		            material.setDiffuse(animation.get(19));
+        		            if(drops && distance < key.PICKUP_THRESHHOLD)
+        		            	state = STATE_POST_DEATH;
+    	        			break;
+    	        		case STATE_POST_DEATH:
+    	        			transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
+        		            material.setDiffuse(animation.get(19));
+    	        			break;
+    	        }
     	        
-    	    }
-    	        if (state == STATE_DONE) {
-    	        	isQuiet = true;
-    	        	double timeDecimals = (time - (double) ((int) time));
-
-    	        	timeDecimals *= 1.5f;
-
-    	            if (timeDecimals <= 0.25f) {
-    	            	transform.setScale(1.374193548387097f,0.763636363636364f,1);
-    	                material.setDiffuse(animation.get(0));
-    	            } else if (timeDecimals <= 0.5f) {
-    	            	transform.setScale(1.341935483870968f,0.774074074074074f,1);
-    	                material.setDiffuse(animation.get(1));
-    	            } else if (timeDecimals <= 0.75f) {
-    	            	transform.setScale(1.470967741935484f,0.73448275862069f,1);
-    	                material.setDiffuse(animation.get(2));
-    	            } else {
-    	            	transform.setScale(1.406451612903226f,0.753571428571429f,1);
-    	                material.setDiffuse(animation.get(3));
-    	            }
-    	        }
-	        	
-	        	if (state == STATE_HIT) {
-    	        	double timeDecimals = (time - (double) ((int) time));
-    	            if (timeDecimals <= 0.5f) {
-    	            	transform.setScale(1.355555555555556f,0.742857142857143f,1);
-    	                material.setDiffuse(animation.get(9));
-    	            } else {
-    	                state = STATE_CHASE;
-    	            }
-    	        }
+    	    }	        
 	        
-	        if(!removeGibs.isEmpty())
-	        	for (ZombieMeat gibToRemove : removeGibs) 
-	        		gibs.remove(gibToRemove);   
-			
-	        removeGibs.clear();
+    	        if(!removeGibs.isEmpty())
+			       	for (ZombieMeat gibToRemove : removeGibs) 
+			       		gibs.remove(gibToRemove);   
+					      
+    	        removeGibs.clear();
     			break;
-    	}
-    	
-        	
+    	}     	
     }
 
     /**

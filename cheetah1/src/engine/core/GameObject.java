@@ -60,6 +60,11 @@ public class GameObject {
 				components.add((GameComponent) component);
 	}
 	
+	/*
+	 * Clears every component in the array.
+	 */
+	public void clearMemory() { components.clear(); }
+	
 	/**
 	 * Input method for all the components on
 	 * the list.

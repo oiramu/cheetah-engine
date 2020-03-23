@@ -330,13 +330,8 @@ public class Auschwitz implements Game {
             
             level = new Level(new Bitmap("level" + levelNum).flipX(), material);
             
-            switch(CLEAR_LIGHTS) {
-    			case "True":
-    				getRenderingEngine().clearLights();
-    				break;
-    			case "False":
-    				break;
-            }
+            if(CLEAR_LIGHTS)
+            	getRenderingEngine().clearLights();
             
             if(level.getPlayer().getHealth() == 0) {
             	if(healthTemp == 0)

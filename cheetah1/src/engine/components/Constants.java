@@ -31,7 +31,6 @@ public class Constants {
 	
 	public static String 	TEXTURE_FILTER;
 	public static String 	GAME_GRAPHICS;
-	public static String	CLEAR_LIGHTS;
 	public static float 	MIPMAP_LEVEL;
 	public static float 	ANISOTROPIC_LEVEL;
 	public static float 	POP_IN;
@@ -39,7 +38,11 @@ public class Constants {
 	public static float 	LIGHT_POP_IN;
 	public static float 	GRASS_POP_IN;
 	public static float 	GRAVITY;
+	public static int 		EFFECTS_AUDIO_LEVEL;
+	public static int 		MUSIC_AUDIO_LEVEL;
 	public static short 	PARTICLES_LEVEL;
+	public static boolean	CLEAR_LIGHTS;
+	public static boolean	GOD;
 	
 	/**
 	 * Loads all the config language and structures all the components.
@@ -77,7 +80,7 @@ public class Constants {
 						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='
 						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
 						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
-						    		CLEAR_LIGHTS = treatment[0];
+						    		CLEAR_LIGHTS = Boolean.parseBoolean(treatment[0]);
 						    		break;
 						    	case "MIPMAP_LEVEL":
 						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='
@@ -126,6 +129,22 @@ public class Constants {
 						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
 						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
 						    		PARTICLES_LEVEL = Short.parseShort(treatment[0]);
+						    		break;
+						    	case "EFFECTS_AUDIO_LEVEL":
+						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='
+						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
+						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
+						    		EFFECTS_AUDIO_LEVEL = Short.parseShort(treatment[0]) - 20;
+						    		if(EFFECTS_AUDIO_LEVEL == 0)
+						    			EFFECTS_AUDIO_LEVEL = 0;
+						    		else if(EFFECTS_AUDIO_LEVEL == 100)
+						    			EFFECTS_AUDIO_LEVEL = 100;
+						    		break;
+						    	case "GOD":
+						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='
+						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
+						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
+						    		GOD = Boolean.parseBoolean(treatment[0]);
 						    		break;
 						    	}
 						    }

@@ -41,7 +41,7 @@ import game.Player;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.1
+ * @version 1.2
  * @since 2017
  */
 public class Dog extends GameComponent {
@@ -192,64 +192,62 @@ public class Dog extends GameComponent {
             Vector2f playerDirection = transform.getPosition().sub(
                     player.getCamera().getPos().add(
                             new Vector3f(player.getSize().getX(), 0, player.getSize().getY()).mul(0.5f))).getXZ().normalized();
+            switch(state) {
+	            case STATE_IDLE:
+	            	isQuiet = true;
+	                double timeDecimals = (time - (double) ((int) time));
+	
+	                if (timeDecimals >= 0.5) {
+	                    material.setDiffuse(animation.get(1));
+	                    canLook = true;
+	                } else {
+	                    material.setDiffuse(animation.get(0));
+	                    if (canLook) {
+	                        Vector2f lineStart = transform.getPosition().getXZ();
+	                        Vector2f lineEnd = lineStart.sub(playerDirection.mul(1000.0f));
+	
+	                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
+	                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
+	
+	                        if (playerIntersect != null && (nearestIntersect == null
+	                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
+	                            AudioUtil.playAudio(seeNoise, distance);
+	                            state = STATE_CHASE;
+	                        }
+	
+	                        canLook = false;
+	                    }
+	                }
+	            	break;
+	            case STATE_CHASE:
+	            	isQuiet = false;
 
-            if (state == STATE_IDLE) {
-            	isQuiet = true;
-                double timeDecimals = (time - (double) ((int) time));
+	                if (distance > 0.55f) {
+	                	if (rand.nextDouble() < 0.5f * delta)
+	                        state = STATE_ATTACK;
+	                    orientation.setY(0);
+	                    float moveSpeed = 3f;
 
-                if (timeDecimals >= 0.5) {
-                    material.setDiffuse(animation.get(1));
-                    canLook = true;
-                } else {
-                    material.setDiffuse(animation.get(0));
-                    if (canLook) {
-                        Vector2f lineStart = transform.getPosition().getXZ();
-                        Vector2f lineEnd = lineStart.sub(playerDirection.mul(1000.0f));
+	                    Vector3f oldPos = transform.getPosition();
+	                    Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * delta)));
 
-                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
-                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
+	                    Vector3f collisionVector = Auschwitz.getLevel().checkCollisions(oldPos, newPos, DOG_WIDTH, DOG_WIDTH);
 
-                        if (playerIntersect != null && (nearestIntersect == null
-                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
-                            AudioUtil.playAudio(seeNoise, distance);
-                            state = STATE_CHASE;
-                        }
+	                    Vector3f movementVector = collisionVector.mul(orientation.normalized());
 
-                        canLook = false;
-                    }
-                }
-            } else if (state == STATE_CHASE) {
-            	isQuiet = false;
+	                    /**
+	                     * Just in case you want a dog that can open doors :P
+	                    if (!movementVector.equals(orientation.normalized())) {
+	                        Auschwitz.getLevel().openDoors(transform.getPosition(), false);
+	                    }*/
 
-                if (distance > 0.55f) {
-                	if (rand.nextDouble() < 0.5f * delta)
-                        state = STATE_ATTACK;
-                    orientation.setY(0);
-                    float moveSpeed = 3f;
-
-                    Vector3f oldPos = transform.getPosition();
-                    Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * delta)));
-
-                    Vector3f collisionVector = Auschwitz.getLevel().checkCollisions(oldPos, newPos, DOG_WIDTH, DOG_WIDTH);
-
-                    Vector3f movementVector = collisionVector.mul(orientation.normalized());
-
-                    /**
-                     * Just in case you want a dog that can open doors :P
-                    if (!movementVector.equals(orientation.normalized())) {
-                        Auschwitz.getLevel().openDoors(transform.getPosition(), false);
-                    }*/
-
-                    if (movementVector.length() > 0) {
-                        transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * delta))));
-                    }
-                } else {
-                    state = STATE_ATTACK;
-                }
-
-                if (state == STATE_CHASE) {
-                	isQuiet = false;
-                    double timeDecimals = (time - (double) ((int) time));
+	                    if (movementVector.length() > 0) {
+	                        transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * delta))));
+	                    }
+	                } else {
+	                    state = STATE_ATTACK;
+	                }
+	                timeDecimals = (time - (double) ((int) time));
 
                     while (timeDecimals > 0.5) {
                         timeDecimals -= 0.5;
@@ -268,88 +266,87 @@ public class Dog extends GameComponent {
                     } else {
                         material.setDiffuse(animation.get(4));
                     }
-                }
-            }
+	            	break;
+	            case STATE_ATTACK:
+	            	isQuiet = true; 
+	                timeDecimals = (time - (double) ((int) time));
 
-            if (state == STATE_ATTACK) {
-            	isQuiet = true; 
-                double timeDecimals = (time - (double) ((int) time));
+	                if (timeDecimals <= 0.25f) {
+	                    material.setDiffuse(animation.get(5));
+	                } else if (timeDecimals <= 0.5f) {
+	                	if (canAttack) {
+	                        Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
 
-                if (timeDecimals <= 0.25f) {
-                    material.setDiffuse(animation.get(5));
-                } else if (timeDecimals <= 0.5f) {
-                	if (canAttack) {
-                        Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
+	                        Vector2f lineStart = transform.getPosition().getXZ();
+	                        Vector2f lineEnd = lineStart.sub(shootDirection.mul(1000.0f));
 
-                        Vector2f lineStart = transform.getPosition().getXZ();
-                        Vector2f lineEnd = lineStart.sub(shootDirection.mul(1000.0f));
+	                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
+	                        canAttack = false;
 
-                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
-                        canAttack = false;
+	                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
 
-                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
+	                        if (playerIntersect != null && (nearestIntersect == null
+	                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
 
-                        if (playerIntersect != null && (nearestIntersect == null
-                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
+	                        	float damage;
+	                             if(player.getHealth() > 0) {
+	                            	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
+	                            	AudioUtil.playAudio(atackSound.get(new Random().nextInt(atackSound.size())), distance);
+	                            	if(player.isArmor() == false) {
+	                            		player.addHealth((int) -damage, "Dog");
+	                            	}else {
+	                            		player.addArmor((int) -damage);
+	                            	}
+	                            }
+	                        }
+	                    }
 
-                        	float damage;
-                             if(player.getHealth() > 0) {
-                            	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
-                            	AudioUtil.playAudio(atackSound.get(new Random().nextInt(atackSound.size())), distance);
-                            	if(player.isArmor() == false) {
-                            		player.addHealth((int) -damage, "Dog");
-                            	}else {
-                            		player.addArmor((int) -damage);
-                            	}
-                            }
-                        }
-                    }
-
-                    material.setDiffuse(animation.get(6));
-                } else if (timeDecimals <= 0.7f) {
-                	material.setDiffuse(animation.get(7));
-                } else {
-                    canAttack = true;
-                    material.setDiffuse(animation.get(5));
-                    state = STATE_CHASE;
-                }
-            }
-        }
-
-        if (state == STATE_DYING) {
-        	isQuiet = true;
-            dead = true;
-
-            final float time1 = 0.1f;
-            final float time2 = 0.3f;
-            final float time3 = 0.45f;
-            final float time4 = 0.6f;
-            final float time5 = 0.75f;
-
-            if (time <= deathTime + 0.2f) {
-                material.setDiffuse(animation.get(8));
-            } else if (time > deathTime + time1 && time <= deathTime + time2) {
-                material.setDiffuse(animation.get(9));
-            } else if (time > deathTime + time2 && time <= deathTime + time3) {
-                material.setDiffuse(animation.get(10));
-            } else if (time > deathTime + time3 && time <= deathTime + time4) {
-                material.setDiffuse(animation.get(11));
-            } else if (time > deathTime + time4 && time <= deathTime + time5) {
-                material.setDiffuse(animation.get(12));
-            } else if (time > deathTime + time5) {
-                state = STATE_DEAD;
-            }
-        }
-
-        if (state == STATE_DEAD) {
-        	isQuiet = false;
-            dead = true;
-            material.setDiffuse(animation.get(13));
+	                    material.setDiffuse(animation.get(6));
+	                } else if (timeDecimals <= 0.7f) {
+	                	material.setDiffuse(animation.get(7));
+	                } else {
+	                    canAttack = true;
+	                    material.setDiffuse(animation.get(5));
+	                    state = STATE_CHASE;
+	                }
+	            	break;
+	            case STATE_DONE:
+	        		isQuiet = true;
+	                material.setDiffuse(animation.get(2));
+	        		break;
+	        }
         }
         
-        if (state == STATE_DONE) {
-        	isQuiet = true;
-            material.setDiffuse(animation.get(2));
+        switch(state) {
+        	case STATE_DYING:
+        		isQuiet = true;
+                dead = true;
+
+                final float time1 = 0.1f;
+                final float time2 = 0.3f;
+                final float time3 = 0.45f;
+                final float time4 = 0.6f;
+                final float time5 = 0.75f;
+
+                if (time <= deathTime + 0.2f) {
+                    material.setDiffuse(animation.get(8));
+                } else if (time > deathTime + time1 && time <= deathTime + time2) {
+                    material.setDiffuse(animation.get(9));
+                } else if (time > deathTime + time2 && time <= deathTime + time3) {
+                    material.setDiffuse(animation.get(10));
+                } else if (time > deathTime + time3 && time <= deathTime + time4) {
+                    material.setDiffuse(animation.get(11));
+                } else if (time > deathTime + time4 && time <= deathTime + time5) {
+                    material.setDiffuse(animation.get(12));
+                } else if (time > deathTime + time5) {
+                    state = STATE_DEAD;
+                }
+        		break;
+        	case STATE_DEAD:
+        		isQuiet = false;
+                dead = true;
+                material.setDiffuse(animation.get(13));
+        		break;
         }
     }
 
@@ -358,15 +355,13 @@ public class Dog extends GameComponent {
      * @param amt amount.
      */
     public void damage(int amt) {
-        if (state == STATE_IDLE) {
+        if (state == STATE_IDLE)
             state = STATE_CHASE;
-        }
 
         health -= amt;
 
-        if (health > 0 && amt > 0) {
+        if (health > 0 && amt > 0)
             AudioUtil.playAudio(hitNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
-        }
     }
 
     /**

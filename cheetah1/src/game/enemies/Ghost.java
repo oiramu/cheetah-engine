@@ -41,7 +41,7 @@ import game.Player;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.1
+ * @version 1.2
  * @since 2018
  */
 public class Ghost extends GameComponent {
@@ -179,61 +179,61 @@ public class Ghost extends GameComponent {
                     player.getCamera().getPos().add(
                             new Vector3f(player.getSize().getX(), 0, player.getSize().getY()).mul(0.5f))).getXZ().normalized();
 
-            if (state == STATE_IDLE) {
-                double timeDecimals = (time - (double) ((int) time));
+            switch(state) {
+            	case STATE_IDLE:
+            		double timeDecimals = (time - (double) ((int) time));
 
-                if (timeDecimals >= 0.5) {
-                    material.setDiffuse(animation.get(1));
-                    canLook = true;
-                } else {
-                    material.setDiffuse(animation.get(0));
-                    if (canLook) {
-                        Vector2f lineStart = transform.getPosition().getXZ();
-                        Vector2f lineEnd = lineStart.sub(playerDirection.mul(1000.0f));
+                    if (timeDecimals >= 0.5) {
+                        material.setDiffuse(animation.get(1));
+                        canLook = true;
+                    } else {
+                        material.setDiffuse(animation.get(0));
+                        if (canLook) {
+                            Vector2f lineStart = transform.getPosition().getXZ();
+                            Vector2f lineEnd = lineStart.sub(playerDirection.mul(1000.0f));
 
-                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
-                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
+                            Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
+                            Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
 
-                        if (playerIntersect != null && (nearestIntersect == null
-                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
-                            AudioUtil.playAudio(seeNoise, distance);
-                            state = STATE_CHASE;
+                            if (playerIntersect != null && (nearestIntersect == null
+                                    || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
+                                AudioUtil.playAudio(seeNoise, distance);
+                                state = STATE_CHASE;
+                            }
+
+                            canLook = false;
                         }
-
-                        canLook = false;
                     }
-                }
-            } else if (state == STATE_CHASE) {
-                if (rand.nextDouble() < 0.5f * delta) {
-                    state = STATE_ATTACK;
-                }
+            		break;
+            	case STATE_CHASE:
+            		if (rand.nextDouble() < 0.5f * delta)
+                        state = STATE_ATTACK;
 
-                if (distance > 0.225f) {
-                    orientation.setY(0);
-                    float moveSpeed = 5f;
+                    if (distance > 0.225f) {
+                        orientation.setY(0);
+                        float moveSpeed = 5f;
 
-                    Vector3f oldPos = transform.getPosition();
-                    Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * delta)));
+                        Vector3f oldPos = transform.getPosition();
+                        Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * delta)));
 
-                    Vector3f collisionVector = Auschwitz.getLevel().checkCollisions(oldPos, newPos, GHOST_WIDTH, GHOST_WIDTH);
+                        Vector3f collisionVector = Auschwitz.getLevel().checkCollisions(oldPos, newPos, GHOST_WIDTH, GHOST_WIDTH);
 
-                    Vector3f movementVector = collisionVector.mul(orientation.normalized());
+                        Vector3f movementVector = collisionVector.mul(orientation.normalized());
 
-                    /**
-                     * Just in case you want opening door ghosts.
-                    if (!movementVector.equals(orientation.normalized())) {
-                        Auschwitz.getLevel().openDoors(transform.getPosition(), false);
-                    }*/
+                        /**
+                         * Just in case you want opening door ghosts.
+                        if (!movementVector.equals(orientation.normalized())) {
+                            Auschwitz.getLevel().openDoors(transform.getPosition(), false);
+                        }*/
 
-                    if (movementVector.length() > 0) {
-                        transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * delta))));
+                        if (movementVector.length() > 0) {
+                            transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * delta))));
+                        }
+                    } else {
+                        state = STATE_ATTACK;
                     }
-                } else {
-                    state = STATE_ATTACK;
-                }
 
-                if (state == STATE_CHASE) {
-                    double timeDecimals = (time - (double) ((int) time));
+                    timeDecimals = (time - (double) ((int) time));
 
                     while (timeDecimals > 0.5) {
                         timeDecimals -= 0.5;
@@ -250,82 +250,81 @@ public class Ghost extends GameComponent {
                     } else {
                         material.setDiffuse(animation.get(0));
                     }
-                }
-            }
+            		break;
+            	case STATE_ATTACK:
+            		timeDecimals = (time - (double) ((int) time));
 
-            if (state == STATE_ATTACK) {
-                double timeDecimals = (time - (double) ((int) time));
+                    if (timeDecimals <= 0.25f) {
+                        material.setDiffuse(animation.get(0));
+                    } else if (timeDecimals <= 0.5f) {
+                        material.setDiffuse(animation.get(1));
+                    } else if (timeDecimals <= 0.7f) {
+                        if (canAttack) {
+                            Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
 
-                if (timeDecimals <= 0.25f) {
-                    material.setDiffuse(animation.get(0));
-                } else if (timeDecimals <= 0.5f) {
-                    material.setDiffuse(animation.get(1));
-                } else if (timeDecimals <= 0.7f) {
-                    if (canAttack) {
-                        Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
+                            Vector2f lineStart = transform.getPosition().getXZ();
+                            Vector2f lineEnd = lineStart.sub(shootDirection.mul(1000.0f));
 
-                        Vector2f lineStart = transform.getPosition().getXZ();
-                        Vector2f lineEnd = lineStart.sub(shootDirection.mul(1000.0f));
+                            Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
+                            canAttack = false;
 
-                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
-                        canAttack = false;
+                            Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
 
-                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
+                            if (playerIntersect != null && (nearestIntersect == null
+                                    || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
 
-                        if (playerIntersect != null && (nearestIntersect == null
-                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
-
-                        	float damage;
-                            if(player.getHealth() <= 0) {
-                            	damage = 0;
-                            	state = STATE_DONE;
-                            }else {
-                            	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
-                            	if(player.isArmor() == false) {
-                            		player.addHealth((int) -damage, "Ghost");
-                            	}else {
-                            		player.addArmor((int) -damage);
-                            	}
+                            	float damage;
+                                if(player.getHealth() <= 0) {
+                                	damage = 0;
+                                	state = STATE_DONE;
+                                }else {
+                                	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
+                                	if(player.isArmor() == false) {
+                                		player.addHealth((int) -damage, "Ghost");
+                                	}else {
+                                		player.addArmor((int) -damage);
+                                	}
+                                }
                             }
+                            AudioUtil.playAudio(shootNoise, distance);
                         }
-                        AudioUtil.playAudio(shootNoise, distance);
+
+                        material.setDiffuse(animation.get(0));
+                    } else {
+                        canAttack = true;
+                        material.setDiffuse(animation.get(1));
+                        state = STATE_CHASE;
                     }
-
-                    material.setDiffuse(animation.get(0));
-                } else {
-                    canAttack = true;
-                    material.setDiffuse(animation.get(1));
-                    state = STATE_CHASE;
-                }
+            		break;
             }
-        }
-
-        if (state == STATE_DYING) {
-            dead = true;
-
-            final float time1 = 0.1f;
-            final float time2 = 0.3f;
-            final float time3 = 0.45f;
-
-            if (time <= deathTime + 0.2f) {
-                material.setDiffuse(animation.get(2));
-            } else if (time > deathTime + time1 && time <= deathTime + time2) {
-                material.setDiffuse(animation.get(3));
-            } else if (time > deathTime + time2 && time <= deathTime + time3) {
-                material.setDiffuse(animation.get(4));
-            } else if (time > deathTime + time3) {
-                state = STATE_DEAD;
-            }
-        }
-
-        if (state == STATE_DEAD) {
-            dead = true;
-            material.setDiffuse(animation.get(5));
-            state = STATE_DONE;
         }
         
-        if (state == STATE_DONE) {
-        	Level.removeGhost(this);
+        switch(state) {
+        	case STATE_DYING:
+        		dead = true;
+
+                final float time1 = 0.1f;
+                final float time2 = 0.3f;
+                final float time3 = 0.45f;
+
+                if (time <= deathTime + 0.2f) {
+                    material.setDiffuse(animation.get(2));
+                } else if (time > deathTime + time1 && time <= deathTime + time2) {
+                    material.setDiffuse(animation.get(3));
+                } else if (time > deathTime + time2 && time <= deathTime + time3) {
+                    material.setDiffuse(animation.get(4));
+                } else if (time > deathTime + time3) {
+                    state = STATE_DEAD;
+                }
+        		break;
+        	case STATE_DEAD:
+        		dead = true;
+                material.setDiffuse(animation.get(5));
+                state = STATE_DONE;
+        		break;
+        	case STATE_DONE:
+        		Level.removeGhost(this);
+        		break;
         }
     }
 

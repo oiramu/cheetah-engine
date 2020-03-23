@@ -46,7 +46,7 @@ import game.pickUps.Key;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.1
+ * @version 1.2
  * @since 2019
  */
 public class Captain extends GameComponent {
@@ -205,64 +205,62 @@ public class Captain extends GameComponent {
                     player.getCamera().getPos().add(
                             new Vector3f(player.getSize().getX(), 0, player.getSize().getY()).mul(0.5f))).getXZ().normalized();
 
-            if (state == STATE_IDLE) {
-            	isQuiet = true;
-                double timeDecimals = (time - (double) ((int) time));
+            switch(state) {
+	            case STATE_IDLE:
+	            	isQuiet = true;
+	                double timeDecimals = (time - (double) ((int) time));
 
-                if (timeDecimals >= 0.5) {
-                    material.setDiffuse(animation.get(1));
-                    canLook = true;
-                } else {
-                    material.setDiffuse(animation.get(0));
-                    if (canLook) {
-                        Vector2f lineStart = transform.getPosition().getXZ();
-                        Vector2f lineEnd = lineStart.sub(playerDirection.mul(1000.0f));
+	                if (timeDecimals >= 0.5) {
+	                    material.setDiffuse(animation.get(1));
+	                    canLook = true;
+	                } else {
+	                    material.setDiffuse(animation.get(0));
+	                    if (canLook) {
+	                        Vector2f lineStart = transform.getPosition().getXZ();
+	                        Vector2f lineEnd = lineStart.sub(playerDirection.mul(1000.0f));
 
-                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
-                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
+	                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
+	                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
 
-                        if (playerIntersect != null && (nearestIntersect == null
-                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
-                            AudioUtil.playAudio(seeNoise, distance);
-                            state = STATE_CHASE;
-                        }
+	                        if (playerIntersect != null && (nearestIntersect == null
+	                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
+	                            AudioUtil.playAudio(seeNoise, distance);
+	                            state = STATE_CHASE;
+	                        }
 
-                        canLook = false;
-                    }
-                }
-            } else if (state == STATE_CHASE) {
-            	light.removeToEngine();
-            	isQuiet = false;
-                if (rand.nextDouble() < 0.5f * delta) {
-                    state = STATE_ATTACK;
-                }
+	                        canLook = false;
+	                    }
+	                }
+	            	break;
+	            case STATE_CHASE:
+	            	light.removeToEngine();
+	            	isQuiet = false;
+	            	timeDecimals = (time - (double) ((int) time));
+	                if (rand.nextDouble() < 0.5f * delta) {
+	                    state = STATE_ATTACK;
+	                }
 
-                if (distance > 1.5f) {
-                    orientation.setY(0);
-                    float moveSpeed = 1.75f;
+	                if (distance > 1.5f) {
+	                    orientation.setY(0);
+	                    float moveSpeed = 1.75f;
 
-                    Vector3f oldPos = transform.getPosition();
-                    Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * delta)));
+	                    Vector3f oldPos = transform.getPosition();
+	                    Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * delta)));
 
-                    Vector3f collisionVector = Auschwitz.getLevel().checkCollisions(oldPos, newPos, NAZI_WIDTH, NAZI_WIDTH);
+	                    Vector3f collisionVector = Auschwitz.getLevel().checkCollisions(oldPos, newPos, NAZI_WIDTH, NAZI_WIDTH);
 
-                    Vector3f movementVector = collisionVector.mul(orientation.normalized());
+	                    Vector3f movementVector = collisionVector.mul(orientation.normalized());
 
-                    if (!movementVector.equals(orientation.normalized())) {
-                        Auschwitz.getLevel().openDoors(transform.getPosition(), false);
-                    }
+	                    if (!movementVector.equals(orientation.normalized())) {
+	                        Auschwitz.getLevel().openDoors(transform.getPosition(), false);
+	                    }
 
-                    if (movementVector.length() > 0) {
-                        transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * delta))));
-                    }
-                } else {
-                    state = STATE_ATTACK;
-                }
-
-                if (state == STATE_CHASE) {
-                	light.removeToEngine();
-                	isQuiet = false;
-                    double timeDecimals = (time - (double) ((int) time));
+	                    if (movementVector.length() > 0) {
+	                        transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * delta))));
+	                    }
+	                } else {
+	                    state = STATE_ATTACK;
+	                }
 
                     while (timeDecimals > 0.5) {
                         timeDecimals -= 0.5;
@@ -279,121 +277,155 @@ public class Captain extends GameComponent {
                     } else {
                         material.setDiffuse(animation.get(3));
                     }
-                }
+	                
+	            	break;
+	            case STATE_ATTACK:
+	            	isQuiet = true;
+	                timeDecimals = (time - (double) ((int) time));
+
+	                if (timeDecimals <= 0.25f) {
+	                	AudioUtil.playAudio(loadNoise, distance);
+	                    material.setDiffuse(animation.get(4));
+	                } else if (timeDecimals <= 0.5f) {
+	                    material.setDiffuse(animation.get(5));
+	                    AudioUtil.playAudio(shootNoise, distance);
+	                } else if (timeDecimals <= 0.7f) {
+	                    if (canAttack) {
+	                    	light.setPosition(transform.getPosition());
+	                        light.setDirection(orientation.mul(-1));
+	                        light.addToEngine();
+	                        Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
+
+	                        Vector2f lineStart = transform.getPosition().getXZ();
+	                        Vector2f lineEnd = lineStart.sub(shootDirection.mul(1000.0f));
+
+	                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
+	                        canAttack = false;
+
+	                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
+
+	                        if (playerIntersect != null && (nearestIntersect == null
+	                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
+
+	                        	float damage;
+	                            if(player.getHealth() <= 0) {
+	                            	state = STATE_DONE;
+	                            	light.removeToEngine();
+	                            } else {
+	                            	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
+	                            	if(!player.isArmor()) {
+	                            		player.addHealth((int) -damage, "Schutzstaffel Captain");
+	                            	}else {
+	                            		player.addArmor((int) -damage);
+	                            	}
+	                     
+	                            }
+	                            
+	                        }
+	                        AudioUtil.playAudio(shootNoise, distance);
+	                    }
+	                    material.setDiffuse(animation.get(6));
+	                } else {
+	                    canAttack = true;
+	                    material.setDiffuse(animation.get(5));
+	                    AudioUtil.playAudio(shootNoise, distance);
+	                    AudioUtil.playAudio(loadNoise, distance);
+	                    state = STATE_CHASE;
+	                }
+	            	break;
+	            case STATE_HIT:
+	            	isQuiet = true;
+	            	timeDecimals = (time - (double) ((int) time));
+	                if (timeDecimals <= 0.5f) {
+	                    material.setDiffuse(animation.get(7));
+	                } else {
+	                    state = STATE_CHASE;
+	                }
+	            	break;
+	            case STATE_DONE:
+	            	isQuiet = true;
+	            	timeDecimals = (time - (double) ((int) time));
+
+	                if (timeDecimals <= 0.75f) {
+	                    material.setDiffuse(animation.get(3));
+	                } else {
+	                    material.setDiffuse(animation.get(4));
+	                }
+	            	break;
+	            case STATE_DYING:
+	            	isQuiet = true;
+	                dead = true;
+
+	                final float time1 = 0.1f;
+	                final float time2 = 0.3f;
+
+	                if (time <= deathTime + 0.2f) {
+	                    material.setDiffuse(animation.get(9));
+	                } else if (time > deathTime + time1 && time <= deathTime + time2) {
+	                    material.setDiffuse(animation.get(10));
+	                } else if (time > deathTime + time2) {
+	                    state = STATE_DEAD;
+	                }
+	            	break;
+	            case STATE_DEAD:
+	            	isQuiet = true;
+	            	chaingun = new Chaingun(new Transform(transform.getPosition()), false);
+	            	chaingun.update(delta);
+	                bullet = new Bullet(new Transform(transform.getPosition()), false);
+	                bullet.update(delta);
+	                if(dropsKey) {
+	                	key = new Key(new Transform(transform.getPosition()), true, false);
+	                	key.update(delta);
+	                }
+	            	material.setDiffuse(animation.get(11));   	
+	                dead = true;  
+	                if (distance < bullet.PICKUP_THRESHHOLD && distance < chaingun.PICKUP_THRESHHOLD)
+	                	state = STATE_POST_DEATH;
+	            	break;
+	            case STATE_POST_DEATH:
+	            	isQuiet = false;
+	            	material.setDiffuse(animation.get(11)); 
+	            	break;
             }
-
-            if (state == STATE_ATTACK) {
-            	isQuiet = true;
-                double timeDecimals = (time - (double) ((int) time));
-
-                if (timeDecimals <= 0.25f) {
-                	AudioUtil.playAudio(loadNoise, distance);
-                    material.setDiffuse(animation.get(4));
-                } else if (timeDecimals <= 0.5f) {
-                    material.setDiffuse(animation.get(5));
-                    AudioUtil.playAudio(shootNoise, distance);
-                } else if (timeDecimals <= 0.7f) {
-                    if (canAttack) {
-                    	light.setPosition(transform.getPosition());
-                        light.setDirection(orientation.mul(-1));
-                        light.addToEngine();
-                        Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
-
-                        Vector2f lineStart = transform.getPosition().getXZ();
-                        Vector2f lineEnd = lineStart.sub(shootDirection.mul(1000.0f));
-
-                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
-                        canAttack = false;
-
-                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
-
-                        if (playerIntersect != null && (nearestIntersect == null
-                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
-
-                        	float damage;
-                            if(player.getHealth() <= 0) {
-                            	state = STATE_DONE;
-                            	light.removeToEngine();
-                            } else {
-                            	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
-                            	if(!player.isArmor()) {
-                            		player.addHealth((int) -damage, "Schutzstaffel Captain");
-                            	}else {
-                            		player.addArmor((int) -damage);
-                            	}
-                     
-                            }
-                            
-                        }
-                        AudioUtil.playAudio(shootNoise, distance);
-                    }
-                    material.setDiffuse(animation.get(6));
-                } else {
-                    canAttack = true;
-                    material.setDiffuse(animation.get(5));
-                    AudioUtil.playAudio(shootNoise, distance);
-                    AudioUtil.playAudio(loadNoise, distance);
-                    state = STATE_CHASE;
-                }
-            }
-        }
-
-        if (state == STATE_DYING) {
-        	isQuiet = true;
-            dead = true;
-
-            final float time1 = 0.1f;
-            final float time2 = 0.3f;
-
-            if (time <= deathTime + 0.2f) {
-                material.setDiffuse(animation.get(9));
-            } else if (time > deathTime + time1 && time <= deathTime + time2) {
-                material.setDiffuse(animation.get(10));
-            } else if (time > deathTime + time2) {
-                state = STATE_DEAD;
-            }
-        }
+            
+        } else {
         
-        if (state == STATE_DEAD) {
-        	isQuiet = true;
-        	chaingun = new Chaingun(new Transform(transform.getPosition()), false);
-        	chaingun.update(delta);
-            bullet = new Bullet(new Transform(transform.getPosition()), false);
-            bullet.update(delta);
-            if(dropsKey) {
-            	key = new Key(new Transform(transform.getPosition()), true, false);
-            	key.update(delta);
-            }
-        	material.setDiffuse(animation.get(11));   	
-            dead = true;  
-            if (distance < bullet.PICKUP_THRESHHOLD && distance < chaingun.PICKUP_THRESHHOLD)
-            	state = STATE_POST_DEATH;
-        }
-        
-        if (state == STATE_POST_DEATH) {
-        	isQuiet = false;
-        	material.setDiffuse(animation.get(11)); 
-        }
-        
-        if (state == STATE_DONE) {
-        	isQuiet = true;
-        	double timeDecimals = (time - (double) ((int) time));
-
-            if (timeDecimals <= 0.75f) {
-                material.setDiffuse(animation.get(3));
-            } else {
-                material.setDiffuse(animation.get(4));
-            }
-        }
-        
-        if (state == STATE_HIT) {
-        	isQuiet = true;
-        	double timeDecimals = (time - (double) ((int) time));
-            if (timeDecimals <= 0.5f) {
-                material.setDiffuse(animation.get(7));
-            } else {
-                state = STATE_CHASE;
-            }
+	        switch(state) {
+		        case STATE_DYING:
+		        	isQuiet = true;
+		            dead = true;
+		
+		            final float time1 = 0.1f;
+		            final float time2 = 0.3f;
+		
+		            if (time <= deathTime + 0.2f) {
+		                material.setDiffuse(animation.get(9));
+		            } else if (time > deathTime + time1 && time <= deathTime + time2) {
+		                material.setDiffuse(animation.get(10));
+		            } else if (time > deathTime + time2) {
+		                state = STATE_DEAD;
+		            }
+		        	break;
+		        case STATE_DEAD:
+		        	isQuiet = true;
+		        	chaingun = new Chaingun(new Transform(transform.getPosition()), false);
+		        	chaingun.update(delta);
+		            bullet = new Bullet(new Transform(transform.getPosition()), false);
+		            bullet.update(delta);
+		            if(dropsKey) {
+		            	key = new Key(new Transform(transform.getPosition()), true, false);
+		            	key.update(delta);
+		            }
+		        	material.setDiffuse(animation.get(11));   	
+		            dead = true;  
+		            if (distance < bullet.PICKUP_THRESHHOLD && distance < chaingun.PICKUP_THRESHHOLD)
+		            	state = STATE_POST_DEATH;
+		        	break;
+		        case STATE_POST_DEATH:
+		        	isQuiet = false;
+		        	material.setDiffuse(animation.get(11)); 
+		        	break;
+	        }
         }
     }
 

@@ -288,6 +288,12 @@ public class Level extends GameComponent {
         
         renderingEngine.setMainCamera(player.getCamera());
     }
+    
+    /**
+     * Cleans everything in the CPU.
+     */
+    @Override
+    protected void finalize() { objects.clearMemory(); }
 
     /**
      * Inputs accessible in the level.

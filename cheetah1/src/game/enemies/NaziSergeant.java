@@ -45,7 +45,7 @@ import game.pickUps.Shotgun;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.1
+ * @version 1.2
  * @since 2017
  */
 public class NaziSergeant extends GameComponent {
@@ -181,6 +181,8 @@ public class NaziSergeant extends GameComponent {
         double time = Time.getTime();
 
         if (!dead && health <= 0) {
+        	shotgun = new Shotgun(new Transform(transform.getPosition()), false);
+        	shell = new Shell(new Transform(transform.getPosition()), false);
             dead = true;
             deathTime = time;
             state = STATE_DYING;
@@ -197,69 +199,65 @@ public class NaziSergeant extends GameComponent {
             Vector2f playerDirection = transform.getPosition().sub(
                     player.getCamera().getPos().add(
                             new Vector3f(player.getSize().getX(), 0, player.getSize().getY()).mul(0.5f))).getXZ().normalized();
-
-            if (state == STATE_IDLE) {
-            	isQuiet = true;
-                double timeDecimals = (time - (double) ((int) time));
-
-                if (timeDecimals >= 0.5) {
-                    material.setDiffuse(animation.get(1));
-                    canLook = true;
-                } else {
-                    material.setDiffuse(animation.get(0));
-                    if (canLook) {
-                        Vector2f lineStart = transform.getPosition().getXZ();
-                        Vector2f lineEnd = lineStart.sub(playerDirection.mul(1000.0f));
-
-                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
-                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
-
-                        if (playerIntersect != null && (nearestIntersect == null
-                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
-                            AudioUtil.playAudio(seeNoise, distance);
-                            state = STATE_CHASE;
-                        }
-
-                        canLook = false;
-                    }
-                }
-            } else if (state == STATE_CHASE) {
-            	light.removeToEngine();
-            	isQuiet = false;
-                if (rand.nextDouble() < 0.5f * delta) {
-                    state = STATE_ATTACK;
-                }
-
-                if (distance > 1.20f) {
-                    orientation.setY(0);
-                    float moveSpeed = 2f;
-
-                    Vector3f oldPos = transform.getPosition();
-                    Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * delta)));
-
-                    Vector3f collisionVector = Auschwitz.getLevel().checkCollisions(oldPos, newPos, NAZI_WIDTH, NAZI_WIDTH);
-
-                    Vector3f movementVector = collisionVector.mul(orientation.normalized());
-
-                    if (!movementVector.equals(orientation.normalized())) {
-                        Auschwitz.getLevel().openDoors(transform.getPosition(), false);
-                    }
-
-                    if (movementVector.length() > 0) {
-                        transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * delta))));
-                    }
-                } else {
-                    state = STATE_ATTACK;
-                }
-
-                if (state == STATE_CHASE) {
-                	light.removeToEngine();
-                	isQuiet = false;
+            
+            switch(state) {
+            	case STATE_IDLE:
+            		isQuiet = true;
                     double timeDecimals = (time - (double) ((int) time));
 
-                    while (timeDecimals > 0.5) {
-                        timeDecimals -= 0.5;
+                    if (timeDecimals >= 0.5) {
+                        material.setDiffuse(animation.get(1));
+                        canLook = true;
+                    } else {
+                        material.setDiffuse(animation.get(0));
+                        if (canLook) {
+                            Vector2f lineStart = transform.getPosition().getXZ();
+                            Vector2f lineEnd = lineStart.sub(playerDirection.mul(1000.0f));
+
+                            Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
+                            Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
+
+                            if (playerIntersect != null && (nearestIntersect == null
+                                    || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
+                                AudioUtil.playAudio(seeNoise, distance);
+                                state = STATE_CHASE;
+                            }
+
+                            canLook = false;
+                        }
                     }
+            		break;
+            	case STATE_CHASE:
+            		light.removeToEngine();
+                	isQuiet = false;
+                    if (rand.nextDouble() < 0.5f * delta)
+                        state = STATE_ATTACK;
+
+                    if (distance > 1.20f) {
+                        orientation.setY(0);
+                        float moveSpeed = 2f;
+
+                        Vector3f oldPos = transform.getPosition();
+                        Vector3f newPos = transform.getPosition().add(orientation.mul((float) (-moveSpeed * delta)));
+
+                        Vector3f collisionVector = Auschwitz.getLevel().checkCollisions(oldPos, newPos, NAZI_WIDTH, NAZI_WIDTH);
+
+                        Vector3f movementVector = collisionVector.mul(orientation.normalized());
+
+                        if (!movementVector.equals(orientation.normalized())) {
+                            Auschwitz.getLevel().openDoors(transform.getPosition(), false);
+                        }
+
+                        if (movementVector.length() > 0) {
+                            transform.setPosition(transform.getPosition().add(movementVector.mul((float) (-moveSpeed * delta))));
+                        }
+                    } else {
+                        state = STATE_ATTACK;
+                    }
+
+                    timeDecimals = (time - (double) ((int) time));
+
+                    while (timeDecimals > 0.5) { timeDecimals -= 0.5; }
 
                     timeDecimals *= 1.5f;
 
@@ -272,123 +270,119 @@ public class NaziSergeant extends GameComponent {
                     } else {
                         material.setDiffuse(animation.get(3));
                     }
-                }
-            }
+                    
+            		break;
+            	case STATE_ATTACK:
+            		isQuiet = true;
+                    timeDecimals = (time - (double) ((int) time));
 
-            if (state == STATE_ATTACK) {
-            	isQuiet = true;
-                double timeDecimals = (time - (double) ((int) time));
+                    if (timeDecimals <= 0.25f) {
+                        material.setDiffuse(animation.get(4));
+                    } else if (timeDecimals <= 0.5f) {
+                        material.setDiffuse(animation.get(5));
+                    } else if (timeDecimals <= 0.7f) {
+                        if (canAttack) {
+                        	light.setPosition(transform.getPosition());
+                            light.setDirection(orientation.mul(-1));
+                            light.addToEngine();
+                            Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
 
-                if (timeDecimals <= 0.25f) {
-                    material.setDiffuse(animation.get(4));
-                } else if (timeDecimals <= 0.5f) {
-                    material.setDiffuse(animation.get(5));
-                } else if (timeDecimals <= 0.7f) {
-                    if (canAttack) {
-                    	light.setPosition(transform.getPosition());
-                        light.setDirection(orientation.mul(-1));
-                        light.addToEngine();
-                        Vector2f shootDirection = playerDirection.rotate((rand.nextFloat() - 0.5f) * SHOT_ANGLE);
+                            Vector2f lineStart = transform.getPosition().getXZ();
+                            Vector2f lineEnd = lineStart.sub(shootDirection.mul(1000.0f));
 
-                        Vector2f lineStart = transform.getPosition().getXZ();
-                        Vector2f lineEnd = lineStart.sub(shootDirection.mul(1000.0f));
+                            Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
+                            canAttack = false;
 
-                        Vector2f nearestIntersect = Auschwitz.getLevel().checkIntersections(lineStart, lineEnd, false);
-                        canAttack = false;
+                            Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
 
-                        Vector2f playerIntersect = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, player.getCamera().getPos().getXZ(), player.getSize());
+                            if (playerIntersect != null && (nearestIntersect == null
+                                    || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
 
-                        if (playerIntersect != null && (nearestIntersect == null
-                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
-
-                        	float damage;
-                            if(player.getHealth() <= 0) {
-                            	state = STATE_DONE;
-                            	light.removeToEngine();
-                            }else {
-                            	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
-                            	if(player.isArmor() == false) {
-                            		player.addHealth((int) -damage, "Schutzstaffel Sergeant");
-                            	}else {
-                            		player.addArmor((int) -damage);
-                            	}
+                            	float damage;
+                                if(player.getHealth() <= 0) {
+                                	state = STATE_DONE;
+                                	light.removeToEngine();
+                                } else {
+                                	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
+                                	if(player.isArmor() == false) {
+                                		player.addHealth((int) -damage, "Schutzstaffel Sergeant");
+                                	}else {
+                                		player.addArmor((int) -damage);
+                                	}
+                                }
+                                
                             }
-                            
+                            AudioUtil.playAudio(shootNoise, distance);
                         }
-                        AudioUtil.playAudio(shootNoise, distance);
+                        material.setDiffuse(animation.get(6));
+                    } else {
+                    	light.removeToEngine();
+                        canAttack = true;
+                        material.setDiffuse(animation.get(5));
+                        state = STATE_CHASE;
                     }
-                    material.setDiffuse(animation.get(6));
-                } else {
-                	light.removeToEngine();
-                    canAttack = true;
-                    material.setDiffuse(animation.get(5));
-                    state = STATE_CHASE;
+            		break;
+            	case STATE_DONE:
+            		isQuiet = true;
+                	timeDecimals = (time - (double) ((int) time));
+
+                	timeDecimals *= 1.5f;
+
+                    if (timeDecimals <= 0.25f) {
+                        material.setDiffuse(animation.get(0));
+                    } else if (timeDecimals <= 0.5f) {
+                        material.setDiffuse(animation.get(1));
+                    } else if (timeDecimals <= 0.75f) {
+                        material.setDiffuse(animation.get(2));
+                    } else {
+                        material.setDiffuse(animation.get(3));
+                    }
+            		break;
+            	case STATE_HIT:
+            		timeDecimals = (time - (double) ((int) time));
+                    if (timeDecimals <= 0.5f) {
+                        material.setDiffuse(animation.get(7));
+                    } else {
+                        state = STATE_CHASE;
+                    }
+            		break;
+            }
+        }
+        
+        switch(state) {
+        	case STATE_DYING:
+        		isQuiet = true;
+                dead = true;
+
+                final float time1 = 0.1f;
+                final float time2 = 0.3f;
+                final float time3 = 0.5f;
+
+                if (time <= deathTime + 0.2f) {
+                    material.setDiffuse(animation.get(9));
+                } else if (time > deathTime + time1 && time <= deathTime + time2) {
+                    material.setDiffuse(animation.get(10));
+                }else if (time > deathTime + time2 && time <= deathTime + time3) {
+                    material.setDiffuse(animation.get(11));
+                } else if (time > deathTime + time3) {
+                    state = STATE_DEAD;
                 }
-            }
+        		break;
+        	case STATE_DEAD:
+        		isQuiet = true;
+            	shotgun.update(delta);
+            	shell.update(delta);
+                dead = true;
+                material.setDiffuse(animation.get(12));
+                if (distance < shotgun.PICKUP_THRESHHOLD && distance < shell.PICKUP_THRESHHOLD)
+                	state = STATE_POST_DEATH;
+        		break;
+        	case STATE_POST_DEATH:
+        		isQuiet = false;
+            	material.setDiffuse(animation.get(12));
+        		break;
         }
 
-        if (state == STATE_DYING) {
-        	isQuiet = true;
-            dead = true;
-
-            final float time1 = 0.1f;
-            final float time2 = 0.3f;
-            final float time3 = 0.5f;
-
-            if (time <= deathTime + 0.2f) {
-                material.setDiffuse(animation.get(9));
-            } else if (time > deathTime + time1 && time <= deathTime + time2) {
-                material.setDiffuse(animation.get(10));
-            }else if (time > deathTime + time2 && time <= deathTime + time3) {
-                material.setDiffuse(animation.get(11));
-            } else if (time > deathTime + time3) {
-                state = STATE_DEAD;
-            }
-        }
-
-        if (state == STATE_DEAD) {
-        	isQuiet = true;
-        	shotgun = new Shotgun(new Transform(transform.getPosition()), false);
-        	shotgun.update(delta);
-        	shell = new Shell(new Transform(transform.getPosition()), false);
-        	shell.update(delta);
-            dead = true;
-            material.setDiffuse(animation.get(12));
-            if (distance < shotgun.PICKUP_THRESHHOLD && distance < shell.PICKUP_THRESHHOLD) {
-            	state = STATE_POST_DEATH;
-            }
-        }
-        
-        if (state == STATE_POST_DEATH) {
-        	isQuiet = false;
-        	material.setDiffuse(animation.get(12));
-        }
-        
-        if (state == STATE_DONE) {
-        	isQuiet = true;
-        	double timeDecimals = (time - (double) ((int) time));
-
-        	timeDecimals *= 1.5f;
-
-            if (timeDecimals <= 0.25f) {
-                material.setDiffuse(animation.get(0));
-            } else if (timeDecimals <= 0.5f) {
-                material.setDiffuse(animation.get(1));
-            } else if (timeDecimals <= 0.75f) {
-                material.setDiffuse(animation.get(2));
-            } else {
-                material.setDiffuse(animation.get(3));
-            }
-        }
-        
-        if (state == STATE_HIT) {
-        	double timeDecimals = (time - (double) ((int) time));
-            if (timeDecimals <= 0.5f) {
-                material.setDiffuse(animation.get(7));
-            } else {
-                state = STATE_CHASE;
-            }
-        }
     }
 
     /**

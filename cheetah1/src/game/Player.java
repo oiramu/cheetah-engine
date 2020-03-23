@@ -491,7 +491,7 @@ public class Player extends GameComponent {
         goldkey = false;
         bronzekey = false;
         Debug.init(this);
-        //Debug.enableGod(true);
+        Debug.enableGod(GOD);
     }
 
     private float upAngle = 0;
@@ -1080,137 +1080,138 @@ public class Player extends GameComponent {
         	trowsKick = false;
         }
         
-		if(weaponType == MELEE) {
-	        if ((double) time < gunTime) {
-	        	isReloading = true;
-	        	gunMaterial.setDiffuse(gunAnimationMaterial1);
-	        } else if ((double) time < gunTime2) {
-	        	gunMaterial.setDiffuse(gunAnimationMaterial2);
-	        } else {
-	        	gunMaterial.setDiffuse(gunAnimationMaterial0);
-	            isReloading = false;
-	        }
+        switch(weaponType) {
+        	case MELEE:
+        		if ((double) time < gunTime) {
+    	        	isReloading = true;
+    	        	gunMaterial.setDiffuse(gunAnimationMaterial1);
+    	        } else if ((double) time < gunTime2) {
+    	        	gunMaterial.setDiffuse(gunAnimationMaterial2);
+    	        } else {
+    	        	gunMaterial.setDiffuse(gunAnimationMaterial0);
+    	            isReloading = false;
+    	        }
+        		break;
+        	case BULLET:
+        		if(weaponState != CHAINGUN) {
+        	        if ((double) time < gunTime) {
+        	        	isReloading = true;
+        	        	renderingEngine.addLight(fireLight);
+        	        	gunMaterial.setDiffuse(gunAnimationMaterial1);
+        	        } else if ((double) time < gunTime2) {
+        	        	gunMaterial.setDiffuse(gunAnimationMaterial2);
+        	        	isShooting = false;
+        	        } else {
+        	        	gunMaterial.setDiffuse(gunAnimationMaterial0);
+                    	isReloading = false;
+        	        }
+        		} else if(weaponState == CHAINGUN) {
+        			if(chaingunCanFire) {
+        				if ((double) time < gunTime) {
+        		        	isReloading = true;
+        		        	renderingEngine.addLight(fireLight);
+        		        	gunMaterial.setDiffuse(gunAnimationMaterial1);
+        		        } else if ((double) time < gunTime2) {
+        		        	gunMaterial.setDiffuse(gunAnimationMaterial2);
+        		        } else if ((double) time < gunTime3) {
+        		        	gunMaterial.setDiffuse(gunAnimationMaterial3);
+        		        } else if ((double) time < gunTime4) {
+        		        	gunMaterial.setDiffuse(gunAnimationMaterial4);
+        		        	isShooting = false;
+        		        	if(fires && bullets != 0)
+        		        		chaingunCanFire = true;
+        		        	else if(!fires || bullets == 0){
+        		        		AudioUtil.playAudio(gunClipp, 0);
+        		        		chaingunCanFire = false;
+        		        	}
+        		        } else {
+        		        	gunMaterial.setDiffuse(gunAnimationMaterial0);
+        		            isReloading = false;
+        		            if(fires && bullets != 0)
+        		        		gunFireAnimationTime = 0.025f;
+        		        	else
+        		        		gunFireAnimationTime = 0.1f;
+        		        }
+        			} else {
+        				if ((double) time < gunTime) {
+        		        	isReloading = true;
+        		        	gunMaterial.setDiffuse(gunAnimationMaterial5);
+        		        } else if ((double) time < gunTime2) {
+        		        	gunMaterial.setDiffuse(gunAnimationMaterial6);
+        		        } else if ((double) time < gunTime3) {
+        		        	gunMaterial.setDiffuse(gunAnimationMaterial7);
+        		        	isShooting = false;
+        		        	if(fires && bullets != 0)
+        		        		chaingunCanFire = true;
+        		        	else if(!fires){
+        		        		AudioUtil.playAudio(gunClipp, 0);
+        		        		chaingunCanFire = false;
+        		        	}
+        		        } else {
+        		        	gunMaterial.setDiffuse(gunAnimationMaterial0);
+        	            	isReloading = false;
+        	            	if(fires && bullets != 0)
+        		        		gunFireAnimationTime = 0.025f;
+        		        	else
+        		        		gunFireAnimationTime = 0.1f;
+        		        }
+        			}
+        		}
+        		break;
+        	case SHELL:
+    	        if ((double) time < gunTime) {
+    	        	isReloading = true;
+    	        	renderingEngine.addLight(fireLight);
+    	        	gunMaterial.setDiffuse(gunAnimationMaterial1);
+    	        } else if ((double) time < gunTime2) {
+    	        	AudioUtil.playAudio(gunReload, 0);
+    	        	gunMaterial.setDiffuse(gunAnimationMaterial2);
+    		        isShooting = false;
+    	        } else if ((double) time < gunTime3) {
+    	        	AudioUtil.playAudio(gunClipp, 0);
+    	        	gunMaterial.setDiffuse(gunAnimationMaterial3);
+    	        } else if ((double) time < gunTime4) {
+    	        	gunMaterial.setDiffuse(gunAnimationMaterial4);
+    	        } else {
+    	        	gunMaterial.setDiffuse(gunAnimationMaterial0);
+    	            isReloading = false;
+    	        }
+        		break;
+        	case ROCKET:
+        		if ((double) time < gunTime) {
+    	        	isReloading = true;
+    	        	renderingEngine.addLight(fireLight);
+    	        	gunMaterial.setDiffuse(gunAnimationMaterial1);
+    	        } else if ((double) time < gunTime2) {
+    	        	gunMaterial.setDiffuse(gunAnimationMaterial2);
+    	        } else if ((double) time < gunTime3) {
+    	        	gunMaterial.setDiffuse(gunAnimationMaterial3);
+    	        	isShooting = false;
+    	        } else {
+    	        	gunMaterial.setDiffuse(gunAnimationMaterial0);
+                	isReloading = false;
+    	        }
+        		break;
+        	case GAS:
+        		double timeDecimals = (time - (double) ((int) time));
+    	        if ((double) time < gunTime) {
+    	        	isReloading = true;
+    	        	gunMaterial.setDiffuse(gunAnimationMaterial3);
+    	        } else if ((double) time < gunTime2) {
+    	        	gunMaterial.setDiffuse(gunAnimationMaterial4);
+    	        	if(!fires)
+    	        		AudioUtil.playAudio(gunClipp, 0);
+    	        } else {
+    	        	if(timeDecimals <= 0.1)
+    	        		gunMaterial.setDiffuse(gunAnimationMaterial0);
+    	        	else if(timeDecimals <= 0.2)
+    	        		gunMaterial.setDiffuse(gunAnimationMaterial1);
+    	        	else
+    	        		gunMaterial.setDiffuse(gunAnimationMaterial2);
+                	isReloading = false;
+    	        }
+        		break;
         }
-		if(weaponType == BULLET && weaponState != CHAINGUN) {
-	        if ((double) time < gunTime) {
-	        	isReloading = true;
-	        	renderingEngine.addLight(fireLight);
-	        	gunMaterial.setDiffuse(gunAnimationMaterial1);
-	        } else if ((double) time < gunTime2) {
-	        	gunMaterial.setDiffuse(gunAnimationMaterial2);
-	        	isShooting = false;
-	        } else {
-	        	gunMaterial.setDiffuse(gunAnimationMaterial0);
-            	isReloading = false;
-	        }
-		}
-		
-		if(weaponType == BULLET && weaponState == CHAINGUN) {
-			if(chaingunCanFire) {
-				if ((double) time < gunTime) {
-		        	isReloading = true;
-		        	renderingEngine.addLight(fireLight);
-		        	gunMaterial.setDiffuse(gunAnimationMaterial1);
-		        } else if ((double) time < gunTime2) {
-		        	gunMaterial.setDiffuse(gunAnimationMaterial2);
-		        } else if ((double) time < gunTime3) {
-		        	gunMaterial.setDiffuse(gunAnimationMaterial3);
-		        } else if ((double) time < gunTime4) {
-		        	gunMaterial.setDiffuse(gunAnimationMaterial4);
-		        	isShooting = false;
-		        	if(fires && bullets != 0)
-		        		chaingunCanFire = true;
-		        	else if(!fires || bullets == 0){
-		        		AudioUtil.playAudio(gunClipp, 0);
-		        		chaingunCanFire = false;
-		        	}
-		        } else {
-		        	gunMaterial.setDiffuse(gunAnimationMaterial0);
-		            isReloading = false;
-		            if(fires && bullets != 0)
-		        		gunFireAnimationTime = 0.025f;
-		        	else
-		        		gunFireAnimationTime = 0.1f;
-		        }
-			} else {
-				if ((double) time < gunTime) {
-		        	isReloading = true;
-		        	gunMaterial.setDiffuse(gunAnimationMaterial5);
-		        } else if ((double) time < gunTime2) {
-		        	gunMaterial.setDiffuse(gunAnimationMaterial6);
-		        } else if ((double) time < gunTime3) {
-		        	gunMaterial.setDiffuse(gunAnimationMaterial7);
-		        	isShooting = false;
-		        	if(fires && bullets != 0)
-		        		chaingunCanFire = true;
-		        	else if(!fires){
-		        		AudioUtil.playAudio(gunClipp, 0);
-		        		chaingunCanFire = false;
-		        	}
-		        } else {
-		        	gunMaterial.setDiffuse(gunAnimationMaterial0);
-	            	isReloading = false;
-	            	if(fires && bullets != 0)
-		        		gunFireAnimationTime = 0.025f;
-		        	else
-		        		gunFireAnimationTime = 0.1f;
-		        }
-			}
-		}
-		if(weaponType == SHELL) {
-	        if ((double) time < gunTime) {
-	        	isReloading = true;
-	        	renderingEngine.addLight(fireLight);
-	        	gunMaterial.setDiffuse(gunAnimationMaterial1);
-	        } else if ((double) time < gunTime2) {
-	        	AudioUtil.playAudio(gunReload, 0);
-	        	gunMaterial.setDiffuse(gunAnimationMaterial2);
-		        isShooting = false;
-	        } else if ((double) time < gunTime3) {
-	        	AudioUtil.playAudio(gunClipp, 0);
-	        	gunMaterial.setDiffuse(gunAnimationMaterial3);
-	        } else if ((double) time < gunTime4) {
-	        	gunMaterial.setDiffuse(gunAnimationMaterial4);
-	        } else {
-	        	gunMaterial.setDiffuse(gunAnimationMaterial0);
-	            isReloading = false;
-	        }
-		}
-		if(weaponType == ROCKET) {
-	        if ((double) time < gunTime) {
-	        	isReloading = true;
-	        	renderingEngine.addLight(fireLight);
-	        	gunMaterial.setDiffuse(gunAnimationMaterial1);
-	        } else if ((double) time < gunTime2) {
-	        	gunMaterial.setDiffuse(gunAnimationMaterial2);
-	        } else if ((double) time < gunTime3) {
-	        	gunMaterial.setDiffuse(gunAnimationMaterial3);
-	        	isShooting = false;
-	        } else {
-	        	gunMaterial.setDiffuse(gunAnimationMaterial0);
-            	isReloading = false;
-	        }
-		}
-		
-		if(weaponType == GAS) {
-			double timeDecimals = (time - (double) ((int) time));
-	        if ((double) time < gunTime) {
-	        	isReloading = true;
-	        	gunMaterial.setDiffuse(gunAnimationMaterial3);
-	        } else if ((double) time < gunTime2) {
-	        	gunMaterial.setDiffuse(gunAnimationMaterial4);
-	        	if(!fires)
-	        		AudioUtil.playAudio(gunClipp, 0);
-	        } else {
-	        	if(timeDecimals <= 0.1)
-	        		gunMaterial.setDiffuse(gunAnimationMaterial0);
-	        	else if(timeDecimals <= 0.2)
-	        		gunMaterial.setDiffuse(gunAnimationMaterial1);
-	        	else
-	        		gunMaterial.setDiffuse(gunAnimationMaterial2);
-            	isReloading = false;
-	        }
-		}
 		
 		if(!removeRockets.isEmpty())
 			for (pRocket rocketToDelete : removeRockets) 
@@ -1293,7 +1294,7 @@ public class Player extends GameComponent {
         if (health > getMaxHealth()) {
             health = getMaxHealth();
         }
-        if (health <= 0) {
+        if (health <= 0 && !GOD) {
         	playerText.get("Notification").setText("You've killed by " + provider + "!");
         	notificationTime = Time.getTime();
         	AudioUtil.playAudio(playerNoises.get(3), 0);

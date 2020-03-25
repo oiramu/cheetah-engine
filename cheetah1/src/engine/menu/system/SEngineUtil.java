@@ -25,7 +25,7 @@ import org.newdawn.slick.SlickException;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2017
  */
 public class SEngineUtil {	

@@ -24,7 +24,7 @@ import engine.menu.system.SEngineUtil;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.2
  * @since 2018
  */
 public class Constants {

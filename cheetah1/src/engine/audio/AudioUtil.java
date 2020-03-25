@@ -15,6 +15,8 @@
  */
 package engine.audio;
 
+import static engine.components.Constants.*;
+
 import java.io.File;
 
 import javax.sound.midi.MidiSystem;
@@ -28,7 +30,6 @@ import javax.sound.sampled.FloatControl;
 
 import engine.core.Debug;
 import engine.core.crash.CrashReport;
-import static engine.components.Constants.*;
 
 /**
  *

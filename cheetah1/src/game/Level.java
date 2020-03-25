@@ -1131,203 +1131,257 @@ public class Level extends GameComponent {
                 if ((bitmap.getPixel(i, j) & 0xFFFFFF) == 0) // If it isn't a black (wall) pixel
                 	continue;
                 	//LEVEL_HEIGHT = level.getPixel(i, j) & 0x0000FF;
-                    if ((bitmap.getPixel(i, j) & 0x0000FF) == 16) {
-                        Transform doorTransform = new Transform();
+                	switch((bitmap.getPixel(i, j) & 0x0000FF)){
+	                	case 0:
+	                		dayTransition = true;
+	                		break;
+                		case 16:
+                			Transform doorTransform = new Transform();
 
-                        boolean xDoor = (bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0 && (bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0;
-                        boolean yDoor = (bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
+                            boolean xDoor = (bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0 && (bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0;
+                            boolean yDoor = (bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
 
-                        if ((yDoor && xDoor) || !(yDoor || xDoor)) {
-                            Log.fatal("Level Generation Error at (" + i + ", " + j + "): Doors must be between two solid walls.");
-                        }
+                            if ((yDoor && xDoor) || !(yDoor || xDoor)) {
+                                Log.fatal("Level Generation Error at (" + i + ", " + j + "): Doors must be between two solid walls.");
+                            }
 
-                        if (yDoor) {
-                            doorTransform.setPosition(i, 0,j + SPOT_LENGTH / 2);
-                            doors.add(new Door(doorTransform, material, doorTransform.getPosition().add(new Vector3f(-0.9f, 0, 0))));
-                        } else if (xDoor) {
-                            doorTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
-                            doorTransform.setRotation(0, 90, 0);
-                            doors.add(new Door(doorTransform, material, doorTransform.getPosition().add(new Vector3f(0, 0, -0.9f))));
-                        }
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 20) {
-                        Transform wallTransform = new Transform();
+                            if (yDoor) {
+                                doorTransform.setPosition(i, 0,j + SPOT_LENGTH / 2);
+                                doors.add(new Door(doorTransform, material, doorTransform.getPosition().add(new Vector3f(-0.9f, 0, 0))));
+                            } else if (xDoor) {
+                                doorTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
+                                doorTransform.setRotation(0, 90, 0);
+                                doors.add(new Door(doorTransform, material, doorTransform.getPosition().add(new Vector3f(0, 0, -0.9f))));
+                            }
+                			break;
+                		case 20:
+                			Transform wallTransform = new Transform();
 
-                        boolean xSecretWall = (bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0 && (bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0;
-                        boolean ySecretWall = (bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
+                            boolean xSecretWall = (bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0 && (bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0;
+                            boolean ySecretWall = (bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
 
-                        if ((ySecretWall && xSecretWall) || !(ySecretWall || xSecretWall)) {
-                            Log.fatal("Level Generation Error at (" + i + ", " + j + "): Secret Walls must be between two solid walls.");
-                        }
+                            if ((ySecretWall && xSecretWall) || !(ySecretWall || xSecretWall)) {
+                                Log.fatal("Level Generation Error at (" + i + ", " + j + "): Secret Walls must be between two solid walls.");
+                            }
 
-                        if (ySecretWall) {
-                            wallTransform.setPosition(i, 0, j + SPOT_LENGTH);
-                            secretWalls.add(new SecretWall(wallTransform, material, wallTransform.getPosition().add(new Vector3f(-1.0f, 0, -0.01f))));
-                        } else if (xSecretWall) {
-                            wallTransform.setPosition(i + SPOT_LENGTH, 0, j);
-                            wallTransform.setRotation(0, 90, 0);
-                            secretWalls.add(new SecretWall(wallTransform, material, wallTransform.getPosition().add(new Vector3f(-0.01f, 0, -1.0f))));
-                        }
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 24) {
-                    	//Gold
-                        Transform lockedTransform = new Transform();
+                            if (ySecretWall) {
+                                wallTransform.setPosition(i, 0, j + SPOT_LENGTH);
+                                secretWalls.add(new SecretWall(wallTransform, material, wallTransform.getPosition().add(new Vector3f(-1.0f, 0, -0.01f))));
+                            } else if (xSecretWall) {
+                                wallTransform.setPosition(i + SPOT_LENGTH, 0, j);
+                                wallTransform.setRotation(0, 90, 0);
+                                secretWalls.add(new SecretWall(wallTransform, material, wallTransform.getPosition().add(new Vector3f(-0.01f, 0, -1.0f))));
+                            }
+                			break;
+                		case 24:
+                			//Gold
+                            Transform lockedTransform = new Transform();
 
-                        boolean xLockedDoor = (bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0 && (bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0;
-                        boolean yLockedDoor = (bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
+                            boolean xLockedDoor = (bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0 && (bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0;
+                            boolean yLockedDoor = (bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
 
-                        if ((yLockedDoor && xLockedDoor) || !(yLockedDoor || xLockedDoor)) {
-                           Log.fatal("Level Generation Error at (" + i + ", " + j + "): Gold Locked Doors must be between two solid walls.");
-                        }
+                            if ((yLockedDoor && xLockedDoor) || !(yLockedDoor || xLockedDoor)) {
+                               Log.fatal("Level Generation Error at (" + i + ", " + j + "): Gold Locked Doors must be between two solid walls.");
+                            }
 
-                        if (yLockedDoor) {
-                        	lockedTransform.setPosition(i, 0,j + SPOT_LENGTH / 2);
-                            lockedDoors.add(new LockedDoor(lockedTransform, lockedTransform.getPosition().add(new Vector3f(-0.9f, 0, 0)), true));
-                        } else if (xLockedDoor) {
-                        	lockedTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
-                        	lockedTransform.setRotation(0, 90, 0);
-                            lockedDoors.add(new LockedDoor(lockedTransform, lockedTransform.getPosition().add(new Vector3f(0, 0, -0.9f)), true));
-                        }
-                    }else if ((bitmap.getPixel(i, j) & 0x0000FF) == 28) {
-                    	//Bronze
-                        Transform lockedTransform = new Transform();
+                            if (yLockedDoor) {
+                            	lockedTransform.setPosition(i, 0,j + SPOT_LENGTH / 2);
+                                lockedDoors.add(new LockedDoor(lockedTransform, lockedTransform.getPosition().add(new Vector3f(-0.9f, 0, 0)), true));
+                            } else if (xLockedDoor) {
+                            	lockedTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
+                            	lockedTransform.setRotation(0, 90, 0);
+                                lockedDoors.add(new LockedDoor(lockedTransform, lockedTransform.getPosition().add(new Vector3f(0, 0, -0.9f)), true));
+                            }
+                			break;
+                		case 28:
+                			//Bronze
+                            lockedTransform = new Transform();
 
-                        boolean xLockedDoor = (bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0 && (bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0;
-                        boolean yLockedDoor = (bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
+                            xLockedDoor = (bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0 && (bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0;
+                            yLockedDoor = (bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
 
-                        if ((yLockedDoor && xLockedDoor) || !(yLockedDoor || xLockedDoor)) {
-                            Log.fatal("Level Generation Error at (" + i + ", " + j + "): Bronze Locked Doors must be between two solid walls.");
-                        }
+                            if ((yLockedDoor && xLockedDoor) || !(yLockedDoor || xLockedDoor)) {
+                                Log.fatal("Level Generation Error at (" + i + ", " + j + "): Bronze Locked Doors must be between two solid walls.");
+                            }
 
-                        if (yLockedDoor) {
-                        	lockedTransform.setPosition(i, 0,j + SPOT_LENGTH / 2);
-                            lockedDoors.add(new LockedDoor(lockedTransform, lockedTransform.getPosition().add(new Vector3f(-0.9f, 0, 0)), false));
-                        } else if (xLockedDoor) {
-                        	lockedTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
-                        	lockedTransform.setRotation(0, 90, 0);
-                            lockedDoors.add(new LockedDoor(lockedTransform, lockedTransform.getPosition().add(new Vector3f(0, 0, -0.9f)), false));
-                        }
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 30) {
-                        Transform barTransform = new Transform();
+                            if (yLockedDoor) {
+                            	lockedTransform.setPosition(i, 0,j + SPOT_LENGTH / 2);
+                                lockedDoors.add(new LockedDoor(lockedTransform, lockedTransform.getPosition().add(new Vector3f(-0.9f, 0, 0)), false));
+                            } else if (xLockedDoor) {
+                            	lockedTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
+                            	lockedTransform.setRotation(0, 90, 0);
+                                lockedDoors.add(new LockedDoor(lockedTransform, lockedTransform.getPosition().add(new Vector3f(0, 0, -0.9f)), false));
+                            }
+                			break;
+                		case 30:
+                			Transform barTransform = new Transform();
 
-                        if ((bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0) {
-                        	barTransform.setPosition(i, 0,j + SPOT_LENGTH / 2);
-                            barsWalls.add(new BarsWall(barTransform));
-                        }
-                        if ((bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0) {
-                        	barTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
-                        	barTransform.setRotation(0, 90, 0);
-                        	barsWalls.add(new BarsWall(barTransform));
-                        }
-                        if ((bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0) {
-                        	barTransform.setPosition(i, 0,j + SPOT_LENGTH / 2);
-                            barsWalls.add(new BarsWall(barTransform));
-                        }
-                        if ((bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0) {
-                        	barTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
-                        	barTransform.setRotation(0, 90, 0);
-                        	barsWalls.add(new BarsWall(barTransform));
-                        }
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 128) {
-                    	naziSoldiers.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 1) {
-                        player = new Player(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.5f, (j + 0.5f) * SPOT_LENGTH));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 192) {
-                        medkits.add(new Medkit(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 100) {
-                        trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), "tree/MEDIA", 0.8f));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 101) {
-                        trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), "tree/SPDCQ0", Util.randomInRange(1, 3)));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 102) {
-                        grass.add(new Grass(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 50) {
-                    	flares.add(new Lantern(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, LEVEL_HEIGHT * 0.75f, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 51) {
-                    	lamps.add(new Lamp(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 52) {
-                    	//left
-                    	lightPosts.add(new LightPost(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), false));
-                    }else if ((bitmap.getPixel(i, j) & 0x0000FF) == 53) {
-                    	//Right
-                    	lightPosts.add(new LightPost(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 55) {
-                        bones.add(new Bones(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 60) {
-                        deadNazi.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 65) {
-                        chainguns.add(new Chaingun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 67) {
-                    	rocketLaunchers.add(new RocketLauncher(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 70) {
-                        deadJews.add(new DeadJew(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.05f, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 73) {
-                        rockets.add(new Rocket(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.05f, (j + 0.5f) * SPOT_LENGTH)), true, 1));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 75) {
-                        rockets.add(new Rocket(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.05f, (j + 0.5f) * SPOT_LENGTH)), true, 10));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 80) {
-                        foods.add(new Food(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 90) {
-                        dogs.add(new Dog(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 91) {
-                        captains.add(new Captain(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 92) {
-                        captains.add(new Captain(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), false));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 93) {
-                        commanders.add(new Commander(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 110) {
-                        ssSoldiers.add(new SsSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 120) {
-                    	tables.add(new Table(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 121) {
-                    	furnaces.add(new Oven(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                	} else if ((bitmap.getPixel(i, j) & 0x0000FF) == 122) {
-                    	kitchens.add(new Kitchen(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                        foods.add(new Food(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 123) {
-                    	clocks.add(new Clock(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 130) {
-                    	superShotguns.add(new SuperShotgun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 140) {
-                    	naziSeargeants.add(new NaziSergeant(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 150) {
-                    	pipes.add(new Pipe(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.00000000001f * LEVEL_HEIGHT, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 151) {
-                        pendules.add(new Pendule(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 152) {
-                        hangeds.add(new Hanged(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 153) {
-                        pillars.add(new Pillar(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.0000000001f * LEVEL_HEIGHT, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 154) {
-                        armors.add(new Armor(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 155) {
-                        helmets.add(new Helmet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                        //barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 156) {
-                        shells.add(new Shell(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 157) {
-                        bags.add(new Bag(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 158) {
-                        bullets.add(new Bullet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 169) {
-                    	//GoldKey
-                    	keys.add(new Key(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true, true));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 170) {
-                    	//BronzeKey
-                    	keys.add(new Key(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), false, true));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 175) {
-                        signs.add(new Sign(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 160) {
-                        barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 166) {
-                    	//who don't drop a key
-                    	zombies.add(new Zombie(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), false));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 167) {
-                    	//who do drop a key
-                    	zombies.add(new Zombie(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) == 180) {
-                    	//who do drop a key
-                    	ghosts.add(new Ghost(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
-                    } else if ((bitmap.getPixel(i, j) & 0xFF0000) == 0) {
-                    	dayTransition = true;
-                    } else if ((bitmap.getPixel(i, j) & 0x0000FF) < 128 && (bitmap.getPixel(i, j) & 0x0000FF) > 96) {
+                            if ((bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0) {
+                            	barTransform.setPosition(i, 0,j + SPOT_LENGTH / 2);
+                                barsWalls.add(new BarsWall(barTransform));
+                            }
+                            if ((bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0) {
+                            	barTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
+                            	barTransform.setRotation(0, 90, 0);
+                            	barsWalls.add(new BarsWall(barTransform));
+                            }
+                            if ((bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0) {
+                            	barTransform.setPosition(i, 0,j + SPOT_LENGTH / 2);
+                                barsWalls.add(new BarsWall(barTransform));
+                            }
+                            if ((bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0) {
+                            	barTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
+                            	barTransform.setRotation(0, 90, 0);
+                            	barsWalls.add(new BarsWall(barTransform));
+                            }
+                			break;
+                		case 128:
+                        	naziSoldiers.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                			break;
+                		case 1:
+                            player = new Player(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.5f, (j + 0.5f) * SPOT_LENGTH));
+                			break;
+                		case 192:
+                            medkits.add(new Medkit(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                			break;
+                		case 100:
+                            trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), "tree/MEDIA", 0.8f));
+                			break;
+                		case 101:
+                            trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), "tree/SPDCQ0", Util.randomInRange(1, 3)));
+                			break;
+                		case 102:
+                            grass.add(new Grass(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                			break;
+                		case 50:
+                        	flares.add(new Lantern(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, LEVEL_HEIGHT * 0.75f, (j + 0.5f) * SPOT_LENGTH))));
+                			break;
+                		case 51:
+                        	lamps.add(new Lamp(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                			break;
+                		case 52:
+                			//left
+                        	lightPosts.add(new LightPost(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), false));
+                			break;
+                		case 53:
+                			//Right
+                        	lightPosts.add(new LightPost(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
+                			break;
+                		case 55:
+                            bones.add(new Bones(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                			break;
+                		case 60:
+                            deadNazi.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                			break;
+                		case 65:
+                            chainguns.add(new Chaingun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
+                			break;
+                		case 67:
+                        	rocketLaunchers.add(new RocketLauncher(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
+                			break;
+                		case 70:
+                            deadJews.add(new DeadJew(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.05f, (j + 0.5f) * SPOT_LENGTH))));
+                			break;
+                		case 73:
+                            rockets.add(new Rocket(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.05f, (j + 0.5f) * SPOT_LENGTH)), true, 1));
+                			break;
+                		case 75:
+                            rockets.add(new Rocket(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.05f, (j + 0.5f) * SPOT_LENGTH)), true, 10));
+                			break;
+                		case 80:
+                            foods.add(new Food(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                			break;
+                		case 90:
+                            dogs.add(new Dog(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                			break;
+                		case 91:
+                            captains.add(new Captain(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
+                			break;
+                		case 92:
+                            captains.add(new Captain(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), false));
+                			break;
+                		case 93:
+                            commanders.add(new Commander(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                            break;
+                		case 110:
+                            ssSoldiers.add(new SsSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                            break;
+                		case 120:
+                        	tables.add(new Table(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                			break;
+                		case 121:
+                        	furnaces.add(new Oven(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                        	break;
+                		case 122:
+                			kitchens.add(new Kitchen(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                            foods.add(new Food(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                        break;
+                		case 123:
+                        	clocks.add(new Clock(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                        	break;
+                		case 130:
+                        	superShotguns.add(new SuperShotgun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
+                			break;
+                		case 140:
+                        	naziSeargeants.add(new NaziSergeant(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                			break;
+                		case 150:
+                        	pipes.add(new Pipe(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.00000000001f * LEVEL_HEIGHT, (j + 0.5f) * SPOT_LENGTH))));
+                			break;
+                		case 151:
+                            pendules.add(new Pendule(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                            break;
+                		case 152:
+                            hangeds.add(new Hanged(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                            break;
+                		case 153:
+                            pillars.add(new Pillar(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.0000000001f * LEVEL_HEIGHT, (j + 0.5f) * SPOT_LENGTH))));
+                			break;
+                		case 154:
+                            armors.add(new Armor(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                            break;
+                		case 155:
+                		    helmets.add(new Helmet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                            //barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                		    break;
+                		case 156:
+                            shells.add(new Shell(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
+                            break;
+                		case 157:
+                            bags.add(new Bag(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                            break;
+                		case 158:
+                            bullets.add(new Bullet(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
+                            break;
+                		case 169:
+                			//GoldKey
+                        	keys.add(new Key(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true, true));
+                			break;
+                		case 170:
+                			//BronzeKey
+                        	keys.add(new Key(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), false, true));
+                        	break;
+                		case 175:
+                            signs.add(new Sign(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                			break;
+                		case 160:
+                            barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                			break;
+                		case 166:
+                			//whom don't drop a key
+                        	zombies.add(new Zombie(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), false));
+                			break;
+                		case 167:
+                			//whom do drop a key
+                        	zombies.add(new Zombie(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
+                			break;
+                		case 180:
+                			//whom do drop a key
+                        	ghosts.add(new Ghost(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                			break;
+                	}
+
+                    if ((bitmap.getPixel(i, j) & 0x0000FF) < 128 && (bitmap.getPixel(i, j) & 0x0000FF) > 96) {
                         int offset = (bitmap.getPixel(i, j) & 0x0000FF) - 96;
                         exitPoints.add(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0f, (j + 0.5f) * SPOT_LENGTH));
                         exitOffsets.add(offset);

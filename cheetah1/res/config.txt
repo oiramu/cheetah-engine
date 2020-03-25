@@ -1,4 +1,5 @@
 #Cheetah Engine configuration file
+RESOURCE_PACK pack=auschwitz
 TEXTURE_FILTER filter=Nearest
 GAME_GRAPHICS graphics=High
 CLEAR_LIGHTS lights=false

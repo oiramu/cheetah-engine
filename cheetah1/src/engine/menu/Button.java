@@ -26,6 +26,7 @@ import engine.audio.AudioUtil;
 import engine.core.Debug;
 import engine.core.Input;
 import engine.core.crash.CrashReport;
+import engine.core.utils.Log;
 import engine.menu.system.SEngineUtil;
 import engine.menu.widget.WidgetModel;
 import engine.rendering.Window;
@@ -76,8 +77,7 @@ public class Button extends WidgetModel {
 		try {
 			m_texture.destroy();
 		} catch (SlickException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.error("Could not destroy button texture: " + e.getMessage());
 		}
 	}
 	

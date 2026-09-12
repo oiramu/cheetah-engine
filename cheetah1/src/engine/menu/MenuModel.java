@@ -24,6 +24,7 @@ import java.util.List;
 import org.newdawn.slick.Graphics;
 
 import engine.core.Input;
+import engine.core.utils.Log;
 import engine.menu.gui.GUIComponent;
 import engine.menu.system.SEngineUtil;
 import engine.menu.widget.WidgetAnimation;
@@ -206,11 +207,9 @@ public class MenuModel extends GUIComponent {
 					fileComplete = true;
 			}
 		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.error("Malformed number in menu file '" + m_filePath + "': " + e.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.error("Could not read menu file '" + m_filePath + "': " + e.getMessage());
 		}
 	}
 }

@@ -506,8 +506,23 @@ public class Level extends GameComponent {
             Vector2f oldPos2 = new Vector2f(oldPos.getX(), oldPos.getZ());
             Vector2f newPos2 = new Vector2f(newPos.getX(), newPos.getZ());
 
-            for (int i = 0; i < bitmap.getWidth(); i++) {
-                for (int j = 0; j < bitmap.getHeight(); j++) {
+            /**
+             * Only wall tiles the swept object could possibly overlap can affect
+             * the result, so bound the scan to that box instead of the whole
+             * bitmap - same result, far fewer PhysicsUtil.rectCollide calls.
+             */
+            int minI = (int) Math.floor(Math.min(oldPos2.getX(), newPos2.getX()) - objectWidth);
+            int maxI = (int) Math.ceil(Math.max(oldPos2.getX(), newPos2.getX()) + objectWidth);
+            int minJ = (int) Math.floor(Math.min(oldPos2.getY(), newPos2.getY()) - objectLength);
+            int maxJ = (int) Math.ceil(Math.max(oldPos2.getY(), newPos2.getY()) + objectLength);
+
+            minI = Math.max(minI, 0);
+            maxI = Math.min(maxI, bitmap.getWidth() - 1);
+            minJ = Math.max(minJ, 0);
+            maxJ = Math.min(maxJ, bitmap.getHeight() - 1);
+
+            for (int i = minI; i <= maxI; i++) {
+                for (int j = minJ; j <= maxJ; j++) {
                     if ((bitmap.getPixel(i, j) & 0xFFFFFF) == 0) // If it's a black (wall) pixel
                     {
                         collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, blockSize.mul(new Vector2f(i, j)), blockSize));

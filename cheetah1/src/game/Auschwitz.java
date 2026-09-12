@@ -27,6 +27,7 @@ import static engine.core.CoreEngine.*;
 import engine.audio.AudioUtil;
 import engine.components.Constants;
 import engine.core.*;
+import engine.core.utils.Log;
 import engine.menu.CreditsMenu;
 import engine.menu.Menu;
 import engine.rendering.*;
@@ -432,8 +433,8 @@ public class Auschwitz implements Game {
 				Thread.sleep(1);
 				menu = new CreditsMenu();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.error("Interrupted while switching to credits menu: " + e.getMessage());
+				Thread.currentThread().interrupt();
 			}
         	//ex.printStackTrace();
         }

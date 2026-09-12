@@ -22,6 +22,9 @@ import org.newdawn.slick.AngelCodeFont;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
+import engine.core.Debug;
+import engine.core.crash.CrashReport;
+
 /**
  *
  * @author Carlos Rodriguez
@@ -50,8 +53,7 @@ public class SEngineUtil {
 			m_font = new AngelCodeFont("res/textures/fonts/font.fnt", new Image("res/textures/fonts/font.png")); 
 			m_boldFont = new AngelCodeFont("res/textures/fonts/fontBold.fnt", new Image("res/textures/fonts/fontBold.png")); 
 		} catch (SlickException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Debug.crash(new CrashReport(e));
 		}
 	}
 	

@@ -21,6 +21,7 @@ import org.newdawn.slick.SlickException;
 
 import engine.core.Debug;
 import engine.core.crash.CrashReport;
+import engine.core.utils.Log;
 import engine.rendering.Window;
 
 /**
@@ -61,8 +62,7 @@ public class WidgetImage extends WidgetModel {
 		try {
 			m_texture.destroy();
 		} catch (SlickException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.error("Could not destroy widget image texture: " + e.getMessage());
 		}
 	}
 

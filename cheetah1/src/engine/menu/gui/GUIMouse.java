@@ -20,6 +20,9 @@ import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
+import engine.core.Debug;
+import engine.core.crash.CrashReport;
+import engine.core.utils.Log;
 import engine.rendering.Window;
 
 /**
@@ -42,11 +45,10 @@ public class GUIMouse {
 		try {
 			m_mouseTexture = new Image("res/textures/coreDisplay/mouse.png");
 		} catch (SlickException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Debug.crash(new CrashReport(e));
 		}
 	}
-	
+
 	/**
 	 * Deletes the mouse cursor when need it.
 	 */
@@ -54,7 +56,7 @@ public class GUIMouse {
 		try {
 			m_mouseTexture.destroy();
 		} catch (SlickException e) {
-				e.printStackTrace();
+			Log.error("Could not destroy mouse cursor texture: " + e.getMessage());
 		}
 	}
 

@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import engine.core.utils.Log;
 import engine.menu.system.SEngineUtil;
 
 /**
@@ -154,11 +155,9 @@ public class Constants {
 					fileComplete = true;
 			}
 		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.error("Malformed number in config file '" + filePath + "': " + e.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.error("Could not read config file '" + filePath + "': " + e.getMessage());
 		}
 	}
 	

@@ -1,0 +1,80 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+            exclude 'test/**'
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Vendored LWJGL2 jars, kept as flat file deps so the exact jar always matches
+    // the native libraries already bundled under lib/native/ (Maven Central copies
+    // could drift; slick.jar isn't published there at all).
+    implementation files('lib/jar/lwjgl.jar', 'lib/jar/lwjgl_util.jar', 'lib/jar/slick.jar')
+
+    testImplementation platform('org.junit:junit-bom:5.10.2')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+application {
+    mainClass = 'engine.Main'
+}
+
+def nativesFolder = {
+    def name = System.getProperty('os.name').toLowerCase()
+    if (name.contains('mac')) return 'macosx'
+    if (name.contains('win')) return 'windows'
+    return 'linux'
+}()
+
+// The vendored LWJGL2/OpenAL natives under lib/native/macosx are x86_64-only
+// (built ~2015, long before Apple Silicon). On an arm64 Mac the JVM itself
+// must run under Rosetta to dlopen them, so run/test fork an x86_64 JDK when
+// one is present instead of the arm64 build JVM. Harmless no-op everywhere
+// else (Intel Mac, Linux, Windows, CI).
+def x64JavaExecutable = {
+    def isAppleSilicon = nativesFolder == 'macosx' && System.getProperty('os.arch') == 'aarch64'
+    if (!isAppleSilicon) return null
+    def jvmsDir = new File(System.getProperty('user.home'), 'Library/Java/JavaVirtualMachines')
+    def x64Jdk = jvmsDir.listFiles()?.find { it.name.startsWith('jdk-') }
+    return x64Jdk ? new File(x64Jdk, 'Contents/Home/bin/java') : null
+}()
+
+// Resources are read via literal relative paths ("./res/...") at runtime,
+// not the classpath, so both tasks must run with cheetah1/ as the CWD.
+// org.lwjgl.librarypath points LWJGL2 straight at the vendored natives,
+// the same thing the old Eclipse .classpath library-path attribute did.
+test {
+    useJUnitPlatform()
+    workingDir = projectDir
+    systemProperty 'org.lwjgl.librarypath', file("lib/native/${nativesFolder}")
+}
+
+run {
+    workingDir = projectDir
+    systemProperty 'org.lwjgl.librarypath', file("lib/native/${nativesFolder}")
+    if (x64JavaExecutable != null) {
+        executable = x64JavaExecutable
+    }
+}

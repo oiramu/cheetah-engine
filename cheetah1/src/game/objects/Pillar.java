@@ -25,6 +25,7 @@ import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
+import engine.physics.Collidable;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
@@ -40,7 +41,7 @@ import game.Level;
  * @version 1.0
  * @since 2018
  */
-public class Pillar extends GameComponent {
+public class Pillar extends GameComponent implements Collidable {
 	
 	private static final String 		RES_LOC = "pillar/";
 	private static final int 			STATE_IDLE = 0;

@@ -25,6 +25,7 @@ import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
+import engine.physics.Collidable;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
@@ -41,7 +42,7 @@ import game.Level;
  * @version 1.1
  * @since 2018
  */
-public class Hanged extends GameComponent {
+public class Hanged extends GameComponent implements Collidable {
 	
 	private static final String 		RES_LOC = "hanged/";
 	private static final int 			STATE_IDLE = 0;

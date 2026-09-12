@@ -23,6 +23,7 @@ import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
+import engine.physics.Collidable;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
@@ -37,7 +38,7 @@ import game.Level;
  * @version 1.1
  * @since 2017
  */
-public class Door extends GameComponent {
+public class Door extends GameComponent implements Collidable {
 	
 	private static final float HEIGHT = 1.0f;
 	private static final float LENGTH = Level.SPOT_LENGTH;

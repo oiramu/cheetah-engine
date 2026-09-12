@@ -27,6 +27,7 @@ import engine.components.PointLight;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
+import engine.physics.Collidable;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
@@ -42,7 +43,7 @@ import game.Level;
  * @version 1.2
  * @since 2017
  */
-public class Lamp extends GameComponent {
+public class Lamp extends GameComponent implements Collidable {
 	
 	private static final String 		RES_LOC = "lamp/";
 	private static final int 			STATE_IDLE = 0;

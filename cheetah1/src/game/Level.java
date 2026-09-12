@@ -32,7 +32,9 @@ import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
+import engine.physics.Collidable;
 import engine.physics.PhysicsUtil;
+import engine.physics.SpatialGrid;
 import engine.rendering.Bitmap;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
@@ -214,6 +216,7 @@ public class Level extends GameComponent {
     private BaseLight directionalLight;
     private GameObject objects;
     private GameComponent shootingObjective;
+    private SpatialGrid spatialGrid;
     
 	private boolean dayTransition = false;
 	private float dayLightValue;
@@ -231,6 +234,7 @@ public class Level extends GameComponent {
         this.material = material;
         this.collisionPosStart = new ArrayList<Vector2f>();
         this.collisionPosEnd = new ArrayList<Vector2f>();
+    	this.spatialGrid = new SpatialGrid(bitmap.getWidth(), bitmap.getHeight(), SPOT_WIDTH);
     	this.renderingEngine = getRenderingEngine();
         
         generateLevel();
@@ -346,7 +350,9 @@ public class Level extends GameComponent {
      * @param delta of time
      */
     public void update(double delta) {
-        
+
+    	refreshDynamicCollidables();
+
     	objects.update(delta);
 
         objects.killList(deadNazi, delta);
@@ -362,6 +368,7 @@ public class Level extends GameComponent {
         objects.removeComponents(removeArmorList);
         objects.removeComponents(removeHelmets);
         objects.removeComponents(removeSuperShotgunList);
+        spatialGrid.removeAllStatic(removeBarrels);
         objects.removeComponents(removeBarrels);
         objects.removeComponents(removeChaingunList);
         objects.removeComponents(removeKeys);
@@ -412,6 +419,29 @@ public class Level extends GameComponent {
         removeRocketLauncherList.clear();
         removeBleedingList.clear();
         removeFireList.clear();
+    }
+
+    /**
+     * Clears and re-inserts every dynamic collidable (doors, secretWalls,
+     * lockedDoors, and the enemy types checkCollisions/checkIntersections
+     * gate by isQuiet) into the spatial grid, once per frame. Ghosts are
+     * intentionally left out, matching checkCollisions' original omission
+     * of them from its per-type scans.
+     */
+    private void refreshDynamicCollidables() {
+    	spatialGrid.clearDynamic();
+
+    	for (Door door : doors) spatialGrid.insertDynamic(door);
+    	for (SecretWall secretWall : secretWalls) spatialGrid.insertDynamic(secretWall);
+    	for (LockedDoor lockedDoor : lockedDoors) spatialGrid.insertDynamic(lockedDoor);
+
+    	for (NaziSoldier naziSoldier : naziSoldiers) spatialGrid.insertDynamic(naziSoldier);
+    	for (SsSoldier ssSoldier : ssSoldiers) spatialGrid.insertDynamic(ssSoldier);
+    	for (Dog dog : dogs) spatialGrid.insertDynamic(dog);
+    	for (NaziSergeant naziSergeant : naziSeargeants) spatialGrid.insertDynamic(naziSergeant);
+    	for (Zombie zombie : zombies) spatialGrid.insertDynamic(zombie);
+    	for (Captain captain : captains) spatialGrid.insertDynamic(captain);
+    	for (Commander commander : commanders) spatialGrid.insertDynamic(commander);
     }
 
     /**
@@ -530,91 +560,20 @@ public class Level extends GameComponent {
                 }
             }
 
-            for (Door door : doors)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, door.getTransform().getPosition().getXZ(), door.getSize()));
-            
-            for (SecretWall secretWall : secretWalls)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, secretWall.getTransform().getPosition().getXZ(), secretWall.getSize()));
-            
-            for (NaziSoldier monster : naziSoldiers)
-            	if(monster.isQuiet)
-            		collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, monster.getTransform().getPosition().getXZ(), monster.getSize()));
-            
-            for (SsSoldier ssSoldier : ssSoldiers)
-            	if(ssSoldier.isQuiet)
-            		collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, ssSoldier.getTransform().getPosition().getXZ(), ssSoldier.getSize()));
-            
-            for (Dog dog : dogs)
-            	if(dog.isQuiet)
-            		collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, dog.getTransform().getPosition().getXZ(), dog.getSize()));
-            
-            for (NaziSergeant naziSergeants : naziSeargeants)
-            	if(naziSergeants.isQuiet)
-            		collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, naziSergeants.getTransform().getPosition().getXZ(), naziSergeants.getSize()));
-           
-            for (Bones bone : bones)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, bone.getTransform().getPosition().getXZ(), bone.getSize()));
-            
-            for (DeadJew deadJew : deadJews)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, deadJew.getTransform().getPosition().getXZ(), deadJew.getSize()));
-            
-            for (Tree tree : trees)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, tree.getTransform().getPosition().getXZ(), tree.getSize()));
-            
-            for (Table table : tables)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, table.getTransform().getPosition().getXZ(), table.getSize()));
-            
-            for (Pipe pipe : pipes)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, pipe.getTransform().getPosition().getXZ(), pipe.getSize()));
-            
-            for (Pendule pendule : pendules)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, pendule.getTransform().getPosition().getXZ(), pendule.getSize()));
-            
-            //for (Lantern flare : flares)
-                //collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, flare.getTransform().getPosition().getXZ(), flare.getSize()));
-            
-            for (Lamp lamp : lamps)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, lamp.getTransform().getPosition().getXZ(), lamp.getSize()));
-            
-            for (Hanged jew : hangeds)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, jew.getTransform().getPosition().getXZ(), jew.getSize()));
-            
-            for (Pillar pillar : pillars)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, pillar.getTransform().getPosition().getXZ(), pillar.getSize()));
-            
-            for (Clock clock : clocks)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, clock.getTransform().getPosition().getXZ(), clock.getSize()));
-            
-            for (Oven furnace : furnaces)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, furnace.getTransform().getPosition().getXZ(), furnace.getSize()));
-            
-            for (Barrel barrel : barrels)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, barrel.getTransform().getPosition().getXZ(), barrel.getSize()));
-            
-            for (LockedDoor lockedDoor : lockedDoors)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, lockedDoor.getTransform().getPosition().getXZ(), lockedDoor.getSize()));
-            
-            for (BarsWall barsWall : barsWalls)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, barsWall.getTransform().getPosition().getXZ(), barsWall.getSize()));
-            
-            for (LightPost lightPost : lightPosts)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, lightPost.getTransform().getPosition().getXZ(), lightPost.getSize()));
-            
-            for (Sign sign : signs)
-                collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, sign.getTransform().getPosition().getXZ(), sign.getSize()));
-            
-            for (Zombie zombie : zombies)
-            	if(zombie.isQuiet)
-            		collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, zombie.getTransform().getPosition().getXZ(), zombie.getSize()));
-            
-            for (Captain captain : captains)
-            	if(captain.isQuiet)
-            		collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, captain.getTransform().getPosition().getXZ(), captain.getSize()));
-            
-            for (Commander commander : commanders)
-            	if(commander.isQuiet)
-            		collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, commander.getTransform().getPosition().getXZ(), commander.getSize()));
-            
+            /**
+             * All the doors/props/enemies checkCollisions used to scan as
+             * ~24 separate typed lists are now one broad-phase grid query,
+             * over the same swept box used to bound the wall-tile scan
+             * above. blocksMovement() carries the isQuiet gating the
+             * enemy-type loops used to do inline (Ghost is intentionally
+             * never in the grid, matching the original loops' omission).
+             */
+            Vector2f queryMin = new Vector2f(Math.min(oldPos2.getX(), newPos2.getX()) - objectWidth, Math.min(oldPos2.getY(), newPos2.getY()) - objectLength);
+            Vector2f queryMax = new Vector2f(Math.max(oldPos2.getX(), newPos2.getX()) + objectWidth, Math.max(oldPos2.getY(), newPos2.getY()) + objectLength);
+
+            for (Collidable c : spatialGrid.queryAabb(queryMin, queryMax))
+                if (c.blocksMovement())
+                    collisionVector = collisionVector.mul(PhysicsUtil.rectCollide(oldPos2, newPos2, objectSize, c.getPosition2D(), c.getSize()));
         }
 
         return new Vector3f(collisionVector.getX(), 0, collisionVector.getY());
@@ -639,35 +598,21 @@ public class Level extends GameComponent {
             }
         }
 
-        for (Door door : doors) {
-            Vector2f collision = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, door.getTransform().getPosition().getXZ(), door.getSize());
+        /**
+         * Door/secretWall/lockedDoor/barsWall used to be 4 separate typed
+         * loops - none of them have side effects (unlike the enemy scans
+         * below, which dispatch damage/bleeding/fire per type and stay as
+         * their own explicit loops), so they collapse into one grid query
+         * filtered down to just those 4 wall-like types.
+         */
+        Vector2f lineMin = new Vector2f(Math.min(lineStart.getX(), lineEnd.getX()), Math.min(lineStart.getY(), lineEnd.getY()));
+        Vector2f lineMax = new Vector2f(Math.max(lineStart.getX(), lineEnd.getX()), Math.max(lineStart.getY(), lineEnd.getY()));
 
-            if (collision != null && (nearestIntersect == null
-                    || nearestIntersect.sub(lineStart).length() > collision.sub(lineStart).length())) {
-                nearestIntersect = collision;
-            }
-        }
-        
-        for (SecretWall secretWall : secretWalls) {
-            Vector2f collision = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, secretWall.getTransform().getPosition().getXZ(), secretWall.getSize());
+        for (Collidable c : spatialGrid.queryAabb(lineMin, lineMax)) {
+            if (!(c instanceof Door || c instanceof SecretWall || c instanceof LockedDoor || c instanceof BarsWall))
+                continue;
 
-            if (collision != null && (nearestIntersect == null
-                    || nearestIntersect.sub(lineStart).length() > collision.sub(lineStart).length())) {
-                nearestIntersect = collision;
-            }
-        }
-        
-        for (LockedDoor lockedDoor : lockedDoors) {
-            Vector2f collision = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, lockedDoor.getTransform().getPosition().getXZ(), lockedDoor.getSize());
-
-            if (collision != null && (nearestIntersect == null
-                    || nearestIntersect.sub(lineStart).length() > collision.sub(lineStart).length())) {
-                nearestIntersect = collision;
-            }
-        }
-        
-        for (BarsWall barsWall : barsWalls) {
-            Vector2f collision = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, barsWall.getTransform().getPosition().getXZ(), barsWall.getSize());
+            Vector2f collision = PhysicsUtil.lineIntersectRect(lineStart, lineEnd, c.getPosition2D(), c.getSize());
 
             if (collision != null && (nearestIntersect == null
                     || nearestIntersect.sub(lineStart).length() > collision.sub(lineStart).length())) {
@@ -1234,20 +1179,24 @@ public class Level extends GameComponent {
                             if ((bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0) {
                             	barTransform.setPosition(i, 0,j + SPOT_LENGTH / 2);
                                 barsWalls.add(new BarsWall(barTransform));
+                                spatialGrid.insertStatic(barsWalls.get(barsWalls.size() - 1));
                             }
                             if ((bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0) {
                             	barTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
                             	barTransform.setRotation(0, 90, 0);
                             	barsWalls.add(new BarsWall(barTransform));
+                                spatialGrid.insertStatic(barsWalls.get(barsWalls.size() - 1));
                             }
                             if ((bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0) {
                             	barTransform.setPosition(i, 0,j + SPOT_LENGTH / 2);
                                 barsWalls.add(new BarsWall(barTransform));
+                                spatialGrid.insertStatic(barsWalls.get(barsWalls.size() - 1));
                             }
                             if ((bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0) {
                             	barTransform.setPosition(i + SPOT_LENGTH / 2, 0, j);
                             	barTransform.setRotation(0, 90, 0);
                             	barsWalls.add(new BarsWall(barTransform));
+                                spatialGrid.insertStatic(barsWalls.get(barsWalls.size() - 1));
                             }
                 			break;
                 		case 128:
@@ -1261,9 +1210,11 @@ public class Level extends GameComponent {
                 			break;
                 		case 100:
                             trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), "tree/MEDIA", 0.8f));
+                            spatialGrid.insertStatic(trees.get(trees.size() - 1));
                 			break;
                 		case 101:
                             trees.add(new Tree(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), "tree/SPDCQ0", Util.randomInRange(1, 3)));
+                            spatialGrid.insertStatic(trees.get(trees.size() - 1));
                 			break;
                 		case 102:
                             grass.add(new Grass(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
@@ -1273,17 +1224,21 @@ public class Level extends GameComponent {
                 			break;
                 		case 51:
                         	lamps.add(new Lamp(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                        	spatialGrid.insertStatic(lamps.get(lamps.size() - 1));
                 			break;
                 		case 52:
                 			//left
                         	lightPosts.add(new LightPost(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), false));
+                        	spatialGrid.insertStatic(lightPosts.get(lightPosts.size() - 1));
                 			break;
                 		case 53:
                 			//Right
                         	lightPosts.add(new LightPost(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
+                        	spatialGrid.insertStatic(lightPosts.get(lightPosts.size() - 1));
                 			break;
                 		case 55:
                             bones.add(new Bones(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                            spatialGrid.insertStatic(bones.get(bones.size() - 1));
                 			break;
                 		case 60:
                             deadNazi.add(new NaziSoldier(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
@@ -1296,6 +1251,7 @@ public class Level extends GameComponent {
                 			break;
                 		case 70:
                             deadJews.add(new DeadJew(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.05f, (j + 0.5f) * SPOT_LENGTH))));
+                            spatialGrid.insertStatic(deadJews.get(deadJews.size() - 1));
                 			break;
                 		case 73:
                             rockets.add(new Rocket(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, -0.05f, (j + 0.5f) * SPOT_LENGTH)), true, 1));
@@ -1323,9 +1279,11 @@ public class Level extends GameComponent {
                             break;
                 		case 120:
                         	tables.add(new Table(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                        	spatialGrid.insertStatic(tables.get(tables.size() - 1));
                 			break;
                 		case 121:
                         	furnaces.add(new Oven(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                        	spatialGrid.insertStatic(furnaces.get(furnaces.size() - 1));
                         	break;
                 		case 122:
                 			kitchens.add(new Kitchen(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
@@ -1333,6 +1291,7 @@ public class Level extends GameComponent {
                         break;
                 		case 123:
                         	clocks.add(new Clock(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                        	spatialGrid.insertStatic(clocks.get(clocks.size() - 1));
                         	break;
                 		case 130:
                         	superShotguns.add(new SuperShotgun(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH)), true));
@@ -1342,15 +1301,19 @@ public class Level extends GameComponent {
                 			break;
                 		case 150:
                         	pipes.add(new Pipe(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.00000000001f * LEVEL_HEIGHT, (j + 0.5f) * SPOT_LENGTH))));
+                        	spatialGrid.insertStatic(pipes.get(pipes.size() - 1));
                 			break;
                 		case 151:
                             pendules.add(new Pendule(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                            spatialGrid.insertStatic(pendules.get(pendules.size() - 1));
                             break;
                 		case 152:
                             hangeds.add(new Hanged(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                            spatialGrid.insertStatic(hangeds.get(hangeds.size() - 1));
                             break;
                 		case 153:
                             pillars.add(new Pillar(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0.0000000001f * LEVEL_HEIGHT, (j + 0.5f) * SPOT_LENGTH))));
+                            spatialGrid.insertStatic(pillars.get(pillars.size() - 1));
                 			break;
                 		case 154:
                             armors.add(new Armor(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
@@ -1378,9 +1341,11 @@ public class Level extends GameComponent {
                         	break;
                 		case 175:
                             signs.add(new Sign(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                            spatialGrid.insertStatic(signs.get(signs.size() - 1));
                 			break;
                 		case 160:
                             barrels.add(new Barrel(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
+                            spatialGrid.insertStatic(barrels.get(barrels.size() - 1));
                 			break;
                 		case 166:
                 			//whom don't drop a key

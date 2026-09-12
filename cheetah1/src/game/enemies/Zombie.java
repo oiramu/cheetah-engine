@@ -28,6 +28,7 @@ import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
 import engine.core.utils.Util;
+import engine.physics.Collidable;
 import engine.physics.PhysicsUtil;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
@@ -47,7 +48,7 @@ import game.projectiles.ZombieMeat;
  * @version 1.1
  * @since 2018
  */
-public class Zombie extends GameComponent {
+public class Zombie extends GameComponent implements Collidable {
 
     private static final float MAX_HEALTH = 300f;
     private static final float SHOT_ANGLE = 10.0f;
@@ -804,6 +805,14 @@ public class Zombie extends GameComponent {
      * @return vector with the size.
      */
     public Vector2f getSize() {return new Vector2f(ZOMBIE_WIDTH, ZOMBIE_WIDTH);}
+
+    /**
+     * Matches checkCollisions' original isQuiet gating: only blocks
+     * movement while idle - once alerted and chasing/attacking, it stops
+     * blocking.
+     * @return blocking state.
+     */
+    public boolean blocksMovement() {return isQuiet;}
 
     /**
      * Gets the enemy's actual health.

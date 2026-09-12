@@ -27,6 +27,7 @@ import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
+import engine.physics.Collidable;
 import engine.physics.PhysicsUtil;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
@@ -44,7 +45,7 @@ import game.Player;
  * @version 1.2
  * @since 2017
  */
-public class Dog extends GameComponent {
+public class Dog extends GameComponent implements Collidable {
 
 	private static final float MAX_HEALTH = 100f;
     private static final float SHOT_ANGLE = 10.0f;
@@ -396,5 +397,13 @@ public class Dog extends GameComponent {
      * @return vector with the size.
      */
     public Vector2f getSize() {return new Vector2f(DOG_WIDTH, DOG_WIDTH);}
+
+    /**
+     * Matches checkCollisions' original isQuiet gating: only blocks
+     * movement while idle - once alerted and chasing/attacking, it stops
+     * blocking.
+     * @return blocking state.
+     */
+    public boolean blocksMovement() {return isQuiet;}
     
 }

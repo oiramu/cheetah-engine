@@ -19,6 +19,7 @@ import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Transform;
 import engine.core.Vector2f;
+import engine.physics.Collidable;
 import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
@@ -34,7 +35,7 @@ import game.Level;
  * @version 1.0
  * @since 2019
  */
-public class Sign extends GameComponent {
+public class Sign extends GameComponent implements Collidable {
     
     private static Mesh 		mesh;
     private static Material 	material;

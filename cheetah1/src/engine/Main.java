@@ -15,6 +15,8 @@
  */
 package engine;
 
+import java.util.Arrays;
+
 import engine.core.CoreEngine;
 import game.Auschwitz;
 
@@ -29,12 +31,14 @@ public class Main {
 	/**
 	 * The main method of the program, takes everything to show and put it
 	 * To work like it should.
-	 * @param args arguments.
+	 * @param args arguments. Pass {@code --skip-menu} to jump straight into
+	 * the game for quicker dev iteration, bypassing the main menu.
 	 */
 	public static void main(String[] args) {
-		
+		boolean skipMenu = Arrays.asList(args).contains("--skip-menu");
+
 		CoreEngine engine = new CoreEngine(1280, 720, 120, new Auschwitz());
-		engine.createWindow("Auschwitz", true);
+		engine.createWindow("Auschwitz", true, skipMenu);
 		engine.run();
 	}
 

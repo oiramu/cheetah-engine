@@ -56,76 +56,14 @@ public class Window {
 	private final static Sequence 	THEME = AudioUtil.loadMidi("THEME0");
 	
 	/**
-	 * Method that creates the window.
-	 * @param title of the window.
-	 * @param fullscreen If its windowed or full-screen.
-	 */
-	public static void createWindow(int width, int height, String title, boolean fullscreen) {
-		//setNatives();
-		try {
-			Display.setTitle(title);
-			Display.setIcon(new ByteBuffer[] {
-					loadIcon("/textures/coreDisplay/icon32"),
-			});
-			if(fullscreen) {
-				@SuppressWarnings("unused")
-				DisplayMode displayMode = null;
-		        DisplayMode[] modes = Display.getAvailableDisplayModes();
-	
-		         for (int i = 0; i < modes.length; i++) {
-		             if (modes[i].getWidth() == width
-		             && modes[i].getHeight() == height
-		             && modes[i].isFullscreenCapable()) { displayMode = modes[i]; }
-		         }
-			} else {
-				Display.setDisplayMode(new DisplayMode(width, height));
-			}
-			
-			Display.setFullscreen(fullscreen);
-	        Display.create();
-	        Keyboard.create();
-	        Mouse.create();
-	        
-	        Auschwitz.setStartingLevel(1);
-			CoreEngine.getCurrent().start();
-
-		} catch(LWJGLException e) {
-			Debug.crash(new CrashReport(e));
-			dispose();
-		}
-	}
-
-	/**
 	 * Method that creates the window with menu for the program.
 	 * @param title of the window.
 	 * @param fullscreen If its windowed or full-screen.
 	 */
 	public static void createMenuWindow(int width, int height, String title, boolean fullscreen) {
-		//setNatives();
 		try {
-			Display.setTitle(title);
-			Display.setIcon(new ByteBuffer[] {
-					loadIcon("/textures/coreDisplay/icon32"),
-			});
-			if(fullscreen) {
-				@SuppressWarnings("unused")
-				DisplayMode displayMode = null;
-		        DisplayMode[] modes = Display.getAvailableDisplayModes();
-	
-		         for (int i = 0; i < modes.length; i++) {
-		             if (modes[i].getWidth() == width
-		             && modes[i].getHeight() == height
-		             && modes[i].isFullscreenCapable()) { displayMode = modes[i]; }
-		         }
-			} else {
-				Display.setDisplayMode(new DisplayMode(width, height));
-			}
-			
-			Display.setFullscreen(fullscreen);
-	        Display.create();
-	        Keyboard.create();
-            Mouse.create();
-			
+			createDisplay(width, height, title, fullscreen);
+
 			//Hide mouse
 			Cursor emptyCursor = new Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null);
 			Mouse.setNativeCursor(emptyCursor);
@@ -138,7 +76,59 @@ public class Window {
 			dispose();
 		}
 	}
-	
+
+	/**
+	 * Method that creates the window and skips the menu entirely, going
+	 * straight into the game. Meant as a dev/quick-start entry point
+	 * (see Main's {@code --skip-menu} flag), not part of the normal flow.
+	 * @param title of the window.
+	 * @param fullscreen If its windowed or full-screen.
+	 */
+	public static void createWindow(int width, int height, String title, boolean fullscreen) {
+		try {
+			createDisplay(width, height, title, fullscreen);
+
+			Auschwitz.setStartingLevel(1);
+			CoreEngine.getCurrent().start();
+		} catch(LWJGLException e) {
+			Debug.crash(new CrashReport(e));
+			dispose();
+		}
+	}
+
+	/**
+	 * Creates the LWJGL display, keyboard and mouse - the setup shared by
+	 * both createMenuWindow and createWindow.
+	 * @param title of the window.
+	 * @param fullscreen If its windowed or full-screen.
+	 * @throws LWJGLException if the display can't be created.
+	 */
+	private static void createDisplay(int width, int height, String title, boolean fullscreen) throws LWJGLException {
+		//setNatives();
+		Display.setTitle(title);
+		Display.setIcon(new ByteBuffer[] {
+				loadIcon("/textures/coreDisplay/icon32"),
+		});
+		if(fullscreen) {
+			@SuppressWarnings("unused")
+			DisplayMode displayMode = null;
+	        DisplayMode[] modes = Display.getAvailableDisplayModes();
+
+	         for (int i = 0; i < modes.length; i++) {
+	             if (modes[i].getWidth() == width
+	             && modes[i].getHeight() == height
+	             && modes[i].isFullscreenCapable()) { displayMode = modes[i]; }
+	         }
+		} else {
+			Display.setDisplayMode(new DisplayMode(width, height));
+		}
+
+		Display.setFullscreen(fullscreen);
+        Display.create();
+        Keyboard.create();
+        Mouse.create();
+	}
+
 	/**
 	 * Sets the natives to the project.
 	 */

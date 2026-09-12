@@ -70,9 +70,23 @@ public class CoreEngine {
 	 * @param fullscreen If its windowed or full-screen.
 	 */
 	public void createWindow(String title, boolean fullscreen) {
+		createWindow(title, fullscreen, false);
+	}
+
+	/**
+	 * Method that creates the window for the program, optionally skipping
+	 * the menu and going straight into the game.
+	 * @param title of the window.
+	 * @param fullscreen If its windowed or full-screen.
+	 * @param skipMenu If the menu should be skipped and the game started directly.
+	 */
+	public void createWindow(String title, boolean fullscreen, boolean skipMenu) {
 		this.fullscreen = fullscreen;
 		this.title = title;
-		Window.createMenuWindow(width, height, this.title, this.fullscreen);
+		if(skipMenu)
+			Window.createWindow(width, height, this.title, this.fullscreen);
+		else
+			Window.createMenuWindow(width, height, this.title, this.fullscreen);
 		printCompilationStuff();
 	}
 	

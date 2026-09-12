@@ -53,13 +53,13 @@ public class Source {
 	 * Sets the volume of the sound source.
 	 * @param volume to set
 	 */
-	public void setVolume(int volume) { alSourcef(sourceId, AL_GAIN, volume); }
-	
+	public void setVolume(float volume) { alSourcef(sourceId, AL_GAIN, volume); }
+
 	/**
 	 * Sets the pitch of the sound source.
 	 * @param pitch to set
 	 */
-	public void setPitch(int pitch) { alSourcef(sourceId, AL_PITCH, pitch); }
+	public void setPitch(float pitch) { alSourcef(sourceId, AL_PITCH, pitch); }
 	
 	/**
 	 * Sets the position of the sound source.
@@ -90,7 +90,7 @@ public class Source {
 	 * @return playing state
 	 */
 	public boolean isPlaying() {
-		return alGetBufferi(sourceId, AL_SOURCE_STATE) == AL_PLAYING;
+		return alGetSourcei(sourceId, AL_SOURCE_STATE) == AL_PLAYING;
 	}
 	
 	/**

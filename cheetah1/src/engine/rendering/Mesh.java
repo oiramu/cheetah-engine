@@ -36,7 +36,7 @@ import engine.core.utils.Util;
  */
 public class Mesh {
 
-	private HashMap <String, MeshResource>	loadedModels = new HashMap<String, MeshResource>();
+	private static HashMap <String, MeshResource>	loadedModels = new HashMap<String, MeshResource>();
 	private String 							fileName;
 	private MeshResource 					resource;
 

@@ -75,16 +75,17 @@ public class RenderingEngine extends MappedValues {
     public void render(GameComponent component) {
     	try {
     		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    		
+
+    		activeLight = null;
 	        component.render(forwardAmbient, this);
-			
+
 			for(BaseLight light : lights) {
-				
+
 				glEnable(GL_BLEND);
 				glBlendFunc(GL_ONE, GL_ONE);
 				glDepthMask(false);
 				glDepthFunc(GL_EQUAL);
-				
+
 				switch(light.getShader().getName()) {
 					case"forward-directional":
 						activeLight = light;
@@ -93,25 +94,17 @@ public class RenderingEngine extends MappedValues {
 					case"forward-point":
 						if(((PointLight) light).getDistance() < LIGHT_POP_IN) {
 							activeLight = light;
-							float distance = 0;
-							if(component.getTransform() != null)
-								distance = ((PointLight) light).getPosition().sub(component.getTransform().getPosition()).length();
-							if(distance < ((PointLight) light).getRange())
-								component.render(light.getShader(), this);
+							component.render(light.getShader(), this);
 						}
 					break;
 					case"forward-spot":
 						if(((SpotLight) light).getDistance() < LIGHT_POP_IN) {
 							activeLight = light;
-							float distance = 0;
-							if(component.getTransform() != null)
-								distance = ((SpotLight) light).getPosition().sub(component.getTransform().getPosition()).length();
-							if(distance < ((SpotLight) light).getRange())
-								component.render(light.getShader(), this);
+							component.render(light.getShader(), this);
 						}
 					break;
 				}
-				
+
 				glDepthFunc(GL_LESS);
 				glDepthMask(true);
 				glDisable(GL_BLEND);

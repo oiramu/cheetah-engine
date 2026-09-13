@@ -19,7 +19,9 @@ import static engine.components.Constants.*;
 
 import java.util.ArrayList;
 
+import engine.components.BaseLight;
 import engine.components.GameComponent;
+import engine.components.PointLight;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import game.Level;
@@ -82,21 +84,37 @@ public class GameObject {
 	 */
 	public void render(Shader shader, RenderingEngine renderingEngine) {
 		for(GameComponent component : components) {
+			boolean withinPopIn;
 			switch(component.renderTier) {
-				case PARTICLE:
-					if(component.getDistance() < PARTICLES_POP_IN)
-						component.render(shader, renderingEngine);
-					break;
-				case GRASS:
-					if(component.getDistance() < GRASS_POP_IN)
-						component.render(shader, renderingEngine);
-					break;
-				default:
-					if(component.getDistance() < POP_IN)
-						component.render(shader, renderingEngine);
-					break;
+				case PARTICLE: withinPopIn = component.getDistance() < PARTICLES_POP_IN; break;
+				case GRASS: withinPopIn = component.getDistance() < GRASS_POP_IN; break;
+				default: withinPopIn = component.getDistance() < POP_IN; break;
 			}
-		}	
+			if(withinPopIn && withinActiveLightRange(component, renderingEngine))
+				component.render(shader, renderingEngine);
+		}
+	}
+
+	/**
+	 * Gets if the component is within the currently active point/spot
+	 * light's range - always true for the ambient/directional passes,
+	 * which have no range concept. Gated by Constants.LIGHT_RANGE_CULLING
+	 * since it changes what gets drawn under a light pass, not just how
+	 * fast it happens.
+	 * @param component to check.
+	 * @param renderingEngine to read the active light from.
+	 * @return light-range state.
+	 */
+	private boolean withinActiveLightRange(GameComponent component, RenderingEngine renderingEngine) {
+		if(!LIGHT_RANGE_CULLING) return true;
+
+		BaseLight activeLight = renderingEngine.getActiveLight();
+		if(!(activeLight instanceof PointLight)) return true;
+
+		PointLight pointLight = (PointLight) activeLight;
+		if(component.getTransform() == null) return true;
+
+		return pointLight.getPosition().sub(component.getTransform().getPosition()).length() < pointLight.getRange();
 	}
 	
 	/**

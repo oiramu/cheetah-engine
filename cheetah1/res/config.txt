@@ -13,3 +13,7 @@ GRAVITY gravity=9.8
 PARTICLES_LEVEL particles=2
 EFFECTS_AUDIO_LEVEL effects=20
 GOD=false
+#Skips drawing an object under a point/spot light pass once it's outside
+#that light's range. Off by default until verified visually - flip to
+#true once torches/lampposts look right with it on.
+LIGHT_RANGE_CULLING culling=false

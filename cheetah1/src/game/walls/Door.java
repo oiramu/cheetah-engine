@@ -148,9 +148,7 @@ public class Door extends GameComponent implements Collidable {
      * @param delta of time
      */
     public void update(double delta) {
-    	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
-        float distance = playerDistance.length();
-        setDistance(distance);
+    	checkDistance(transform);
         if (opening) {
             double time = Time.getTime();
 

@@ -119,20 +119,9 @@ public class Oven extends GameComponent implements Collidable {
      * @param delta of time
      */
     public void update(double delta) {
-    	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
-    	Vector3f orientation = playerDistance.normalized();
-		float distance = playerDistance.length();
-		setDistance(distance);
+    	faceCamera(transform);
 
-        float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
-
-        if (orientation.getX() > 0) {
-            angle = 180 + angle;
-        }
-        
         temp += delta;
-
-        transform.setRotation(0, angle + 90, 0);
         
         double time = Time.getTime();
         

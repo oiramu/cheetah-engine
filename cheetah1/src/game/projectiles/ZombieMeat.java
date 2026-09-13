@@ -90,17 +90,8 @@ public class ZombieMeat extends GameComponent {
      */
     public void update(double delta) {
     	if(state == 0) {
-	    	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
-	        Vector3f orientation = playerDistance.normalized();
-			float distance = playerDistance.length();
-	        setDistance(distance);
-	
-	        float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
-	
-	        if (orientation.getX() > 0) {
-	            angle = 180 + angle;
-	        }
-	        transform.setRotation(0, angle + 90, 0);
+	    	faceCamera(transform);
+			float distance = getDistance();
 	        
 	        objetiveOrientation.setY(0);
 	        float moveSpeed = 2.5f;

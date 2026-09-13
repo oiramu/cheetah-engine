@@ -19,7 +19,6 @@ import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Transform;
 import engine.core.Vector2f;
-import engine.core.Vector3f;
 import engine.rendering.Material;
 import engine.rendering.Mesh;
 import engine.rendering.RenderingEngine;
@@ -51,15 +50,7 @@ public class Wall extends GameComponent {
 	/**
      * Refresh the wall every single frame.
      */
-    public void update() {checkDistance();}
-    
-    /**
-     * Checks the distance from the point of view.
-     */
-    public void checkDistance() {
-    	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
-        setDistance(playerDistance.length());
-    }
+    public void update() {checkDistance(transform);}
     
     /**
      * Renders the wall.

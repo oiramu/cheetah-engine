@@ -25,6 +25,7 @@ import javax.sound.sampled.Clip;
 import engine.audio.AudioUtil;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
+import engine.components.RenderTier;
 import engine.core.Time;
 import engine.core.Transform;
 import engine.core.Vector2f;
@@ -137,7 +138,7 @@ public class Bleed extends GameComponent {
 
             mesh = new Mesh(verts, indices, true);
         }
-        this.componentType = "particle";
+        this.renderTier = RenderTier.PARTICLE;
         this.material = new Material(animation.get(0));
         this.state = STATE_BLEED;
         this.transform = transform;

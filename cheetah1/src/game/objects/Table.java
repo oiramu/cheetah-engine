@@ -85,18 +85,7 @@ public class Table extends GameComponent implements Collidable {
      * @param delta of time
      */
     public void update(double delta) {
-    	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
-        Vector3f orientation = playerDistance.normalized();
-		float distance = playerDistance.length();
-		setDistance(distance);
-
-        float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
-
-        if (orientation.getX() > 0) {
-            angle = 180 + angle;
-        }
-
-        transform.setRotation(0, angle + 90, 0);
+    	faceCamera(transform);
 
     }
 

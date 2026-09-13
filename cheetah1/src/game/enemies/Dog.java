@@ -161,19 +161,8 @@ public class Dog extends GameComponent implements Collidable {
         //Set Height
         transform.setPosition(transform.getPosition().getX(), 0, transform.getPosition().getZ());
         
-        Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
-
-        Vector3f orientation = playerDistance.normalized();
-        float distance = playerDistance.length();
-        setDistance(distance);
-
-        float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
-
-        if (orientation.getX() > 0) {
-            angle = 180 + angle;
-        }
-
-        transform.setRotation(0, angle + 90, 0);
+        Vector3f orientation = faceCamera(transform);
+        float distance = getDistance();
 
         //Action/Animation
         double time = Time.getTime();

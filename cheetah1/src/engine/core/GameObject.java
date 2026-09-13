@@ -82,12 +82,12 @@ public class GameObject {
 	 */
 	public void render(Shader shader, RenderingEngine renderingEngine) {
 		for(GameComponent component : components) {
-			switch(component.componentType) {
-				case "particle":
+			switch(component.renderTier) {
+				case PARTICLE:
 					if(component.getDistance() < PARTICLES_POP_IN)
 						component.render(shader, renderingEngine);
 					break;
-				case "grass":
+				case GRASS:
 					if(component.getDistance() < GRASS_POP_IN)
 						component.render(shader, renderingEngine);
 					break;

@@ -30,7 +30,7 @@ import game.Level;
 public abstract class GameComponent {
 	
 	private float distance;
-	public String componentType = "";
+	public RenderTier renderTier = RenderTier.DEFAULT;
 
 	private Transform transform;
 	public void input() {}
@@ -49,5 +49,29 @@ public abstract class GameComponent {
     public void checkDistance(Transform t) {
     	Vector3f playerDistance = t.getPosition().sub(Level.getPlayer().getCamera().getPos());
         setDistance(playerDistance.length());
+    }
+
+    /**
+     * Rotates a transform to face the player's camera (billboard facing)
+     * and caches the distance to it via setDistance(). This is the same
+     * "compute distance, derive orientation, rotate to face" block that
+     * used to be duplicated inline across every billboard-rendered
+     * component's update().
+     * @param t the transform to rotate - usually this component's own.
+     * @return the direction from the player's camera to t, normalized;
+     * callers that reuse it afterward (e.g. for movement) can keep it
+     * instead of recomputing.
+     */
+    public Vector3f faceCamera(Transform t) {
+    	Vector3f playerDistance = t.getPosition().sub(Level.getPlayer().getCamera().getPos());
+    	Vector3f orientation = playerDistance.normalized();
+    	setDistance(playerDistance.length());
+
+    	float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
+    	if (orientation.getX() > 0)
+    		angle = 180 + angle;
+
+    	t.setRotation(0, angle + 90, 0);
+    	return orientation;
     }
 }

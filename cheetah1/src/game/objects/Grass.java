@@ -17,6 +17,7 @@ package game.objects;
 
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
+import engine.components.RenderTier;
 import engine.core.Transform;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
@@ -72,7 +73,7 @@ public class Grass extends GameComponent {
             mesh = new Mesh(verts, indices, true);
         }
         this.grassSeed = Util.randomInRange(1, 2);
-        this.componentType = "grass";
+        this.renderTier = RenderTier.GRASS;
 		switch(grassSeed) {
 			case 1:
 				this.material = new Material(new Texture("grass/SPDCY0"));
@@ -90,18 +91,7 @@ public class Grass extends GameComponent {
      * @param delta of time
      */
     public void update(double delta) {
-    	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
-        Vector3f orientation = playerDistance.normalized();
-		float distance = playerDistance.length();
-        setDistance(distance);
-
-        float angle = (float) Math.toDegrees(Math.atan(orientation.getZ() / orientation.getX()));
-
-        if (orientation.getX() > 0) {
-            angle = 180 + angle;
-        }
-
-        transform.setRotation(0, angle + 90, 0);
+    	faceCamera(transform);
 
     }
 

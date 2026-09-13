@@ -106,15 +106,7 @@ public class BarsWall extends GameComponent implements Collidable {
      * Refresh the wall every single frame.
      * @param delta of time
      */
-    public void update(double delta) {checkDistance();}
-    
-    /**
-     * Checks the distance from the point of view.
-     */
-    public void checkDistance() {
-    	Vector3f playerDistance = transform.getPosition().sub(Level.getPlayer().getCamera().getPos());
-        setDistance(playerDistance.length());
-    }
+    public void update(double delta) {checkDistance(transform);}
     
     /**
      * Renders the wall.

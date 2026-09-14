@@ -140,7 +140,19 @@ public class Level extends GameComponent {
     private static ArrayList<RocketLauncher> removeRocketLauncherList;
     private static ArrayList<Bleed> removeBleedingList;
     private static ArrayList<Fire> removeFireList;
-    
+
+    /**
+     * All the lists above, grouped once so update() can remove/clear them
+     * in a loop instead of one repeated line per type.
+     */
+    private ArrayList<ArrayList<?>> removeLists;
+
+    /**
+     * The lists sorted by distance-to-player every frame, grouped the
+     * same way.
+     */
+    private ArrayList<ArrayList<?>> sortableLists;
+
     //Player
     private static Player player;
 
@@ -356,36 +368,13 @@ public class Level extends GameComponent {
     	objects.update(delta);
 
         objects.killList(deadNazi, delta);
-        
-        objects.removeComponents(removeMedkitList);
-        objects.removeComponents(removeFoodList);
-        objects.removeComponents(removeBulletList);
-        objects.removeComponents(removeShellList);
-        objects.removeComponents(removeBagList);
-        objects.removeComponents(removeShotgunList);
-        objects.removeComponents(removeMachineGunList);
-        objects.removeComponents(removeGhostList);
-        objects.removeComponents(removeArmorList);
-        objects.removeComponents(removeHelmets);
-        objects.removeComponents(removeSuperShotgunList);
+
         spatialGrid.removeAllStatic(removeBarrels);
-        objects.removeComponents(removeBarrels);
-        objects.removeComponents(removeChaingunList);
-        objects.removeComponents(removeKeys);
-        objects.removeComponents(removeExplosions);
-        objects.removeComponents(removeRockets);
-        objects.removeComponents(removeRocketLauncherList);
-        objects.removeComponents(removeBleedingList);
-        objects.removeComponents(removeFireList);
-        
-        objects.sortNumberComponents(secretWalls);
-   		objects.sortNumberComponents(naziSoldiers);
-   		objects.sortNumberComponents(dogs);
-   		objects.sortNumberComponents(ssSoldiers);
-   		objects.sortNumberComponents(naziSeargeants);
-   		objects.sortNumberComponents(zombies);
-   		objects.sortNumberComponents(captains);
-   		objects.sortNumberComponents(commanders);
+        for (ArrayList<?> removeList : removeLists)
+        	objects.removeComponents(removeList);
+
+        for (ArrayList<?> sortableList : sortableLists)
+        	objects.sortNumberComponents(sortableList);
         
         if(dayTransition) {
         	float oscillate = (float) Math.sin(Time.getTime() * 0.0035f * (2 * Math.PI));
@@ -400,25 +389,8 @@ public class Level extends GameComponent {
         	renderingEngine.setFogColor(new Vector3f(dayLightValue/20, dayLightValue/2, dayLightValue));
         }
         
-        removeMedkitList.clear();
-        removeFoodList.clear();
-        removeBulletList.clear();
-        removeShellList.clear();
-        removeBagList.clear();
-        removeShotgunList.clear();
-        removeMachineGunList.clear();
-        removeGhostList.clear();
-        removeArmorList.clear();
-        removeSuperShotgunList.clear();
-        removeHelmets.clear();
-        removeBarrels.clear();
-        removeChaingunList.clear();
-        removeKeys.clear();
-        removeExplosions.clear();
-        removeRockets.clear();
-        removeRocketLauncherList.clear();
-        removeBleedingList.clear();
-        removeFireList.clear();
+        for (ArrayList<?> removeList : removeLists)
+        	removeList.clear();
     }
 
     /**
@@ -1028,6 +1000,27 @@ public class Level extends GameComponent {
     	Level.removeRocketLauncherList = new ArrayList<RocketLauncher>();
     	Level.removeBleedingList = new ArrayList<Bleed>();
     	Level.removeFireList = new ArrayList<Fire>();
+
+    	this.removeLists = new ArrayList<ArrayList<?>>();
+    	removeLists.add(removeMedkitList);
+    	removeLists.add(removeFoodList);
+    	removeLists.add(removeBulletList);
+    	removeLists.add(removeShellList);
+    	removeLists.add(removeBagList);
+    	removeLists.add(removeShotgunList);
+    	removeLists.add(removeMachineGunList);
+    	removeLists.add(removeGhostList);
+    	removeLists.add(removeArmorList);
+    	removeLists.add(removeSuperShotgunList);
+    	removeLists.add(removeHelmets);
+    	removeLists.add(removeBarrels);
+    	removeLists.add(removeChaingunList);
+    	removeLists.add(removeKeys);
+    	removeLists.add(removeExplosions);
+    	removeLists.add(removeRockets);
+    	removeLists.add(removeRocketLauncherList);
+    	removeLists.add(removeBleedingList);
+    	removeLists.add(removeFireList);
         //Doors and stuff
         this.doors = new ArrayList<Door>();
         this.lockedDoors = new ArrayList<LockedDoor>();
@@ -1043,6 +1036,16 @@ public class Level extends GameComponent {
         this.zombies = new ArrayList<Zombie>();
         this.captains = new ArrayList<Captain>();
         this.commanders = new ArrayList<Commander>();
+
+        this.sortableLists = new ArrayList<ArrayList<?>>();
+        sortableLists.add(secretWalls);
+        sortableLists.add(naziSoldiers);
+        sortableLists.add(dogs);
+        sortableLists.add(ssSoldiers);
+        sortableLists.add(naziSeargeants);
+        sortableLists.add(zombies);
+        sortableLists.add(captains);
+        sortableLists.add(commanders);
         //Power-ups
         this.medkits = new ArrayList<Medkit>();
         this.foods = new ArrayList<Food>();

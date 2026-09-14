@@ -18,9 +18,7 @@ package game.enemies;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javax.sound.sampled.Clip;
-
-import engine.audio.AudioUtil;
+import engine.audio.AudioEmitter;
 import engine.components.LodPolicy;
 import engine.components.LodTier;
 import engine.components.MeshRenderer;
@@ -71,18 +69,19 @@ public class Zombie extends Enemy implements Collidable {
     private static ArrayList<ZombieMeat> gibs;
     private static ArrayList<ZombieMeat> removeGibs;
 
-    private static Clip seeNoise;
-    private static Clip attackNoise;
-    private static Clip hitNoise;
-    private static Clip deathNoise;
+    private static final String[] SEE_SOUNDS = {RES_LOC + "see0", RES_LOC + "see1", RES_LOC + "see2"};
+    private static final String[] ATTACK_SOUNDS = {RES_LOC + "atack0", RES_LOC + "atack1", RES_LOC + "atack2"};
+    private static final String[] HIT_SOUNDS = {RES_LOC + "hit0", RES_LOC + "hit1", RES_LOC + "hit2"};
+    private static final String[] DEATH_SOUNDS = {RES_LOC + "death0", RES_LOC + "death1", RES_LOC + "death2"};
+
+    private final AudioEmitter seeEmitter = new AudioEmitter(this);
+    private final AudioEmitter attackEmitter = new AudioEmitter(this);
+    private final AudioEmitter hitEmitter = new AudioEmitter(this);
+    private final AudioEmitter deathEmitter = new AudioEmitter(this);
 
     private static ArrayList<Texture> animation;
     private static ArrayList<Texture> animation1;
     private static ArrayList<Texture> animation2;
-    private static ArrayList<Clip> seeNoises;
-    private static ArrayList<Clip> attackNoises;
-    private static ArrayList<Clip> hitNoises;
-    private static ArrayList<Clip> deathNoises;
     private static Mesh mesh;
     private static Random rand;
 
@@ -164,26 +163,6 @@ public class Zombie extends Enemy implements Collidable {
 				break;
 		}
         
-    	seeNoises = new ArrayList<Clip>();
-        	
-        	for(int i = 0; i < 3; i++)
-        		seeNoises.add(AudioUtil.loadAudio(RES_LOC + "see" + i));
-        
-    	attackNoises = new ArrayList<Clip>();
-        	
-        	for(int i = 0; i < 3; i++)
-        		attackNoises.add(AudioUtil.loadAudio(RES_LOC + "atack" + i));
-        
-    	hitNoises = new ArrayList<Clip>();
-        	
-        	for(int i = 0; i < 3; i++)
-        		hitNoises.add(AudioUtil.loadAudio(RES_LOC + "hit" + i));
-        
-    	deathNoises = new ArrayList<Clip>();
-        	
-        	for(int i = 0; i < 3; i++)
-        		deathNoises.add(AudioUtil.loadAudio(RES_LOC + "death" + i));
-        
         gibs = new ArrayList<ZombieMeat>();
         
         removeGibs = new ArrayList<ZombieMeat>();
@@ -248,11 +227,10 @@ public class Zombie extends Enemy implements Collidable {
             dead = true;
             deathTime = time;
             state = STATE_DYING;
-            if(seeNoise != null) seeNoise.stop();
-            if(attackNoise != null) attackNoise.stop();
-            if(hitNoise != null) hitNoise.stop();
-            deathNoise = deathNoises.get(new Random().nextInt(deathNoises.size()));
-            AudioUtil.playAudio(deathNoise, distance);
+            seeEmitter.stop();
+            attackEmitter.stop();
+            hitEmitter.stop();
+            deathEmitter.play(DEATH_SOUNDS[new Random().nextInt(DEATH_SOUNDS.length)]);
         }
     	
     	switch(zombieSeed) {
@@ -284,8 +262,7 @@ public class Zombie extends Enemy implements Collidable {
 
         	                        if (playerIntersect != null && (nearestIntersect == null
         	                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
-        	                        	seeNoise = seeNoises.get(new Random().nextInt(seeNoises.size()));
-        	                        	AudioUtil.playAudio(seeNoise, distance);
+        	                        	seeEmitter.play(SEE_SOUNDS[new Random().nextInt(SEE_SOUNDS.length)]);
         	                            state = STATE_CHASE;
         	                        }
 
@@ -387,8 +364,7 @@ public class Zombie extends Enemy implements Collidable {
         	                            }
         	                            
         	                        }
-        	                        attackNoise = attackNoises.get(new Random().nextInt(attackNoises.size()));
-        	                        AudioUtil.playAudio(attackNoise, distance);
+        	                        attackEmitter.play(ATTACK_SOUNDS[new Random().nextInt(ATTACK_SOUNDS.length)]);
         	                    }
         	                    transform.setScale(1.580645161290323f,0.75f,1);
         	                    material.setDiffuse(animation.get(8));
@@ -514,8 +490,7 @@ public class Zombie extends Enemy implements Collidable {
 
         	                        if (playerIntersect != null && (nearestIntersect == null
         	                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
-        	                        	seeNoise = seeNoises.get(new Random().nextInt(seeNoises.size()));
-        	                        	AudioUtil.playAudio(seeNoise, distance);
+        	                        	seeEmitter.play(SEE_SOUNDS[new Random().nextInt(SEE_SOUNDS.length)]);
         	                            state = STATE_CHASE;
         	                        }
 
@@ -588,8 +563,7 @@ public class Zombie extends Enemy implements Collidable {
         	                    if (canAttack) {
         	                    	gibs.add(new ZombieMeat(new Transform(getTransform().getPosition())));
         	                        canAttack = false;
-        	                        attackNoise = attackNoises.get(new Random().nextInt(attackNoises.size()));
-        	                        AudioUtil.playAudio(attackNoise, distance);
+        	                        attackEmitter.play(ATTACK_SOUNDS[new Random().nextInt(ATTACK_SOUNDS.length)]);
         	                        if(player.getHealth() <= 0)
     	                            	state = STATE_DONE;
         	                    }
@@ -740,8 +714,7 @@ public class Zombie extends Enemy implements Collidable {
 
         if (tookNonlethalHit(amt)) {
         	state = STATE_HIT;
-        	hitNoise = hitNoises.get(new Random().nextInt(hitNoises.size()));
-            AudioUtil.playAudio(hitNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
+        	hitEmitter.play(HIT_SOUNDS[new Random().nextInt(HIT_SOUNDS.length)]);
         }
     }
 

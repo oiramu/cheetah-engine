@@ -130,6 +130,12 @@ public class Camera {
     public Vector3f getForward() {return rotation.getForward();}
 
     /**
+     * Returns the up vector of the actual camera.
+     * @return up vector.
+     */
+    public Vector3f getUp() {return rotation.getUp();}
+
+    /**
      * Gets the viewing projection matrix by the camera
      * and returns it.
      * @return viewing projection matrix

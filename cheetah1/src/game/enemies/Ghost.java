@@ -18,9 +18,7 @@ package game.enemies;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javax.sound.sampled.Clip;
-
-import engine.audio.AudioUtil;
+import engine.audio.AudioEmitter;
 import engine.components.LodPolicy;
 import engine.components.LodTier;
 import engine.components.MeshRenderer;
@@ -62,10 +60,15 @@ public class Ghost extends Enemy {
     
     private static final String RES_LOC = "ghost/";
 
-    private static final Clip seeNoise = AudioUtil.loadAudio(RES_LOC + "SSSSIT");
-    private static final Clip shootNoise = AudioUtil.loadAudio(RES_LOC + "SSHOTGN");
-    private static final Clip hitNoise = AudioUtil.loadAudio(RES_LOC + "SPOPAIN");
-    private static final Clip deathNoise = AudioUtil.loadAudio(RES_LOC + "SSSDTH");
+    private static final String SEE_SOUND = RES_LOC + "SSSSIT";
+    private static final String SHOOT_SOUND = RES_LOC + "SSHOTGN";
+    private static final String HIT_SOUND = RES_LOC + "SPOPAIN";
+    private static final String DEATH_SOUND = RES_LOC + "SSSDTH";
+
+    private final AudioEmitter seeEmitter = new AudioEmitter(this);
+    private final AudioEmitter shootEmitter = new AudioEmitter(this);
+    private final AudioEmitter hitEmitter = new AudioEmitter(this);
+    private final AudioEmitter deathEmitter = new AudioEmitter(this);
 
     private static ArrayList<Texture> animation;
     private static Mesh mesh;
@@ -149,10 +152,10 @@ public class Ghost extends Enemy {
             dead = true;
             deathTime = time;
             state = STATE_DYING;
-            seeNoise.stop();
-            shootNoise.stop();
-            hitNoise.stop();
-            AudioUtil.playAudio(deathNoise, distance);
+            seeEmitter.stop();
+            shootEmitter.stop();
+            hitEmitter.stop();
+            deathEmitter.play(DEATH_SOUND);
         }
 
         if (!dead) {
@@ -180,7 +183,7 @@ public class Ghost extends Enemy {
 
                             if (playerIntersect != null && (nearestIntersect == null
                                     || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
-                                AudioUtil.playAudio(seeNoise, distance);
+                                seeEmitter.play(SEE_SOUND);
                                 state = STATE_CHASE;
                             }
 
@@ -269,7 +272,7 @@ public class Ghost extends Enemy {
                                 	}
                                 }
                             }
-                            AudioUtil.playAudio(shootNoise, distance);
+                            shootEmitter.play(SHOOT_SOUND);
                         }
 
                         material.setDiffuse(animation.get(0));
@@ -319,7 +322,7 @@ public class Ghost extends Enemy {
         wakeAndDamage(amt, STATE_IDLE, STATE_CHASE);
 
         if (tookNonlethalHit(amt)) {
-            AudioUtil.playAudio(hitNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
+            hitEmitter.play(HIT_SOUND);
         }
     }
 

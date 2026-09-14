@@ -29,3 +29,7 @@ FRUSTUM_CULLING culling=false
 LOD_MID_DISTANCE midDist=10
 LOD_FAR_DISTANCE farDist=20
 LOD_FAR_TICK_SKIP farTickSkip=4
+#Size of the pooled OpenAL source pool used for one-shot 3D sounds
+#(weapon fire, pickups, impacts). When every source is busy, the
+#least-recently-used one is recycled rather than growing the pool.
+MAX_AUDIO_SOURCES sources=16

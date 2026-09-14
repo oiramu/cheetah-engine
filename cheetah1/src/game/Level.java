@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import javax.sound.sampled.Clip;
 
+import engine.audio.AudioManager;
 import engine.audio.AudioUtil;
 import engine.components.BaseLight;
 import engine.components.DirectionalLight;
@@ -362,6 +363,8 @@ public class Level extends GameComponent {
      * @param delta of time
      */
     public void update(double delta) {
+
+    	AudioManager.updateListener(player.getCamera());
 
     	refreshDynamicCollidables();
 

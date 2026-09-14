@@ -49,6 +49,7 @@ public class Constants {
 	public static float 	LOD_MID_DISTANCE;
 	public static float 	LOD_FAR_DISTANCE;
 	public static int 		LOD_FAR_TICK_SKIP;
+	public static int 		MAX_AUDIO_SOURCES;
 	
 	/**
 	 * Loads all the config language and structures all the components.
@@ -181,6 +182,12 @@ public class Constants {
 						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
 						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
 						    		LOD_FAR_TICK_SKIP = Integer.parseInt(treatment[0]);
+						    		break;
+						    	case "MAX_AUDIO_SOURCES":
+						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='
+						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
+						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
+						    		MAX_AUDIO_SOURCES = Integer.parseInt(treatment[0]);
 						    		break;
 						    	}
 						    }

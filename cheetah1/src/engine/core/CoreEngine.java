@@ -16,10 +16,11 @@
 package engine.core;
 
 import static org.lwjgl.opengl.GL11.*;
-//import static org.lwjgl.openal.AL10.*;
+import static org.lwjgl.openal.AL10.*;
 
 import javax.swing.JOptionPane;
 
+import engine.audio.AudioManager;
 import engine.audio.AudioUtil;
 import engine.core.crash.CrashReport;
 import engine.core.utils.Log;
@@ -135,7 +136,10 @@ public class CoreEngine {
         double frameCounter = 0;
 
         renderingEngine = new RenderingEngine();
-        
+        AudioManager.init();
+        System.out.println("-OpenAL version: " + alGetString(AL_VERSION));
+        System.out.println("-OpenAL vendor: " + alGetString(AL_VENDOR));
+
         game.init();
         
         double lastTime = Time.getTime();
@@ -221,15 +225,16 @@ public class CoreEngine {
         System.out.println("-LWJGL version: " + org.lwjgl.Sys.getVersion());
         System.out.println("-OpenGL version: " + glGetString(GL_VERSION));
         System.out.println("-OpenGL vendor: " + glGetString(GL_VENDOR));
-        //System.out.println("-OpenAL version: " + alGetString(AL_VERSION));
-        //System.out.println("-OpenAL vendor: " + alGetString(AL_VENDOR));
+        // OpenAL diagnostics print from runGame() instead, right after
+        // AudioManager.init() creates the context - this method runs at
+        // menu-creation time, before any AL context exists yet.
         System.out.println("Compiled by: " + System.getProperty("user.name") + "; in : " + Time.getTimeAsString());
 	}
-	
+
 	/**
      * Method that cleans everything in the program's window.
      */
-    public void cleanUp() {Window.dispose(); AudioUtil.stopMidi();}
+    public void cleanUp() {AudioManager.cleanUp(); AudioUtil.stopMidi(); Window.dispose();}
 
 	/**
 	 * Returns the main game.

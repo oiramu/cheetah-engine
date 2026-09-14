@@ -25,7 +25,7 @@ import static org.lwjgl.openal.AL10.*;
  * @version 1.0
  * @since 2018
  */
-public class Source {
+public class Source implements Playable {
 	
 	private int sourceId;
 	

@@ -15,13 +15,20 @@
  */
 package engine.audio;
 
+import java.io.File;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.util.WaveData;
 
 import engine.core.Vector3f;
+import engine.core.utils.Log;
 
 import static org.lwjgl.openal.AL.*;
 import static org.lwjgl.openal.AL10.*;
@@ -49,26 +56,41 @@ public class AudioMaster {
 	}
 	
 	/**
-	 * Sets the position of the main listener.
-	 * @param position of the listener
+	 * Sets the position and orientation of the main listener (the
+	 * player's camera), so OpenAL can compute real panning/attenuation
+	 * relative to it instead of the old flat mono distance fade.
+	 * @param position of the listener.
+	 * @param forward direction the listener is facing.
+	 * @param up direction of the listener.
 	 */
-	public static void setListenerData(Vector3f position) {
+	public static void setListenerData(Vector3f position, Vector3f forward, Vector3f up) {
 		alListener3f(AL_POSITION, position.getX(), position.getY(), position.getZ());
 		alListener3f(AL_VELOCITY, 0, 0, 0);
 		alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
+
+		FloatBuffer orientation = BufferUtils.createFloatBuffer(6);
+		orientation.put(forward.getX()).put(forward.getY()).put(forward.getZ());
+		orientation.put(up.getX()).put(up.getY()).put(up.getZ());
+		orientation.flip();
+		alListener(AL_ORIENTATION, orientation);
 	}
-	
+
 	/**
-	 * Loads a sound to the audio's data structure.
-	 * @param file to load.
+	 * Loads a sound file from disk into the audio's data structure.
+	 * @param filePath to load, e.g. "./res/audio/name.wav".
 	 * @return sound buffer.
 	 */
-	public static int loadSound(String file) {
+	public static int loadSound(String filePath) {
 		int buffer = alGenBuffers();
 		buffers.add(buffer);
-		WaveData waveFile = WaveData.create(file);
-		alBufferData(buffer, waveFile.format, waveFile.data, waveFile.samplerate);
-		waveFile.dispose();
+		try {
+			AudioInputStream stream = AudioSystem.getAudioInputStream(new File(filePath));
+			WaveData waveFile = WaveData.create(stream);
+			alBufferData(buffer, waveFile.format, waveFile.data, waveFile.samplerate);
+			waveFile.dispose();
+		} catch (Exception e) {
+			Log.error("Could not load sound '" + filePath + "': " + e.getMessage());
+		}
 		return buffer;
 	}
 	

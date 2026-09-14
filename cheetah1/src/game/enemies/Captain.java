@@ -18,9 +18,7 @@ package game.enemies;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javax.sound.sampled.Clip;
-
-import engine.audio.AudioUtil;
+import engine.audio.AudioEmitter;
 import engine.components.Attenuation;
 import engine.components.MeshRenderer;
 import engine.components.SpotLight;
@@ -69,11 +67,17 @@ public class Captain extends Enemy implements Collidable {
     private static final String AUDIO_RES_LOC = "Boss/";
     private static final String RES_LOC = "Captain/";
 
-    private static final Clip seeNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "hailhtlr");
-    private static final Clip shootNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "GUN");
-    private static final Clip loadNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "RELOAD");
-    private static final Clip hitNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "hit");
-    private static final Clip deathNoise = AudioUtil.loadAudio(AUDIO_RES_LOC + "dying");
+    private static final String SEE_SOUND = AUDIO_RES_LOC + "hailhtlr";
+    private static final String SHOOT_SOUND = AUDIO_RES_LOC + "GUN";
+    private static final String LOAD_SOUND = AUDIO_RES_LOC + "RELOAD";
+    private static final String HIT_SOUND = AUDIO_RES_LOC + "hit";
+    private static final String DEATH_SOUND = AUDIO_RES_LOC + "dying";
+
+    private final AudioEmitter seeEmitter = new AudioEmitter(this);
+    private final AudioEmitter shootEmitter = new AudioEmitter(this);
+    private final AudioEmitter loadEmitter = new AudioEmitter(this);
+    private final AudioEmitter hitEmitter = new AudioEmitter(this);
+    private final AudioEmitter deathEmitter = new AudioEmitter(this);
 
     private static ArrayList<Texture> animation;
     private static Mesh mesh;
@@ -181,10 +185,10 @@ public class Captain extends Enemy implements Collidable {
             dead = true;
             deathTime = time;
             state = STATE_DYING;
-            seeNoise.stop();
-            shootNoise.stop();
-            hitNoise.stop();
-            AudioUtil.playAudio(deathNoise, distance);
+            seeEmitter.stop();
+            shootEmitter.stop();
+            hitEmitter.stop();
+            deathEmitter.play(DEATH_SOUND);
             light.removeToEngine();
         }
 
@@ -214,7 +218,7 @@ public class Captain extends Enemy implements Collidable {
 
 	                        if (playerIntersect != null && (nearestIntersect == null
 	                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
-	                            AudioUtil.playAudio(seeNoise, distance);
+	                            seeEmitter.play(SEE_SOUND);
 	                            state = STATE_CHASE;
 	                        }
 
@@ -274,11 +278,11 @@ public class Captain extends Enemy implements Collidable {
 	                timeDecimals = (time - (double) ((int) time));
 
 	                if (timeDecimals <= 0.25f) {
-	                	AudioUtil.playAudio(loadNoise, distance);
+	                	loadEmitter.play(LOAD_SOUND);
 	                    material.setDiffuse(animation.get(4));
 	                } else if (timeDecimals <= 0.5f) {
 	                    material.setDiffuse(animation.get(5));
-	                    AudioUtil.playAudio(shootNoise, distance);
+	                    shootEmitter.play(SHOOT_SOUND);
 	                } else if (timeDecimals <= 0.7f) {
 	                    if (canAttack) {
 	                    	light.setPosition(transform.getPosition());
@@ -312,14 +316,14 @@ public class Captain extends Enemy implements Collidable {
 	                            }
 	                            
 	                        }
-	                        AudioUtil.playAudio(shootNoise, distance);
+	                        shootEmitter.play(SHOOT_SOUND);
 	                    }
 	                    material.setDiffuse(animation.get(6));
 	                } else {
 	                    canAttack = true;
 	                    material.setDiffuse(animation.get(5));
-	                    AudioUtil.playAudio(shootNoise, distance);
-	                    AudioUtil.playAudio(loadNoise, distance);
+	                    shootEmitter.play(SHOOT_SOUND);
+	                    loadEmitter.play(LOAD_SOUND);
 	                    state = STATE_CHASE;
 	                }
 	            	break;
@@ -428,7 +432,7 @@ public class Captain extends Enemy implements Collidable {
 
         if (tookNonlethalHit(amt)) {
         	state = STATE_HIT;
-        	AudioUtil.playAudio(hitNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
+        	hitEmitter.play(HIT_SOUND);
         }
     }
 

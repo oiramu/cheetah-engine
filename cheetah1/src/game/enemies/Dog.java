@@ -18,9 +18,7 @@ package game.enemies;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javax.sound.sampled.Clip;
-
-import engine.audio.AudioUtil;
+import engine.audio.AudioEmitter;
 import engine.components.LodPolicy;
 import engine.components.LodTier;
 import engine.components.MeshRenderer;
@@ -62,13 +60,17 @@ public class Dog extends Enemy implements Collidable {
     private static final int STATE_DONE = 5;
     
     private static final String RES_LOC = "dog/";
+    private static final String SEE_SOUND = RES_LOC + "dgsit";
+    private static final String HIT_SOUND = RES_LOC + "dgpain";
+    private static final String DEATH_SOUND = RES_LOC + "dgdth";
+    private static final String[] ATTACK_SOUNDS = {RES_LOC + "dgact", RES_LOC + "dgatk"};
 
-    private static final Clip seeNoise = AudioUtil.loadAudio(RES_LOC + "dgsit");
-    private static final Clip hitNoise = AudioUtil.loadAudio(RES_LOC + "dgpain");
-    private static final Clip deathNoise = AudioUtil.loadAudio(RES_LOC + "dgdth");
+    private final AudioEmitter seeEmitter = new AudioEmitter(this);
+    private final AudioEmitter hitEmitter = new AudioEmitter(this);
+    private final AudioEmitter deathEmitter = new AudioEmitter(this);
+    private final AudioEmitter attackEmitter = new AudioEmitter(this);
 
     private static ArrayList<Texture> animation;
-    private static ArrayList<Clip> atackSound;
     private static Mesh mesh;
     private static Random rand;
 
@@ -104,11 +106,6 @@ public class Dog extends Enemy implements Collidable {
         animation.add(new Texture(RES_LOC + "DOGSM0"));
         //Dead
         animation.add(new Texture(RES_LOC + "DOGSN0"));
-    
-    	atackSound = new ArrayList<Clip>();
-    	
-    	atackSound.add(AudioUtil.loadAudio(RES_LOC + "dgact"));
-    	atackSound.add(AudioUtil.loadAudio(RES_LOC + "dgatk"));
 
         if (mesh == null) {
             final float sizeY = 0.9f;	//Could be 1.0f
@@ -166,9 +163,9 @@ public class Dog extends Enemy implements Collidable {
             dead = true;
             deathTime = time;
             state = STATE_DYING;
-            seeNoise.stop();
-            hitNoise.stop();
-            AudioUtil.playAudio(deathNoise, distance);
+            seeEmitter.stop();
+            hitEmitter.stop();
+            deathEmitter.play(DEATH_SOUND);
         }
 
         if (!dead) {
@@ -196,7 +193,7 @@ public class Dog extends Enemy implements Collidable {
 	
 	                        if (playerIntersect != null && (nearestIntersect == null
 	                                || nearestIntersect.sub(lineStart).length() > playerIntersect.sub(lineStart).length())) {
-	                            AudioUtil.playAudio(seeNoise, distance);
+	                            seeEmitter.play(SEE_SOUND);
 	                            state = STATE_CHASE;
 	                        }
 	
@@ -276,7 +273,7 @@ public class Dog extends Enemy implements Collidable {
 	                        	float damage;
 	                             if(player.getHealth() > 0) {
 	                            	damage = DAMAGE_MIN + rand.nextFloat() * DAMAGE_RANGE;
-	                            	AudioUtil.playAudio(atackSound.get(new Random().nextInt(atackSound.size())), distance);
+	                            	attackEmitter.play(ATTACK_SOUNDS[new Random().nextInt(ATTACK_SOUNDS.length)]);
 	                            	if(player.isArmor() == false) {
 	                            		player.addHealth((int) -damage, "Dog");
 	                            	}else {
@@ -343,7 +340,7 @@ public class Dog extends Enemy implements Collidable {
         wakeAndDamage(amt, STATE_IDLE, STATE_CHASE);
 
         if (tookNonlethalHit(amt))
-            AudioUtil.playAudio(hitNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
+            hitEmitter.play(HIT_SOUND);
     }
 
     /**

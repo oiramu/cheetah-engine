@@ -20,10 +20,13 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
+import engine.core.Debug;
+import engine.core.crash.CrashReport;
+
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.1
+ * @version 1.2
  * @since 2017
  */
 public class Bitmap {
@@ -46,7 +49,7 @@ public class Bitmap {
 			pixels = new int[width * height];
 			image.getRGB(0, 0, width, height, pixels, 0, width);
 		} catch(Exception ex) {
-			ex.printStackTrace();
+			Debug.crash(new CrashReport(ex));
 			throw new RuntimeException();
 		}
 	}

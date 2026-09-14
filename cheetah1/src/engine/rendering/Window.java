@@ -37,6 +37,7 @@ import engine.audio.AudioUtil;
 import engine.core.CoreEngine;
 import engine.core.Debug;
 import engine.core.crash.CrashReport;
+import engine.core.utils.Log;
 import engine.menu.DefaultMenu;
 import engine.menu.Menu;
 import engine.menu.Rendering2DEngine;
@@ -47,7 +48,7 @@ import game.Auschwitz;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
 public class Window {
@@ -156,8 +157,7 @@ public class Window {
             decoder.decode(buffer, decoder.getWidth()*4, PNGDecoder.RGBA);
             buffer.flip();
         }catch (Exception e) {
-        	System.err.println("Error loading " + fileName);
-            e.printStackTrace();
+        	Log.error("Error loading " + fileName + ": " + e.getMessage());
         }
         return buffer;
     }

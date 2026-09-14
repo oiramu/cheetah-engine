@@ -20,37 +20,10 @@ import engine.core.Vector2f;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2017
  */
 public class PhysicsUtil {
-
-	/**
-	 * Do a collide when a object hits other object or a wall and tries to pass it.
-	 * @param oldPos Objects' old position.
-	 * @param newPos Objects' new position.
-	 * @param size1 Object A's  size.
-	 * @param pos2 Object A's position.
-	 * @param size2 Object B's  size.
-	 * @return Collision.
-	public static Vector2f rectCollide(Vector2f oldPos, Vector2f newPos, Vector2f size1, Vector2f pos2, Vector2f size2) {
-		Vector2f result = new Vector2f(1,1);
-		
-		if(!(newPos.getX() + size1.getX() < pos2.getX() || 
-			newPos.getX() - size1.getX() > (pos2.getX()/size2.getX() + size2.getX()) * size2.getX() ||
-			oldPos.getY() + size1.getY() < pos2.getY() || 
-			oldPos.getY() - size1.getY() > (pos2.getY()/size2.getY() + size2.getY()) * size2.getY()))
-				result.setX(0);
-		
-		if(!(oldPos.getX() + size1.getX() < pos2.getX() || 
-			oldPos.getX() - size1.getX() > (pos2.getX()/size2.getX() + size2.getX())  * size2.getX() ||
-			newPos.getY() + size1.getY() < pos2.getY() || 
-			newPos.getY() - size1.getY() > (pos2.getY()/size2.getY() + size2.getY()) * size2.getY()))
-				result.setY(0);
-			
-		return result;
-	}
-	*/
 
 	/**
 	 * Do a collide when a object hits other object or a wall and tries to pass it.
@@ -111,32 +84,6 @@ public class PhysicsUtil {
         return null;
     }
 
-    /**
-	Vector2f collision = PhysicsUtil.lineIntersect(lineStart, lineEnd, wallBottom, wallBottom.add(wallX));
-	
-	if(collision != null && (nearestIntersect == null || 
-			nearestIntersect.sub(lineStart).length() > collision.sub(lineStart).length()))
-		nearestIntersect = collision;
-	
-	collision = PhysicsUtil.lineIntersect(lineStart, lineEnd, wallBottom, wallBottom.add(wallY));
-	
-	if(collision != null && (nearestIntersect == null || 
-			nearestIntersect.sub(lineStart).length() > collision.sub(lineStart).length()))
-		nearestIntersect = collision;
-	
-	collision = PhysicsUtil.lineIntersect(lineStart, lineEnd, wallBottom.add(wallX), wallTop);
-	
-	if(collision != null && (nearestIntersect == null || 
-			nearestIntersect.sub(lineStart).length() > collision.sub(lineStart).length()))
-		nearestIntersect = collision;
-	
-	collision = PhysicsUtil.lineIntersect(lineStart, lineEnd, wallBottom.add(wallY), wallTop);
-	
-	if(collision != null && (nearestIntersect == null || 
-			nearestIntersect.sub(lineStart).length() > collision.sub(lineStart).length()))
-		nearestIntersect = collision;
-	*/
-    
     /**
      * Continuation of the lineIntersect method, it starts to take the 3D space and check the points of
      * possible collision and collide them if needed.

@@ -37,7 +37,7 @@ import static org.lwjgl.openal.AL11.*;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
 public class AudioMaster {
@@ -49,9 +49,9 @@ public class AudioMaster {
 	 */
 	public static void init() {
 		try {
-			create();	
+			create();
 		} catch (LWJGLException e) {
-			e.printStackTrace();
+			Log.error("Failed to initialize OpenAL - audio will be disabled: " + e.getMessage());
 		}
 	}
 	

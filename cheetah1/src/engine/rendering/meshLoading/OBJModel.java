@@ -20,14 +20,16 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import engine.core.Debug;
 import engine.core.Vector2f;
 import engine.core.Vector3f;
+import engine.core.crash.CrashReport;
 import engine.core.utils.Util;
 
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
 public class OBJModel {
@@ -95,7 +97,7 @@ public class OBJModel {
 
 			meshReader.close();
 		} catch(Exception e) {
-			e.printStackTrace();
+			Debug.crash(new CrashReport(e));
 			System.exit(1);
 		}
 	}

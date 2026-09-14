@@ -27,16 +27,18 @@ import engine.components.BaseLight;
 import engine.components.DirectionalLight;
 import engine.components.PointLight;
 import engine.components.SpotLight;
+import engine.core.Debug;
 import engine.core.Matrix4f;
 import engine.core.Transform;
 import engine.core.Vector3f;
+import engine.core.crash.CrashReport;
 import engine.rendering.resourceManagement.ShaderResource;
 import engine.core.utils.Util;
 
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.1
+ * @version 1.2
  * @since 2017
  */
 public class Shader {
@@ -430,7 +432,7 @@ public class Shader {
 
             shaderReader.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            Debug.crash(new CrashReport(e));
             System.exit(1);
         }
 

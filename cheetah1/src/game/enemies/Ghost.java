@@ -22,6 +22,8 @@ import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
 import engine.components.GameComponent;
+import engine.components.LodPolicy;
+import engine.components.LodTier;
 import engine.components.MeshRenderer;
 import engine.core.Time;
 import engine.core.Transform;
@@ -147,6 +149,10 @@ public class Ghost extends GameComponent {
         
         Vector3f orientation = faceCamera(transform);
         float distance = getDistance();
+
+        LodTier lodTier = LodPolicy.tierFor(distance);
+        if (!LodPolicy.shouldTick(lodTier, Time.getFrameCount()))
+            return;
 
         //Action/Animation
         double time = Time.getTime();

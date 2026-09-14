@@ -104,4 +104,20 @@ public class Time {
      */
     public static double getTime() { return (double) System.nanoTime() / (double) 1000000000L; }
 
+    private static long frameCount;
+
+    /**
+     * Gets the number of fixed-timestep update ticks since the program
+     * started. Used by LodPolicy to decide which ticks a lower-priority
+     * entity should skip.
+     * @return tick count.
+     */
+    public static long getFrameCount() { return frameCount; }
+
+    /**
+     * Advances the tick counter by one. Called once per fixed-timestep
+     * update tick by CoreEngine's game loop.
+     */
+    public static void advanceFrameCount() { frameCount++; }
+
 }

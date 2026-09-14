@@ -46,6 +46,9 @@ public class Constants {
 	public static boolean	GOD;
 	public static boolean	LIGHT_RANGE_CULLING;
 	public static boolean	FRUSTUM_CULLING;
+	public static float 	LOD_MID_DISTANCE;
+	public static float 	LOD_FAR_DISTANCE;
+	public static int 		LOD_FAR_TICK_SKIP;
 	
 	/**
 	 * Loads all the config language and structures all the components.
@@ -160,6 +163,24 @@ public class Constants {
 						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
 						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
 						    		FRUSTUM_CULLING = Boolean.parseBoolean(treatment[0]);
+						    		break;
+						    	case "LOD_MID_DISTANCE":
+						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='
+						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
+						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
+						    		LOD_MID_DISTANCE = Float.parseFloat(treatment[0]);
+						    		break;
+						    	case "LOD_FAR_DISTANCE":
+						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='
+						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
+						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
+						    		LOD_FAR_DISTANCE = Float.parseFloat(treatment[0]);
+						    		break;
+						    	case "LOD_FAR_TICK_SKIP":
+						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='
+						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
+						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
+						    		LOD_FAR_TICK_SKIP = Integer.parseInt(treatment[0]);
 						    		break;
 						    	}
 						    }

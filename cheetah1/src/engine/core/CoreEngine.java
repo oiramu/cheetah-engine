@@ -163,8 +163,9 @@ public class CoreEngine {
 
                 game.input();
                 Input.update();
-                
+
                 game.update(frameTime);
+                Time.advanceFrameCount();
 
                 if (frameCounter >= 1.0) {
                 	Debug.setFps(frames);

@@ -23,6 +23,8 @@ import javax.sound.sampled.Clip;
 import engine.audio.AudioUtil;
 import engine.components.Attenuation;
 import engine.components.GameComponent;
+import engine.components.LodPolicy;
+import engine.components.LodTier;
 import engine.components.MeshRenderer;
 import engine.components.SpotLight;
 import engine.core.Time;
@@ -189,6 +191,10 @@ public class Commander extends GameComponent implements Collidable {
         
     	for(pRocket rocket : rockets)
     		rocket.update(delta);
+
+        LodTier lodTier = LodPolicy.tierFor(distance);
+        if (!LodPolicy.shouldTick(lodTier, Time.getFrameCount()))
+            return;
 
         //Action/Animation
         double time = Time.getTime();

@@ -21,3 +21,11 @@ LIGHT_RANGE_CULLING culling=false
 #Off by default until verified visually - flip to true once nothing
 #pops in/out incorrectly at the edges of the screen.
 FRUSTUM_CULLING culling=false
+#Distance tiers for enemy AI/collision update frequency: closer than
+#midDist ticks every frame, midDist..farDist every 2nd tick, beyond
+#farDist every farTickSkip-th tick. Not geometric LOD (these are
+#billboard sprites, nothing to simplify) - just how often distant
+#enemies think, to save CPU on checkCollisions/line-of-sight calls.
+LOD_MID_DISTANCE midDist=10
+LOD_FAR_DISTANCE farDist=20
+LOD_FAR_TICK_SKIP farTickSkip=4

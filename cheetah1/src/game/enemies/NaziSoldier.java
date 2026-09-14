@@ -23,6 +23,8 @@ import javax.sound.sampled.Clip;
 import engine.audio.AudioUtil;
 import engine.components.Attenuation;
 import engine.components.GameComponent;
+import engine.components.LodPolicy;
+import engine.components.LodTier;
 import engine.components.MeshRenderer;
 import engine.components.SpotLight;
 import engine.core.Time;
@@ -169,6 +171,10 @@ public class NaziSoldier extends GameComponent implements Collidable {
         
         Vector3f orientation = faceCamera(transform);
         float distance = getDistance();
+
+        LodTier lodTier = LodPolicy.tierFor(distance);
+        if (!LodPolicy.shouldTick(lodTier, Time.getFrameCount()))
+            return;
 
         //Action/Animation
         double time = Time.getTime();

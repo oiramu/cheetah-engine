@@ -20,9 +20,7 @@ import static engine.components.Constants.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javax.sound.sampled.Clip;
-
-import engine.audio.AudioUtil;
+import engine.audio.AudioEmitter;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.components.RenderTier;
@@ -41,7 +39,7 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez.
- * @version 1.0
+ * @version 1.1
  * @since 2019
  */
 public class Bleed extends GameComponent {
@@ -62,7 +60,10 @@ public class Bleed extends GameComponent {
     private float 						upAmt = 0;
     
     private static ArrayList<Texture> 	animation;
-    private static ArrayList<Clip> 		sounds;
+
+    private static final String[] 		SOUND_VARIANTS = {RES_LOC + "SOUND1", RES_LOC + "SOUND2", RES_LOC + "SOUND3",
+    		RES_LOC + "SOUND4", RES_LOC + "SOUND5", RES_LOC + "SOUND6", RES_LOC + "SOUND7"};
+    private final AudioEmitter 		bleedEmitter = new AudioEmitter(this);
 
     /**
      * Constructor of the actual object.
@@ -110,12 +111,7 @@ public class Bleed extends GameComponent {
             animation.add(new Texture(RES_LOC + "BSPRG0"));
             animation.add(new Texture(RES_LOC + "BSPRH0"));
 		}
-		
-		sounds = new ArrayList<Clip>();
-			
-			for (int i = 1; i < 8; i++)
-				sounds.add(AudioUtil.loadAudio(RES_LOC + "SOUND" + i));
-    	
+
         if (mesh == null) {
             float sizeY = 0.6f;
             sizeX = (float) ((double) sizeY / (sizeY * 2.0));
@@ -143,7 +139,7 @@ public class Bleed extends GameComponent {
         this.state = STATE_BLEED;
         this.transform = transform;
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), material);
-    	AudioUtil.playAudio(sounds.get(new Random().nextInt(sounds.size())), transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
+    	bleedEmitter.play(SOUND_VARIANTS[new Random().nextInt(SOUND_VARIANTS.length)]);
     }
 
     /**

@@ -18,9 +18,7 @@ package game.objects;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javax.sound.sampled.Clip;
-
-import engine.audio.AudioUtil;
+import engine.audio.AudioEmitter;
 import engine.components.Attenuation;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
@@ -41,7 +39,7 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez.
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
 public class Explosion extends GameComponent {
@@ -63,8 +61,9 @@ public class Explosion extends GameComponent {
 	private double 						temp;
     
     private static ArrayList<Texture> 	animation;
-    
-    private static ArrayList<Clip> 		boomNoice;
+
+    private static final String[] 		BOOM_SOUNDS = {RES_LOC + "Explode1", RES_LOC + "Explode2"};
+    private final AudioEmitter 		boomEmitter = new AudioEmitter(this);
 
     /**
      * Constructor of the actual object.
@@ -88,12 +87,7 @@ public class Explosion extends GameComponent {
         animation.add(new Texture(RES_LOC + "BEXPO0"));
         animation.add(new Texture(RES_LOC + "BEXPP0"));
         animation.add(new Texture(RES_LOC + "BEXPQ0"));
-    	
-		boomNoice = new ArrayList<Clip>();
-		
-		for (int i = 1; i < 3; i++)
-			boomNoice.add(AudioUtil.loadAudio(RES_LOC + "Explode"+i));
-    	
+
         if (mesh == null) {
             float sizeY = 1.2f;
             sizeX = (float) ((double) sizeY / (0.8333333333333333 * 2.0));
@@ -123,8 +117,7 @@ public class Explosion extends GameComponent {
         this.light = new PointLight(new Vector3f(0.9f,0.7f,0.2f), 0.8f, 
 			   new Attenuation(0,0,1), getTransform().getPosition());
         this.light.addToEngine();
-    	AudioUtil.playAudio(boomNoice.get(new Random().nextInt(boomNoice.size())),
-    			transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
+    	boomEmitter.play(BOOM_SOUNDS[new Random().nextInt(BOOM_SOUNDS.length)]);
     	if(getTransform().getPosition().sub(Level.getPlayer().getCamera().getPos()).length() < 1.0f) {
 			if(!Level.getPlayer().isArmor())
 				Level.getPlayer().addHealth((int) -85, "Explosion");

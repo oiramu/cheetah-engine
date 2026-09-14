@@ -17,9 +17,7 @@ package game.objects;
 
 import java.util.ArrayList;
 
-import javax.sound.sampled.Clip;
-
-import engine.audio.AudioUtil;
+import engine.audio.AudioEmitter;
 import engine.components.Attenuation;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
@@ -40,7 +38,7 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez.
- * @version 1.2
+ * @version 1.3
  * @since 2017
  */
 public class Lamp extends GameComponent implements Collidable {
@@ -52,7 +50,8 @@ public class Lamp extends GameComponent implements Collidable {
 	private int 						state;
 	private float 						temp = 0;
 	
-	private static final Clip 			breakNoice = AudioUtil.loadAudio(RES_LOC + "WINBREA");
+	private static final String 		BREAK_SOUND = RES_LOC + "WINBREA";
+	private final AudioEmitter 		breakEmitter = new AudioEmitter(this);
 	
     private static Mesh 				mesh;
     private Material 					material;
@@ -132,7 +131,7 @@ public class Lamp extends GameComponent implements Collidable {
             dead = true;
             state = STATE_DEAD;
             light.removeToEngine();
-            AudioUtil.playAudio(breakNoice, distance);
+            breakEmitter.play(BREAK_SOUND);
         }
         
         if (state == STATE_IDLE) {

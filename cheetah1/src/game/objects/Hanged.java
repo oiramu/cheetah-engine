@@ -17,9 +17,7 @@ package game.objects;
 
 import java.util.ArrayList;
 
-import javax.sound.sampled.Clip;
-
-import engine.audio.AudioUtil;
+import engine.audio.AudioEmitter;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Time;
@@ -39,7 +37,7 @@ import game.Level;
 /**
  *
  * @author Julio Vergara.
- * @version 1.1
+ * @version 1.2
  * @since 2018
  */
 public class Hanged extends GameComponent implements Collidable {
@@ -52,7 +50,8 @@ public class Hanged extends GameComponent implements Collidable {
 	private int 						state;
 	private double 						deathTime;
 	
-	private static final Clip 			deathNoice = AudioUtil.loadAudio(RES_LOC + "MEDIA");
+	private static final String 		DEATH_SOUND = RES_LOC + "MEDIA";
+	private final AudioEmitter 		deathEmitter = new AudioEmitter(this);
     
     private static Mesh 				mesh;
     private Material 					material;
@@ -128,7 +127,7 @@ public class Hanged extends GameComponent implements Collidable {
             dead = true;
             state = STATE_DYING;
             deathTime = time;
-            AudioUtil.playAudio(deathNoice, distance);
+            deathEmitter.play(DEATH_SOUND);
         }
         
         if (state == STATE_IDLE) {

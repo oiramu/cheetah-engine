@@ -20,9 +20,7 @@ import static engine.components.Constants.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javax.sound.sampled.Clip;
-
-import engine.audio.AudioUtil;
+import engine.audio.AudioEmitter;
 import engine.components.Attenuation;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
@@ -44,7 +42,7 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez.
- * @version 1.0
+ * @version 1.1
  * @since 2019
  */
 public class Fire extends GameComponent {
@@ -58,8 +56,8 @@ public class Fire extends GameComponent {
     
 	private PointLight 					light;
     private static Mesh 				mesh;
-    private Clip						fireSound;
-    
+    private final AudioEmitter			fireEmitter = new AudioEmitter(this);
+
     private Material 					material;
     private MeshRenderer 				meshRenderer;
     private Transform 					transform;
@@ -68,7 +66,8 @@ public class Fire extends GameComponent {
     private double 						temp;
     
     private static ArrayList<Texture> 	animation;
-    private static ArrayList<Clip> 		sounds;
+
+    private static final String[] 		FIRE_SOUNDS = {RES_LOC + "FIRE1", RES_LOC + "FIRE2"};
 
     /**
      * Constructor of the actual object.
@@ -110,12 +109,7 @@ public class Fire extends GameComponent {
             animation.add(new Texture(RES_LOC + "FLMEG0"));
             animation.add(new Texture(RES_LOC + "FLMEH0"));
 		}
-		
-		sounds = new ArrayList<Clip>();
-		
-		for (int i = 1; i < 3; i++)
-			sounds.add(AudioUtil.loadAudio(RES_LOC + "FIRE" + i));
-    	
+
         if (mesh == null) {
             float sizeY = 0.75f;
             if(fireSeed == 3)
@@ -149,8 +143,7 @@ public class Fire extends GameComponent {
 	    this.light = new PointLight(new Vector3f(0.75f,0.5f,0.1f), 0.8f, 
 				   new Attenuation(0,0,1), getTransform().getPosition());
 	    this.light.addToEngine();
-        this.fireSound = sounds.get(new Random().nextInt(sounds.size()));
-    	AudioUtil.playAudio(fireSound, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
+    	fireEmitter.play(FIRE_SOUNDS[new Random().nextInt(FIRE_SOUNDS.length)]);
     }
 
     /**
@@ -335,7 +328,7 @@ public class Fire extends GameComponent {
         
         if(state == STATE_DONE) {
         	light.removeToEngine();
-        	fireSound.stop();
+        	fireEmitter.stop();
         	Level.removeFire(this);
         }
 

@@ -17,9 +17,7 @@ package game.objects;
 
 import java.util.ArrayList;
 
-import javax.sound.sampled.Clip;
-
-import engine.audio.AudioUtil;
+import engine.audio.AudioEmitter;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Time;
@@ -38,7 +36,7 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez.
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
 public class Pillar extends GameComponent implements Collidable {
@@ -50,7 +48,8 @@ public class Pillar extends GameComponent implements Collidable {
 	private int 						state;
 	private double 						deathTime;
 	
-	private static final Clip 			breakNoice = AudioUtil.loadAudio(RES_LOC + "MEDIA");
+	private static final String 		BREAK_SOUND = RES_LOC + "MEDIA";
+	private final AudioEmitter 		breakEmitter = new AudioEmitter(this);
     
     private static Mesh 				mesh;
     private Material 					material;
@@ -126,7 +125,7 @@ public class Pillar extends GameComponent implements Collidable {
             dead = true;
             state = STATE_DYING;
             deathTime = time;
-            AudioUtil.playAudio(breakNoice, distance);
+            breakEmitter.play(BREAK_SOUND);
         }
         
         if (state == STATE_IDLE) {

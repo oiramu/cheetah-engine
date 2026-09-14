@@ -21,7 +21,6 @@ import java.util.Random;
 import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
-import engine.components.GameComponent;
 import engine.components.LodPolicy;
 import engine.components.LodTier;
 import engine.components.MeshRenderer;
@@ -46,7 +45,7 @@ import game.Player;
  * @version 1.2
  * @since 2018
  */
-public class Ghost extends GameComponent {
+public class Ghost extends Enemy {
 
 	private static final float MAX_HEALTH = 10f;
     private static final float SHOT_ANGLE = 10.0f;
@@ -72,16 +71,8 @@ public class Ghost extends GameComponent {
     private static Mesh mesh;
     private static Random rand;
 
-    private Transform transform;
     private Material material;
     private MeshRenderer meshRenderer;
-
-    private int state;
-    private boolean canAttack;
-    private boolean canLook;
-    private boolean dead;
-    private double deathTime;
-    private double health;
 
     /**
      * Constructor of the actual enemy.
@@ -135,9 +126,6 @@ public class Ghost extends GameComponent {
         this.deathTime = 0.0;
         this.health = MAX_HEALTH;
     }
-
-    float offsetX = 0;
-    float offsetY = 0;
 
     /**
      * Updates the enemy every single frame.
@@ -328,13 +316,9 @@ public class Ghost extends GameComponent {
      * @param amt amount.
      */
     public void damage(int amt) {
-        if (state == STATE_IDLE) {
-            state = STATE_CHASE;
-        }
+        wakeAndDamage(amt, STATE_IDLE, STATE_CHASE);
 
-        health -= amt;
-
-        if (health > 0 && amt > 0) {
+        if (tookNonlethalHit(amt)) {
             AudioUtil.playAudio(hitNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
         }
     }
@@ -345,25 +329,8 @@ public class Ghost extends GameComponent {
      * @param renderingEngine to use
      */
     public void render(Shader shader, RenderingEngine renderingEngine) {
-        Vector3f prevPosition = transform.getPosition();
-        transform.setPosition(new Vector3f(transform.getPosition().getX() + offsetX, transform.getPosition().getY() + offsetY, transform.getPosition().getZ()));
-
         meshRenderer.render(shader, renderingEngine);
-
-        transform.setPosition(prevPosition);
     }
-
-    /**
-	 * Gets the enemy's actual transformation.
-	 * @return the enemy's transform data.
-	 */
-    public Transform getTransform() {return transform;}
-
-    /**
-	 * Gets if the enemy is dead or not.
-	 * @return the enemy's life state.
-	 */
-    public boolean isAlive() {return !dead;}
 
     /**
      * Returns the enemy's size depending on the enemy's own width,

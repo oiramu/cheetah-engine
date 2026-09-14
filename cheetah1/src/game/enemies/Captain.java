@@ -22,7 +22,6 @@ import javax.sound.sampled.Clip;
 
 import engine.audio.AudioUtil;
 import engine.components.Attenuation;
-import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.components.SpotLight;
 import engine.core.Time;
@@ -50,7 +49,7 @@ import game.pickUps.Key;
  * @version 1.2
  * @since 2019
  */
-public class Captain extends GameComponent implements Collidable {
+public class Captain extends Enemy implements Collidable {
 
     private static final float MAX_HEALTH = 1000f;
     private static final float SHOT_ANGLE = 30.0f;
@@ -81,7 +80,6 @@ public class Captain extends GameComponent implements Collidable {
     private static Random rand;
     private float sizeX;
 
-    private Transform transform;
     private Material material;
     private MeshRenderer meshRenderer;
     private Chaingun chaingun;
@@ -89,14 +87,8 @@ public class Captain extends GameComponent implements Collidable {
     private SpotLight light;
     private Key key;
 
-    private int state;
     public boolean isQuiet;
-    private boolean canAttack;
-    private boolean canLook;
-    private boolean dead;
     private boolean dropsKey;
-    private double deathTime;
-    private double health;
 
     /**
      * Constructor of the actual enemy.
@@ -159,9 +151,6 @@ public class Captain extends GameComponent implements Collidable {
         this.health = MAX_HEALTH;
         this.dropsKey = dropsKey;
     }
-
-    float offsetX = 0;
-    float offsetY = 0;
 
     /**
      * Updates the enemy every single frame.
@@ -435,15 +424,11 @@ public class Captain extends GameComponent implements Collidable {
      * @param amt amount.
      */
     public void damage(int amt) {
-        if (state == STATE_IDLE) {
-            state = STATE_CHASE;
-        }
+        wakeAndDamage(amt, STATE_IDLE, STATE_CHASE);
 
-        health -= amt;
-
-        if (health > 0 && amt > 0) {
+        if (tookNonlethalHit(amt)) {
         	state = STATE_HIT;
-        	AudioUtil.playAudio(hitNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());     	
+        	AudioUtil.playAudio(hitNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
         }
     }
 
@@ -453,38 +438,21 @@ public class Captain extends GameComponent implements Collidable {
      * @param renderingEngine to use
      */
     public void render(Shader shader, RenderingEngine renderingEngine) {
-        Vector3f prevPosition = transform.getPosition();
-        transform.setPosition(new Vector3f(transform.getPosition().getX() + offsetX, transform.getPosition().getY() + offsetY, transform.getPosition().getZ()));
-        
         if (state == STATE_DEAD) {
         	bullet.render(shader, renderingEngine);
         	chaingun.render(shader, renderingEngine);
         	if(dropsKey)
         		key.render(shader, renderingEngine);
         }
-        
-        meshRenderer.render(shader, renderingEngine);
 
-        transform.setPosition(prevPosition);
+        meshRenderer.render(shader, renderingEngine);
     }
-    
+
     /**
      * Sets the state to start with.
      * @param state to set.
      */
     public void setState(int state) {this.state = state;}
-
-    /**
-	 * Gets the enemy's actual transformation.
-	 * @return the enemy's transform data.
-	 */
-    public Transform getTransform() {return transform;}
-
-    /**
-	 * Gets if the enemy is dead or not.
-	 * @return the enemy's life state.
-	 */
-    public boolean isAlive() {return !dead;}
 
     /**
      * Returns the enemy's size depending on the enemy's own width,
@@ -501,10 +469,4 @@ public class Captain extends GameComponent implements Collidable {
      */
     public boolean blocksMovement() {return isQuiet;}
 
-    /**
-     * Gets the enemy's actual health.
-     * @return enemy's health.
-     */
-	public double getHealth() {return health;}
-    
 }

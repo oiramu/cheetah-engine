@@ -219,14 +219,16 @@ public class GameObject {
     }
     
     /**
-     * Kills everything on the list of objects.
+     * Kills everything on the list of objects. NaziSoldier-specific
+     * (not generic) because it's the only enemy this deadNazi-style
+     * corpse list exists for - no other enemy type has an analogous list.
      * @param list of objects
      * @param delta of time
      */
-    public <E> void killList(ArrayList<E> list, double delta) {
-    	for (E component : list) {
-    		((NaziSoldier) component).setState(4);
-    		((NaziSoldier) component).update(delta);
+    public void killList(ArrayList<NaziSoldier> list, double delta) {
+    	for (NaziSoldier component : list) {
+    		component.setState(4);
+    		component.update(delta);
     	}
     }
 	

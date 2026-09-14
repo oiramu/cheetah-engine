@@ -36,9 +36,11 @@ import game.enemies.NaziSoldier;
  */
 public class GameObject {
 
-	// Conservative bounding radius used for frustum culling - bigger than
-	// any single billboard entity in this game, so nothing gets clipped
-	// off-screen while still partially visible.
+	/**
+	 * Conservative bounding radius used for frustum culling - bigger than
+	 * any single billboard entity in this game, so nothing gets clipped
+	 * off-screen while still partially visible.
+	 */
 	private static final float FRUSTUM_CULL_RADIUS = 2.0f;
 
 	private ArrayList <GameComponent> components;

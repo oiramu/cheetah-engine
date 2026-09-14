@@ -17,3 +17,7 @@ GOD=false
 #that light's range. Off by default until verified visually - flip to
 #true once torches/lampposts look right with it on.
 LIGHT_RANGE_CULLING culling=false
+#Skips rendering entities entirely outside the camera's view frustum.
+#Off by default until verified visually - flip to true once nothing
+#pops in/out incorrectly at the edges of the screen.
+FRUSTUM_CULLING culling=false

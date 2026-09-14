@@ -45,6 +45,7 @@ public class Constants {
 	public static boolean	CLEAR_LIGHTS;
 	public static boolean	GOD;
 	public static boolean	LIGHT_RANGE_CULLING;
+	public static boolean	FRUSTUM_CULLING;
 	
 	/**
 	 * Loads all the config language and structures all the components.
@@ -153,6 +154,12 @@ public class Constants {
 						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
 						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
 						    		LIGHT_RANGE_CULLING = Boolean.parseBoolean(treatment[0]);
+						    		break;
+						    	case "FRUSTUM_CULLING":
+						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='
+						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
+						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
+						    		FRUSTUM_CULLING = Boolean.parseBoolean(treatment[0]);
 						    		break;
 						    	}
 						    }

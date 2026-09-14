@@ -42,6 +42,7 @@ public class RenderingEngine extends MappedValues {
 	private Camera 						mainCamera;
 	private BaseLight 					activeLight;
 	private Shader 						forwardAmbient;
+	private Frustum 					frustum;
 	
 	private static ArrayList<BaseLight> lights;
 	private HashMap<String, Integer> 	samplerMap;
@@ -53,6 +54,7 @@ public class RenderingEngine extends MappedValues {
 		super();
         lights = new ArrayList<BaseLight>();
         samplerMap = new HashMap<String, Integer>();
+        frustum = new Frustum();
 		samplerMap.put("diffuse", 0);
 		samplerMap.put("normalMap", 1);
 		samplerMap.put("dispMap", 2);
@@ -75,6 +77,9 @@ public class RenderingEngine extends MappedValues {
     public void render(GameComponent component) {
     	try {
     		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    		if(FRUSTUM_CULLING && mainCamera != null)
+    			frustum.update(mainCamera.getViewProjection());
 
     		activeLight = null;
 	        component.render(forwardAmbient, this);
@@ -148,6 +153,13 @@ public class RenderingEngine extends MappedValues {
 	 * @return Active light.
 	 */
 	public BaseLight getActiveLight() {return activeLight;}
+
+	/**
+	 * Returns the camera's current view frustum, refreshed once per frame
+	 * when Constants.FRUSTUM_CULLING is enabled.
+	 * @return frustum.
+	 */
+	public Frustum getFrustum() {return frustum;}
 
 	/**
 	 * Sets a new color for the fog.

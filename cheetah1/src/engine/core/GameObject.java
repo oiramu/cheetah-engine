@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import engine.components.BaseLight;
 import engine.components.GameComponent;
 import engine.components.PointLight;
+import engine.rendering.Frustum;
 import engine.rendering.RenderingEngine;
 import engine.rendering.Shader;
 import game.Level;
@@ -34,7 +35,12 @@ import game.enemies.NaziSoldier;
  * @since 2018
  */
 public class GameObject {
-	
+
+	// Conservative bounding radius used for frustum culling - bigger than
+	// any single billboard entity in this game, so nothing gets clipped
+	// off-screen while still partially visible.
+	private static final float FRUSTUM_CULL_RADIUS = 2.0f;
+
 	private ArrayList <GameComponent> components;
 	
 	/**
@@ -90,7 +96,7 @@ public class GameObject {
 				case GRASS: withinPopIn = component.getDistance() < GRASS_POP_IN; break;
 				default: withinPopIn = component.getDistance() < POP_IN; break;
 			}
-			if(withinPopIn && withinActiveLightRange(component, renderingEngine))
+			if(withinPopIn && withinActiveLightRange(component, renderingEngine) && withinFrustum(component, renderingEngine))
 				component.render(shader, renderingEngine);
 		}
 	}
@@ -115,6 +121,22 @@ public class GameObject {
 		if(component.getTransform() == null) return true;
 
 		return pointLight.getPosition().sub(component.getTransform().getPosition()).length() < pointLight.getRange();
+	}
+
+	/**
+	 * Gets if the component could be visible in the camera's view frustum.
+	 * Gated by Constants.FRUSTUM_CULLING since it changes what gets drawn,
+	 * not just how fast it happens.
+	 * @param component to check.
+	 * @param renderingEngine to read the frustum from.
+	 * @return visibility state.
+	 */
+	private boolean withinFrustum(GameComponent component, RenderingEngine renderingEngine) {
+		if(!FRUSTUM_CULLING) return true;
+		if(component.getTransform() == null) return true;
+
+		Frustum frustum = renderingEngine.getFrustum();
+		return frustum.sphereInFrustum(component.getTransform().getPosition(), FRUSTUM_CULL_RADIUS);
 	}
 	
 	/**

@@ -15,16 +15,16 @@
  */
 package engine.menu;
 
-import javax.sound.sampled.Clip;
-
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
-import engine.audio.AudioUtil;
+import engine.audio.AudioManager;
+import engine.audio.SoundLibrary;
 import engine.core.Debug;
 import engine.core.Input;
+import engine.core.Vector3f;
 import engine.core.crash.CrashReport;
 import engine.core.utils.Log;
 import engine.menu.system.SEngineUtil;
@@ -34,7 +34,7 @@ import engine.rendering.Window;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2017
  */
 public class Button extends WidgetModel {
@@ -44,7 +44,7 @@ public class Button extends WidgetModel {
 	private SpriteSheet 	m_texture;
 	private String 			m_text;
 	
-	private static final Clip CLICK_SOUND = AudioUtil.loadAudio("button");
+	private static final String CLICK_SOUND = "button";
 	
 	private boolean 		g_hover = false;
 	
@@ -118,7 +118,7 @@ public class Button extends WidgetModel {
 	public void callEvent() {
 		if(m_buttonEvent != null) {
 			m_buttonEvent.update();
-			AudioUtil.playAudio(CLICK_SOUND, 0);
+			AudioManager.play(SoundLibrary.get(CLICK_SOUND), new Vector3f(0, 0, 0), false);
 		}
 	}
 	

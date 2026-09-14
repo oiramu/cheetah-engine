@@ -15,18 +15,11 @@
  */
 package engine.audio;
 
-import static engine.components.Constants.*;
-
 import java.io.File;
 
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.FloatControl;
 
 import engine.core.Debug;
 import engine.core.crash.CrashReport;
@@ -34,40 +27,12 @@ import engine.core.crash.CrashReport;
 /**
  *
  * @author Julio Vergara
- * @version 1.1
+ * @version 1.2
  * @since 2017
  */
 public class AudioUtil {
 
     private static Sequencer 	sequencer;
-    private static final float 	AUDIO_VOLUME = -5.0f;
-    private static final float 	DECAY_FACTOR = 0.12f;
-
-    /**
-     * Plays an audio clip in a 3D space.
-     * @param clip to play {@code THE FILE HAD TO BE MONO}
-     * @param distance Where to play.
-     */
-    public static void playAudio(Clip clip, float distance) {
-        
-        FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-
-        float volumeAmount = AUDIO_VOLUME - (distance * distance * DECAY_FACTOR);
-
-        if (volumeAmount < -EFFECTS_AUDIO_LEVEL) {
-            volumeAmount = -EFFECTS_AUDIO_LEVEL;
-        }
-
-        volume.setValue(volumeAmount);
-
-        //if (clip.isRunning()) {
-        //    clip.stop();
-        //}
-
-        clip.setFramePosition(0);
-        clip.start();
-        
-    }
 
     /**
      * Plays a sequence of a MIDI theme in game.
@@ -115,27 +80,6 @@ public class AudioUtil {
         }
 
         return sequence;
-    }
-
-    /**
-	 * Loads a WAV sequence file named like that.
-	 * @param fileName Name of the clip file.
-	 * @return Clip.
-	 */
-    public static Clip loadAudio(String fileName) {
-        Clip clip = null;
-
-        try {
-            AudioInputStream stream = AudioSystem.getAudioInputStream(new File("./res/audio/" + fileName + ".wav"));
-            clip = (Clip) AudioSystem.getLine(new DataLine.Info(Clip.class, stream.getFormat()));
-            clip.open(stream);
-
-            return clip;
-        } catch (Exception e) {
-        	Debug.crash(new CrashReport(e));
-        }
-
-        return clip;
     }
 
     /**

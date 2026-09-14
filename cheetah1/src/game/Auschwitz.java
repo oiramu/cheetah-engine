@@ -24,7 +24,9 @@ import javax.sound.midi.Sequence;
 import static engine.components.Constants.*;
 import static engine.core.CoreEngine.*;
 
+import engine.audio.AudioManager;
 import engine.audio.AudioUtil;
+import engine.audio.SoundLibrary;
 import engine.components.Constants;
 import engine.core.*;
 import engine.core.utils.Log;
@@ -37,14 +39,16 @@ import game.walls.SecretWall;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.2
+ * @version 1.3
  * @since 2017
  */
 public class Auschwitz implements Game {
 	
 	private static ArrayList<Sequence> 			playlist = new ArrayList<Sequence>();
 	public static HashMap<String,HUD> 			text;
-	
+
+	private static final String					CLICK_SOUND = "button";
+
     private static final int 					EPISODE_1 = 1;
     private static final int 					EPISODE_2 = 2;
     private static final int 					EPISODE_3 = 3;
@@ -141,36 +145,36 @@ public class Auschwitz implements Game {
         if(isPaused) {
         	if(!toExit) {
 				if (Input.getKeyDown(Input.KEY_ESCAPE)) {
-					AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
+					AudioManager.play(SoundLibrary.get(CLICK_SOUND), new Vector3f(0, 0, 0), false);
 					isPaused = false;
 				}
 				if (Input.getKeyDown(Input.KEY_R)) {
-					AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
+					AudioManager.play(SoundLibrary.get(CLICK_SOUND), new Vector3f(0, 0, 0), false);
 					reloadLevel();
 					isPaused = false;
 				}
 				if (Input.getKeyDown(Input.KEY_B)) {
-					AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
+					AudioManager.play(SoundLibrary.get(CLICK_SOUND), new Vector3f(0, 0, 0), false);
 					CoreEngine.getCurrent().cleanUp();
 				}
 				if (Input.getKeyDown(Input.KEY_X)) {
-					AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
+					AudioManager.play(SoundLibrary.get(CLICK_SOUND), new Vector3f(0, 0, 0), false);
 					int textId = new Random().nextInt(exitMessages.length);
 					text.get("areYouSure").setText(exitMessages[textId]);
 					toExit = true;
 				}
         	} else {
 				if(toExit && Input.getKeyDown(Input.KEY_Y)) {
-					AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
+					AudioManager.play(SoundLibrary.get(CLICK_SOUND), new Vector3f(0, 0, 0), false);
 					finalize();
 				}else if(toExit && Input.getKeyDown(Input.KEY_N)) {
-					AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
+					AudioManager.play(SoundLibrary.get(CLICK_SOUND), new Vector3f(0, 0, 0), false);
 					toExit = false;
 				}
         	}
         } else {
         	if (Input.getKeyDown(Input.KEY_ESCAPE)) {
-        		AudioUtil.playAudio(AudioUtil.loadAudio("button"), 0);
+        		AudioManager.play(SoundLibrary.get(CLICK_SOUND), new Vector3f(0, 0, 0), false);
         		isPaused = true;
         	}
         	if(Debug.state) {

@@ -20,10 +20,8 @@ import static engine.core.CoreEngine.getRenderingEngine;
 
 import java.util.ArrayList;
 
-import javax.sound.sampled.Clip;
-
+import engine.audio.AudioEmitter;
 import engine.audio.AudioManager;
-import engine.audio.AudioUtil;
 import engine.components.BaseLight;
 import engine.components.DirectionalLight;
 import engine.components.GameComponent;
@@ -95,7 +93,7 @@ import game.pickUps.Rocket;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.7
+ * @version 1.8
  * @since 2017
  */
 public class Level extends GameComponent {
@@ -116,10 +114,10 @@ public class Level extends GameComponent {
     private static final String PLAYER_RES_LOC = "player/";
     
     //Player's sounds
-    private static final Clip misuseNoise = AudioUtil.loadAudio(PLAYER_RES_LOC + "OOF");
-    private static final Clip punchNoise = AudioUtil.loadAudio(PLAYER_RES_LOC + "PLSPNCH6");
-    private static final Clip punchSolidNoise = AudioUtil.loadAudio(PLAYER_RES_LOC + "PUNCH2");
-    private static final Clip barrelNoise = AudioUtil.loadAudio("barrel/BARRELZ");
+    private static final String MISUSE_SOUND = PLAYER_RES_LOC + "OOF";
+    private static final String PUNCH_SOUND = PLAYER_RES_LOC + "PLSPNCH6";
+    private static final String PUNCH_SOLID_SOUND = PLAYER_RES_LOC + "PUNCH2";
+    private static final String BARREL_SOUND = "barrel/BARRELZ";
 
     //Remove list
     private static ArrayList<Medkit> removeMedkitList;
@@ -330,29 +328,29 @@ public class Level extends GameComponent {
 
         if ((player.fires && !player.isReloading) || (Input.getKeyDown(Input.KEY_Q) && !player.trowsKick)) {
         	
-        	checkDamage(naziSoldiers, punchNoise, 1);
-        	checkDamage(dogs, punchNoise, 1);
-        	checkDamage(ssSoldiers, punchNoise, 1);
-        	checkDamage(naziSeargeants, punchNoise, 1);
+        	checkDamage(naziSoldiers, PUNCH_SOUND, 1);
+        	checkDamage(dogs, PUNCH_SOUND, 1);
+        	checkDamage(ssSoldiers, PUNCH_SOUND, 1);
+        	checkDamage(naziSeargeants, PUNCH_SOUND, 1);
         	checkDamage(ghosts, null, 255);
-        	checkDamage(zombies, punchNoise, 1);
-        	checkDamage(captains, punchSolidNoise, 1);
-        	checkDamage(commanders, punchSolidNoise, 1);
-        	checkDamage(lamps, punchSolidNoise, 1);
-        	checkDamage(pillars, punchSolidNoise, 1);
-        	checkDamage(barrels, barrelNoise, 3);
-        	checkDamage(hangeds, punchNoise, 1);
-        	checkDamage(doors, punchSolidNoise, 69);
-        	checkDamage(pipes, punchSolidNoise, 69);
-        	checkDamage(tables, punchSolidNoise, 69);
-        	checkDamage(clocks, punchSolidNoise, 69);
-        	checkDamage(furnaces, punchSolidNoise, 69);
-        	checkDamage(kitchens, punchSolidNoise, 69);
-        	checkDamage(lockedDoors, punchSolidNoise, 69);
-        	checkDamage(barsWalls, punchSolidNoise, 69);
-        	checkDamage(trees, punchSolidNoise, 69);
-        	checkDamage(lightPosts, punchSolidNoise, 69);
-        	checkDamage(signs, punchSolidNoise, 69);
+        	checkDamage(zombies, PUNCH_SOUND, 1);
+        	checkDamage(captains, PUNCH_SOLID_SOUND, 1);
+        	checkDamage(commanders, PUNCH_SOLID_SOUND, 1);
+        	checkDamage(lamps, PUNCH_SOLID_SOUND, 1);
+        	checkDamage(pillars, PUNCH_SOLID_SOUND, 1);
+        	checkDamage(barrels, BARREL_SOUND, 3);
+        	checkDamage(hangeds, PUNCH_SOUND, 1);
+        	checkDamage(doors, PUNCH_SOLID_SOUND, 69);
+        	checkDamage(pipes, PUNCH_SOLID_SOUND, 69);
+        	checkDamage(tables, PUNCH_SOLID_SOUND, 69);
+        	checkDamage(clocks, PUNCH_SOLID_SOUND, 69);
+        	checkDamage(furnaces, PUNCH_SOLID_SOUND, 69);
+        	checkDamage(kitchens, PUNCH_SOLID_SOUND, 69);
+        	checkDamage(lockedDoors, PUNCH_SOLID_SOUND, 69);
+        	checkDamage(barsWalls, PUNCH_SOLID_SOUND, 69);
+        	checkDamage(trees, PUNCH_SOLID_SOUND, 69);
+        	checkDamage(lightPosts, PUNCH_SOLID_SOUND, 69);
+        	checkDamage(signs, PUNCH_SOLID_SOUND, 69);
         }
 
         player.input();
@@ -487,7 +485,7 @@ public class Level extends GameComponent {
 
         if (!worked && playSound) {
         	if(player.getMovementVector().length() <= 0.33f)
-            	AudioUtil.playAudio(misuseNoise, 0);
+            	new AudioEmitter(player).play(MISUSE_SOUND);
         }
     }
 
@@ -1473,34 +1471,34 @@ public class Level extends GameComponent {
      * @param sound to play
      * @param times to check patron
      */
-    private <E> void checkDamage(ArrayList<E> array, Clip sound, int times) {
+    private <E> void checkDamage(ArrayList<E> array, String sound, int times) {
 		for (E component : array) {
 			if(player.weaponType == player.BULLET && player.getWeaponState() != "chaingun") {
 				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < BULLET_RANGE && player.getBullets()!=0) {
 					if(times == 3)
 						if(sound != null)
-							AudioUtil.playAudio(sound, 0);
+							new AudioEmitter((GameComponent) component).play(sound);
 					((GameComponent) component).damage(player.getDamage());
 				}
 			}else if(player.weaponType == player.BULLET && player.getWeaponState() == "chaingun" && player.chaingunCanFire) {
 				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
 					if(times == 3)
 						if(sound != null)
-							AudioUtil.playAudio(sound, 0);
+							new AudioEmitter((GameComponent) component).play(sound);
 					((GameComponent) component).damage(player.getDamage());
 				}
 			}else if(player.weaponType == player.SHELL) {
 				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < SHELL_RANGE && player.getShells()!=0) {
 					if(times == 2 || times == 3)
 						if(sound != null)
-							AudioUtil.playAudio(sound, 0);
+							new AudioEmitter((GameComponent) component).play(sound);
 					((GameComponent) component).damage(player.getDamage());
 				}
 			}else if(player.weaponType == player.MELEE) {
 				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE && player.isAlive) {
 					if(times == 1 || times == 3)
 						if(sound != null)
-							AudioUtil.playAudio(sound, 0);
+							new AudioEmitter((GameComponent) component).play(sound);
 					((GameComponent) component).damage(player.getMeleeDamage());
             	}
 			}else if(player.weaponType == player.ROCKET || player.weaponType == player.GAS && times == 69) {
@@ -1509,20 +1507,20 @@ public class Level extends GameComponent {
 					if(player.weaponType == player.GAS)
 	            		addFire((GameComponent) component, true);
 				}
-				
-			}		
+
+			}
 			if(player.kickCanHurt) {
 				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < MELEE_RANGE + 0.05f && player.isAlive) {
 					if(times == 1 || times == 3)
 						if(sound != null)
-							AudioUtil.playAudio(sound, 0);
+							new AudioEmitter((GameComponent) component).play(sound);
 					((GameComponent) component).damage(player.getMeleeDamage());
             	}
 			}
-			
+
 			if((player.weaponType == player.MELEE == true || player.kickCanHurt) && times == 69) {
 				if (Math.abs(((GameComponent) component).getTransform().getPosition().sub(player.getCamera().getPos()).length()) < 1.25f && player.isAlive) {
-					AudioUtil.playAudio(sound, 0);
+					new AudioEmitter((GameComponent) component).play(sound);
 				}
 			}
 		}

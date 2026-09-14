@@ -15,9 +15,7 @@
  */
 package game.walls;
 
-import javax.sound.sampled.Clip;
-
-import engine.audio.AudioUtil;
+import engine.audio.AudioEmitter;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Time;
@@ -35,7 +33,7 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.1
+ * @version 1.2
  * @since 2018
  */
 public class SecretWall extends GameComponent implements Collidable {
@@ -52,7 +50,8 @@ public class SecretWall extends GameComponent implements Collidable {
 	
 	private static final String RES_LOC = "secretWall/";
 
-    private static final Clip openNoise = AudioUtil.loadAudio(RES_LOC + "MEDIA");
+    private static final String OPEN_SOUND = RES_LOC + "MEDIA";
+    private final AudioEmitter openEmitter = new AudioEmitter(this);
 
     private static Mesh mesh;
 
@@ -136,7 +135,7 @@ public class SecretWall extends GameComponent implements Collidable {
 
         opening = true;
         if(opening == true)
-        AudioUtil.playAudio(openNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
+        openEmitter.play(OPEN_SOUND);
     }
 
     /**

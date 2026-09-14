@@ -15,9 +15,7 @@
  */
 package game.walls;
 
-import javax.sound.sampled.Clip;
-
-import engine.audio.AudioUtil;
+import engine.audio.AudioEmitter;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Time;
@@ -35,7 +33,7 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.1
+ * @version 1.2
  * @since 2017
  */
 public class Door extends GameComponent implements Collidable {
@@ -47,8 +45,9 @@ public class Door extends GameComponent implements Collidable {
 	
 	private static final String RES_LOC = "door/";
 
-    private static final Clip openNoise = AudioUtil.loadAudio(RES_LOC + "MEDIA0");
-    private static final Clip closeNoise = AudioUtil.loadAudio(RES_LOC + "MEDIA1");
+    private static final String OPEN_SOUND = RES_LOC + "MEDIA0";
+    private static final String CLOSE_SOUND = RES_LOC + "MEDIA1";
+    private final AudioEmitter doorEmitter = new AudioEmitter(this);
 
     private static Mesh door;
 
@@ -140,7 +139,7 @@ public class Door extends GameComponent implements Collidable {
 
         opening = true;
         closing = false;
-        AudioUtil.playAudio(openNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
+        doorEmitter.play(OPEN_SOUND);
     }
 
     /**
@@ -161,7 +160,7 @@ public class Door extends GameComponent implements Collidable {
                 open = true;
             } else if (time > startCloseTime && time < closeTime) {
                 if (!closing) {
-                    AudioUtil.playAudio(closeNoise, transform.getPosition().sub(Level.getPlayer().getCamera().getPos()).length());
+                    doorEmitter.play(CLOSE_SOUND);
                 }
 
                 closing = true;

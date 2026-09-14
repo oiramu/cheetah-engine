@@ -15,9 +15,7 @@
  */
 package game.pickUps;
 
-import javax.sound.sampled.Clip;
-
-import engine.audio.AudioUtil;
+import engine.audio.AudioEmitter;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Transform;
@@ -34,14 +32,14 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.2
+ * @version 1.3
  * @since 2017
  */
 public class Bag extends GameComponent {
 
     private static final float 	PICKUP_THRESHHOLD = 0.75f;
 	private static final String RES_LOC = "bag/MEDIA";
-	private static final Clip 	PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
+	private final AudioEmitter pickupEmitter = new AudioEmitter(this);
 	
 	private float				temp = 0;
 
@@ -96,7 +94,7 @@ public class Bag extends GameComponent {
         }
 
 		if (distance < PICKUP_THRESHHOLD) {
-			AudioUtil.playAudio(PICKUP_NOISE, 0);
+			pickupEmitter.play(RES_LOC);
 			Level.getPlayer().setMaxHealth(Level.getPlayer().getMaxHealth()*2);
             Level.getPlayer().setMaxBullets(Level.getPlayer().getMaxBullets()*2);
             Level.getPlayer().setMaxShells(Level.getPlayer().getMaxShells()*2);

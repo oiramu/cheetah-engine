@@ -1,5 +1,5 @@
 /*
-Level.getPlayer() * Copyright 2017 Carlos Rodriguez.
+ * Copyright 2017 Carlos Rodriguez.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,7 @@ Level.getPlayer() * Copyright 2017 Carlos Rodriguez.
  */
 package game.pickUps;
 
-import javax.sound.sampled.Clip;
-
-import engine.audio.AudioUtil;
+import engine.audio.AudioEmitter;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Transform;
@@ -34,7 +32,7 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.2
+ * @version 1.3
  * @since 2017
  */
 public class Food extends GameComponent {
@@ -42,7 +40,7 @@ public class Food extends GameComponent {
     private static final float PICKUP_THRESHHOLD = 0.75f;
     private static final int HEAL_AMOUNT = 25;
     private static final String RES_LOC = "food/MEDIA";
-    private static final Clip PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
+    private final AudioEmitter pickupEmitter = new AudioEmitter(this);
     
     private float			temp = 0;
 
@@ -100,7 +98,7 @@ public class Food extends GameComponent {
         if (distance < PICKUP_THRESHHOLD && Level.getPlayer().getHealth() < Level.getPlayer().getMaxHealth()) {
             Level.getPlayer().addHealth(HEAL_AMOUNT, "Food");
             Level.removeFood(this);
-            AudioUtil.playAudio(PICKUP_NOISE, 0);
+            pickupEmitter.play(RES_LOC);
         }
     }
 

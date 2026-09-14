@@ -15,9 +15,7 @@
  */
 package game.pickUps;
 
-import javax.sound.sampled.Clip;
-
-import engine.audio.AudioUtil;
+import engine.audio.AudioEmitter;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Transform;
@@ -34,7 +32,7 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
 public class SuperShotgun extends GameComponent {
@@ -42,7 +40,7 @@ public class SuperShotgun extends GameComponent {
     public static final float 	PICKUP_THRESHHOLD = 0.75f;
     private static final String RES_LOC = "superShotgun/MEDIA";
     private static final String WEAPONS_RES_LOC = "weapons/";
-    private static final Clip 	PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
+    private final AudioEmitter pickupEmitter = new AudioEmitter(this);
     
     private float				temp = 0;
 
@@ -102,7 +100,7 @@ public class SuperShotgun extends GameComponent {
 
         if (distance < PICKUP_THRESHHOLD) {
             Level.getPlayer().setSuperShotgun(true);
-            AudioUtil.playAudio(PICKUP_NOISE, 0);
+            pickupEmitter.play(RES_LOC);
             Level.removeSuperShotgun(this);
         }
     }

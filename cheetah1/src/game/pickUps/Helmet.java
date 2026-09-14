@@ -15,9 +15,7 @@
  */
 package game.pickUps;
 
-import javax.sound.sampled.Clip;
-
-import engine.audio.AudioUtil;
+import engine.audio.AudioEmitter;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Transform;
@@ -34,7 +32,7 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
 public class Helmet extends GameComponent {
@@ -43,7 +41,7 @@ public class Helmet extends GameComponent {
     private static final boolean 	STATE = true;
     private static final int 		AMOUNT = 25;
 	private static final String 	RES_LOC = "helmet/MEDIA";
-	private static final Clip 		PICKUP_NOISE = AudioUtil.loadAudio(RES_LOC);
+	private final AudioEmitter pickupEmitter = new AudioEmitter(this);
 	
 	private float					temp = 0;
 
@@ -101,7 +99,7 @@ public class Helmet extends GameComponent {
             Level.getPlayer().setArmor(STATE);
             Level.getPlayer().addArmor(AMOUNT);
             Level.removeHelmet(this);
-            AudioUtil.playAudio(PICKUP_NOISE, 0);
+            pickupEmitter.play(RES_LOC);
         }
     }
 

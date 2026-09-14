@@ -15,9 +15,7 @@
  */
 package game.pickUps;
 
-import javax.sound.sampled.Clip;
-
-import engine.audio.AudioUtil;
+import engine.audio.AudioEmitter;
 import engine.components.GameComponent;
 import engine.components.MeshRenderer;
 import engine.core.Transform;
@@ -34,15 +32,16 @@ import game.Level;
 /**
  *
  * @author Carlos Rodriguez
- * @version 1.0
+ * @version 1.1
  * @since 2018
  */
 public class Key extends GameComponent {
 
     public final float			PICKUP_THRESHHOLD = 0.75f;
 
-	private static final Clip 	PICKUP_NOISE = AudioUtil.loadAudio("key/GETKEY");
-	
+	private static final String PICKUP_SOUND = "key/GETKEY";
+	private final AudioEmitter pickupEmitter = new AudioEmitter(this);
+
 	private float 				temp = 0;
 	private boolean				isGoldKey;
 	private boolean				shouldFloat;
@@ -110,7 +109,7 @@ public class Key extends GameComponent {
 			else
 				Level.getPlayer().setBronzekey(true);
             Level.removeArmor(this);
-            AudioUtil.playAudio(PICKUP_NOISE, 0);
+            pickupEmitter.play(PICKUP_SOUND);
         }
     }
 

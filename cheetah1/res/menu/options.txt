@@ -1,0 +1,27 @@
+#Options ML Code
+Background background=res/textures/Menu/background.jpg 0 0 1 1
+Image imgLogo=res/textures/Menu/logo.png 0.0325 0.35 0.375 0.15
+Background imgBackground=res/textures/Menu/shadow.png 0 0 0.425 1
+
+#Save & Back
+Button saveBtn=Save & Back:0.0325 0.55 0.375 0.05
+saveBtn>addAction:saveSettings
+
+#Video
+TextBold line1=Video:0.5 0.08
+SettingCycle textureFilterSetting=Texture Filter:0.5 0.14 0.4 0.05:TEXTURE_FILTER:Nearest,Bilinear,Trilinear
+SettingStepper anisoSetting=Anisotropic:0.5 0.2 0.4 0.05:ANISOTROPIC_LEVEL:0,16,4
+SettingStepper particlesSetting=Particle Level:0.5 0.26 0.4 0.05:PARTICLES_LEVEL:0,2,1
+
+#Audio
+TextBold line2=Audio:0.5 0.36
+SettingStepper effectsSetting=Effects Volume:0.5 0.42 0.4 0.05:EFFECTS_AUDIO_LEVEL:0,100,5
+SettingStepper sourcesSetting=Audio Sources:0.5 0.48 0.4 0.05:MAX_AUDIO_SOURCES:4,64,4
+
+#Display - these three need a restart to take effect, there's no live resize path
+TextBold line3=Display (restart required):0.5 0.58
+SettingStepper widthSetting=Width:0.5 0.64 0.4 0.05:TARGET_WIDTH:640,3840,160
+SettingStepper heightSetting=Height:0.5 0.7 0.4 0.05:TARGET_HEIGHT:480,2160,90
+SettingCycle fullscreenSetting=Fullscreen:0.5 0.76 0.4 0.05:FULLSCREEN:True,False
+
+saveBtn>selectId

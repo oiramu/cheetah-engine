@@ -46,12 +46,23 @@ public class SEngineUtil {
 	private AngelCodeFont m_boldFont;
 	
 	/**
-	 * Constructor of the Menu tools.
+	 * Constructor of the Menu tools. Font loading is deferred to first use
+	 * (see loadFonts()) rather than done here, so that callers who only need
+	 * the non-rendering helpers below (splitString, charMatch, AABB) don't
+	 * require a live GL/Slick context just to construct this singleton -
+	 * Constants.load()/save() are exactly such callers, and need to run
+	 * under plain JUnit with no renderer present.
 	 */
-	private SEngineUtil() {
+	private SEngineUtil() {}
+
+	/**
+	 * Loads both fonts the first time either is actually needed.
+	 */
+	private void loadFonts() {
+		if(m_font != null) return;
 		try {
-			m_font = new AngelCodeFont("res/textures/fonts/font.fnt", new Image("res/textures/fonts/font.png")); 
-			m_boldFont = new AngelCodeFont("res/textures/fonts/fontBold.fnt", new Image("res/textures/fonts/fontBold.png")); 
+			m_font = new AngelCodeFont("res/textures/fonts/font.fnt", new Image("res/textures/fonts/font.png"));
+			m_boldFont = new AngelCodeFont("res/textures/fonts/fontBold.fnt", new Image("res/textures/fonts/fontBold.png"));
 		} catch (SlickException e) {
 			Debug.crash(new CrashReport(e));
 		}
@@ -118,12 +129,12 @@ public class SEngineUtil {
 	 * Returns the font that is been used.
 	 * @return Font.
 	 */
-	public AngelCodeFont getFont() {return m_font;}
-	
+	public AngelCodeFont getFont() {loadFonts(); return m_font;}
+
 	/**
 	 * Returns the bold font that is been used.
 	 * @return Bold font.
 	 */
-	public AngelCodeFont getBoldFont() {return m_boldFont;}
+	public AngelCodeFont getBoldFont() {loadFonts(); return m_boldFont;}
 	
 }

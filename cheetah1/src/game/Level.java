@@ -19,6 +19,8 @@ import static engine.components.Constants.PARTICLES_LEVEL;
 import static engine.core.CoreEngine.getRenderingEngine;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import engine.audio.AudioEmitter;
 import engine.audio.AudioManager;
@@ -139,6 +141,16 @@ public class Level extends GameComponent {
     private static ArrayList<RocketLauncher> removeRocketLauncherList;
     private static ArrayList<Bleed> removeBleedingList;
     private static ArrayList<Fire> removeFireList;
+
+    // Every removeXxx() below (pickups and barrels - see the block further
+    // down) also records the instance here, permanently, since none of
+    // those removeXxxList queues above are a usable "was this collected"
+    // signal: they're drained and cleared every frame by update(), and
+    // removing from them only prunes the render tree (GameObject.components,
+    // a copy made at spawn time), never the master lists (medkits, etc.)
+    // that getMedkits()/getBarrels()/etc. expose for save-state capture.
+    // Reset at the top of generateLevel() for each fresh Level instance.
+    private static Set<GameComponent> removedObjects = new HashSet<GameComponent>();
 
     /**
      * All the lists above, grouped once so update() can remove/clear them
@@ -476,6 +488,7 @@ public class Level extends GameComponent {
             for (int i = 0; i < exitPoints.size(); i++) {
                 if (Math.abs(exitPoints.get(i).sub(position).length()) < 1f) {
                 	Auschwitz.loadLevel(exitOffsets.get(i), true);
+                	Auschwitz.autoSaveProgress();
                 } else if (Math.abs(exitPoints.get(i).sub(position).length()) < 1.25f) {
                 	player.playerText.get("Notification").setText("Press e to scape to other floor");
                     player.notificationTime = Time.getTime();
@@ -982,6 +995,7 @@ public class Level extends GameComponent {
     private void generateLevel() {
         
         //Remove list
+    	Level.removedObjects = new HashSet<GameComponent>();
     	Level.removeMedkitList = new ArrayList<Medkit>();
     	Level.removeFoodList = new ArrayList<Food>();
     	Level.removeBulletList = new ArrayList<Bullet>();
@@ -1598,7 +1612,121 @@ public class Level extends GameComponent {
 	 * @return captains.
 	 */
 	public ArrayList<Captain> getCaptains() {return captains;}
-	
+
+	/**
+	 * Returns all the ghosts in the array-list.
+	 * @return ghosts.
+	 */
+	public ArrayList<Ghost> getGhosts() {return ghosts;}
+
+	/**
+	 * Returns all the commanders in the array-list.
+	 * @return commanders.
+	 */
+	public ArrayList<Commander> getCommanders() {return commanders;}
+
+	/**
+	 * Returns all the doors in the array-list.
+	 * @return doors.
+	 */
+	public ArrayList<Door> getDoors() {return doors;}
+
+	/**
+	 * Returns all the locked doors in the array-list.
+	 * @return locked doors.
+	 */
+	public ArrayList<LockedDoor> getLockedDoors() {return lockedDoors;}
+
+	/**
+	 * Returns all the barrels in the array-list.
+	 * @return barrels.
+	 */
+	public ArrayList<Barrel> getBarrels() {return barrels;}
+
+	/**
+	 * Returns all the medkits in the array-list.
+	 * @return medkits.
+	 */
+	public ArrayList<Medkit> getMedkits() {return medkits;}
+
+	/**
+	 * Returns all the food pickups in the array-list.
+	 * @return food pickups.
+	 */
+	public ArrayList<Food> getFoods() {return foods;}
+
+	/**
+	 * Returns all the bullet pickups in the array-list.
+	 * @return bullet pickups.
+	 */
+	public ArrayList<Bullet> getBullets() {return bullets;}
+
+	/**
+	 * Returns all the shell pickups in the array-list.
+	 * @return shell pickups.
+	 */
+	public ArrayList<Shell> getShells() {return shells;}
+
+	/**
+	 * Returns all the bag pickups in the array-list.
+	 * @return bag pickups.
+	 */
+	public ArrayList<Bag> getBags() {return bags;}
+
+	/**
+	 * Returns all the shotgun pickups in the array-list.
+	 * @return shotgun pickups.
+	 */
+	public ArrayList<Shotgun> getShotguns() {return shotguns;}
+
+	/**
+	 * Returns all the machinegun pickups in the array-list.
+	 * @return machinegun pickups.
+	 */
+	public ArrayList<Machinegun> getMachineguns() {return machineguns;}
+
+	/**
+	 * Returns all the rocket pickups in the array-list.
+	 * @return rocket pickups.
+	 */
+	public ArrayList<Rocket> getRockets() {return rockets;}
+
+	/**
+	 * Returns all the armor pickups in the array-list.
+	 * @return armor pickups.
+	 */
+	public ArrayList<Armor> getArmors() {return armors;}
+
+	/**
+	 * Returns all the super shotgun pickups in the array-list.
+	 * @return super shotgun pickups.
+	 */
+	public ArrayList<SuperShotgun> getSuperShotguns() {return superShotguns;}
+
+	/**
+	 * Returns all the helmet pickups in the array-list.
+	 * @return helmet pickups.
+	 */
+	public ArrayList<Helmet> getHelmets() {return helmets;}
+
+	/**
+	 * Returns all the chaingun pickups in the array-list.
+	 * @return chaingun pickups.
+	 */
+	public ArrayList<Chaingun> getChainguns() {return chainguns;}
+
+	/**
+	 * Returns all the key pickups in the array-list.
+	 * @return key pickups.
+	 */
+	public ArrayList<Key> getKeys() {return keys;}
+
+	/**
+	 * Returns all the rocket launcher pickups in the array-list.
+	 * @return rocket launcher pickups.
+	 */
+	public ArrayList<RocketLauncher> getRocketLaunchers() {return rocketLaunchers;}
+
 	/**
 	 * Get access to the main player object in game.
 	 * @return Player.
@@ -1627,109 +1755,119 @@ public class Level extends GameComponent {
 	  * Removes the medical kits when the player grabs it.
 	  * @param medkit Medical kit.
 	  */
-	public static void removeMedkit(Medkit medkit) {removeMedkitList.add(medkit);}
-	    
+	public static void removeMedkit(Medkit medkit) {removeMedkitList.add(medkit); removedObjects.add(medkit);}
+
 	/**
 	 * Removes the food when the player grabs it.
 	 * @param food Food.
 	 */
-	public static void removeFood(Food food) {removeFoodList.add(food);}
-	    
+	public static void removeFood(Food food) {removeFoodList.add(food); removedObjects.add(food);}
+
 	/**
 	 * Removes the bullet packs when the player grabs it.
 	 * @param bullet Bullet pack.
 	 */
-	public static void removeBullets(Bullet bullet) {removeBulletList.add(bullet);}
-	
+	public static void removeBullets(Bullet bullet) {removeBulletList.add(bullet); removedObjects.add(bullet);}
+
 	/**
 	 * Removes the shell packs when the player grabs it.
 	 * @param shell Shell pack.
 	 */
-	public static void removeShells(Shell shell) {removeShellList.add(shell);}
-	    
+	public static void removeShells(Shell shell) {removeShellList.add(shell); removedObjects.add(shell);}
+
 	/**
 	 * Removes the bags when the player grabs it.
 	 * @param bag Bag.
 	 */
-	public static void removeBags(Bag bag) {removeBagList.add(bag);}
-	    
+	public static void removeBags(Bag bag) {removeBagList.add(bag); removedObjects.add(bag);}
+
 	/**
 	 * Removes the shotguns when the player grabs it.
 	 * @param shotgun Shotgun.
 	 */
-	public static void removeShotgun(Shotgun shotgun) {removeShotgunList.add(shotgun);}
-	    
+	public static void removeShotgun(Shotgun shotgun) {removeShotgunList.add(shotgun); removedObjects.add(shotgun);}
+
 	/**
 	 * Removes the machine-guns when the player grabs it.
 	 * @param machineGun Machine-Gun.
 	 */
-	public static void removeMachineGun(Machinegun machineGun) {removeMachineGunList.add(machineGun);}
-	
+	public static void removeMachineGun(Machinegun machineGun) {removeMachineGunList.add(machineGun); removedObjects.add(machineGun);}
+
 	/**
 	 * Removes the ghost when disappears.
 	 * @param ghost Ghost.
 	 */
 	public static void removeGhost(Ghost ghost) {removeGhostList.add(ghost);}
-	
+
 	/**
 	 * Removes the armor when disappears.
 	 * @param armor Armor.
 	 */
-	public static void removeArmor(Armor armor) {removeArmorList.add(armor);}
-	
+	public static void removeArmor(Armor armor) {removeArmorList.add(armor); removedObjects.add(armor);}
+
 	/**
 	 * Removes the super shotguns when the player grabs it.
 	 * @param sShotgun Super shotgun.
 	 */
-	public static void removeSuperShotgun(SuperShotgun sShotgun) {removeSuperShotgunList.add(sShotgun);}
-	
+	public static void removeSuperShotgun(SuperShotgun sShotgun) {removeSuperShotgunList.add(sShotgun); removedObjects.add(sShotgun);}
+
 	/**
 	 * Removes the helmet when disappears.
 	 * @param helmet Helmet.
 	 */
-	public static void removeHelmet(Helmet helmet) {removeHelmets.add(helmet);}
-	
+	public static void removeHelmet(Helmet helmet) {removeHelmets.add(helmet); removedObjects.add(helmet);}
+
 	/**
 	 * Removes the barrel when disappears.
 	 * @param barrel Barrels.
 	 */
-	public static void removeBarrel(Barrel barrel) {removeBarrels.add(barrel);}
+	public static void removeBarrel(Barrel barrel) {removeBarrels.add(barrel); removedObjects.add(barrel);}
 
 	/**
 	 * Removes the key when disappears.
 	 * @param key keys.
 	 */
-	public static void removeArmor(Key key) { removeKeys.add(key); }
-	
+	public static void removeArmor(Key key) { removeKeys.add(key); removedObjects.add(key); }
+
 	/**
 	 * Removes the explosion when disappears.
 	 * @param explosion explosions.
 	 */
 	public static void removeExplosion(Explosion explosion) { removeExplosions.add(explosion); }
-	
+
 	/**
 	 * Removes the chain-gun when the player grabs it.
 	 * @param chaingun chain-gun.
 	 */
-	public static void removeChainGun(Chaingun chaingun) {removeChaingunList.add(chaingun);}
-	
+	public static void removeChainGun(Chaingun chaingun) {removeChaingunList.add(chaingun); removedObjects.add(chaingun);}
+
 	/**
 	 * Removes the rocket when disappears.
 	 * @param rocket rocket.
 	 */
-	public static void removeRockets(Rocket rocket) { removeRockets.add(rocket); }
-	
+	public static void removeRockets(Rocket rocket) { removeRockets.add(rocket); removedObjects.add(rocket); }
+
 	/**
 	 * Removes the bleeding when disappears.
 	 * @param bleed bleed.
 	 */
 	public static void removeBleeding(Bleed bleed) { removeBleedingList.add(bleed); }
-	
+
 	/**
 	 * Removes the rocket launcher when the player grabs it.
 	 * @param rocketLauncher rocket launcher.
 	 */
-	public static void removeRocketLauncher(RocketLauncher rocketLauncher) {removeRocketLauncherList.add(rocketLauncher);}
+	public static void removeRocketLauncher(RocketLauncher rocketLauncher) {removeRocketLauncherList.add(rocketLauncher); removedObjects.add(rocketLauncher);}
+
+	/**
+	 * Whether a pickup/barrel instance has already been removed (picked up
+	 * or destroyed) - used to build/apply a save's level deltas, since none
+	 * of the removeXxxList queues above are a usable signal for that (see
+	 * the comment on removedObjects' declaration).
+	 * @param object to check.
+	 * @return removed state.
+	 */
+	public static boolean wasRemoved(GameComponent object) {return removedObjects.contains(object);}
 	
 	/**
 	 * Removes the fire when disappears.

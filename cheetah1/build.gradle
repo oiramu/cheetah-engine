@@ -32,6 +32,10 @@ dependencies {
     // could drift; slick.jar isn't published there at all).
     implementation files('lib/jar/lwjgl.jar', 'lib/jar/lwjgl_util.jar', 'lib/jar/slick.jar')
 
+    // Save-game data model (see game.save package). A normal published Maven Central
+    // artifact, unlike LWJGL2/Slick above - no natives to match, so no reason to vendor it.
+    implementation 'com.google.code.gson:gson:2.11.0'
+
     testImplementation platform('org.junit:junit-bom:5.10.2')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

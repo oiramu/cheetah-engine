@@ -28,9 +28,11 @@ public class MenuEvent {
 	/*
 	 * List of event:
 	 * 		- "0" = void
-	 * 		- "1" = exit 
+	 * 		- "1" = exit
 	 * 		- "2" = load Menu (1 parameter)
 	 * 		- "3" = load World (1 parameter)
+	 * 		- "7" = save settings to res/config.txt, then return to the main menu
+	 * 		- "8" = load a save slot (1 parameter: slot id, e.g. "1" or "autosave")
 	 */
 	private int 	m_actionId = 0;
 	private String 	m_parameter = null;
@@ -56,12 +58,15 @@ public class MenuEvent {
 			case "resume":
 				m_actionId = 6;
 				break;
+			case "saveSettings":
+				m_actionId = 7;
+				break;
 			default:
 				m_actionId = 0;
 				break;
 		}
 	}
-	
+
 	/**
 	 * Constructor for the events of the menu.
 	 * @param eventName String name of the event.
@@ -75,6 +80,9 @@ public class MenuEvent {
 				break;
 			case "loadMenu":
 				m_actionId = 2;
+				break;
+			case "loadSave":
+				m_actionId = 8;
 				break;
 			default:
 				m_actionId = 0;

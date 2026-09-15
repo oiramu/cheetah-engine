@@ -1,0 +1,25 @@
+#Load Game ML Code
+Background background=res/textures/Menu/background.jpg 0 0 1 1
+Image imgLogo=res/textures/Menu/logo.png 0.0325 0.35 0.375 0.15
+Background imgBackground=res/textures/Menu/shadow.png 0 0 0.425 1
+
+Button continueBtn=Continue:0.0325 0.55 0.375 0.05
+continueBtn>addAction:loadSave:autosave
+
+Button slot1Btn=Slot 1:0.0325 0.625 0.375 0.05
+slot1Btn>addAction:loadSave:1
+
+Button slot2Btn=Slot 2:0.0325 0.7 0.375 0.05
+slot2Btn>addAction:loadSave:2
+
+Button slot3Btn=Slot 3:0.0325 0.775 0.375 0.05
+slot3Btn>addAction:loadSave:3
+
+Button returnBtn=Back:0.0325 0.85 0.375 0.05
+returnBtn>addAction:loadMenu:res/Menu/menu.txt
+
+continueBtn>selectId
+slot1Btn>selectId
+slot2Btn>selectId
+slot3Btn>selectId
+returnBtn>selectId

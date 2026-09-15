@@ -374,6 +374,14 @@ public class NaziSergeant extends Enemy implements Collidable {
     }
 
     /**
+     * @see game.enemies.Enemy#killInstantly()
+     */
+    public void killInstantly() {
+        dead = true;
+        state = STATE_DEAD;
+    }
+
+    /**
      * Method that calculates the damage that the enemy receives.
      * @param amt amount.
      */

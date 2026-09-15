@@ -170,10 +170,33 @@ public class MenuModel extends GUIComponent {
 						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='
 						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
 						    		treatment = SEngineUtil.getInstance().splitString(treatment[1], ' ');
-						    		
+
 						    		menuObject.addChild(new WidgetAnimation(m_m2DRender, Integer.parseInt(treatment[0]), treatment[1], Integer.parseInt(treatment[2]), Float.parseFloat(treatment[3]))
 						    				, temporaryName);
 						    		break;
+						    	case "SettingCycle": {
+						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='
+						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
+						    		String[] settingParts = SEngineUtil.getInstance().splitString(treatment[1], ':'); //[label, rect, settingKey, optionsCsv]
+						    		String[] rect = SEngineUtil.getInstance().splitString(settingParts[1], ' ');
+						    		String[] options = SEngineUtil.getInstance().splitString(settingParts[3], ',');
+
+						    		menuObject.addChild(new SettingCycle(settingParts[0], Float.parseFloat(rect[0]), Float.parseFloat(rect[1]), Float.parseFloat(rect[2]), Float.parseFloat(rect[3]), settingParts[2], options)
+						    				, temporaryName);
+						    		break;
+						    	}
+						    	case "SettingStepper": {
+						    		treatment = SEngineUtil.getInstance().splitString(line.substring(treatment[0].length()), '='); //Removes the type name and separate line with character '='
+						    		temporaryName = treatment[0].replaceAll("\\s", ""); //Delete space
+						    		String[] settingParts = SEngineUtil.getInstance().splitString(treatment[1], ':'); //[label, rect, settingKey, "min,max,step"]
+						    		String[] rect = SEngineUtil.getInstance().splitString(settingParts[1], ' ');
+						    		String[] range = SEngineUtil.getInstance().splitString(settingParts[3], ',');
+
+						    		menuObject.addChild(new SettingStepper(settingParts[0], Float.parseFloat(rect[0]), Float.parseFloat(rect[1]), Float.parseFloat(rect[2]), Float.parseFloat(rect[3]), settingParts[2],
+						    				Float.parseFloat(range[0]), Float.parseFloat(range[1]), Float.parseFloat(range[2]))
+						    				, temporaryName);
+						    		break;
+						    	}
 						    	default: //I suppose exists
 						    		treatment = SEngineUtil.getInstance().splitString(line, '>');
 						    		WidgetModel widget = menuObject.getChildren(treatment[0]);

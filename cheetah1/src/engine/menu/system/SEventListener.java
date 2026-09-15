@@ -15,6 +15,7 @@
  */
 package engine.menu.system;
 
+import engine.components.Constants;
 import engine.core.CoreEngine;
 import engine.menu.MenuModel;
 import engine.rendering.Window;
@@ -69,6 +70,13 @@ public class SEventListener {
 			case 6:
 				Auschwitz.isPaused = false;
 				break;
+			case 7:
+				//Save settings, then return to the main menu
+				Constants.save("res/config.txt");
+				if(Window.getMenu().getMenu() != null) //Destroy last Menu
+					Window.getMenu().getMenu().delete();
+				Window.getMenu().setMenu(new MenuModel("res/Menu/menu.txt"));
+				break;
 		}
 	}
 	
@@ -83,8 +91,12 @@ public class SEventListener {
 				//Load new menu
 				if(Window.getMenu().getMenu() != null) //Destroy last Menu
 					Window.getMenu().getMenu().delete();
-					
+
 				Window.getMenu().setMenu(new MenuModel(menuPath));
+				break;
+			case 8:
+				//Load a save slot and restart the engine into it
+				Auschwitz.loadSave(menuPath);
 				break;
 		}
 	}

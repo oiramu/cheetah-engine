@@ -139,6 +139,18 @@ public class SecretWall extends GameComponent implements Collidable {
     }
 
     /**
+     * Puts the secret wall directly into its open position with no
+     * animation and no sound - used only to restore a save's state onto a
+     * freshly-regenerated level, never during normal gameplay. Unlike Door,
+     * a secret wall never auto-closes once opening() is true (there's no
+     * closing phase in update() below), so this is a real steady state.
+     */
+    public void openInstantly() {
+        opening = true;
+        transform.setPosition(openPos);
+    }
+
+    /**
      * Refresh the secret wall every single frame.
      * @param delta of time
      */

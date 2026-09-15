@@ -44,7 +44,11 @@ public class Log {
 
 	public static boolean	   	showCaller = true;
 
-	private static Formatter	formatter  = ((message) -> "[" + CoreEngine.getCurrent().getGame().getName() + " " + Time.getTimeAsString() + (showCaller ? " in " + getCaller() : "") + "] " + message);
+	// Falls back to a generic label instead of the running game's name when
+	// there's no CoreEngine yet - e.g. a config/save error logged from a
+	// plain JUnit test, or any real logging that happens to run before
+	// CoreEngine.getCurrent() is set during startup.
+	private static Formatter	formatter  = ((message) -> "[" + gameName() + " " + Time.getTimeAsString() + (showCaller ? " in " + getCaller() : "") + "] " + message);
 	private static OutputStream savingOutput;
 
 	public static boolean	   	save	   = false;
@@ -61,6 +65,18 @@ public class Log {
 	@NonLoggable
 	public static void message(String msg) {
 		message(msg, true);
+	}
+
+	/**
+	 * Name of the currently running game, or a generic fallback if there
+	 * isn't one running yet.
+	 * @return name to log under.
+	 */
+	@NonLoggable
+	private static String gameName() {
+		CoreEngine coreEngine = CoreEngine.getCurrent();
+		if(coreEngine == null || coreEngine.getGame() == null) return "Cheetah Engine";
+		return coreEngine.getGame().getName();
 	}
 
 	/**

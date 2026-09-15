@@ -17,6 +17,7 @@ package engine;
 
 import java.util.Arrays;
 
+import engine.components.Constants;
 import engine.core.CoreEngine;
 import game.Auschwitz;
 
@@ -37,8 +38,16 @@ public class Main {
 	public static void main(String[] args) {
 		boolean skipMenu = Arrays.asList(args).contains("--skip-menu");
 
-		CoreEngine engine = new CoreEngine(1280, 720, 120, new Auschwitz());
-		engine.createWindow("Auschwitz", true, skipMenu);
+		// Loaded here, before the window exists, so the settings menu's
+		// resolution/fullscreen fields (which only take effect on next
+		// launch - see Constants.TARGET_WIDTH/TARGET_HEIGHT/FULLSCREEN) can
+		// actually reach Window.createDisplay(). Auschwitz.init() also
+		// loads this later for the rest of the engine's config; reloading
+		// here first is harmless and required for display mode specifically.
+		Constants.load("res/config.txt");
+
+		CoreEngine engine = new CoreEngine(Constants.TARGET_WIDTH, Constants.TARGET_HEIGHT, 120, new Auschwitz());
+		engine.createWindow("Auschwitz", Constants.FULLSCREEN, skipMenu);
 		engine.run();
 	}
 

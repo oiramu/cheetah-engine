@@ -64,6 +64,17 @@ public abstract class Enemy extends GameComponent {
 	public double getHealth() {return health;}
 
 	/**
+	 * Marks this enemy dead and settles it straight into its corpse state -
+	 * used only to restore a save's state onto a freshly-regenerated level
+	 * (where every enemy starts alive again), never during normal combat.
+	 * Each subclass sets its own state to its own STATE_DEAD constant (the
+	 * 8 enemies don't share one dying/dead state machine - see the class
+	 * comment above), which is what its own update() already uses to pick
+	 * the corpse sprite and stop running its AI switch.
+	 */
+	public abstract void killInstantly();
+
+	/**
 	 * The "wake from idle, subtract health" half of damage() that's
 	 * identical across every enemy - the STATE_IDLE/STATE_CHASE values
 	 * are passed in since every enemy declares its own (differently

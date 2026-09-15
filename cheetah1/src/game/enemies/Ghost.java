@@ -315,6 +315,17 @@ public class Ghost extends Enemy {
     }
 
     /**
+     * @see game.enemies.Enemy#killInstantly()
+     * Ghosts have no corpse state - the next update() tick after this
+     * removes it from the level entirely via Level.removeGhost(), same as
+     * a normal kill's STATE_DEAD case already does.
+     */
+    public void killInstantly() {
+        dead = true;
+        state = STATE_DEAD;
+    }
+
+    /**
      * Method that calculates the damage that the enemy receives.
      * @param amt amount.
      */

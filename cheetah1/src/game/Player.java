@@ -46,6 +46,7 @@ import engine.rendering.Window;
 import game.objects.Bleed;
 import game.projectiles.Flame;
 import game.projectiles.pRocket;
+import game.save.PlayerSave;
 
 /**
  *
@@ -222,6 +223,7 @@ public class Player extends GameComponent {
     private SpotLight flashLight;
     
     public double notificationTime;
+    public double saveNotificationTime;
     
     private double gunFireTime;
     private double kickingTime;
@@ -372,6 +374,12 @@ public class Player extends GameComponent {
     		playerText.put("Armor", new HUD("", new Vector2f(-0.6f,-0.175f), new Vector2f(1f,4f)));
     		playerText.put("Ammo", new HUD("", new Vector2f(0.75f,-0.235f), new Vector2f(1f,4f)));
     		playerText.put("Notification", new HUD("", new Vector2f(-1.3f,1.25f), new Vector2f(0.7f,0.7f)));
+    		// Top-right, sized like Debug's F3 HUD text (Debug.java uses this
+    		// same Vector2f(0.5f,0.5f) scale for all its lines, topmost one at
+    		// y=1.9f). Exact X is an approximate mirror of Debug's left-side
+    		// X_MARGIN=0.5f onto the right edge - a visual-tuning detail to
+    		// confirm by eye, this machine can't render the game to check it.
+    		playerText.put("SaveNotification", new HUD("", new Vector2f(1.0f,1.9f), new Vector2f(0.5f,0.5f)));
     		playerText.put("CrossHair", new HUD("", zeroVector.getXY(), new Vector2f(1f,1f)));
     		playerText.put("LifeHUD", new HUD(new Material(new Texture("medkit/MEDIA")), new Vector2f(-3.8f,-4.4f), new Vector2f(0.2f,0.2f)));
     		playerText.put("ArmorHUD", new HUD(new Material(new Texture("armor/MEDIA")), new Vector2f(-3.8f,-3.2f), new Vector2f(0.2f,0.2f)));
@@ -1206,6 +1214,7 @@ public class Player extends GameComponent {
 	        	playerText.get("Armor").render(renderingEngine);
 	        }
 	        if(time < notificationTime + 2.5f) playerText.get("Notification").render(renderingEngine);
+	        if(time < saveNotificationTime + 2f) playerText.get("SaveNotification").render(renderingEngine);
     	}
 
     	if(!rocketsArray.isEmpty())
@@ -1227,7 +1236,99 @@ public class Player extends GameComponent {
      * @return player's health.
      */
     public int getHealth() { return health; }
-    
+
+    /**
+     * Restores this player's stats to exact saved values, bypassing the
+     * additive setters below (setHealth/setBullets/setMaxHealth/etc. all
+     * add to the current value rather than replacing it, which only gives
+     * the right result from a guaranteed-zero baseline like a
+     * freshly-constructed Player - not safe to rely on here, since
+     * Auschwitz.applySave() runs after loadLevel()'s own carryover block
+     * has already pushed default starting stats through those same
+     * additive setters). weaponState itself is deliberately left alone -
+     * the caller re-invokes the matching got&lt;Weapon&gt;() method instead,
+     * the same way Auschwitz.loadLevel()'s existing carryover already does,
+     * since equipping a weapon has side effects beyond the field itself.
+     * Used only when applying a loaded SaveGame, never during normal play.
+     * @param save player data to restore.
+     */
+    public void restoreFromSave(PlayerSave save) {
+        health = save.health;
+        maxHealth = save.maxHealth;
+        armori = save.armor;
+        maxArmori = save.maxArmor;
+        armorb = save.hasArmor;
+        bullets = save.bullets;
+        maxBullets = save.maxBullets;
+        shells = save.shells;
+        maxShells = save.maxShells;
+        rockets = save.rockets;
+        maxRockets = save.maxRockets;
+        gas = save.gas;
+        maxGas = save.maxGas;
+        goldkey = save.goldKey;
+        bronzekey = save.bronzeKey;
+        shotgun = save.hasShotgun;
+        machinegun = save.hasMachinegun;
+        SShotgun = save.hasSuperShotgun;
+        chaingun = save.hasChaingun;
+        rocketLauncher = save.hasRocketLauncher;
+        flameThrower = save.hasFlameThrower;
+        mouseLocked = save.mouseLocked;
+        isFlashLightOn = save.isFlashLightOn;
+    }
+
+    /**
+     * Snapshots this player's current stats and position/rotation into a
+     * PlayerSave, for writing to a save file.
+     * @return a new PlayerSave with this player's current values.
+     */
+    public PlayerSave toSave() {
+        PlayerSave save = new PlayerSave();
+        save.posX = camera.getPos().getX();
+        save.posY = camera.getPos().getY();
+        save.posZ = camera.getPos().getZ();
+        save.rotX = camera.getRotation().getX();
+        save.rotY = camera.getRotation().getY();
+        save.rotZ = camera.getRotation().getZ();
+        save.rotW = camera.getRotation().getW();
+        save.health = health;
+        save.maxHealth = maxHealth;
+        save.armor = armori;
+        save.maxArmor = maxArmori;
+        save.hasArmor = armorb;
+        save.bullets = bullets;
+        save.maxBullets = maxBullets;
+        save.shells = shells;
+        save.maxShells = maxShells;
+        save.rockets = rockets;
+        save.maxRockets = maxRockets;
+        save.gas = gas;
+        save.maxGas = maxGas;
+        save.goldKey = goldkey;
+        save.bronzeKey = bronzekey;
+        save.hasShotgun = shotgun;
+        save.hasMachinegun = machinegun;
+        save.hasSuperShotgun = SShotgun;
+        save.hasChaingun = chaingun;
+        save.hasRocketLauncher = rocketLauncher;
+        save.hasFlameThrower = flameThrower;
+        save.weaponState = weaponState;
+        save.mouseLocked = mouseLocked;
+        save.isFlashLightOn = isFlashLightOn;
+        return save;
+    }
+
+    /**
+     * Shows the top-right "game saved" toast for 2 seconds - called after
+     * both a manual (pause-menu) and an automatic (level-completion) save.
+     * @param text to show.
+     */
+    public void notifySaved(String text) {
+        playerText.get("SaveNotification").setText(text);
+        saveNotificationTime = Time.getTime();
+    }
+
     /**
 	 * Sets the amount of health for the player to have.
 	 * @param amt amount of health to set

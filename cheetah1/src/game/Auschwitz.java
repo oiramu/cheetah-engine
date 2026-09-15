@@ -17,7 +17,9 @@ package game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 
 import javax.sound.midi.Sequence;
 
@@ -28,12 +30,18 @@ import engine.audio.AudioManager;
 import engine.audio.AudioUtil;
 import engine.audio.SoundLibrary;
 import engine.components.Constants;
+import engine.components.GameComponent;
 import engine.core.*;
 import engine.core.utils.Log;
 import engine.menu.CreditsMenu;
 import engine.menu.Menu;
 import engine.rendering.*;
 import game.enemies.*;
+import game.objects.Barrel;
+import game.pickUps.*;
+import game.save.LevelDeltas;
+import game.save.SaveGame;
+import game.save.SaveGameManager;
 import game.walls.SecretWall;
 
 /**
@@ -55,7 +63,11 @@ public class Auschwitz implements Game {
 
     public static Level 						level;
     public static Material						material;
-    
+
+    // Set by loadSave() right before restarting the engine; consumed and
+    // cleared by loadLevel() once the target level has been regenerated.
+    private static SaveGame						pendingSave;
+
     private static InGameMenu					gameMenu;
     private static Menu							menu;
     
@@ -163,6 +175,18 @@ public class Auschwitz implements Game {
 					text.get("areYouSure").setText(exitMessages[textId]);
 					toExit = true;
 				}
+				if (Input.getKeyDown(Input.KEY_1)) {
+					AudioManager.play(SoundLibrary.get(CLICK_SOUND), new Vector3f(0, 0, 0), false);
+					saveGame("1");
+				}
+				if (Input.getKeyDown(Input.KEY_2)) {
+					AudioManager.play(SoundLibrary.get(CLICK_SOUND), new Vector3f(0, 0, 0), false);
+					saveGame("2");
+				}
+				if (Input.getKeyDown(Input.KEY_3)) {
+					AudioManager.play(SoundLibrary.get(CLICK_SOUND), new Vector3f(0, 0, 0), false);
+					saveGame("3");
+				}
         	} else {
 				if(toExit && Input.getKeyDown(Input.KEY_Y)) {
 					AudioManager.play(SoundLibrary.get(CLICK_SOUND), new Vector3f(0, 0, 0), false);
@@ -217,6 +241,227 @@ public class Auschwitz implements Game {
      * Reloads the last level played.
      */
 	public static void reloadLevel() { loadLevel(levelNum-levelNum, false); }
+
+	/**
+	 * Saves current progress (player stats/position, level deltas) to a
+	 * slot, encrypted via SaveGameManager. Called both from the pause
+	 * menu's 1/2/3 keys and from autoSaveProgress() below.
+	 * @param slot identifier ("1", "2", "3", or the reserved "autosave" name).
+	 */
+	private static void saveGame(String slot) {
+		if(SaveGameManager.save(slot, buildSaveGame()))
+			level.getPlayer().notifySaved("Game saved");
+	}
+
+	/**
+	 * Saves automatically the moment a level is completed. Called only
+	 * from Level's exit-point trigger (Level.openDoors(), right after it
+	 * calls loadLevel() for a reached exit) - never from loadLevel()
+	 * itself, since loadLevel() is also used for death/reload/restart
+	 * (reloadLevel(), offset 0) and the very first level at game start,
+	 * neither of which is "passing a level".
+	 */
+	public static void autoSaveProgress() { saveGame("autosave"); }
+
+	/**
+	 * Loads a save slot and restarts the engine into it - mirrors the
+	 * existing loadEpisode* actions (SEventListener's cases 3/4/5), which
+	 * also just set state then call CoreEngine.getCurrent().start().
+	 * @param slot identifier to load.
+	 */
+	public static void loadSave(String slot) {
+		SaveGame saveGame = SaveGameManager.load(slot);
+		if(saveGame == null) {
+			Log.error("Could not load save slot '" + slot + "'");
+			return;
+		}
+		pendingSave = saveGame;
+		setStartingLevel(saveGame.levelNum);
+		CoreEngine.getCurrent().start();
+	}
+
+	/**
+	 * Applies a loaded save's player stats/position/weapon and level
+	 * deltas onto the just-regenerated level/player - called from
+	 * loadLevel() right after its own existing carryover-reapplication
+	 * block finishes, so this is authoritative over it.
+	 * @param saveGame to apply.
+	 */
+	private static void applySave(SaveGame saveGame) {
+		Player player = level.getPlayer();
+		player.restoreFromSave(saveGame.player);
+		player.getCamera().setPos(new Vector3f(saveGame.player.posX, saveGame.player.posY, saveGame.player.posZ));
+		player.getCamera().setRotation(new Quaternion(saveGame.player.rotX, saveGame.player.rotY, saveGame.player.rotZ, saveGame.player.rotW));
+
+		String weaponState = saveGame.player.weaponState == null ? "" : saveGame.player.weaponState;
+		switch(weaponState) {
+			case Player.HAND: 				player.gotHand(); break;
+			case Player.SHOTGUN: 			player.gotShotgun(); break;
+			case Player.MACHINEGUN: 		player.gotMachinegun(); break;
+			case Player.SUPER_SHOTGUN: 	player.gotSShotgun(); break;
+			case Player.CHAINGUN: 			player.gotChaingun(); break;
+			case Player.ROCKET_LAUNCHER: 	player.gotRocketLauncher(); break;
+			case Player.FLAME_THROWER: 	player.gotFlameThrower(); break;
+			default: 						player.gotPistol(); break;
+		}
+
+		applyLevelDeltas(saveGame.levelDeltas);
+	}
+
+	/**
+	 * Builds a SaveGame snapshot of the current level/player.
+	 * @return the built save.
+	 */
+	private static SaveGame buildSaveGame() {
+		SaveGame saveGame = new SaveGame();
+		saveGame.levelNum = levelNum;
+		saveGame.player = level.getPlayer().toSave();
+		saveGame.levelDeltas = captureLevelDeltas();
+		return saveGame;
+	}
+
+	/**
+	 * Captures everything about the current level that has diverged from
+	 * its bitmap-regenerated baseline: dead enemies and removed
+	 * pickups/barrels by spawn-order index, and opened secret walls.
+	 * Doors/locked doors are deliberately not captured - they auto-close
+	 * on their own timer (see Door.update()/LockedDoor.update()), so
+	 * there's no persistent "left open" state to save.
+	 * @return the captured deltas.
+	 */
+	private static LevelDeltas captureLevelDeltas() {
+		LevelDeltas deltas = new LevelDeltas();
+
+		deltas.deadEnemies.put("naziSoldiers", deadIndices(level.getNaziSoldiers()));
+		deltas.deadEnemies.put("dogs", deadIndices(level.getDogs()));
+		deltas.deadEnemies.put("ssSoldiers", deadIndices(level.getSsSoldiers()));
+		deltas.deadEnemies.put("naziSergeants", deadIndices(level.getNaziSergeants()));
+		deltas.deadEnemies.put("ghosts", deadIndices(level.getGhosts()));
+		deltas.deadEnemies.put("zombies", deadIndices(level.getZombies()));
+		deltas.deadEnemies.put("captains", deadIndices(level.getCaptains()));
+		deltas.deadEnemies.put("commanders", deadIndices(level.getCommanders()));
+
+		deltas.removedPickups.put("medkits", removedIndices(level.getMedkits()));
+		deltas.removedPickups.put("foods", removedIndices(level.getFoods()));
+		deltas.removedPickups.put("bullets", removedIndices(level.getBullets()));
+		deltas.removedPickups.put("shells", removedIndices(level.getShells()));
+		deltas.removedPickups.put("bags", removedIndices(level.getBags()));
+		deltas.removedPickups.put("shotguns", removedIndices(level.getShotguns()));
+		deltas.removedPickups.put("machineguns", removedIndices(level.getMachineguns()));
+		deltas.removedPickups.put("armors", removedIndices(level.getArmors()));
+		deltas.removedPickups.put("superShotguns", removedIndices(level.getSuperShotguns()));
+		deltas.removedPickups.put("helmets", removedIndices(level.getHelmets()));
+		deltas.removedPickups.put("chainguns", removedIndices(level.getChainguns()));
+		deltas.removedPickups.put("keys", removedIndices(level.getKeys()));
+		deltas.removedPickups.put("rockets", removedIndices(level.getRockets()));
+		deltas.removedPickups.put("rocketLaunchers", removedIndices(level.getRocketLaunchers()));
+
+		deltas.poppedBarrels = removedIndices(level.getBarrels());
+
+		ArrayList<SecretWall> secretWalls = level.getSecretWalls();
+		for(int i = 0; i < secretWalls.size(); i++)
+			if(secretWalls.get(i).opens())
+				deltas.openedSecretWalls.add(i);
+
+		return deltas;
+	}
+
+	/**
+	 * Reapplies captured deltas onto a freshly-regenerated level, where
+	 * every enemy/pickup/barrel/secret wall has just spawned fresh from
+	 * the bitmap.
+	 * @param deltas to apply.
+	 */
+	private static void applyLevelDeltas(LevelDeltas deltas) {
+		killByIndices(level.getNaziSoldiers(), deltas.deadEnemies.get("naziSoldiers"));
+		killByIndices(level.getDogs(), deltas.deadEnemies.get("dogs"));
+		killByIndices(level.getSsSoldiers(), deltas.deadEnemies.get("ssSoldiers"));
+		killByIndices(level.getNaziSergeants(), deltas.deadEnemies.get("naziSergeants"));
+		killByIndices(level.getGhosts(), deltas.deadEnemies.get("ghosts"));
+		killByIndices(level.getZombies(), deltas.deadEnemies.get("zombies"));
+		killByIndices(level.getCaptains(), deltas.deadEnemies.get("captains"));
+		killByIndices(level.getCommanders(), deltas.deadEnemies.get("commanders"));
+
+		removeByIndices(level.getMedkits(), deltas.removedPickups.get("medkits"), Level::removeMedkit);
+		removeByIndices(level.getFoods(), deltas.removedPickups.get("foods"), Level::removeFood);
+		removeByIndices(level.getBullets(), deltas.removedPickups.get("bullets"), Level::removeBullets);
+		removeByIndices(level.getShells(), deltas.removedPickups.get("shells"), Level::removeShells);
+		removeByIndices(level.getBags(), deltas.removedPickups.get("bags"), Level::removeBags);
+		removeByIndices(level.getShotguns(), deltas.removedPickups.get("shotguns"), Level::removeShotgun);
+		removeByIndices(level.getMachineguns(), deltas.removedPickups.get("machineguns"), Level::removeMachineGun);
+		removeByIndices(level.getArmors(), deltas.removedPickups.get("armors"), Level::removeArmor);
+		removeByIndices(level.getSuperShotguns(), deltas.removedPickups.get("superShotguns"), Level::removeSuperShotgun);
+		removeByIndices(level.getHelmets(), deltas.removedPickups.get("helmets"), Level::removeHelmet);
+		removeByIndices(level.getChainguns(), deltas.removedPickups.get("chainguns"), Level::removeChainGun);
+		removeByIndices(level.getKeys(), deltas.removedPickups.get("keys"), Level::removeArmor);
+		removeByIndices(level.getRockets(), deltas.removedPickups.get("rockets"), Level::removeRockets);
+		removeByIndices(level.getRocketLaunchers(), deltas.removedPickups.get("rocketLaunchers"), Level::removeRocketLauncher);
+
+		removeByIndices(level.getBarrels(), deltas.poppedBarrels, Level::removeBarrel);
+
+		ArrayList<SecretWall> secretWalls = level.getSecretWalls();
+		if(deltas.openedSecretWalls != null)
+			for(int index : deltas.openedSecretWalls)
+				if(index >= 0 && index < secretWalls.size())
+					secretWalls.get(index).openInstantly();
+	}
+
+	/**
+	 * Spawn-order indices of the enemies in a list that are already dead.
+	 * @param enemies to check.
+	 * @return matching indices.
+	 */
+	private static List<Integer> deadIndices(List<? extends Enemy> enemies) {
+		List<Integer> indices = new ArrayList<Integer>();
+		for(int i = 0; i < enemies.size(); i++)
+			if(!enemies.get(i).isAlive())
+				indices.add(i);
+		return indices;
+	}
+
+	/**
+	 * Spawn-order indices of the pickups/barrels in a list that have
+	 * already been removed (picked up or destroyed) - see
+	 * Level.wasRemoved()'s doc for why this is needed instead of just
+	 * checking list membership.
+	 * @param objects to check.
+	 * @return matching indices.
+	 */
+	private static List<Integer> removedIndices(List<? extends GameComponent> objects) {
+		List<Integer> indices = new ArrayList<Integer>();
+		for(int i = 0; i < objects.size(); i++)
+			if(Level.wasRemoved(objects.get(i)))
+				indices.add(i);
+		return indices;
+	}
+
+	/**
+	 * Marks the enemies at the given spawn-order indices dead.
+	 * @param enemies to kill from.
+	 * @param indices to kill.
+	 */
+	private static void killByIndices(List<? extends Enemy> enemies, List<Integer> indices) {
+		if(indices == null) return;
+		for(int index : indices)
+			if(index >= 0 && index < enemies.size())
+				enemies.get(index).killInstantly();
+	}
+
+	/**
+	 * Removes the pickups/barrels at the given spawn-order indices, via
+	 * the same per-type Level.removeXxx() static method a real pickup
+	 * calls on collection.
+	 * @param <E> pickup/barrel type.
+	 * @param objects to remove from.
+	 * @param indices to remove.
+	 * @param remover Level.removeXxx() method reference for this type.
+	 */
+	private static <E extends GameComponent> void removeByIndices(List<E> objects, List<Integer> indices, Consumer<E> remover) {
+		if(indices == null) return;
+		for(int index : indices)
+			if(index >= 0 && index < objects.size())
+				remover.accept(objects.get(index));
+	}
 
     /**
      * Load the level and also charges the next level when the last end.
@@ -429,9 +674,17 @@ public class Auschwitz implements Game {
             	}else if(level.getPlayer().getWeaponState() == level.getPlayer().FLAME_THROWER && flameThrowerTemp == true) {
             		level.getPlayer().gotFlameThrower();
             	}
-            	
+
             }
-            
+
+            // Applied last, after the carryover block above, so a loaded
+            // save's stats/position/weapon are authoritative over whatever
+            // the normal level-transition carryover just computed.
+            if(pendingSave != null) {
+            	applySave(pendingSave);
+            	pendingSave = null;
+            }
+
         } catch (RuntimeException ex) {
         	try {
 				Thread.sleep(1);

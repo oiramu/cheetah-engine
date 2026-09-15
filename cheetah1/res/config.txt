@@ -33,3 +33,9 @@ LOD_FAR_TICK_SKIP farTickSkip=4
 #(weapon fire, pickups, impacts). When every source is busy, the
 #least-recently-used one is recycled rather than growing the pool.
 MAX_AUDIO_SOURCES sources=16
+#Display mode read once at startup (Main.java) before the window is
+#created. Changing these from the in-game settings menu requires a
+#restart to take effect - there's no live resize path.
+TARGET_WIDTH width=1280
+TARGET_HEIGHT height=720
+FULLSCREEN fullscreen=true

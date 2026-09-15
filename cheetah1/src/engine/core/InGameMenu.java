@@ -48,6 +48,7 @@ public class InGameMenu {
         text.put("Reload",new HUD("Press R to reload level", new Vector2f(-1.75f,-0.15f), new Vector2f(0.4f,0.8f)));
         text.put("Back",new HUD("Press B to get back to menu", new Vector2f(-1.75f,-0.3f), new Vector2f(0.4f,0.8f)));
         text.put("Exit",new HUD("Press X to quit the game", new Vector2f(-1.75f,-0.45f), new Vector2f(0.4f,0.8f)));
+        text.put("Save",new HUD("Press 1/2/3 to save", new Vector2f(-1.75f,-0.6f), new Vector2f(0.4f,0.8f)));
         text.put("areYouSure",new HUD("Are you sure you wanna quit?", new Vector2f(-1.8f,0.175f), new Vector2f(0.5f,1.5f)));
         text.put("yesornot",new HUD("Press: Y/N", new Vector2f(-0.45f,0.0f), new Vector2f(0.5f,1.0f)));
         text.put("inventory",new HUD("Inventory:", new Vector2f(0.1f,0.0f), new Vector2f(0.8f,0.8f)));
@@ -81,6 +82,7 @@ public class InGameMenu {
 		text.get("Reload").render(engine);
 		text.get("Back").render(engine);
 		text.get("Exit").render(engine);
+		text.get("Save").render(engine);
 		text.get("inventory").render(engine);
 		text.get("pistol").render(engine);
 		if(Level.getPlayer().isShotgun())

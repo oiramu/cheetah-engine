@@ -355,8 +355,8 @@ public class SsSoldier extends Enemy implements Collidable {
         			break;
         		case STATE_DEAD:
         			isQuiet = true;
-                	machineGun.update(delta);
-                	bullet.update(delta);
+                	updateDrop(machineGun, 2, delta);
+                	updateDrop(bullet, 1, delta);
                     dead = true;
                     material.setDiffuse(animation.get(15));
                     if (distance < machineGun.PICKUP_THRESHHOLD && distance < bullet.PICKUP_THRESHHOLD)

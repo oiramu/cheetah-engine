@@ -17,6 +17,8 @@ package game.enemies;
 
 import engine.components.GameComponent;
 import engine.core.Transform;
+import engine.core.Vector3f;
+import game.Level;
 
 /**
  * Shared shape genuinely identical across all 8 enemy types: the
@@ -36,6 +38,8 @@ import engine.core.Transform;
  */
 public abstract class Enemy extends GameComponent {
 
+	private static final float DROP_LAYER_OFFSET = 0.03f;
+
 	protected Transform transform;
 
 	protected int state;
@@ -44,6 +48,24 @@ public abstract class Enemy extends GameComponent {
 	protected boolean dead;
 	protected double deathTime;
 	protected double health;
+
+	/**
+	 * Updates a dropped pickup, keeping it just in front of the corpse. Both
+	 * are billboards on the same spot, so without an offset they'd be coplanar
+	 * and z-fight. Each layer is one step closer to the camera, which also
+	 * separates enemies that drop more than one pickup.
+	 * @param drop pickup to update.
+	 * @param layer how many offset steps to place it in front of the corpse.
+	 * @param delta of time.
+	 */
+	protected void updateDrop(GameComponent drop, int layer, double delta) {
+		Vector3f position = transform.getPosition();
+		Vector3f toCamera = Level.getPlayer().getCamera().getPos().sub(position).normalized();
+		float offset = DROP_LAYER_OFFSET * layer;
+		drop.getTransform().setPosition(position.getX() + toCamera.getX() * offset, position.getY(),
+				position.getZ() + toCamera.getZ() * offset);
+		drop.update(delta);
+	}
 
 	/**
 	 * Gets the enemy's actual transformation.

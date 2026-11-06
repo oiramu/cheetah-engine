@@ -70,7 +70,7 @@ public class Mesh {
      * @param calcNormals if the mesh uses normals
      * or not.
      */
-    public Mesh(Vertex[] vertices, int[] indices, boolean calcNormals) {this(vertices, indices, calcNormals, false);}
+    public Mesh(Vertex[] vertices, int[] indices, boolean calcNormals) {this(vertices, indices, calcNormals, calcNormals);}
     
     /**
      * Constructor of the game obect's mesh.
@@ -144,7 +144,7 @@ public class Mesh {
      * @param indices of vertices.
      */
     private void calcNormals(Vertex[] vertices, int[] indices) {
-    	for (int i = 0; i < vertices.length; i+=3) {
+    	for (int i = 0; i < indices.length; i+=3) {
 			int i0 = indices[i];
 			int i1 = indices[i+1];
 			int i2 = indices[i+2];

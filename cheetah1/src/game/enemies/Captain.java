@@ -366,10 +366,10 @@ public class Captain extends Enemy implements Collidable {
 	            	chaingun = new Chaingun(new Transform(transform.getPosition()), false);
 	            	chaingun.update(delta);
 	                bullet = new Bullet(new Transform(transform.getPosition()), false);
-	                bullet.update(delta);
+	                updateDrop(bullet, 1, delta);
 	                if(dropsKey) {
 	                	key = new Key(new Transform(transform.getPosition()), true, false);
-	                	key.update(delta);
+	                	updateDrop(key, 2, delta);
 	                }
 	            	material.setDiffuse(animation.get(11));   	
 	                dead = true;  
@@ -405,10 +405,10 @@ public class Captain extends Enemy implements Collidable {
 		        	chaingun = new Chaingun(new Transform(transform.getPosition()), false);
 		        	chaingun.update(delta);
 		            bullet = new Bullet(new Transform(transform.getPosition()), false);
-		            bullet.update(delta);
+		            updateDrop(bullet, 1, delta);
 		            if(dropsKey) {
 		            	key = new Key(new Transform(transform.getPosition()), true, false);
-		            	key.update(delta);
+		            	updateDrop(key, 2, delta);
 		            }
 		        	material.setDiffuse(animation.get(11));   	
 		            dead = true;  

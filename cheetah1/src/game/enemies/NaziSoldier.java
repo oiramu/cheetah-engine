@@ -361,7 +361,7 @@ public class NaziSoldier extends Enemy implements Collidable {
 	    		break;
 	    	case STATE_DEAD:
 	    		isQuiet = true;
-	        	bullet.update(delta);
+	        	updateDrop(bullet, 1, delta);
 	        	material.setDiffuse(animation.get(12));   	
 	            dead = true;  
 	            if (distance < bullet.PICKUP_THRESHHOLD)

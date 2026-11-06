@@ -445,7 +445,7 @@ public class Zombie extends Enemy implements Collidable {
     	        		isQuiet = true;
         	            dead = true;
         	            if(drops) {
-        		            key.update(delta);
+        		            updateDrop(key, 2, delta);
         		            if (distance < key.PICKUP_THRESHHOLD && drops)
         		            	state = STATE_POST_DEATH;
         	            }
@@ -640,7 +640,7 @@ public class Zombie extends Enemy implements Collidable {
     	        			isQuiet = true;
         		            dead = true;
         		            if(drops)
-        			            key.update(delta);
+        			            updateDrop(key, 2, delta);
         		            transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
         		            material.setDiffuse(animation.get(14));
         		            if(drops && distance < key.PICKUP_THRESHHOLD)
@@ -682,7 +682,7 @@ public class Zombie extends Enemy implements Collidable {
     	        			isQuiet = true;
         		            dead = true;
         		            if(drops)
-        			            key.update(delta);
+        			            updateDrop(key, 2, delta);
         		            transform.setScale(1.7586206896551724137931034482759f,0.28571428571428571428571428571429f,1);
         		            material.setDiffuse(animation.get(19));
         		            if(drops && distance < key.PICKUP_THRESHHOLD)

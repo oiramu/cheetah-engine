@@ -409,8 +409,8 @@ public class Commander extends Enemy implements Collidable {
         	case STATE_DEAD:
         		isQuiet = true;
             	rocketLauncher.update(delta);
-            	bullet.update(delta);
-            	key.update(delta);
+            	updateDrop(bullet, 1, delta);
+            	updateDrop(key, 2, delta);
             	chaingun.update(delta);
             	material.setDiffuse(animation.get(15));   	
                 dead = true;  

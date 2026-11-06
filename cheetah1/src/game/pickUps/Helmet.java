@@ -111,4 +111,9 @@ public class Helmet extends GameComponent {
     public void render(Shader shader, RenderingEngine renderingEngine) {meshRenderer.render(shader, renderingEngine);}
     
 
+    /**
+     * Gets the transform of the power-up.
+     * @return transform.
+     */
+    public Transform getTransform() {return transform;}
 }

@@ -109,6 +109,7 @@ public class Level extends GameComponent {
     private static final float NUM_TEX_Y = 4f;
     
     private static final float MELEE_RANGE = 0.55f;
+    private static final float MAX_DAY_AMBIENT = 0.8f;
     private static final float BULLET_RANGE = 2f;
     private static final float SHELL_RANGE = 3f;
     private static final float FLAME_RANGE = 6f;
@@ -338,7 +339,7 @@ public class Level extends GameComponent {
 	        }
         }
 
-        if ((player.fires && !player.isReloading) || (Input.getKeyDown(Input.KEY_Q) && !player.trowsKick)) {
+        if ((player.fires && !player.isReloading) || player.kickCanHurt) {
         	
         	checkDamage(naziSoldiers, PUNCH_SOUND, 1);
         	checkDamage(dogs, PUNCH_SOUND, 1);
@@ -398,7 +399,8 @@ public class Level extends GameComponent {
             	dayLightValue = 1.25f;
             else if(dayLightValue <= 0.1f)
             	dayLightValue = 0.1f;
-        	renderingEngine.setAmbientLight(new Vector3f(dayLightValue, dayLightValue, dayLightValue));
+        	float ambient = Math.min(dayLightValue, MAX_DAY_AMBIENT);
+        	renderingEngine.setAmbientLight(new Vector3f(ambient, ambient, ambient));
         	renderingEngine.setFogColor(new Vector3f(dayLightValue/20, dayLightValue/2, dayLightValue));
         }
         
@@ -1377,13 +1379,15 @@ public class Level extends GameComponent {
                 			//whom do drop a key
                         	ghosts.add(new Ghost(new Transform(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0, (j + 0.5f) * SPOT_LENGTH))));
                 			break;
+                		default:
+                			//Only values no case above claims are exits: objects share this range
+                			if ((bitmap.getPixel(i, j) & 0x0000FF) < 128 && (bitmap.getPixel(i, j) & 0x0000FF) > 96) {
+                				int offset = (bitmap.getPixel(i, j) & 0x0000FF) - 96;
+                				exitPoints.add(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0f, (j + 0.5f) * SPOT_LENGTH));
+                				exitOffsets.add(offset);
+                			}
+                			break;
                 	}
-
-                    if ((bitmap.getPixel(i, j) & 0x0000FF) < 128 && (bitmap.getPixel(i, j) & 0x0000FF) > 96) {
-                        int offset = (bitmap.getPixel(i, j) & 0x0000FF) - 96;
-                        exitPoints.add(new Vector3f((i + 0.5f) * SPOT_WIDTH, 0f, (j + 0.5f) * SPOT_LENGTH));
-                        exitOffsets.add(offset);
-                    }
                     
                     float[] texCoords = calcTextCoords((bitmap.getPixel(i, j) & 0x00FF00) >> 8);
                     

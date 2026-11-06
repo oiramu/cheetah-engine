@@ -359,7 +359,7 @@ public class NaziSergeant extends Enemy implements Collidable {
         	case STATE_DEAD:
         		isQuiet = true;
             	shotgun.update(delta);
-            	shell.update(delta);
+            	updateDrop(shell, 1, delta);
                 dead = true;
                 material.setDiffuse(animation.get(12));
                 if (distance < shotgun.PICKUP_THRESHHOLD && distance < shell.PICKUP_THRESHHOLD)

@@ -17,9 +17,11 @@ package game;
 
 import static engine.components.Constants.*;
 
+import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Set;
 
 import org.lwjgl.opengl.Display;
 
@@ -186,6 +188,11 @@ public class Player extends GameComponent {
     private static ArrayList<Bleed> removeBleedingList;
 
     private static final Vector2f centerPosition = new Vector2f(Display.getWidth()/2, Display.getHeight()/2);
+    // Offsets that land each glyph's visible centre on screen centre; HUD text is
+    // anchored at its bottom-left cell corner, in normalized device coordinates.
+    private static final Vector2f CROSSHAIR_DOT_POSITION = new Vector2f(-0.0186f, -0.0234f);
+    private static final Vector2f CROSSHAIR_RING_POSITION = new Vector2f(-0.083f, -0.0371f);
+    private static final float KICK_COOLDOWN = 0.75f;
     private static final Vector3f zeroVector = new Vector3f(0, 0, 0);
     
     private static float toTerrain = 0;
@@ -226,7 +233,10 @@ public class Player extends GameComponent {
     public double saveNotificationTime;
     
     private double gunFireTime;
+    private double gunSoundShotTime;
+    private final Set<String> gunSoundsPlayed = new HashSet<String>();
     private double kickingTime;
+    private boolean kickLanded;
     private float width;
     private float upAmt = 0;
     private int currentAmmo = 0;
@@ -501,7 +511,7 @@ public class Player extends GameComponent {
         weaponState = PISTOL;
         isAutomatic = false;
         isDoubleShooter = false;
-        playerText.get("CrossHair").setPosition(new Vector2f(-0.025f, 0));
+        playerText.get("CrossHair").setPosition(CROSSHAIR_DOT_POSITION);
         playerText.get("CrossHair").setText(".");
     }
     
@@ -530,7 +540,7 @@ public class Player extends GameComponent {
         weaponState = SHOTGUN;
         isAutomatic = false;
         isDoubleShooter = false;
-        playerText.get("CrossHair").setPosition(new Vector2f(-0.065f, 0));
+        playerText.get("CrossHair").setPosition(CROSSHAIR_RING_POSITION);
         playerText.get("CrossHair").setText("( )");
     }
     
@@ -555,7 +565,7 @@ public class Player extends GameComponent {
         weaponState = MACHINEGUN;
         isAutomatic = true;
         isDoubleShooter = false;
-        playerText.get("CrossHair").setPosition(new Vector2f(-0.025f, 0));
+        playerText.get("CrossHair").setPosition(CROSSHAIR_DOT_POSITION);
         playerText.get("CrossHair").setText(".");
     }
     
@@ -584,7 +594,7 @@ public class Player extends GameComponent {
         weaponState = SUPER_SHOTGUN;
         isAutomatic = false;
         isDoubleShooter = true;
-        playerText.get("CrossHair").setPosition(new Vector2f(-0.065f, 0));
+        playerText.get("CrossHair").setPosition(CROSSHAIR_RING_POSITION);
         playerText.get("CrossHair").setText("( )");
     }
     
@@ -616,7 +626,7 @@ public class Player extends GameComponent {
         weaponState = CHAINGUN;
         isAutomatic = true;
         isDoubleShooter = false;
-        playerText.get("CrossHair").setPosition(new Vector2f(-0.033f, 0));
+        playerText.get("CrossHair").setPosition(CROSSHAIR_DOT_POSITION);
         playerText.get("CrossHair").setText(".");
     }
     
@@ -642,7 +652,7 @@ public class Player extends GameComponent {
         weaponState = ROCKET_LAUNCHER;
         isAutomatic = false;
         isDoubleShooter = false;
-        playerText.get("CrossHair").setPosition(new Vector2f(-0.08f, 0));
+        playerText.get("CrossHair").setPosition(CROSSHAIR_RING_POSITION);
         playerText.get("CrossHair").setText("( )");
     }
     
@@ -669,7 +679,7 @@ public class Player extends GameComponent {
         weaponState = FLAME_THROWER;
         isAutomatic = true;
         isDoubleShooter = false;
-        playerText.get("CrossHair").setPosition(new Vector2f(-0.08f, 0));
+        playerText.get("CrossHair").setPosition(CROSSHAIR_RING_POSITION);
         playerText.get("CrossHair").setText("( )");
     }
 
@@ -784,9 +794,10 @@ public class Player extends GameComponent {
 	        	moveSpeed = speed;
 	        }
 	        
-	        if(Input.getKeyDown(Input.KEY_Q) && !trowsKick) {
+	        if(Input.getKeyDown(Input.KEY_Q) && Time.getTime() >= kickingTime + KICK_COOLDOWN) {
 	        	audioEmitter.play(PLAYER_SOUNDS[5]);
 	        	kickingTime = Time.getTime();
+	        	kickLanded = false;
 	        	moveSpeed = speed*5;
 	        }else {
 	        	moveSpeed = speed;
@@ -1035,7 +1046,9 @@ public class Player extends GameComponent {
         	trowsKick = true;
         	legMaterial.setDiffuse(legMaterials.get(0));
         } else if ((double) time < kickingTime+0.3f) {
-        	kickCanHurt = true;
+        	// True for a single tick, so one kick lands one hit
+        	kickCanHurt = !kickLanded;
+        	kickLanded = true;
         	trowsKick = true;
         	legMaterial.setDiffuse(legMaterials.get(1));
         } else {
@@ -1084,7 +1097,7 @@ public class Player extends GameComponent {
         		        	if(fires && bullets != 0)
         		        		chaingunCanFire = true;
         		        	else if(!fires || bullets == 0){
-        		        		audioEmitter.play(gunClipp);
+        		        		playGunSoundOnce(gunClipp);
         		        		chaingunCanFire = false;
         		        	}
         		        } else {
@@ -1107,7 +1120,7 @@ public class Player extends GameComponent {
         		        	if(fires && bullets != 0)
         		        		chaingunCanFire = true;
         		        	else if(!fires){
-        		        		audioEmitter.play(gunClipp);
+        		        		playGunSoundOnce(gunClipp);
         		        		chaingunCanFire = false;
         		        	}
         		        } else {
@@ -1127,11 +1140,11 @@ public class Player extends GameComponent {
     	        	renderingEngine.addLight(fireLight);
     	        	gunMaterial.setDiffuse(gunAnimationMaterial1);
     	        } else if ((double) time < gunTime2) {
-    	        	audioEmitter.play(gunReload);
+    	        	playGunSoundOnce(gunReload);
     	        	gunMaterial.setDiffuse(gunAnimationMaterial2);
     		        isShooting = false;
     	        } else if ((double) time < gunTime3) {
-    	        	audioEmitter.play(gunClipp);
+    	        	playGunSoundOnce(gunClipp);
     	        	gunMaterial.setDiffuse(gunAnimationMaterial3);
     	        } else if ((double) time < gunTime4) {
     	        	gunMaterial.setDiffuse(gunAnimationMaterial4);
@@ -1163,7 +1176,7 @@ public class Player extends GameComponent {
     	        } else if ((double) time < gunTime2) {
     	        	gunMaterial.setDiffuse(gunAnimationMaterial4);
     	        	if(!fires)
-    	        		audioEmitter.play(gunClipp);
+    	        		playGunSoundOnce(gunClipp);
     	        } else {
     	        	if(timeDecimals <= 0.1)
     	        		gunMaterial.setDiffuse(gunAnimationMaterial0);
@@ -1913,4 +1926,19 @@ public class Player extends GameComponent {
 	 */
 	public void removeFlame(Flame flame) { removeFlames.add(flame); }
 
+
+	/**
+	 * Plays a gun sound once per shot. The animation windows that trigger
+	 * these last many ticks, and every play() takes its own pooled source,
+	 * so calling it each tick would stack copies of the same sound.
+	 * @param sound to play.
+	 */
+	private void playGunSoundOnce(String sound) {
+		if (gunSoundShotTime != gunFireTime) {
+			gunSoundShotTime = gunFireTime;
+			gunSoundsPlayed.clear();
+		}
+		if (gunSoundsPlayed.add(sound))
+			audioEmitter.play(sound);
+	}
 }

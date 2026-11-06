@@ -205,6 +205,9 @@ public class CoreEngine {
 	 * Method that sets to run everything when the program ask it for.
 	 */
 	public void run() {
+		// Before the menu loop, not just in runGame(): menu widgets play a
+		// click sound, and any AL call without a context segfaults the JVM.
+		AudioManager.init();
 		while(!Window.isCloseRequested()) {
 			Window.updateMenu();
 			Window.renderMenu();
@@ -217,7 +220,7 @@ public class CoreEngine {
 	 */
 	private void printCompilationStuff() {
 		System.out.println("==============================");
-        System.out.println("||CHEETAH ENGINE; BUILD v1.0||");
+        System.out.println("||CHEETAH ENGINE; BUILD v1.1||");
         System.out.println("==============================");
         System.out.println("Compiliation specs: ");
         System.out.println("-OS name: " + System.getProperty("os.name"));
@@ -225,9 +228,8 @@ public class CoreEngine {
         System.out.println("-LWJGL version: " + org.lwjgl.Sys.getVersion());
         System.out.println("-OpenGL version: " + glGetString(GL_VERSION));
         System.out.println("-OpenGL vendor: " + glGetString(GL_VENDOR));
-        // OpenAL diagnostics print from runGame() instead, right after
-        // AudioManager.init() creates the context - this method runs at
-        // menu-creation time, before any AL context exists yet.
+        // OpenAL diagnostics print from runGame() instead - this method
+        // runs at menu-creation time, before any AL context exists yet.
         System.out.println("Compiled by: " + System.getProperty("user.name") + "; in : " + Time.getTimeAsString());
 	}
 

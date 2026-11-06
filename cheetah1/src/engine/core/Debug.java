@@ -63,7 +63,7 @@ public class Debug {
 	 */
 	public static void init(Player player) {
 		Debug.player = player;
-		debugText.put("Engine", new HUD("Cheetah Engine 1.0", new Vector2f(X_MARGIN,1.9f), new Vector2f(0.5f,0.5f)));
+		debugText.put("Engine", new HUD("Cheetah Engine 1.1", new Vector2f(X_MARGIN,1.9f), new Vector2f(0.5f,0.5f)));
 		debugText.put("FPS",new HUD("", new Vector2f(X_MARGIN,1.7f), new Vector2f(0.5f,0.5f)));
 		debugText.put("FrameTime",new HUD("", new Vector2f(X_MARGIN,1.6f), new Vector2f(0.5f,0.5f)));
 		debugText.put("Memory",new HUD("", new Vector2f(X_MARGIN,1.5f), new Vector2f(0.5f,0.5f)));

@@ -53,7 +53,7 @@ public class SecretWall extends GameComponent implements Collidable {
     private static final String OPEN_SOUND = RES_LOC + "MEDIA";
     private final AudioEmitter openEmitter = new AudioEmitter(this);
 
-    private static Mesh mesh;
+    private Mesh mesh;
 
     private Material material;
     private Transform transform;
@@ -84,18 +84,7 @@ public class SecretWall extends GameComponent implements Collidable {
         startTime = 0;
         openTime = 0;
 
-        if (mesh == null) {
-            Vertex[] doorVerts = new Vertex[]{	new Vertex(new Vector3f(START, START, START), new Vector2f(xHigher, yHigher)),
-												new Vertex(new Vector3f(START, HEIGHT, START), new Vector2f(xHigher, yLower)),
-												new Vertex(new Vector3f(LENGTH, HEIGHT, START), new Vector2f(xLower, yLower)),
-												new Vertex(new Vector3f(LENGTH, START, START), new Vector2f(xLower, yHigher)),
-												
-												new Vertex(new Vector3f(START, START, START), new Vector2f(xHigher, yHigher)),
-												new Vertex(new Vector3f(START, HEIGHT, START), new Vector2f(xHigher, yLower)),
-												new Vertex(new Vector3f(LENGTH, HEIGHT, START), new Vector2f(xLower, yLower)),
-												new Vertex(new Vector3f(LENGTH, START, START), new Vector2f(xLower, yHigher)),
-												
-												new Vertex(new Vector3f(START, START, START), new Vector2f(xHigher, yHigher)),
+        Vertex[] doorVerts = new Vertex[]{	new Vertex(new Vector3f(START, START, START), new Vector2f(xHigher, yHigher)),
 												new Vertex(new Vector3f(START, HEIGHT, START), new Vector2f(xHigher, yLower)),
 												new Vertex(new Vector3f(LENGTH, HEIGHT, START), new Vector2f(xLower, yLower)),
 												new Vertex(new Vector3f(LENGTH, START, START), new Vector2f(xLower, yHigher)),
@@ -105,17 +94,12 @@ public class SecretWall extends GameComponent implements Collidable {
 												new Vertex(new Vector3f(LENGTH, HEIGHT, START), new Vector2f(xLower, yLower)),
 												new Vertex(new Vector3f(LENGTH, START, START), new Vector2f(xLower, yHigher))};
 
-            int[] doorIndices = new int[]{0, 1, 2,
-            								0, 2, 3,
-            								6, 5, 4,
-            								7, 6, 4,
-            								10, 9, 8,
-            								11, 10, 8,
-            								12, 13, 14,
-            								12, 14, 15};
+        int[] doorIndices = new int[]{0, 1, 2,
+        								0, 2, 3,
+        								6, 5, 4,
+        								7, 6, 4};
 
-            mesh = new Mesh(doorVerts, doorIndices, true, true);
-        }
+        mesh = new Mesh(doorVerts, doorIndices, true, true);
         
         this.meshRenderer = new MeshRenderer(mesh, getTransform(), this.material);
     }

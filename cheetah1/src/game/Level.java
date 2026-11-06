@@ -1137,6 +1137,13 @@ public class Level extends GameComponent {
                 		case 20:
                 			Transform wallTransform = new Transform();
 
+                			//Each wall takes its own tile's texture, set before its mesh is built
+                			float[] secretCoords = calcTextCoords((bitmap.getPixel(i, j) & 0xFF0000) >> 16);
+                			SecretWall.xHigher = secretCoords[0];
+                			SecretWall.xLower = secretCoords[1];
+                			SecretWall.yHigher = secretCoords[2];
+                			SecretWall.yLower = secretCoords[3];
+
                             boolean xSecretWall = (bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0 && (bitmap.getPixel(i, j + 1) & 0xFFFFFF) == 0;
                             boolean ySecretWall = (bitmap.getPixel(i - 1, j) & 0xFFFFFF) == 0 && (bitmap.getPixel(i + 1, j) & 0xFFFFFF) == 0;
 
@@ -1403,11 +1410,6 @@ public class Level extends GameComponent {
     				
     				texCoords = calcTextCoords((bitmap.getPixel(i, j) & 0xFF0000) >> 16);
                     
-                    SecretWall.xHigher = texCoords[0];
-                    SecretWall.xLower = texCoords[1];
-                    SecretWall.yHigher = texCoords[2];
-                    SecretWall.yLower = texCoords[3];
-
                     //Generate Walls
                     if ((bitmap.getPixel(i, j - 1) & 0xFFFFFF) == 0) {
                         collisionPosStart.add(new Vector2f(i * SPOT_WIDTH, j * SPOT_LENGTH));
